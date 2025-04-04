@@ -32,9 +32,9 @@ public class ContaController {
 		Conta contaAdicionada = contaService.save(conta);			
 		
 		if(contaAdicionada != null) {
-			return new ResponseEntity<String>("A conta "+conta.getNumeroConta()+" foi adicionada com sucesso", HttpStatus.CREATED);
+			return new ResponseEntity<String>("A conta "+contaAdicionada.getNumeroConta()+" foi adicionada com sucesso", HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<String>("Dados da conta "+conta.getNumeroConta()+" são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}		
 	}
 	
