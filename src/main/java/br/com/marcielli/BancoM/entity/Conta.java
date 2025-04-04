@@ -1,11 +1,12 @@
 package br.com.marcielli.BancoM.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
+import br.com.marcielli.BancoM.enuns.Funcao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -18,6 +19,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
 
 @Entity
@@ -36,7 +38,7 @@ public class Conta implements Serializable {
 	@Version
 	private Long version;
 	
-	@ManyToOne(cascade = CascadeType.ALL) 
+	@ManyToOne(cascade = {CascadeType.ALL}) 
 	@JoinColumn(name = "clienteId")
 	@JsonBackReference
 	private Cliente cliente;
@@ -51,6 +53,9 @@ public class Conta implements Serializable {
 	
 	private String numeroConta;
 	
+	@OneToMany(cascade = {CascadeType.ALL})
+	@JoinColumn(name = "transferenciaId")
+	private List<Transferencia> transferencia;
 	
 	public Conta() {}
 
@@ -61,6 +66,14 @@ public class Conta implements Serializable {
 		this.cliente = cliente;
 		this.tipoConta = tipoConta;
 		this.categoriaConta = categoriaConta;
+		this.saldoConta = saldoConta;
+		this.numeroConta = numeroConta;
+	}
+	
+	public Conta(Cliente cliente, TipoConta tipoConta,float saldoConta, String numeroConta) {
+		super();	
+		this.cliente = cliente;
+		this.tipoConta = tipoConta;	
 		this.saldoConta = saldoConta;
 		this.numeroConta = numeroConta;
 	}
@@ -91,24 +104,28 @@ public class Conta implements Serializable {
 	}
 
 
-	public void setCategoriaConta(float saldo) {
-		
-		if(saldo <= 1000f) {
-			this.categoriaConta = CategoriaConta.COMUM;
-		}
-		
-		if(saldo > 1000f && saldo <= 5000f) {
-			this.categoriaConta = CategoriaConta.SUPER;
-		}
-		
-		if(saldo > 5000f) {
-			this.categoriaConta = CategoriaConta.PREMIUM;	
-		}	
+	public void setCategoriaConta(CategoriaConta categoriaConta) {
+		this.categoriaConta = categoriaConta;
 	}	
 
 	public float getSaldoConta() {
 		return saldoConta;
 	}
+	
+	public void setSaldoConta(float saldo, Funcao funcao) {
+		
+		if(funcao.getDescricao().equalsIgnoreCase("PAGADOR")) {
+			
+			this.saldoConta = getSaldoConta() - saldo;
+			
+		} else if(funcao.getDescricao().equalsIgnoreCase("RECEBEDOR")) {
+			
+			this.saldoConta = getSaldoConta() + saldo;
+			
+		}
+		
+	}
+
 
 
 	public void setSaldoConta(float saldoConta) {

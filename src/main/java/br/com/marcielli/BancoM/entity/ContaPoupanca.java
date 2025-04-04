@@ -22,18 +22,73 @@ public class ContaPoupanca extends Conta {
 	
 	public ContaPoupanca() {}
 
-	public ContaPoupanca(float saldo) {		
-		setTaxaAcrescRend(saldo);
-		setTaxaMensal(saldo);
-		super.setCategoriaConta(saldo);	
+	public ContaPoupanca(Cliente cliente, TipoConta tipoConta, float saldoConta, String numeroConta) {
+		super(cliente, tipoConta, saldoConta, numeroConta);
+		
+		CategoriaConta categoriaConta = null;
+		
+		if(saldoConta <= 1000f) {
+			categoriaConta = CategoriaConta.COMUM;
+			super.setCategoriaConta(categoriaConta);		
+			this.taxaAcrescRend = 0.005f;
+			
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+		}
+		
+		if(saldoConta > 1000f && saldoConta <= 5000f) {
+			categoriaConta = CategoriaConta.SUPER;
+			super.setCategoriaConta(categoriaConta);
+			this.taxaAcrescRend = 0.007f;
+			
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+		}
+		
+		if(saldoConta > 5000f) {
+			categoriaConta = CategoriaConta.PREMIUM;
+			super.setCategoriaConta(categoriaConta);
+			this.taxaAcrescRend = 0.009f;
+			
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+			
+		}		
 	}
-
-	public ContaPoupanca(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta,
-			String numeroConta, float taxaAcrescRend, float taxaMensal) {
-		super(cliente, tipoConta, categoriaConta, saldoConta, numeroConta);
-		setTaxaAcrescRend(saldoConta);
-		setTaxaMensal(saldoConta);
-		super.setCategoriaConta(saldoConta);	
+	
+	public void atualizaCategoria(float saldoConta) {
+		
+	 CategoriaConta categoriaConta = null;
+	 if(saldoConta <= 1000f) {
+			categoriaConta = CategoriaConta.COMUM;
+			super.setCategoriaConta(categoriaConta);	
+		}
+		
+		if(saldoConta > 1000f && saldoConta <= 5000f) {
+			categoriaConta = CategoriaConta.SUPER;
+			super.setCategoriaConta(categoriaConta);
+		}
+		
+		if(saldoConta > 5000f) {
+			categoriaConta = CategoriaConta.PREMIUM;
+			super.setCategoriaConta(categoriaConta);
+		}
+	}
+	
+	public void atualizaTaxas(float saldoConta) {
+		
+		if(saldoConta <= 1000f) {
+			this.taxaAcrescRend = 0.005f;			
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+		}
+		
+		if(saldoConta > 1000f && saldoConta <= 5000f) {
+			this.taxaAcrescRend = 0.007f;			
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+		}
+		
+		if(saldoConta > 5000f) {
+			this.taxaAcrescRend = 0.009f;			
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);			
+		}		
+		
 	}
 	
 
@@ -51,8 +106,10 @@ public class ContaPoupanca extends Conta {
 			this.taxaAcrescRend = 0.007f;			
 		}	
 		
-		if(saldo > 5000f)
-		this.taxaAcrescRend = 0.009f;
+		if(saldo > 5000f) {
+			this.taxaAcrescRend = 0.009f;
+		}
+		
 	}
 
 	public float getTaxaMensal() {	
@@ -71,8 +128,10 @@ public class ContaPoupanca extends Conta {
 			this.taxaMensal = (float) (Math.pow(1+getTaxaAcrescRend(), 1.0/12) - 1);
 		}		
 		
-		if(saldo > 5000f)
-		this.taxaMensal = (float) (Math.pow(1+getTaxaAcrescRend(), 1.0/12) - 1);		
+		if(saldo > 5000f) {
+			this.taxaMensal = (float) (Math.pow(1+getTaxaAcrescRend(), 1.0/12) - 1);
+		}
+				
 	}
 	
 }

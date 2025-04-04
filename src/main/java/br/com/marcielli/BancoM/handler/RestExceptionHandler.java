@@ -9,9 +9,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ClienteNaoTemSaldoSuficienteException;
 import br.com.marcielli.BancoM.exception.ClienteNomeInvalidoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
 import br.com.marcielli.BancoM.exception.ContaTipoContaNaoExisteException;
+import br.com.marcielli.BancoM.exception.ContaTipoNaoPodeSerAlteradaException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -36,6 +39,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
 	}
 	
+	@ExceptionHandler(ClienteNaoTemSaldoSuficienteException.class)
+	private ResponseEntity<RestErrorMessage> clientNotCreatedHandler(ClienteNaoTemSaldoSuficienteException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	//Conta
 	@ExceptionHandler(ContaTipoContaNaoExisteException.class)
@@ -46,6 +65,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(ContaNaoEncontradaException.class)
 	private ResponseEntity<RestErrorMessage> clientNotCreatedHandler(ContaNaoEncontradaException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+	
+	@ExceptionHandler(ContaNaoRealizouTransferenciaException.class)
+	private ResponseEntity<RestErrorMessage> clientNotCreatedHandler(ContaNaoRealizouTransferenciaException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+	
+	@ExceptionHandler(ContaTipoNaoPodeSerAlteradaException.class)
+	private ResponseEntity<RestErrorMessage> clientNotCreatedHandler(ContaTipoNaoPodeSerAlteradaException exception) {		
 		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
 	}

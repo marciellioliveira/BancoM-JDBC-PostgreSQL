@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
+import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ContaService;
 
@@ -27,6 +28,7 @@ public class ContaController {
 	@Autowired
 	private ContaService contaService;
 	
+	//CRUD
 	@PostMapping("/salvar")
 	public ResponseEntity<String> adicionarCliente(@RequestBody Conta conta) {
 			
@@ -38,8 +40,7 @@ public class ContaController {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 		
-	}
-	
+	}	
 	
 	@GetMapping("/listar")
 	public ResponseEntity<List<Conta>> getContas(){
@@ -73,5 +74,31 @@ public class ContaController {
 		return null;
 		//return contaService.delete(contaId);
     }
+	
+	
+	
+	//Transferencia
+	@PostMapping("/transferir/{idReceber}")
+	public ResponseEntity<String> adicionarCliente(@PathVariable("idReceber") Long idReceber, @RequestBody Transferencia contaEnviar) {
+		
+		if(contaService.transferir(idReceber, contaEnviar) == true) {
+			
+			return new ResponseEntity<String>("Transferência realizada com sucesso com sucesso", HttpStatus.CREATED);
+			
+		} else {
+			
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+			
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
