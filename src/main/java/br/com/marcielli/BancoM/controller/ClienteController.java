@@ -50,7 +50,12 @@ public class ClienteController {
 	}
 	
 	@DeleteMapping("/deletar/{clienteId}")
-    public String deletar(@PathVariable("clienteId") Long clienteId) {
-		return clienteService.delete(clienteId);
+    public ResponseEntity<String> deletar(@PathVariable("clienteId") Long clienteId) {
+		
+		if(clienteService.delete(clienteId).equals("deletado")) {
+			return new ResponseEntity<String>("Cliente deletado com sucesso", HttpStatus.OK);
+		} 
+		//return clienteService.delete(clienteId);
+		return null;
     }
 }

@@ -13,8 +13,9 @@ import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
-import br.com.marcielli.BancoM.enuns.TipoConta;
-import br.com.marcielli.BancoM.repository.ClienteRepository;
+import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.ContaTipoContaNaoExisteException;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
 
 @Service
@@ -23,23 +24,18 @@ public class ContaService {
 	@Autowired
 	private ContaRepositoy contaRepository;
 	
-//	@Autowired
-//	private ClienteRepository clienteRepository;
-	
 	@Transactional
 	public Conta save(Conta conta) {
 		
 		//Validar dados
+		if(conta.getSaldoConta() < 0) {
+			throw new ContaTipoContaNaoExisteException("O saldo inicial da conta precisa ser positivo");
+		}
 		
 		String numConta = gerarNumeroDaConta(conta);
 		CategoriaConta categoriaConta = null;
 		Cliente novoCliente = null;
-		
-//		if(conta.getCliente() != null) {
-//			novoCliente = clienteRepository.save(conta.getCliente());
-//		}
-		
-		
+
 		if(conta.getTipoConta().getDescricao().equalsIgnoreCase("CORRENTE")) {
 			
 			String numContaCorrente = numConta.concat("-CC");
@@ -75,54 +71,83 @@ public class ContaService {
 	public Conta update(Conta conta, Long id) {
 		
 		Optional<Conta> contaH2 = contaRepository.findById(id);
+		
 		Conta contaAtualizada = null;
 		
-		if(conta.getTipoConta().getDescricao().equalsIgnoreCase("corrente")) {
+		if(contaH2.isPresent()) {
 			
-			if(contaH2.isPresent()) {
-				contaAtualizada = contaH2.get();
-				contaAtualizada.setTipoConta(conta.getTipoConta());
-				contaAtualizada.setCliente(conta.getCliente());
-				contaAtualizada.setSaldoConta(conta.getSaldoConta());
-				contaAtualizada.setCategoriaConta(conta.getSaldoConta());
+			if(conta.getTipoConta().getDescricao().equalsIgnoreCase("corrente")) {
 				
-				return contaRepository.save(contaAtualizada);
-			}
-			
-			
-		} else if(conta.getTipoConta().getDescricao().equalsIgnoreCase("poupanca")) {
-			
-			if(contaH2.isPresent()) {
-				contaAtualizada = contaH2.get();
-				contaAtualizada.setTipoConta(conta.getTipoConta());
-				contaAtualizada.setCliente(conta.getCliente());
-				contaAtualizada.setSaldoConta(conta.getSaldoConta());
-				contaAtualizada.setCategoriaConta(conta.getSaldoConta());
+				if(contaH2.isPresent()) {
+					contaAtualizada = contaH2.get();
+					contaAtualizada.setTipoConta(conta.getTipoConta());
+					contaAtualizada.setCliente(conta.getCliente());
+					contaAtualizada.setSaldoConta(conta.getSaldoConta());
+					contaAtualizada.setCategoriaConta(conta.getSaldoConta());
+					
+					return contaRepository.save(contaAtualizada);
+				}
+				
+				
+			} else if(conta.getTipoConta().getDescricao().equalsIgnoreCase("poupanca")) {
+				
+				if(contaH2.isPresent()) {
+					contaAtualizada = contaH2.get();
+					contaAtualizada.setTipoConta(conta.getTipoConta());
+					contaAtualizada.setCliente(conta.getCliente());
+					contaAtualizada.setSaldoConta(conta.getSaldoConta());
+					contaAtualizada.setCategoriaConta(conta.getSaldoConta());
 
-				return contaRepository.save(contaAtualizada);
-			}
+					return contaRepository.save(contaAtualizada);
+				}
+				
+			}	
 			
+		} else {
+			throw new ContaNaoEncontradaException("A conta não pode ser atualizada porque não existe no banco.");
 		}
-		
-		return null;
-		
+		return contaAtualizada;		
 	}
 	
 	public List<Conta> getAll(){
 		
-		return contaRepository.findAll();
+		List<Conta> contasH2 = contaRepository.findAll();
+		
+		if(contasH2.size() <= 0) {
+			throw new ContaNaoEncontradaException("Não existemn contas cadastradas no banco.");
+		}
+		
+		return contasH2;
+		//return contaRepository.findAll();
 	}
 	
 	public Optional<Conta> getClienteById(Conta conta){	
 		
-		return contaRepository.findById(conta.getId());
+		Optional<Conta> contaH2 = contaRepository.findById(conta.getId());
+		
+		if(!contaH2.isPresent()) {
+			throw new ContaNaoEncontradaException("Conta não encontrada.");
+		}
+		
+		return contaH2;
+		//return contaRepository.findById(conta.getId());
 	}
 	
 	public String delete(Long contaId) {
 		
-		contaRepository.deleteById(contaId);
+		//Optional<Conta> contaH2 = contaRepository.deleteById(contaId);
+		Optional<Conta> contaH2 = contaRepository.findById(contaId);
 		
-		return "DELETED";
+		if(contaH2.isPresent()) {
+			contaRepository.deleteById(contaId);
+			return "deletado";
+		} else {
+			throw new ContaNaoEncontradaException("A conta não pode ser deletada porque não existe no banco.");
+		}
+		
+		//contaRepository.deleteById(contaId);
+		
+	//	return "DELETED";
 	}
 	
 	

@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.entity.Conta;
-import br.com.marcielli.BancoM.entity.ContaCorrente;
-import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.service.ContaService;
 
 @RestController
@@ -29,13 +27,14 @@ public class ContaController {
 	@PostMapping("/salvar")
 	public ResponseEntity<String> adicionarCliente(@RequestBody Conta conta) {
 			
-		Conta contaAdicionada = contaService.save(conta);			
+		Conta contaAdicionada = contaService.save(conta);	
 		
 		if(contaAdicionada != null) {
 			return new ResponseEntity<String>("A conta "+contaAdicionada.getNumeroConta()+" foi adicionada com sucesso", HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-		}		
+		}
+		
 	}
 	
 	
@@ -51,8 +50,12 @@ public class ContaController {
 	}
 	
 	@DeleteMapping("/deletar/{contaId}")
-    public String deletar(@PathVariable("contaId") Long contaId) {
-		return contaService.delete(contaId);
+    public ResponseEntity<String> deletar(@PathVariable("contaId") Long contaId) {
+		if(contaService.delete(contaId).equals("deletado")) {
+			return new ResponseEntity<String>("Conta deletada com sucesso", HttpStatus.OK);
+		}
+		return null;
+		//return contaService.delete(contaId);
     }
 
 }
