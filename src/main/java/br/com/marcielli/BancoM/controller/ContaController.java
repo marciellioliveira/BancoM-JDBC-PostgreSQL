@@ -1,6 +1,7 @@
 package br.com.marcielli.BancoM.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
+import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ContaService;
 
 @RestController
@@ -42,6 +45,19 @@ public class ContaController {
 	public ResponseEntity<List<Conta>> getContas(){
 		List<Conta> contas = contaService.getAll();
 		return new ResponseEntity<List<Conta>>(contas, HttpStatus.OK);			
+	}
+	
+	@GetMapping("/listar/{contaId}")
+	public Optional<Conta> getContaById(@PathVariable("contaId") Long contaId){
+		
+		Optional<Conta> contaById = contaService.getContaById(contaId);
+		
+		if(!contaById.isPresent()) {
+			throw new ClienteNaoEncontradoException("Cliente não existe no banco.");
+		}
+		
+		return contaById;
+		
 	}
 	
 	@PutMapping("/atualizar/{contaId}")

@@ -93,9 +93,9 @@ public class ClienteService {
 		//return clienteRepository.findAll();
 	}
 	
-	public Optional<Cliente> getClienteById(Cliente cliente){	
+	public Optional<Cliente> getClienteById(Long id){	
 		
-		Optional<Cliente> clienteH2 = clienteRepository.findById(cliente.getId());
+		Optional<Cliente> clienteH2 = clienteRepository.findById(id);
 		
 		if(!clienteH2.isPresent()) {
 			throw new ClienteNaoEncontradoException("Cliente não encontrado.");

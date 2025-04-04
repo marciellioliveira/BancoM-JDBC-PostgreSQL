@@ -1,6 +1,7 @@
 package br.com.marcielli.BancoM.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.entity.Cliente;
+import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ClienteService;
 
 @RestController
@@ -35,13 +37,25 @@ public class ClienteController {
 		} else {
 			return new ResponseEntity<String>("Dados do "+cliente.getNome()+" inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}		
-	}
-	
+	}	
 	
 	@GetMapping("/listar")
 	public ResponseEntity<List<Cliente>> getClientes(){
 		List<Cliente> clientes = clienteService.getAll();
 		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);			
+	}
+	
+	@GetMapping("/listar/{clienteId}")
+	public Optional<Cliente> getClienteById(@PathVariable("clienteId") Long clienteId){
+		
+		Optional<Cliente> clienteById = clienteService.getClienteById(clienteId);
+		
+		if(!clienteById.isPresent()) {
+			throw new ClienteNaoEncontradoException("Cliente não existe no banco.");
+		}
+		
+		return clienteById;
+		
 	}
 	
 	@PutMapping("/atualizar/{clienteId}")

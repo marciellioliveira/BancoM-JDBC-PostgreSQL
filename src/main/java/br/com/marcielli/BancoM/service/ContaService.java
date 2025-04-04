@@ -121,9 +121,9 @@ public class ContaService {
 		//return contaRepository.findAll();
 	}
 	
-	public Optional<Conta> getClienteById(Conta conta){	
+	public Optional<Conta> getContaById(Long id){	
 		
-		Optional<Conta> contaH2 = contaRepository.findById(conta.getId());
+		Optional<Conta> contaH2 = contaRepository.findById(id);
 		
 		if(!contaH2.isPresent()) {
 			throw new ContaNaoEncontradaException("Conta não encontrada.");
