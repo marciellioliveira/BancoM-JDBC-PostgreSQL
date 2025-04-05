@@ -52,6 +52,30 @@ public class ContaPoupanca extends Conta {
 		}		
 	}
 	
+	public void atualizarTaxas(Conta conta) {
+			 
+		if(conta.getSaldoConta() <= 1000f) {
+			
+			super.setCategoriaConta(CategoriaConta.COMUM);
+		
+	 		this.taxaAcrescRend = 0.005f;			
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+		}
+		
+		if(conta.getSaldoConta()  > 1000f && conta.getSaldoConta()  <= 5000f) {
+			
+			super.setCategoriaConta(CategoriaConta.COMUM);
+			this.taxaAcrescRend = 0.007f;				
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+		}
+		
+		if(conta.getSaldoConta()  > 5000f) {
+			
+			super.setCategoriaConta(CategoriaConta.COMUM);
+			this.taxaAcrescRend = 0.009f;
+			this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+		}
+	}
 	
 	
 	public void atualizaCategoria(float saldoConta) {

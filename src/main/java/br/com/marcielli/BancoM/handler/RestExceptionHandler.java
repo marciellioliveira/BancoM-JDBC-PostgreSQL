@@ -11,7 +11,9 @@ import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoTemSaldoSuficienteException;
 import br.com.marcielli.BancoM.exception.ClienteNomeInvalidoException;
+import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.ContaNaoFoiPossivelAlterarNumeroException;
 import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
 import br.com.marcielli.BancoM.exception.ContaTipoContaNaoExisteException;
 import br.com.marcielli.BancoM.exception.ContaTipoNaoPodeSerAlteradaException;
@@ -78,6 +80,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(ContaTipoNaoPodeSerAlteradaException.class)
 	private ResponseEntity<RestErrorMessage> contaHandler(ContaTipoNaoPodeSerAlteradaException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+	
+	@ExceptionHandler(ContaExibirSaldoErroException.class)
+	private ResponseEntity<RestErrorMessage> contaHandler(ContaExibirSaldoErroException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+	
+	@ExceptionHandler(ContaNaoFoiPossivelAlterarNumeroException.class)
+	private ResponseEntity<RestErrorMessage> contaHandler(ContaNaoFoiPossivelAlterarNumeroException exception) {		
 		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
 	}

@@ -151,7 +151,10 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 	@Override
 	public boolean transferirPix(Conta enviar, float valor, Conta receber) {
-		// TODO Auto-generated method stub
+		
+
+		
+		
 		return false;
 	}
 
@@ -168,8 +171,8 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	}
 
 	@Override
-	public float exibirSaldo() {
-		return 0;
+	public float exibirSaldo(Conta conta) {
+		return conta.getSaldoConta();
 	}
 
 	@Override

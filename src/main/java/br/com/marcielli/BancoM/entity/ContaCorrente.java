@@ -45,7 +45,15 @@ public class ContaCorrente extends Conta {
 				categoriaConta = CategoriaConta.PREMIUM;
 				super.setCategoriaConta(categoriaConta);
 			}
+			
+			
 	}
+	
+	public void atualizarTaxas(Conta conta) {		 
+		setTaxaManutencaoMensal(conta.getSaldoConta());
+		this.taxaManutencaoMensal = getTaxaManutencaoMensal();
+	}
+	
 	
 	public void atualizaCategoria(float saldoConta) {
 		

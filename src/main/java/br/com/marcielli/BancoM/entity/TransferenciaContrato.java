@@ -16,6 +16,6 @@ public interface TransferenciaContrato {
 	
 	public boolean sacar(float valor, Conta receber);
 	
-	public float exibirSaldo();
+	public float exibirSaldo(Conta conta);
 	
 }
