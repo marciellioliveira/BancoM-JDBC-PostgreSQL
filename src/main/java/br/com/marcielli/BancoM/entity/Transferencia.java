@@ -1,48 +1,57 @@
 package br.com.marcielli.BancoM.entity;
 
-import java.util.Date;
-import java.util.Optional;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Random;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 
 @Entity
-public class Transferencia {
+public class Transferencia implements TransferenciaContrato, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Version
-	private Long version;
-
-	private Conta contaDestino;
+	private Long version; //Caso precise implementar devolução de transferência porque transferiu errado.
 	
-	private Conta contaOrigem;
+	private Long idContaOrigem;
+	
+	private Long idContaDestino;
 
 	private float valor;
 
-	private Date data;
+	private LocalDateTime data;
 
 	private String codigoOperacao;
 	
 	@ManyToOne
+	@JsonIgnore
 	private Conta conta;
 
-	public Transferencia(Long id, Long version, Conta contaDestino, Conta contaOrigem, float valor, Date data,
+	public Transferencia() {}
+	
+	public Transferencia(Long id, Long version, Long idContaOrigem, Long idContaDestino, float valor, LocalDateTime data,
 			String codigoOperacao, Conta conta) {
 		super();
 		this.id = id;
 		this.version = version;
-		this.contaDestino = contaDestino;
-		this.contaOrigem = contaOrigem;
+		this.idContaOrigem = idContaOrigem;
+		this.idContaDestino = idContaDestino;
 		this.valor = valor;
 		this.data = data;
 		this.codigoOperacao = codigoOperacao;
@@ -65,22 +74,6 @@ public class Transferencia {
 		this.version = version;
 	}
 
-	public Conta getContaDestino() {
-		return contaDestino;
-	}
-
-	public void setContaDestino(Conta contaDestino) {
-		this.contaDestino = contaDestino;
-	}	
-
-	public Conta getContaOrigem() {
-		return contaOrigem;
-	}
-
-	public void setContaOrigem(Conta contaOrigem) {
-		this.contaOrigem = contaOrigem;
-	}
-
 	public float getValor() {
 		return valor;
 	}
@@ -88,12 +81,28 @@ public class Transferencia {
 	public void setValor(float valor) {
 		this.valor = valor;
 	}
+	
+	public Long getIdContaOrigem() {
+		return idContaOrigem;
+	}
 
-	public Date getData() {
+	public void setIdContaOrigem(Long idContaOrigem) {
+		this.idContaOrigem = idContaOrigem;
+	}
+
+	public Long getIdContaDestino() {
+		return idContaDestino;
+	}
+
+	public void setIdContaDestino(Long idContaDestino) {
+		this.idContaDestino = idContaDestino;
+	}
+
+	public LocalDateTime getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(LocalDateTime data) {
 		this.data = data;
 	}
 
@@ -112,8 +121,81 @@ public class Transferencia {
 	public void setConta(Conta conta) {
 		this.conta = conta;
 	}
+
+	@Override
+	public boolean transferirTed(Conta enviar, float valor, Conta receber) {
 	
-	
+		
+		LocalDateTime dataTransferencia = LocalDateTime.now();
+		String codTransferencia = gerarCodigoTransferencia();
+		
+		if(enviar.getSaldoConta() < valor) {
+			System.err.println("Enviar get saldo "+enviar.getSaldoConta());
+			throw new TransferenciaNaoRealizadaException("A transferência não foi realizada porque você tentou enviar R$ "+valor+" mas o seu saldo atual é de R$ "+enviar.getSaldoConta()+".");
+		}
+		
+		float novoSaldoEnviar = enviar.getSaldoConta() - valor;		
+		enviar.setSaldoConta(novoSaldoEnviar);		
+		
+		float novoSaldoReceber = receber.getSaldoConta() + valor;
+		receber.setSaldoConta(novoSaldoReceber);
+		
+		this.setIdContaOrigem(enviar.getId());
+		this.setIdContaDestino(receber.getId());
+		this.setValor(valor);
+		this.setData(dataTransferencia);
+		this.setCodigoOperacao(codTransferencia);
+		
+		return true;
+	}
+
+	@Override
+	public boolean transferirPix(Conta enviar, float valor, Conta receber) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean depositar(float valor, Conta receber) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean sacar(float valor, Conta receber) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public float exibirSaldo() {
+		return 0;
+	}
+
+	@Override
+	public String gerarCodigoTransferencia() {
+		int[] sequencia = new int[21];
+		Random random = new Random();
+		String codTransferencia = "";
+
+		for (int i = 0; i < sequencia.length; i++) {
+			sequencia[i] = 1 + random.nextInt(8);
+		}
+
+		for (int i = 0; i < sequencia.length; i++) {
+			codTransferencia += Integer.toString(sequencia[i]);
+		}
+
+		return codTransferencia;		
+	}
+
+	@Override
+	public String toString() {
+		return "Transferencia [id=" + id + ", version=" + version + ", idContaOrigem=" + idContaOrigem
+				+ ", idContaDestino=" + idContaDestino + ", valor=" + valor + ", data=" + data + ", codigoOperacao="
+				+ codigoOperacao + ", conta=" + conta + "]";
+	}
 
 
+	
 }

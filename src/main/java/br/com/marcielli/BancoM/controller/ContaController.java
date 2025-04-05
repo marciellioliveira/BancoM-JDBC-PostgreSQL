@@ -79,9 +79,11 @@ public class ContaController {
 	
 	//Transferencia
 	@PostMapping("/transferir/{idReceber}")
-	public ResponseEntity<String> adicionarCliente(@PathVariable("idReceber") Long idReceber, @RequestBody Transferencia contaEnviar) {
+	public ResponseEntity<String> adicionarCliente(@PathVariable("idReceber") Long idReceber, @RequestBody Conta contaEnviar) {
 		
-		if(contaService.transferir(idReceber, contaEnviar) == true) {
+		
+		
+		if(contaService.transferirTED(idReceber, contaEnviar) == true) {
 			
 			return new ResponseEntity<String>("Transferência realizada com sucesso com sucesso", HttpStatus.CREATED);
 			

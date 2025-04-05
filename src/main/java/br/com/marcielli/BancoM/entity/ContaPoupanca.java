@@ -9,11 +9,10 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "idConta")
 public class ContaPoupanca extends Conta {
 	
-	
-	
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 1L;
 
 	private float taxaAcrescRend;
@@ -52,6 +51,8 @@ public class ContaPoupanca extends Conta {
 			
 		}		
 	}
+	
+	
 	
 	public void atualizaCategoria(float saldoConta) {
 		
@@ -129,9 +130,22 @@ public class ContaPoupanca extends Conta {
 		}		
 		
 		if(saldo > 5000f) {
+			
 			this.taxaMensal = (float) (Math.pow(1+getTaxaAcrescRend(), 1.0/12) - 1);
 		}
 				
 	}
+
+	@Override
+	public String toString() {
+		return "ContaPoupanca [taxaAcrescRend=" + taxaAcrescRend + ", taxaMensal=" + taxaMensal + "]";
+	}
+
+	
+	
+
+	
+
+	
 	
 }

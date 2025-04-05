@@ -51,6 +51,8 @@ public class Conta implements Serializable {
 	
 	private float saldoConta;
 	
+	private float valorTransferencia;
+	
 	private String numeroConta;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
@@ -76,6 +78,27 @@ public class Conta implements Serializable {
 		this.tipoConta = tipoConta;	
 		this.saldoConta = saldoConta;
 		this.numeroConta = numeroConta;
+	}
+	
+	
+	
+	public float getValorTransferencia() {
+		return valorTransferencia;
+	}
+
+
+	public void setValorTransferencia(float valorTransferencia) {
+		this.valorTransferencia = valorTransferencia;
+	}
+
+
+	public List<Transferencia> getTransferencia() {
+		return transferencia;
+	}
+
+
+	public void setTransferencia(List<Transferencia> transferencia) {
+		this.transferencia = transferencia;
 	}
 
 
@@ -111,22 +134,6 @@ public class Conta implements Serializable {
 	public float getSaldoConta() {
 		return saldoConta;
 	}
-	
-	public void setSaldoConta(float saldo, Funcao funcao) {
-		
-		if(funcao.getDescricao().equalsIgnoreCase("PAGADOR")) {
-			
-			this.saldoConta = getSaldoConta() - saldo;
-			
-		} else if(funcao.getDescricao().equalsIgnoreCase("RECEBEDOR")) {
-			
-			this.saldoConta = getSaldoConta() + saldo;
-			
-		}
-		
-	}
-
-
 
 	public void setSaldoConta(float saldoConta) {
 		this.saldoConta = saldoConta;
@@ -146,4 +153,16 @@ public class Conta implements Serializable {
 	public Long getId() {
 		return id;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Conta [id=" + id + ", version=" + version + ", cliente=" + cliente + ", tipoConta=" + tipoConta
+				+ ", categoriaConta=" + categoriaConta + ", saldoConta=" + saldoConta + ", valorTransferencia="
+				+ valorTransferencia + ", numeroConta=" + numeroConta + ", transferencia=" + transferencia + "]";
+	}
+
+
+
+
 }

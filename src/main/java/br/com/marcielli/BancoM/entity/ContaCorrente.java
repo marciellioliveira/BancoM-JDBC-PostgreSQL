@@ -70,8 +70,6 @@ public class ContaCorrente extends Conta {
 		}
 	}
 	
-	
-	
 	public float getTaxaManutencaoMensal() {		
 		return taxaManutencaoMensal;
 	}
@@ -89,11 +87,18 @@ public class ContaCorrente extends Conta {
 		if(saldo > 5000f) {
 			this.taxaManutencaoMensal = 0f;	
 		}
-			
 	}
+
+	@Override
+	public String toString() {
+		return "ContaCorrente [taxaManutencaoMensal=" + taxaManutencaoMensal + "]";
+	}
+
+
 	
 	
-	
+
+
 	
 
 }

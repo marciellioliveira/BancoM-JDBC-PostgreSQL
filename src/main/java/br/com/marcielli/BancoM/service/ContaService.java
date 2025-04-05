@@ -48,6 +48,7 @@ public class ContaService {
 			
 			Conta contaCorrente = new ContaCorrente(conta.getCliente(), TipoConta.CORRENTE, conta.getSaldoConta(), numContaCorrente);
 
+			
 			return contaRepository.save(contaCorrente);
 			
 		} else if(conta.getTipoConta().getDescricao().equalsIgnoreCase("POUPANCA")) {
@@ -162,7 +163,6 @@ public class ContaService {
 		}
 		
 		return contasH2;
-		//return contaRepository.findAll();
 	}
 	
 	public Optional<Conta> getContaById(Long id){	
@@ -174,12 +174,10 @@ public class ContaService {
 		}
 		
 		return contaH2;
-		//return contaRepository.findById(conta.getId());
 	}
 	
 	public String delete(Long contaId) {
 		
-		//Optional<Conta> contaH2 = contaRepository.deleteById(contaId);
 		Optional<Conta> contaH2 = contaRepository.findById(contaId);
 		
 		if(contaH2.isPresent()) {
@@ -189,72 +187,42 @@ public class ContaService {
 			throw new ContaNaoEncontradaException("A conta não pode ser deletada porque não existe no banco.");
 		}
 		
-		//contaRepository.deleteById(contaId);
-		
-	//	return "DELETED";
 	}
 	
 	
 	//Transferência
 	@Transactional
-	public boolean transferir(Long idReceber, Transferencia conta) {
+	public boolean transferirTED(Long idReceber, Conta contaEnviar) {
 		
 		Optional<Conta> contaReceber = contaRepository.findById(idReceber);
-		Optional<Conta> contaPagar = contaRepository.findById(conta.getId());
-		float valorTransferir = 0;
-		boolean resultadoTransferencia = false;
-
-		Date dataTransferencia = new Date();
+		Optional<Conta> contaPagar = contaRepository.findById(contaEnviar.getId());
 		
-		Transferencia comprovanteTransferencia = null;
+		float valorTransferencia = contaEnviar.getValorTransferencia();
+		System.err.println("Cota enviar valor: "+contaEnviar.getValorTransferencia());
 		
 		if(contaReceber.isPresent() && contaPagar.isPresent()) {
 			
 			Conta recebedor = contaReceber.get();
-			Conta pagador = contaPagar.get();
+			Conta pagador = contaPagar.get();		
+			Transferencia novaTransferencia = new Transferencia();			
 			
-
-			float saldoAntigoRecebedor = recebedor.getSaldoConta();
-			float saldoAntigoPagador = pagador.getSaldoConta();
-			
-			//Ver se o pagador tem esse valor a transferir
-			 valorTransferir = pagador.getSaldoConta();
-		
-			if(valorTransferir < pagador.getSaldoConta()) {
-				throw new ClienteNaoTemSaldoSuficienteException("Saldo insuficiente: Você está tentando transferir "+valorTransferir+" mas tem "+pagador.getSaldoConta()+" na conta.");
-			}
-			
-			//Se tem dinheiro para transferência, retira do saldo do pagador e adiciona no saldo do recebedor
-			pagador.setSaldoConta(valorTransferir, Funcao.PAGADOR);
-			recebedor.setSaldoConta(valorTransferir, Funcao.RECEBEDOR);
-			
-			if(pagador.getSaldoConta() < saldoAntigoPagador && recebedor.getSaldoConta() > saldoAntigoRecebedor) {
-				resultadoTransferencia = true;
+			if(novaTransferencia.transferirTed(pagador, valorTransferencia, recebedor)) {
+				recebedor.getTransferencia().add(novaTransferencia);
+				pagador.getTransferencia().add(novaTransferencia);
+				
+				contaRepository.save(pagador);
+				contaRepository.save(recebedor);
+				
 			} else {
-				throw new ContaNaoRealizouTransferenciaException("Algo deu errado. A transferência não foi realizada. Confirme os seus dados.");
-			}
+				throw new ContaNaoRealizouTransferenciaException("A transferência não foi realizada. Confirme os seus dados.");
+			}	
 			
 		} else {
 			throw new ContaNaoRealizouTransferenciaException("A transferência não foi realizada. Confirme os seus dados.");
 		}
 		
-		if(resultadoTransferencia) {
-			
-			//Montando Comprovante de Transferência
-			String codOperacao = gerarCodigoTransferencia();
-			
-			//Recebedor Existe -> colocas os dados dele na transferencia
-			//comprovanteTransferencia.setContaDestino(null);
-			//comprovanteTransferencia.setContaOrigem(null);
-//			comprovanteTransferencia.setConta(conta);
-//			comprovanteTransferencia.setValor(valorTransferir);
-//			comprovanteTransferencia.setData(dataTransferencia);
-//			comprovanteTransferencia.setCodigoOperacao(codOperacao);
-			
-			return true;
-		}
 		
-		return false;
+		return true;
 	}
 	
 	
@@ -278,23 +246,23 @@ public class ContaService {
 		return minhaConta;
 	}
 	
-	public String gerarCodigoTransferencia() {
-
-		int[] sequencia = new int[21];
-		Random random = new Random();
-		String codTransferencia = "";
-
-		for (int i = 0; i < sequencia.length; i++) {
-			sequencia[i] = 1 + random.nextInt(8);
-		}
-
-		for (int i = 0; i < sequencia.length; i++) {
-			codTransferencia += Integer.toString(sequencia[i]);
-		}
-
-		return codTransferencia;
-	}
-	
+//	public String gerarCodigoTransferencia() {
+//
+//		int[] sequencia = new int[21];
+//		Random random = new Random();
+//		String codTransferencia = "";
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			sequencia[i] = 1 + random.nextInt(8);
+//		}
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			codTransferencia += Integer.toString(sequencia[i]);
+//		}
+//
+//		return codTransferencia;
+//	}
+//	
 
 	
 	
