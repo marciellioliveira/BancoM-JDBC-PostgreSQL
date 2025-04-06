@@ -58,6 +58,8 @@ public class Conta implements Serializable {
 	
 	private float saldoConta;	
 	
+	@JsonIgnore
+	@Transient
 	private float valorTransferencia;
 	
 	private String numeroConta;
@@ -180,6 +182,8 @@ public class Conta implements Serializable {
 	public void setTaxas(List<Taxas> taxas) {
 		this.taxas = taxas;
 	}
+	
+
 
 
 	@Override

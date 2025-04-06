@@ -27,7 +27,7 @@ public class ContaCorrente extends Conta {
 		for(Taxas taxasCorrente : taxas) {
 			if(taxasCorrente.getTipoConta() == TipoConta.CORRENTE) {
 				this.taxaManutencaoMensal = taxasCorrente.getTaxaManutencaoMensal();
-			}
+			} 
 		}
 		
 	}

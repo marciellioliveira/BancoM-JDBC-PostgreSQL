@@ -8,7 +8,7 @@ public interface TransferenciaContrato {
 	
 	public String gerarCodigoTransferencia();
 	
-	public boolean transferirTed(Conta enviar, float valor, Conta receber);
+	public List<Conta> transferirTed(Conta enviar, float valor, Conta receber);
 	
 	public boolean transferirPix(Conta enviar, float valor, Conta receber);
 	

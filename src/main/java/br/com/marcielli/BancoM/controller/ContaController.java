@@ -31,13 +31,10 @@ public class ContaController {
 	@PostMapping("/salvar")
 	public ResponseEntity<String> adicionarCliente(@RequestBody Conta conta) {
 		
-		
-
 		Conta contaAdicionada = contaService.save(conta);
 
 		if (contaAdicionada != null) {
-			return new ResponseEntity<String>(
-					"A conta " + contaAdicionada.getNumeroConta() + " foi adicionada com sucesso", HttpStatus.CREATED);
+			return new ResponseEntity<String>("A conta " + contaAdicionada.getNumeroConta() + " foi adicionada com sucesso", HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
@@ -63,9 +60,19 @@ public class ContaController {
 
 	}
 
-	@PutMapping("/atualizar/{contaId}")
-	public Conta atualizar(@PathVariable("contaId") Long contaId, @RequestBody Conta conta) {
-		return contaService.update(conta, contaId);
+	@PutMapping("/atualizar/{contaIdParaAtualizar}")
+	public ResponseEntity<String> atualizar(@PathVariable("contaIdParaAtualizar") Long contaIdParaAtualizar, @RequestBody Conta contaDadosInserir) {
+		
+		Conta contaAtualizada = contaService.update(contaIdParaAtualizar, contaDadosInserir);
+		if (contaAtualizada != null) {
+			
+			return new ResponseEntity<String>("A conta " + contaAtualizada.getNumeroConta() + " foi atualizada com sucesso", HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+
+		
+	//	return contaService.update(contaId, conta);
 	}
 
 	@DeleteMapping("/deletar/{contaId}")
@@ -74,15 +81,13 @@ public class ContaController {
 			return new ResponseEntity<String>("Conta deletada com sucesso", HttpStatus.OK);
 		}
 		return null;
-		// return contaService.delete(contaId);
 	}
 
 	// Transferencia TED
-	@PostMapping("/transferir/{idReceber}")
-	public ResponseEntity<String> adicionarCliente(@PathVariable("idReceber") Long idReceber,
-			@RequestBody Conta contaEnviar) {
-
-		boolean transferencias = contaService.transferirTED(idReceber, contaEnviar);
+	@PostMapping("/transferir/{idClienteReceber}/{idContaReceber}")
+	public ResponseEntity<String> adicionarCliente(@PathVariable("idClienteReceber") Long idClienteReceber, @PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
+		
+		boolean transferencias = contaService.transferirTED(idClienteReceber,idContaReceber, contaEnviar);
 
 		if (transferencias) {
 

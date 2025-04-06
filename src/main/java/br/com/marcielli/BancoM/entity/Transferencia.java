@@ -2,13 +2,17 @@ package br.com.marcielli.BancoM.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,10 +37,17 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	@Version
 	private Long version; //Caso precise implementar devolução de transferência porque transferiu errado.
 	
+	@JsonInclude
+	private Long idClienteOrigem;	
+	
+	private Long idClienteDestino;
+	
+	@JsonInclude
 	private Long idContaOrigem;
 	
 	private Long idContaDestino;
 
+	@JsonInclude
 	private float valor;
 
 	private LocalDateTime data;
@@ -50,10 +61,18 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 	public Transferencia() {}
 	
-	public Transferencia(Long idContaOrigem, Long idContaDestino, float valor, LocalDateTime data,
+	public Transferencia(Long idClienteOrigem, Long idClienteDestino) {
+		super();
+		this.idClienteOrigem = idClienteOrigem;		
+		this.idClienteDestino = idClienteDestino;	
+	}
+	
+	public Transferencia(Long idClienteOrigem, Long idContaOrigem, Long idClienteDestino, Long idContaDestino, float valor, LocalDateTime data,
 			String codigoOperacao, Conta conta) {
 		super();
+		this.idClienteOrigem = idClienteOrigem;
 		this.idContaOrigem = idContaOrigem;
+		this.idClienteDestino = idClienteDestino;
 		this.idContaDestino = idContaDestino;
 		this.valor = valor;
 		this.data = data;
@@ -124,38 +143,129 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	public void setConta(Conta conta) {
 		this.conta = conta;
 	}
+	
+	
+
+	public Long getIdClienteOrigem() {
+		return idClienteOrigem;
+	}
+
+	public void setIdClienteOrigem(Long idClienteOrigem) {
+		this.idClienteOrigem = idClienteOrigem;
+	}
+
+	public Long getIdClienteDestino() {
+		return idClienteDestino;
+	}
+
+	public void setIdClienteDestino(Long idClienteDestino) {
+		this.idClienteDestino = idClienteDestino;
+	}
 
 	@Override
-	@Transactional
-	public boolean transferirTed(Conta enviar, float valor, Conta receber) {
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Conta> transferirTed(Conta enviar, float valorTransferencia, Conta receber) {
+		
+		List<Conta> contasTransferidas = new ArrayList<Conta>();	
 		
 		LocalDateTime dataTransferencia = LocalDateTime.now();
-		String codTransferencia = gerarCodigoTransferencia();		float valorTransferencia = valor;
+		String codTransferencia = gerarCodigoTransferencia();		
 		
+		float saldoContaEnviar = enviar.getSaldoConta();
+		float saldoContaReceber = receber.getSaldoConta();
+
 		
-		if(enviar.getSaldoConta() < valor) {
+		if(saldoContaEnviar < valorTransferencia) {
 			
-			throw new TransferenciaNaoRealizadaException("A transferência não foi realizada porque você tentou enviar R$ "+valor+" mas o seu saldo atual é de R$ "+enviar.getSaldoConta()+".");
+			throw new TransferenciaNaoRealizadaException("A transferência não foi realizada porque você tentou enviar R$ "+valorTransferencia+" mas o seu saldo atual é de R$ "+saldoContaEnviar+".");
 		}
 		
-		float novoSaldoEnviar = enviar.getSaldoConta() - valor;		
+		float novoSaldoEnviar = saldoContaEnviar - valorTransferencia;		
 		enviar.setSaldoConta(novoSaldoEnviar);		
 		
-		float novoSaldoReceber = receber.getSaldoConta() + valor;
+		float novoSaldoReceber = saldoContaReceber + valorTransferencia;
 		receber.setSaldoConta(novoSaldoReceber);
 		
 		this.setIdContaOrigem(enviar.getId());
+		
 		this.setIdContaDestino(receber.getId());
+		
 		this.setValor(valorTransferencia);
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
 		
-		return true;
+		Conta contaAtualizada = null;
+		Taxas novasTaxas = new Taxas();
+		
+		
+		
+		//Atualizar 
+		
+		//Pagou
+		if(enviar.getTipoConta() == TipoConta.CORRENTE) {
+			
+			ContaCorrente minhaContaCorrente = (ContaCorrente)enviar;
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrente);
+			
+			List<Taxas> taxasAtualizadas = contaAtualizada.getTaxas();
+			
+			minhaContaCorrente.setTaxas(taxasAtualizadas);
+			
+			
+			
+			
+			System.err.println("conta a tualizada taxas corrente: "+contaAtualizada);
+			
+			//minhaContaCorrente.setSaldoConta(novoSaldoEnviar);
+			
+			//System.err.println("Teste minha conta corrente em transferencia: \n"+minhaContaCorrente);
+		}
+		
+		if(enviar.getTipoConta() == TipoConta.POUPANCA) {
+			
+			ContaPoupanca minhaContaPoupanca = (ContaPoupanca)enviar;
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupanca);
+			
+			List<Taxas> taxasAtualizadas = contaAtualizada.getTaxas();
+			
+			minhaContaPoupanca.setTaxas(taxasAtualizadas);
+			
+			
+			System.err.println("\nconta a tualizada taxas poupanca: "+contaAtualizada);
+			//minhaContaPoupanca.setSaldoConta(novoSaldoEnviar);
+			//System.err.println("\n\nTeste minha conta poupanca em transferencia: \n"+minhaContaPoupanca);
+			
+		}
+		
+		//Se o saldo realmente atualizar, eu vou ter que fazer instancia da taxa de alguma maneira pra setar/atualizar as taxas
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		contasTransferidas.add(enviar);
+		contasTransferidas.add(receber);
+		
+		return contasTransferidas;
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirPix(Conta enviar, float valor, Conta receber) {
 		
 
@@ -165,21 +275,21 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean depositar(float valor, Conta receber) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean sacar(float valor, Conta receber) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public float exibirSaldo(Conta conta) {
 		return conta.getSaldoConta();
 	}

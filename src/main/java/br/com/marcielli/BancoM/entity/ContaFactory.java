@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
@@ -13,7 +14,7 @@ import br.com.marcielli.BancoM.exception.ContaNaoFoiPossivelAlterarNumeroExcepti
 
 public abstract class ContaFactory {
 	
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public static Conta criarConta(Conta novaConta) {
 		String numConta = gerarNumeroDaConta(novaConta);
 		
@@ -74,9 +75,10 @@ public abstract class ContaFactory {
 			List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
 			novaTaxaCC.add(taxasDaContaCC);
 			
-			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
-//			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente, taxaManutencaoMensalCC,novaTaxa);	
+//			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
 		
+			Conta contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
+			
 			return contaCorrente;
 			
 			
@@ -88,10 +90,9 @@ public abstract class ContaFactory {
 			List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
 			novaTaxaPP.add(taxasDaContaPP);
 			
-			ContaPoupanca contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca,novaTaxaPP);
-															
-//			ContaPoupanca contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca, taxaAcrescRendPP1,taxaMensalPP2);
-						
+//			ContaPoupanca contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca,novaTaxaPP);
+			Conta contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca,novaTaxaPP);
+								
 			return contaPoupanca;
 			
 	
@@ -102,16 +103,16 @@ public abstract class ContaFactory {
 	}
 	
 	
-	@Transactional
-	public static Conta atualizarConta(Conta contaInserir, Conta contaAtualizar, List<Conta> todasAsContasH2) {
 
-		
-	
-		
-			return contaAtualizar;	
-		
-	}
-	
+//	public static Conta atualizarConta(Conta contaInserir, Conta contaAtualizar, List<Conta> todasAsContasH2) {
+//
+//		
+//	
+//		
+//			return contaAtualizar;	
+//		
+//	}
+//	
 	private static String gerarNumeroDaConta(Conta conta) {
 
 		int[] sequencia = new int[8];
