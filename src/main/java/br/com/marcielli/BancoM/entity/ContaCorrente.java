@@ -1,6 +1,5 @@
 package br.com.marcielli.BancoM.entity;
 
-
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import jakarta.persistence.Entity;
@@ -17,84 +16,50 @@ public class ContaCorrente extends Conta {
 	
 	private float taxaManutencaoMensal;
 	
-	public ContaCorrente() {}
+	public ContaCorrente() {}	
 	
-	public ContaCorrente(float saldo) {		
-		setTaxaManutencaoMensal(saldo);	
+	public ContaCorrente(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, float taxaManutencaoMensal) {
+		super(cliente, tipoConta, categoriaConta, saldoConta, numeroConta);
+		this.taxaManutencaoMensal = taxaManutencaoMensal;
 	}
 
 	public ContaCorrente(Cliente cliente, TipoConta tipoConta, float saldoConta, String numeroConta) {
 		super(cliente, tipoConta, saldoConta, numeroConta);
 		
-		 CategoriaConta categoriaConta = null;
-		 setTaxaManutencaoMensal(saldoConta);
-		 
-		 this.taxaManutencaoMensal = getTaxaManutencaoMensal();
-		 
-		 if(saldoConta <= 1000f) {
-				categoriaConta = CategoriaConta.COMUM;
-				super.setCategoriaConta(categoriaConta);	
-			}
-			
-			if(saldoConta > 1000f && saldoConta <= 5000f) {
-				categoriaConta = CategoriaConta.SUPER;
-				super.setCategoriaConta(categoriaConta);
-			}
-			
-			if(saldoConta > 5000f) {
-				categoriaConta = CategoriaConta.PREMIUM;
-				super.setCategoriaConta(categoriaConta);
-			}
-			
-			
+		
+		
+//		 CategoriaConta categoriaConta = null;
+//		 setTaxaManutencaoMensal(saldoConta);
+//		 
+//		 this.taxaManutencaoMensal = getTaxaManutencaoMensal();
+//		 
+//		 if(saldoConta <= 1000f) {
+//			 this.taxaManutencaoMensal = 12.00f;
+//				categoriaConta = CategoriaConta.COMUM;
+//				super.setCategoriaConta(categoriaConta);	
+//			}
+//			
+//			if(saldoConta > 1000f && saldoConta <= 5000f) {
+//				this.taxaManutencaoMensal = 8.00f;	
+//				categoriaConta = CategoriaConta.SUPER;
+//				super.setCategoriaConta(categoriaConta);
+//			}
+//			
+//			if(saldoConta > 5000f) {
+//				this.taxaManutencaoMensal = 0f;	
+//				categoriaConta = CategoriaConta.PREMIUM;
+//				super.setCategoriaConta(categoriaConta);
+//			}
 	}
 	
-	public void atualizarTaxas(Conta conta) {		 
-		setTaxaManutencaoMensal(conta.getSaldoConta());
-		this.taxaManutencaoMensal = getTaxaManutencaoMensal();
-	}
 	
-	
-	public void atualizaCategoria(float saldoConta) {
-		
-	 CategoriaConta categoriaConta = null;
-	 setTaxaManutencaoMensal(saldoConta);
-	 
-	 this.taxaManutencaoMensal = getTaxaManutencaoMensal();
-	 
-	 if(saldoConta <= 1000f) {
-			categoriaConta = CategoriaConta.COMUM;
-			super.setCategoriaConta(categoriaConta);	
-		}
-		
-		if(saldoConta > 1000f && saldoConta <= 5000f) {
-			categoriaConta = CategoriaConta.SUPER;
-			super.setCategoriaConta(categoriaConta);
-		}
-		
-		if(saldoConta > 5000f) {
-			categoriaConta = CategoriaConta.PREMIUM;
-			super.setCategoriaConta(categoriaConta);
-		}
-	}
-	
-	public float getTaxaManutencaoMensal() {		
+
+	public float getTaxaManutencaoMensal() {
 		return taxaManutencaoMensal;
 	}
 
-	public void setTaxaManutencaoMensal(float saldo) {		
-		
-		if(saldo <= 1000f) {
-			this.taxaManutencaoMensal = 12.00f;		
-		}
-		
-		if(saldo > 1000f && saldo <= 5000f) {
-			this.taxaManutencaoMensal = 8.00f;	
-		}
-		
-		if(saldo > 5000f) {
-			this.taxaManutencaoMensal = 0f;	
-		}
+	public void setTaxaManutencaoMensal(float taxaManutencaoMensal) {
+		this.taxaManutencaoMensal = taxaManutencaoMensal;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package br.com.marcielli.BancoM.service;
 
-import java.lang.foreign.Linker.Option;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -14,20 +13,14 @@ import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaFactory;
-import br.com.marcielli.BancoM.entity.ContaPoupanca;
-import br.com.marcielli.BancoM.entity.Taxas;
 import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
-import br.com.marcielli.BancoM.enuns.Funcao;
-import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
-import br.com.marcielli.BancoM.exception.ClienteNaoTemSaldoSuficienteException;
 import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.ContaNaoFoiPossivelAlterarNumeroException;
 import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
 import br.com.marcielli.BancoM.exception.ContaTipoContaNaoExisteException;
-import br.com.marcielli.BancoM.exception.ContaTipoNaoPodeSerAlteradaException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
 
@@ -53,15 +46,17 @@ public class ContaService {
 		Optional<Cliente> clienteExiste = clienteRepository.findById(contaParaCriar.getId());
 		
 		if(clienteExiste.isPresent()) {		
-
+			
+			Cliente simClienteExiste = clienteExiste.get();
+			contaParaCriar.setCliente(simClienteExiste);
+			
 			// Validar dados
 			if (contaParaCriar.getSaldoConta() < 0) {
 				throw new ContaTipoContaNaoExisteException("O saldo inicial da conta precisa ser positivo");
 			}
 
-			String numConta = gerarNumeroDaConta(contaParaCriar);
-		
-//			Taxas taxas = new Taxas();		
+			//gerarNumeroDaConta(contaParaCriar);
+			
 			
 			//Padrão de Design Factory	
 			
@@ -69,8 +64,9 @@ public class ContaService {
 			
 			if(contaCriada != null) {				
 				contaRepository.save(contaCriada);
+				simClienteExiste.getContas().add(contaCriada);
+				clienteRepository.save(simClienteExiste);
 			} 	
-
 			
 		} else {
 			throw new ClienteNaoEncontradoException("Para cadastrar uma conta, você precisa ser um cliente do banco.");
@@ -80,22 +76,88 @@ public class ContaService {
 	}
 
 	@Transactional
-	public Conta update(Conta conta, Long id) {
+	public Conta update(Conta contaComDadosParaAtualizar, Long idContaParaAtualizar) {
 
-		Optional<Conta> contaH2 = contaRepository.findById(id);
+		Optional<Conta> contaH2ComDados = contaRepository.findById(contaComDadosParaAtualizar.getId());
+		
+		Optional<Conta> contaH2ParaAtualizar = contaRepository.findById(idContaParaAtualizar);
+		
+		
+		
+		Conta contaAtualizada = null;
 
-		if (contaH2.isPresent()) {
+		if (contaH2ComDados.isPresent() && contaH2ParaAtualizar.isPresent()) {
 
-			Conta contaAtualizada = contaH2.get();
+			Conta contaDadosParaInserir = contaH2ComDados.get();
+			Conta contaParaAtualizar = contaH2ParaAtualizar.get();
+			
+			CategoriaConta categoriaConta = null;
+			float taxaManutencaoMensalCC = 0;	
+			float taxaAcrescRendPP1 = 0;
+			float taxaMensalPP2 = 0;			
+			
+			String numeroDaContaAtual = contaParaAtualizar.getNumeroConta();
+			String numeroDaContaNovo = atualizarNumeroDaConta(numeroDaContaAtual);
 
-			contaAtualizada.setSaldoConta(conta.getSaldoConta());
+			if(contaDadosParaInserir.getSaldoConta() <= 1000) {
+				
+				//Conta Corrente
+				taxaManutencaoMensalCC = 12.00f;
+				
+				//Todas
+				categoriaConta = CategoriaConta.COMUM;
+				
+				//Conta Poupança
+				taxaAcrescRendPP1 = 0.005f;	
+				taxaMensalPP2 = (float) (Math.pow(1+taxaAcrescRendPP1, 1.0/12) - 1);
+			}
+			
+			if(contaDadosParaInserir.getSaldoConta() > 1000 && contaDadosParaInserir.getSaldoConta() <= 5000) {
+				
+				//Conta Corrente
+				taxaManutencaoMensalCC = 8.00f;
+				
+				//Todas
+				categoriaConta = CategoriaConta.SUPER;
+				
+				//Conta Poupança
+				taxaAcrescRendPP1 = 0.007f;
+				taxaMensalPP2 = (float) (Math.pow(1+taxaAcrescRendPP1, 1.0/12) - 1);
+			}
+			
+			if(contaDadosParaInserir.getSaldoConta() > 5000) {
+				
+				//Conta Corrente
+				taxaManutencaoMensalCC = 0f;	
+				
+				//Todas
+				categoriaConta = CategoriaConta.PREMIUM;
+				
+				//Conta Poupança
+				taxaAcrescRendPP1 = 0.009f;	
+				taxaMensalPP2 = (float) (Math.pow(1+taxaAcrescRendPP1, 1.0/12) - 1);				
+			}	
+			
+			
+			contaParaAtualizar.setCliente(contaDadosParaInserir.getCliente());
+			contaParaAtualizar.setTipoConta(contaDadosParaInserir.getTipoConta());
+			contaParaAtualizar.setSaldoConta(contaDadosParaInserir.getSaldoConta());
+			contaParaAtualizar.setCategoriaConta(categoriaConta);
+			contaParaAtualizar.setNumeroConta(numeroDaContaNovo);
+			
+			if(getAll().size() > 0) {
+				
+				for(Conta contasPesquisa : getAll()) {
+					
+					
+					
+				}
+				
+			}
+			
+			
 
-//			contaAtualizada.setCliente(conta.getCliente());
-//			contaAtualizada.setSaldoConta(conta.getSaldoConta());
-//			contaAtualizada.setNumeroConta(atualizarNumeroDaConta(conta.getNumeroConta()));
-//			contaAtualizada.setTransferencia(conta.getTransferencia());
-//			contaAtualizada.setValorTransferencia(conta.getValorTransferencia());				
-//			contaAtualizada.setCategoriaConta(conta.getCategoriaConta());
+
 
 			return contaAtualizada;
 
@@ -240,6 +302,6 @@ public class ContaService {
 		}
 
 		return novoNumConta;
-	}
+	}	
 
 }

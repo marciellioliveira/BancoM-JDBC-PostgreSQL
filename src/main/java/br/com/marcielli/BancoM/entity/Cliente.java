@@ -42,7 +42,7 @@ public class Cliente implements Serializable {
 	
 	@OneToMany(mappedBy = "cliente")
 	@JsonManagedReference
-	@JsonIgnore
+	
 	private List<Conta> contas;
 	
 	
