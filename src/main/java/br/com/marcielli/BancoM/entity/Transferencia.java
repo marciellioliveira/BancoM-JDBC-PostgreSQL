@@ -131,11 +131,8 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	
 		
 		LocalDateTime dataTransferencia = LocalDateTime.now();
-		String codTransferencia = gerarCodigoTransferencia();
-		float valorTransferencia = valor;
+		String codTransferencia = gerarCodigoTransferencia();		float valorTransferencia = valor;
 		
-		System.err.println("valor tran "+valorTransferencia);
-		System.err.println("valor "+valor);
 		
 		if(enviar.getSaldoConta() < valor) {
 			
@@ -158,6 +155,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	}
 
 	@Override
+	@Transactional
 	public boolean transferirPix(Conta enviar, float valor, Conta receber) {
 		
 
@@ -167,18 +165,21 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	}
 
 	@Override
+	@Transactional
 	public boolean depositar(float valor, Conta receber) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
+	@Transactional
 	public boolean sacar(float valor, Conta receber) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
+	@Transactional
 	public float exibirSaldo(Conta conta) {
 		return conta.getSaldoConta();
 	}

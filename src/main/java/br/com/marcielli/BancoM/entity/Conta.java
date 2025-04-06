@@ -22,6 +22,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 
 @Entity
@@ -55,7 +56,7 @@ public class Conta implements Serializable {
 	@JoinColumn(name = "taxasId")
 	private List<Taxas> taxas;
 	
-	private float saldoConta;
+	private float saldoConta;	
 	
 	private float valorTransferencia;
 	

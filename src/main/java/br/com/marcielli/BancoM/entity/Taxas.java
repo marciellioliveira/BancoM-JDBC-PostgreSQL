@@ -48,33 +48,150 @@ public class Taxas {
 	
 	public Taxas() {}
 	
+	//Testando
 	public Taxas(float saldoConta, TipoConta tipoConta) {
 		
-	//Dependendo do saldo, você tem as taxas
-	 setTaxaManutencaoMensal(saldoConta);
-	 
-	 this.taxaManutencaoMensal = getTaxaManutencaoMensal();
-	 
- 	if(saldoConta <= 1000f) {
- 		this.categoria = CategoriaConta.COMUM;
- 		this.taxaAcrescRend = 0.005f;			
-		this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
-	}
+//		this.tipoConta = tipoConta;
+//		CategoriaConta categoria = null;
+//		float taxaAcres = 0;
+//		float taxaMes = 0;
+		//Dependendo do saldo, você tem as taxas
+		
+		 
+//		 if(saldoConta <= 1000f) {
+//			 
+//			 categoria = CategoriaConta.COMUM;
+//			 taxaAcres = 0.005f;
+//			 taxaMes = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+//			 
+//		}
+//			
+//		if(saldoConta > 1000f && saldoConta <= 5000f) {
+//			
+//			categoria = CategoriaConta.SUPER;
+//			taxaAcres = 0.007f;		
+//			taxaMes = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+//			
+//		}
+//		
+//		if(saldoConta > 5000f) {
+//			
+//			categoria = CategoriaConta.PREMIUM;
+//			taxaAcres = 0.009f;
+//			taxaMes = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+//			
+//		}
 	
-	if(saldoConta > 1000f && saldoConta <= 5000f) {
-		this.categoria = CategoriaConta.SUPER;
-		this.taxaAcrescRend = 0.007f;				
-		this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
-	}
+//		setCategoria(categoria);
+		
 	
-	if(saldoConta > 5000f) {
-		this.categoria = CategoriaConta.PREMIUM;
-		this.taxaAcrescRend = 0.009f;
-		this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
-	}
+			
+		if(tipoConta == TipoConta.CORRENTE) {
+			
+			 this.tipoConta = TipoConta.CORRENTE;
+			 
+			 if(saldoConta <= 1000f) {
+				 
+				
+				 this.categoria = CategoriaConta.COMUM;
+				 this.taxaManutencaoMensal = 12.00f;		
+				 
+			}
+				
+			if(saldoConta > 1000f && saldoConta <= 5000f) {
+				
+				 this.categoria = CategoriaConta.SUPER;
+				 this.taxaManutencaoMensal = 8.00f;	
+				
+			}
+			
+			if(saldoConta > 5000f) {
+				
+				 this.categoria = CategoriaConta.PREMIUM;
+				 this.taxaManutencaoMensal = 0f;	
+				
+			}
+			
+			
+//			 this.categoria = getCategoria();
+//			 setTaxaManutencaoMensal(saldoConta);
+//			 this.taxaManutencaoMensal = getTaxaManutencaoMensal();			
+		} 
+		
+		if(tipoConta == TipoConta.POUPANCA) {
+			
+			 this.tipoConta = TipoConta.POUPANCA;
+			
+			if(saldoConta <= 1000f) {
+				 
+				 this.categoria = CategoriaConta.COMUM;
+				 this.taxaAcrescRend = 0.005f;
+				 this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+					
+				 
+			}
+				
+			if(saldoConta > 1000f && saldoConta <= 5000f) {
+				
+				 this.categoria = CategoriaConta.SUPER;
+				 this.taxaAcrescRend = 0.007f;
+				 this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+				
+				
+			}
+			
+			if(saldoConta > 5000f) {
+				
+				 this.categoria = CategoriaConta.PREMIUM;
+				 this.taxaAcrescRend = 0.009f;
+				 this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+				
+			}
+			
+			
+			
+			
+			
+			
+//			 this.categoria = getCategoria();
+//			 setTaxaAcrescRend(taxaAcres);
+//			 setTaxaMensal(taxaMes);
+//			 this.taxaAcrescRend = getTaxaAcrescRend();			 
+//			 this.taxaMensal = getTaxaMensal();
+		}
+		
+		}
 	
-	this.tipoConta = tipoConta;
-	}
+	
+	
+	//Usava
+//	public Taxas(float saldoConta, TipoConta tipoConta) {
+//		
+//	//Dependendo do saldo, você tem as taxas
+//	 setTaxaManutencaoMensal(saldoConta);
+//	 
+//	 this.taxaManutencaoMensal = getTaxaManutencaoMensal();
+//	 
+// 	if(saldoConta <= 1000f) {
+// 		this.categoria = CategoriaConta.COMUM;
+// 		this.taxaAcrescRend = 0.005f;			
+//		this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+//	}
+//	
+//	if(saldoConta > 1000f && saldoConta <= 5000f) {
+//		this.categoria = CategoriaConta.SUPER;
+//		this.taxaAcrescRend = 0.007f;				
+//		this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+//	}
+//	
+//	if(saldoConta > 5000f) {
+//		this.categoria = CategoriaConta.PREMIUM;
+//		this.taxaAcrescRend = 0.009f;
+//		this.taxaMensal = (float) (Math.pow(1+taxaAcrescRend, 1.0/12) - 1);
+//	}
+//	
+//	this.tipoConta = tipoConta;
+//	}
 
 	public Taxas(CategoriaConta categoria, TipoConta tipoConta, float taxaAcrescRend,
 			float taxaMensal, float taxaManutencaoMensal) {

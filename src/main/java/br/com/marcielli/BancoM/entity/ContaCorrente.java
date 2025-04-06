@@ -20,39 +20,28 @@ public class ContaCorrente extends Conta {
 	
 	public ContaCorrente() {}	
 	
-	public ContaCorrente(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, float taxaManutencaoMensal, List<Taxas> taxas) {
+	//Testando esse
+	public ContaCorrente(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, List<Taxas> taxas) {
 		super(cliente, tipoConta, categoriaConta, saldoConta, numeroConta, taxas);
-		this.taxaManutencaoMensal = taxaManutencaoMensal;
+		
+		for(Taxas taxasCorrente : taxas) {
+			if(taxasCorrente.getTipoConta() == TipoConta.CORRENTE) {
+				this.taxaManutencaoMensal = taxasCorrente.getTaxaManutencaoMensal();
+			}
+		}
+		
 	}
 
-	public ContaCorrente(Cliente cliente, TipoConta tipoConta, float saldoConta, String numeroConta) {
-		super(cliente, tipoConta, saldoConta, numeroConta);
-		
-		
-		
-//		 CategoriaConta categoriaConta = null;
-//		 setTaxaManutencaoMensal(saldoConta);
-//		 
-//		 this.taxaManutencaoMensal = getTaxaManutencaoMensal();
-//		 
-//		 if(saldoConta <= 1000f) {
-//			 this.taxaManutencaoMensal = 12.00f;
-//				categoriaConta = CategoriaConta.COMUM;
-//				super.setCategoriaConta(categoriaConta);	
-//			}
-//			
-//			if(saldoConta > 1000f && saldoConta <= 5000f) {
-//				this.taxaManutencaoMensal = 8.00f;	
-//				categoriaConta = CategoriaConta.SUPER;
-//				super.setCategoriaConta(categoriaConta);
-//			}
-//			
-//			if(saldoConta > 5000f) {
-//				this.taxaManutencaoMensal = 0f;	
-//				categoriaConta = CategoriaConta.PREMIUM;
-//				super.setCategoriaConta(categoriaConta);
-//			}
-	}
+	
+	//Usava esse
+//	public ContaCorrente(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, float taxaManutencaoMensal, List<Taxas> taxas) {
+//		super(cliente, tipoConta, categoriaConta, saldoConta, numeroConta, taxas);
+//		this.taxaManutencaoMensal = taxaManutencaoMensal;
+//	}
+//
+//	public ContaCorrente(Cliente cliente, TipoConta tipoConta, float saldoConta, String numeroConta) {
+//		super(cliente, tipoConta, saldoConta, numeroConta);		
+//	}
 	
 	
 

@@ -21,7 +21,8 @@ public abstract class ContaFactory {
 		float taxaManutencaoMensalCC = 0;	
 		float taxaAcrescRendPP1 = 0;
 		float taxaMensalPP2 = 0;			
-		Taxas taxasDaConta = null;
+		Taxas taxasDaContaPP = null;
+		Taxas taxasDaContaCC = null;
 
 		if(novaConta.getSaldoConta() <= 1000) {
 			
@@ -68,19 +69,28 @@ public abstract class ContaFactory {
 		if (novaConta.getTipoConta() == TipoConta.CORRENTE) {	
 			
 			String numContaCorrente = numConta.concat("-CC");
-			taxasDaConta = new Taxas(novaConta.getSaldoConta(), TipoConta.CORRENTE);
-			List<Taxas> novaTaxa = new ArrayList<Taxas>();
-			novaTaxa.add(taxasDaConta);
-			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente, taxaManutencaoMensalCC,novaTaxa);	
-//			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente, taxaManutencaoMensalCC);	
 			
+			taxasDaContaCC = new Taxas(novaConta.getSaldoConta(), TipoConta.CORRENTE);
+			List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
+			novaTaxaCC.add(taxasDaContaCC);
+			
+			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
+//			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente, taxaManutencaoMensalCC,novaTaxa);	
+		
 			return contaCorrente;
 			
 			
 		} else if (novaConta.getTipoConta() == TipoConta.POUPANCA) {
 			
 			String numContaPoupanca = numConta.concat("-PP");
-			ContaPoupanca contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca, taxaAcrescRendPP1,taxaMensalPP2);
+			
+			taxasDaContaPP = new Taxas(novaConta.getSaldoConta(), TipoConta.POUPANCA);
+			List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
+			novaTaxaPP.add(taxasDaContaPP);
+			
+			ContaPoupanca contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca,novaTaxaPP);
+															
+//			ContaPoupanca contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca, taxaAcrescRendPP1,taxaMensalPP2);
 						
 			return contaPoupanca;
 			
