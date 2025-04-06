@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +21,7 @@ public abstract class ContaFactory {
 		float taxaManutencaoMensalCC = 0;	
 		float taxaAcrescRendPP1 = 0;
 		float taxaMensalPP2 = 0;			
-		
+		Taxas taxasDaConta = null;
 
 		if(novaConta.getSaldoConta() <= 1000) {
 			
@@ -33,6 +34,8 @@ public abstract class ContaFactory {
 			//Conta Poupança
 			taxaAcrescRendPP1 = 0.005f;	
 			taxaMensalPP2 = (float) (Math.pow(1+taxaAcrescRendPP1, 1.0/12) - 1);
+			
+			
 		}
 		
 		if(novaConta.getSaldoConta() > 1000 && novaConta.getSaldoConta() <= 5000) {
@@ -65,8 +68,11 @@ public abstract class ContaFactory {
 		if (novaConta.getTipoConta() == TipoConta.CORRENTE) {	
 			
 			String numContaCorrente = numConta.concat("-CC");
-			
-			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente, taxaManutencaoMensalCC);	
+			taxasDaConta = new Taxas(novaConta.getSaldoConta(), TipoConta.CORRENTE);
+			List<Taxas> novaTaxa = new ArrayList<Taxas>();
+			novaTaxa.add(taxasDaConta);
+			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente, taxaManutencaoMensalCC,novaTaxa);	
+//			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente, taxaManutencaoMensalCC);	
 			
 			return contaCorrente;
 			

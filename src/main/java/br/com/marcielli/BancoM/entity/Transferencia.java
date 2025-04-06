@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import jakarta.persistence.Entity;
@@ -12,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 
 @Entity
@@ -41,15 +45,14 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	
 	@ManyToOne
 	@JsonIgnore
+	@Transient //Remover informação do BD
 	private Conta conta;
 
 	public Transferencia() {}
 	
-	public Transferencia(Long id, Long version, Long idContaOrigem, Long idContaDestino, float valor, LocalDateTime data,
+	public Transferencia(Long idContaOrigem, Long idContaDestino, float valor, LocalDateTime data,
 			String codigoOperacao, Conta conta) {
 		super();
-		this.id = id;
-		this.version = version;
 		this.idContaOrigem = idContaOrigem;
 		this.idContaDestino = idContaDestino;
 		this.valor = valor;
@@ -123,14 +126,19 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	}
 
 	@Override
+	@Transactional
 	public boolean transferirTed(Conta enviar, float valor, Conta receber) {
 	
 		
 		LocalDateTime dataTransferencia = LocalDateTime.now();
 		String codTransferencia = gerarCodigoTransferencia();
+		float valorTransferencia = valor;
+		
+		System.err.println("valor tran "+valorTransferencia);
+		System.err.println("valor "+valor);
 		
 		if(enviar.getSaldoConta() < valor) {
-			System.err.println("Enviar get saldo "+enviar.getSaldoConta());
+			
 			throw new TransferenciaNaoRealizadaException("A transferência não foi realizada porque você tentou enviar R$ "+valor+" mas o seu saldo atual é de R$ "+enviar.getSaldoConta()+".");
 		}
 		
@@ -142,7 +150,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		
 		this.setIdContaOrigem(enviar.getId());
 		this.setIdContaDestino(receber.getId());
-		this.setValor(valor);
+		this.setValor(valorTransferencia);
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
 		
@@ -191,6 +199,8 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 		return codTransferencia;		
 	}
+	
+	
 
 	@Override
 	public String toString() {

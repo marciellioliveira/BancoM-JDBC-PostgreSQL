@@ -1,5 +1,7 @@
 package br.com.marcielli.BancoM.entity;
 
+import java.util.List;
+
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import jakarta.persistence.Entity;
@@ -18,8 +20,8 @@ public class ContaCorrente extends Conta {
 	
 	public ContaCorrente() {}	
 	
-	public ContaCorrente(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, float taxaManutencaoMensal) {
-		super(cliente, tipoConta, categoriaConta, saldoConta, numeroConta);
+	public ContaCorrente(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, float taxaManutencaoMensal, List<Taxas> taxas) {
+		super(cliente, tipoConta, categoriaConta, saldoConta, numeroConta, taxas);
 		this.taxaManutencaoMensal = taxaManutencaoMensal;
 	}
 

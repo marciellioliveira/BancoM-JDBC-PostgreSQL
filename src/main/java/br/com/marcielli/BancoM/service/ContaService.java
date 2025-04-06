@@ -145,20 +145,7 @@ public class ContaService {
 			contaParaAtualizar.setCategoriaConta(categoriaConta);
 			contaParaAtualizar.setNumeroConta(numeroDaContaNovo);
 			
-			if(getAll().size() > 0) {
-				
-				for(Conta contasPesquisa : getAll()) {
-					
-					
-					
-				}
-				
-			}
 			
-			
-
-
-
 			return contaAtualizada;
 
 		} else {
@@ -209,13 +196,15 @@ public class ContaService {
 		Optional<Conta> contaPagar = contaRepository.findById(contaEnviar.getId());
 
 		float valorTransferencia = contaEnviar.getValorTransferencia();
+		
 
 		if (contaReceber.isPresent() && contaPagar.isPresent()) {
 
 			Conta recebedor = contaReceber.get();
 			Conta pagador = contaPagar.get();
+			
 			Transferencia novaTransferencia = new Transferencia();
-
+			
 			if (novaTransferencia.transferirTed(pagador, valorTransferencia, recebedor)) {
 				recebedor.getTransferencia().add(novaTransferencia);
 				pagador.getTransferencia().add(novaTransferencia);

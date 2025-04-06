@@ -20,12 +20,13 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Conta implements Serializable {
+public class Conta implements Serializable { 
 	
 	/**
 	 * 
@@ -50,13 +51,12 @@ public class Conta implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private CategoriaConta categoriaConta;
 	
-//	@OneToMany(cascade = {CascadeType.ALL})
-//	@JoinColumn(name = "taxasId")
-//	private List<Taxas> taxas;
+	@OneToMany(cascade = {CascadeType.ALL})
+	@JoinColumn(name = "taxasId")
+	private List<Taxas> taxas;
 	
 	private float saldoConta;
 	
-	@JsonIgnore
 	private float valorTransferencia;
 	
 	private String numeroConta;
@@ -67,6 +67,16 @@ public class Conta implements Serializable {
 	
 	public Conta() {}
 
+	public Conta(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta,
+			float saldoConta, String numeroConta, List<Taxas> taxas) {
+		super();	
+		this.cliente = cliente;
+		this.tipoConta = tipoConta;
+		this.categoriaConta = categoriaConta;
+		this.saldoConta = saldoConta;
+		this.numeroConta = numeroConta;
+		this.taxas = taxas;
+	}
 
 	public Conta(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta,
 			float saldoConta, String numeroConta) {
@@ -161,14 +171,14 @@ public class Conta implements Serializable {
 	}
 
 
-//	public List<Taxas> getTaxas() {
-//		return taxas;
-//	}
-//
-//
-//	public void setTaxas(List<Taxas> taxas) {
-//		this.taxas = taxas;
-//	}
+	public List<Taxas> getTaxas() {
+		return taxas;
+	}
+
+
+	public void setTaxas(List<Taxas> taxas) {
+		this.taxas = taxas;
+	}
 
 
 	@Override
