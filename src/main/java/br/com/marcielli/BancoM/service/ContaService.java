@@ -245,11 +245,11 @@ public class ContaService {
 			throw new ContaNaoRealizouTransferenciaException("A transferência não foi realizada. Confirme os seus dados.");
 		}		
 				
-		//@PathVariable
+		//PathVariable
 		Optional<Cliente> encontraRecebedorPorId = clienteRepository.findById(idPessoaReceber);		
 		Optional<Conta> encontraContaRecebedorPorId = contaRepository.findById(idContaReceber);	
 		
-		//@RequestBody
+		//RequestBody
 		Optional<Cliente> encontraPagadorPorId = clienteRepository.findById(dadosContaEnviar.getIdClienteOrigem());
 		Optional<Conta> encontraContaPagadorPorId = contaRepository.findById(dadosContaEnviar.getIdContaOrigem());
 		
@@ -275,6 +275,8 @@ public class ContaService {
 			
 			System.err.println("Conta Receber: \nReceber id: "+clienteReceber.getId()+"\nReceber conta ID: "+contaReceber.getId()+"\nReceber saldo total: "+contaReceber.getSaldoConta());
 			
+			System.err.println("\nTaxa conta pagador antiga: "+contaPagador.getTaxas());
+			System.err.println("\nTaxa conta recebedor antiga: "+contaReceber.getTaxas());
 			
 			Transferencia novaTransferencia = new Transferencia(clientePagador.getId(),clienteReceber.getId());
 			
@@ -282,14 +284,31 @@ public class ContaService {
 			
 			if (contasTransferidas != null) {
 				
+			
+				
 				
 				for(Conta contasT : contasTransferidas) {
 					if(contasT.getId() == contaPagador.getId()) {
 						
 						if(contasT.getTipoConta() == TipoConta.CORRENTE) {
 							
+							
 							ContaCorrente minhaContaCorrente = (ContaCorrente)contaPagador;
 							minhaContaCorrente.getTransferencia().add(novaTransferencia);
+							
+							ContaCorrente contaPegarTaxaCC = (ContaCorrente)contasT;
+							
+							minhaContaCorrente.setTaxaManutencaoMensal(contaPegarTaxaCC.getTaxaManutencaoMensal());
+							minhaContaCorrente.setCategoriaConta(contaPegarTaxaCC.getCategoriaConta());
+							minhaContaCorrente.setTaxas(contaPegarTaxaCC.getTaxas());
+							
+							//Pegar contas transferidas e transformalas em conta corrente para pegar as taxas
+							//Pegar as taxas, salvar numa lista List<Taxas> e adicionar essa lista no setlista
+							
+							System.err.println("\nContas transferidas pagador: "+contaPegarTaxaCC);
+							System.err.println("\nContas transferidas pagador categoria nova : "+contaPegarTaxaCC.getCategoriaConta());
+							System.err.println("\nContas transferidas pagador tx manu mensal nova: "+contaPegarTaxaCC.getTaxaManutencaoMensal());
+							System.err.println("\nContas transferidas pagador taxas lista nova: "+contaPegarTaxaCC.getTaxas());
 							
 							contaRepository.save(minhaContaCorrente);
 							
@@ -299,6 +318,25 @@ public class ContaService {
 							
 							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)contaPagador;
 							minhaContaPoupanca.getTransferencia().add(novaTransferencia);
+							
+							ContaPoupanca contaPegarTaxaPP = (ContaPoupanca)contasT;
+							
+							minhaContaPoupanca.setCategoriaConta(contaPegarTaxaPP.getCategoriaConta());
+							minhaContaPoupanca.setTaxaAcrescRend(contaPegarTaxaPP.getTaxaAcrescRend());
+							minhaContaPoupanca.setTaxaMensal(contaPegarTaxaPP.getTaxaMensal());
+							minhaContaPoupanca.setTaxas(contaPegarTaxaPP.getTaxas());
+							
+							System.err.println("\nContas transferidas pagador: "+contaPegarTaxaPP);
+							System.err.println("\nContas transferidas pagador categoria nova : "+contaPegarTaxaPP.getCategoriaConta());
+							System.err.println("\nContas transferidas pagador tx acres rend nova: "+contaPegarTaxaPP.getTaxaAcrescRend());
+							System.err.println("\nContas transferidas pagador tx mes nova: "+contaPegarTaxaPP.getTaxaMensal());
+							System.err.println("\nContas transferidas pagador taxas lista nova: "+contaPegarTaxaPP.getTaxas());
+							
+							
+							
+							
+							
+							
 							
 							contaRepository.save(minhaContaPoupanca);
 						}

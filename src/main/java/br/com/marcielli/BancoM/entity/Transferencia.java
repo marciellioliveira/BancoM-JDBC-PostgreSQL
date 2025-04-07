@@ -196,72 +196,52 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		
 		Conta contaAtualizada = null;
 		Taxas novasTaxas = new Taxas();
-		
-		
-		
 		//Atualizar 
 		
 		//Pagou
 		if(enviar.getTipoConta() == TipoConta.CORRENTE) {
 			
 			ContaCorrente minhaContaCorrente = (ContaCorrente)enviar;
+			
 			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrente);
 			
-			List<Taxas> taxasAtualizadas = contaAtualizada.getTaxas();
-			
-			minhaContaCorrente.setTaxas(taxasAtualizadas);
-			
-			
-			
-			
-			System.err.println("conta a tualizada taxas corrente: "+contaAtualizada);
-			
-			//minhaContaCorrente.setSaldoConta(novoSaldoEnviar);
-			
-			//System.err.println("Teste minha conta corrente em transferencia: \n"+minhaContaCorrente);
+			if(contaAtualizada != null) {	
+				
+				ContaCorrente mcc = (ContaCorrente)contaAtualizada;
+				
+				for(Taxas taxasObj : contaAtualizada.getTaxas()) {
+					
+					taxasObj.setCategoria(mcc.getCategoriaConta());
+					taxasObj.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
+				}
+				contasTransferidas.add(mcc);
+			} 
 		}
 		
 		if(enviar.getTipoConta() == TipoConta.POUPANCA) {
 			
 			ContaPoupanca minhaContaPoupanca = (ContaPoupanca)enviar;
+			
 			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupanca);
 			
-			List<Taxas> taxasAtualizadas = contaAtualizada.getTaxas();
-			
-			minhaContaPoupanca.setTaxas(taxasAtualizadas);
-			
-			
-			System.err.println("\nconta a tualizada taxas poupanca: "+contaAtualizada);
-			//minhaContaPoupanca.setSaldoConta(novoSaldoEnviar);
-			//System.err.println("\n\nTeste minha conta poupanca em transferencia: \n"+minhaContaPoupanca);
-			
+			if(contaAtualizada != null) {	
+				
+				ContaPoupanca mpp = (ContaPoupanca)contaAtualizada;
+				
+				for(Taxas taxasObj : contaAtualizada.getTaxas()) {
+					
+					taxasObj.setCategoria(mpp.getCategoriaConta());
+					taxasObj.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
+					taxasObj.setTaxaMensal(mpp.getTaxaMensal());
+				}
+				
+				contasTransferidas.add(mpp);
+			} 
+				
 		}
 		
-		//Se o saldo realmente atualizar, eu vou ter que fazer instancia da taxa de alguma maneira pra setar/atualizar as taxas
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		contasTransferidas.add(enviar);
-		contasTransferidas.add(receber);
-		
 		return contasTransferidas;
+		
 	}
 
 	@Override

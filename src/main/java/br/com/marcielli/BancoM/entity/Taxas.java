@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
@@ -32,9 +33,11 @@ public class Taxas {
 	private Long version;
 
 	@Enumerated(EnumType.STRING)
+	//@JsonIgnore
 	private CategoriaConta categoria; // Comum, super ou premium
 
 	@Enumerated(EnumType.STRING)
+	//@JsonIgnore
 	private TipoConta tipoConta; // Corrente ou Poupança
 
 	// Taxas da Poupança
@@ -210,8 +213,11 @@ public class Taxas {
 	}
 	
 	public Conta atualizarTaxas(Conta contaParaSerAtualizada) {
+		
 			
 		if (contaParaSerAtualizada.getTipoConta() == TipoConta.CORRENTE) {
+			
+			ContaCorrente cc = (ContaCorrente)contaParaSerAtualizada;			
 
 			this.tipoConta = TipoConta.CORRENTE;
 
@@ -234,11 +240,17 @@ public class Taxas {
 				this.taxaManutencaoMensal = 0f;
 			}
 			
-
+			cc.setCategoriaConta(categoria);
+			cc.setTaxaManutencaoMensal(taxaManutencaoMensal);
+			
+			return cc;
+			
 			//flagAtualizou = true;
 		}
 
 		if (contaParaSerAtualizada.getTipoConta()  == TipoConta.POUPANCA) {
+			
+			ContaPoupanca pp = (ContaPoupanca)contaParaSerAtualizada;	
 
 			this.tipoConta = TipoConta.POUPANCA;
 
@@ -266,9 +278,14 @@ public class Taxas {
 
 			}
 						
-		
+			pp.setCategoriaConta(categoria);
+			pp.setTaxaAcrescRend(taxaAcrescRend);
+			pp.setTaxaMensal(taxaMensal);
+			
+			return pp;
 		}
-		return contaParaSerAtualizada;
+		
+		return null;
 				
 	}
 
