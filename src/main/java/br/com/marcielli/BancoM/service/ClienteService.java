@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.entity.Cliente;
@@ -21,7 +22,7 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;	
 	
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente save(Cliente cliente) {
 		
 		//Validar Nome		
@@ -53,7 +54,7 @@ public class ClienteService {
 		return clienteRepository.save(novoCliente);
 	}
 	
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente update(Cliente cliente, Long id) {
 		
 		//Validar Nome		
@@ -69,17 +70,28 @@ public class ClienteService {
 		Cliente clienteAtualizado = null;
 		
 		if(clienteH2.isPresent()) {
-			
+			System.err.println("Teste? "+cliente.getEndereco());
 			clienteAtualizado = clienteH2.get();
 			clienteAtualizado.setNome(cliente.getNome());
 			clienteAtualizado.setCpf(cliente.getCpf());		
+			
+			clienteAtualizado.getEndereco().setCidade(cliente.getEndereco().getCidade());
+			clienteAtualizado.getEndereco().setBairro(cliente.getEndereco().getBairro());
+			clienteAtualizado.getEndereco().setCep(cliente.getEndereco().getCep());
+			clienteAtualizado.getEndereco().setComplemento(cliente.getEndereco().getComplemento());
+			clienteAtualizado.getEndereco().setEstado(cliente.getEndereco().getEstado());
+			clienteAtualizado.getEndereco().setNumero(cliente.getEndereco().getNumero());
+			clienteAtualizado.getEndereco().setRua(cliente.getEndereco().getRua());
+			
+			
 			return clienteRepository.save(clienteAtualizado);	
-		} else { //If cliente existe no banco, pode atualizar
+		} else { 
 			throw new ClienteNaoEncontradoException("O cliente não pode ser atualizado porque não existe no banco.");
 		}	
 		
 	}
 		
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Cliente> getAll(){	
 		
 		List<Cliente> clientes = clienteRepository.findAll();
@@ -93,6 +105,7 @@ public class ClienteService {
 		//return clienteRepository.findAll();
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Optional<Cliente> getClienteById(Long id){	
 		
 		Optional<Cliente> clienteH2 = clienteRepository.findById(id);
@@ -105,6 +118,7 @@ public class ClienteService {
 		//return clienteRepository.findById(cliente.getId());
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public String delete(Long clienteId) {
 		
 		Optional<Cliente> clienteH2 = clienteRepository.findById(clienteId);

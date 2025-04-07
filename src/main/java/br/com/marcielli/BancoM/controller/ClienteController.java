@@ -59,8 +59,16 @@ public class ClienteController {
 	}
 	
 	@PutMapping("/atualizar/{clienteId}")
-    public Cliente atualizar(@PathVariable("clienteId") Long clienteId, @RequestBody Cliente cliente) {        
-		return clienteService.update(cliente, clienteId);
+    public ResponseEntity<String>  atualizar(@PathVariable("clienteId") Long clienteId, @RequestBody Cliente cliente) {
+		
+		Cliente clienteAtualizado = clienteService.update(cliente, clienteId);
+		
+		if(clienteAtualizado != null) {
+			return new ResponseEntity<String>("O cliente " +clienteAtualizado.getNome() + " foi atualizado com sucesso", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+		
 	}
 	
 	@DeleteMapping("/deletar/{clienteId}")

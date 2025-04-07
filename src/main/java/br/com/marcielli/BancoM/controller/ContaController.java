@@ -62,17 +62,19 @@ public class ContaController {
 
 	@PutMapping("/atualizar/{contaIdParaAtualizar}")
 	public ResponseEntity<String> atualizar(@PathVariable("contaIdParaAtualizar") Long contaIdParaAtualizar, @RequestBody Conta contaDadosInserir) {
-		
+			
 		Conta contaAtualizada = contaService.update(contaIdParaAtualizar, contaDadosInserir);
+		
 		if (contaAtualizada != null) {
 			
-			return new ResponseEntity<String>("A conta " + contaAtualizada.getNumeroConta() + " foi atualizada com sucesso", HttpStatus.CREATED);
+			return new ResponseEntity<String>("A conta " + contaAtualizada.getNumeroConta() + " foi atualizada com sucesso", HttpStatus.OK);
+			
 		} else {
+			
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+			
 		}
 
-		
-	//	return contaService.update(contaId, conta);
 	}
 
 	@DeleteMapping("/deletar/{contaId}")
@@ -85,7 +87,7 @@ public class ContaController {
 
 	// Transferencia TED
 	@PostMapping("/transferir/{idClienteReceber}/{idContaReceber}")
-	public ResponseEntity<String> adicionarCliente(@PathVariable("idClienteReceber") Long idClienteReceber, @PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
+	public ResponseEntity<String> transferirTED(@PathVariable("idClienteReceber") Long idClienteReceber, @PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
 		
 		boolean transferencias = contaService.transferirTED(idClienteReceber,idContaReceber, contaEnviar);
 
@@ -99,6 +101,35 @@ public class ContaController {
 
 		}
 	}
+	
+	
+	// Transferencia PIX
+	@PostMapping("/transferir/{idContaReceber}/pix")
+	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
+		
+		boolean transferenciaPIX = contaService.transferirPIX(idContaReceber, contaEnviar);
+
+		if (transferenciaPIX) {
+
+			return new ResponseEntity<String>("PIX realizado com sucesso com sucesso:", HttpStatus.CREATED);
+
+		} else {
+
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// Ver saldo
 	@GetMapping("/{contaId}/saldo")

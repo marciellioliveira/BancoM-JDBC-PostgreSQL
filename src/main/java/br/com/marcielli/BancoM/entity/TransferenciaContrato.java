@@ -10,7 +10,7 @@ public interface TransferenciaContrato {
 	
 	public List<Conta> transferirTed(Conta enviar, float valor, Conta receber);
 	
-	public boolean transferirPix(Conta enviar, float valor, Conta receber);
+	public List<Conta> transferirPix(Conta enviar, float valor, Conta receber);
 	
 	public boolean depositar(float valor, Conta receber);
 	

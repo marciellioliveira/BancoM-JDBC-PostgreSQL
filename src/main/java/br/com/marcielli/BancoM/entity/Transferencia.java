@@ -285,24 +285,135 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean transferirPix(Conta enviar, float valor, Conta receber) {
+	public List<Conta> transferirPix(Conta enviar, float valorTransferencia, Conta receber) {
 		
+		List<Conta> contasTransferidasPIX = new ArrayList<Conta>();	
+		
+		LocalDateTime dataTransferencia = LocalDateTime.now();
+		String codTransferencia = gerarCodigoTransferencia();		
+		
+		float saldoContaEnviar = enviar.getSaldoConta();
+		float saldoContaReceber = receber.getSaldoConta();
 
 		
+		if(saldoContaEnviar < valorTransferencia) {
+			
+			throw new TransferenciaNaoRealizadaException("O PIX não foi realizado porque você tentou enviar R$ "+valorTransferencia+" mas o seu saldo atual é de R$ "+saldoContaEnviar+".");
+		}
 		
-		return false;
+		float novoSaldoEnviar = saldoContaEnviar - valorTransferencia;		
+		enviar.setSaldoConta(novoSaldoEnviar);		
+		
+		float novoSaldoReceber = saldoContaReceber + valorTransferencia;
+		receber.setSaldoConta(novoSaldoReceber);
+		
+		this.setIdContaOrigem(enviar.getId());		
+		this.setIdContaDestino(receber.getId());
+		
+		this.setValor(valorTransferencia);
+		this.setData(dataTransferencia);
+		this.setCodigoOperacao(codTransferencia);
+		
+		Conta contaAtualizada = null;
+		Taxas novasTaxas = new Taxas();
+		//Atualizar 
+		
+		//Pagou
+		if(enviar.getTipoConta() == TipoConta.CORRENTE) {
+			
+			ContaCorrente minhaContaCorrentePagou = (ContaCorrente)enviar;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrentePagou);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaCorrente mcc = (ContaCorrente)contaAtualizada;
+				
+				for(Taxas taxasObjPagouCorrente : contaAtualizada.getTaxas()) {
+					
+					taxasObjPagouCorrente.setCategoria(mcc.getCategoriaConta());
+					taxasObjPagouCorrente.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
+				}
+				contasTransferidasPIX.add(mcc);
+			} 
+		}
+		
+		if(enviar.getTipoConta() == TipoConta.POUPANCA) {
+			
+			ContaPoupanca minhaContaPoupancaPagou = (ContaPoupanca)enviar;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupancaPagou);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaPoupanca mpp = (ContaPoupanca)contaAtualizada;
+				
+				for(Taxas taxasObjPagouPoupanca : contaAtualizada.getTaxas()) {
+					
+					taxasObjPagouPoupanca.setCategoria(mpp.getCategoriaConta());
+					taxasObjPagouPoupanca.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
+					taxasObjPagouPoupanca.setTaxaMensal(mpp.getTaxaMensal());
+				}
+				
+				contasTransferidasPIX.add(mpp);
+			} 				
+		}
+		
+		//Recebeu
+		if(receber.getTipoConta() == TipoConta.CORRENTE) {
+			
+			ContaCorrente minhaContaCorrenteRecebeu = (ContaCorrente)receber;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrenteRecebeu);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaCorrente mcc = (ContaCorrente)contaAtualizada;
+				
+				for(Taxas taxasObjRecebeuCorrente : contaAtualizada.getTaxas()) {
+					
+					taxasObjRecebeuCorrente.setCategoria(mcc.getCategoriaConta());
+					taxasObjRecebeuCorrente.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
+				}
+				contasTransferidasPIX.add(mcc);
+			} 
+		}
+		
+		if(receber.getTipoConta() == TipoConta.POUPANCA) {
+			
+			ContaPoupanca minhaContaPoupancaRecebeu = (ContaPoupanca)receber;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupancaRecebeu);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaPoupanca mpp = (ContaPoupanca)contaAtualizada;
+				
+				for(Taxas taxasObjRecebeuPoupanca : contaAtualizada.getTaxas()) {
+					
+					taxasObjRecebeuPoupanca.setCategoria(mpp.getCategoriaConta());
+					taxasObjRecebeuPoupanca.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
+					taxasObjRecebeuPoupanca.setTaxaMensal(mpp.getTaxaMensal());
+				}
+				
+				contasTransferidasPIX.add(mpp);
+			} 				
+		}
+		
+		return contasTransferidasPIX;
+		
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean depositar(float valor, Conta receber) {
+	public boolean depositar(float valorTransferencia, Conta receber) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean sacar(float valor, Conta receber) {
+	public boolean sacar(float valorTransferencia, Conta receber) {
 		// TODO Auto-generated method stub
 		return false;
 	}
