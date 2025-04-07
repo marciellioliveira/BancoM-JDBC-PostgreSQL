@@ -267,158 +267,60 @@ public class ContaService {
 		Cliente clientePagador = encontraPagadorPorId.get();
 		Conta contaPagador = encontraContaPagadorPorId.get();
 			
-			if(clienteReceber.getId() != null && contaReceber != null) {			
-			
-			System.err.println("Conta Enviar: \nPagador id: "+clientePagador.getId()+"\nPagador conta ID: "+contaPagador.getId()+"\nPagador saldo total: "+contaPagador.getSaldoConta());
-			
-			System.err.println("\nValor da transferência: "+valorTransferencia+"\n");
-			
-			System.err.println("Conta Receber: \nReceber id: "+clienteReceber.getId()+"\nReceber conta ID: "+contaReceber.getId()+"\nReceber saldo total: "+contaReceber.getSaldoConta());
-			
-			System.err.println("\nTaxa conta pagador antiga: "+contaPagador.getTaxas());
-			System.err.println("\nTaxa conta recebedor antiga: "+contaReceber.getTaxas());
-			
-			Transferencia novaTransferencia = new Transferencia(clientePagador.getId(),clienteReceber.getId());
+			if(clienteReceber.getId() != null && contaReceber != null) {
+				
+			//Conta pagador -> Request Body (idContaOrigem) -> Conta Recebedor -> PathVariable (id)
+			Transferencia novaTransferencia = new Transferencia(contaPagador.getId(),contaReceber.getId());
+//			Transferencia novaTransferencia = new Transferencia(clientePagador.getId(),clienteReceber.getId());
 			
 			List<Conta> contasTransferidas = novaTransferencia.transferirTed(contaPagador, valorTransferencia, contaReceber);
 			
-			if (contasTransferidas != null) {
-				
+			//Problema na Corrente tanto no envio quanto no recebimento ela não troca a taxa dentro da Lista
 			
-				
+			if (contasTransferidas != null) {	
 				
 				for(Conta contasT : contasTransferidas) {
+					
+					//Pagador
 					if(contasT.getId() == contaPagador.getId()) {
 						
-						if(contasT.getTipoConta() == TipoConta.CORRENTE) {
-							
+						if(contasT.getTipoConta() == TipoConta.CORRENTE) {		
 							
 							ContaCorrente minhaContaCorrente = (ContaCorrente)contaPagador;
 							minhaContaCorrente.getTransferencia().add(novaTransferencia);
+							contaRepository.save(minhaContaCorrente);
 							
-							ContaCorrente contaPegarTaxaCC = (ContaCorrente)contasT;
+						}
+						
+						if(contasT.getTipoConta() == TipoConta.POUPANCA) {
+	
+							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)contaPagador;
+							minhaContaPoupanca.getTransferencia().add(novaTransferencia);
+							contaRepository.save(minhaContaPoupanca);
+						}
+						
+					}
+					
+					//Recebedor
+					if(contasT.getId() == contaReceber.getId()) {
+						
+						if(contasT.getTipoConta() == TipoConta.CORRENTE) {	
 							
-							minhaContaCorrente.setTaxaManutencaoMensal(contaPegarTaxaCC.getTaxaManutencaoMensal());
-							minhaContaCorrente.setCategoriaConta(contaPegarTaxaCC.getCategoriaConta());
-							minhaContaCorrente.setTaxas(contaPegarTaxaCC.getTaxas());
-							
-							//Pegar contas transferidas e transformalas em conta corrente para pegar as taxas
-							//Pegar as taxas, salvar numa lista List<Taxas> e adicionar essa lista no setlista
-							
-							System.err.println("\nContas transferidas pagador: "+contaPegarTaxaCC);
-							System.err.println("\nContas transferidas pagador categoria nova : "+contaPegarTaxaCC.getCategoriaConta());
-							System.err.println("\nContas transferidas pagador tx manu mensal nova: "+contaPegarTaxaCC.getTaxaManutencaoMensal());
-							System.err.println("\nContas transferidas pagador taxas lista nova: "+contaPegarTaxaCC.getTaxas());
-							
+							ContaCorrente minhaContaCorrente = (ContaCorrente)contaReceber;								
 							contaRepository.save(minhaContaCorrente);
 							
 						}
 						
 						if(contasT.getTipoConta() == TipoConta.POUPANCA) {
 							
-							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)contaPagador;
-							minhaContaPoupanca.getTransferencia().add(novaTransferencia);
-							
-							ContaPoupanca contaPegarTaxaPP = (ContaPoupanca)contasT;
-							
-							minhaContaPoupanca.setCategoriaConta(contaPegarTaxaPP.getCategoriaConta());
-							minhaContaPoupanca.setTaxaAcrescRend(contaPegarTaxaPP.getTaxaAcrescRend());
-							minhaContaPoupanca.setTaxaMensal(contaPegarTaxaPP.getTaxaMensal());
-							minhaContaPoupanca.setTaxas(contaPegarTaxaPP.getTaxas());
-							
-							System.err.println("\nContas transferidas pagador: "+contaPegarTaxaPP);
-							System.err.println("\nContas transferidas pagador categoria nova : "+contaPegarTaxaPP.getCategoriaConta());
-							System.err.println("\nContas transferidas pagador tx acres rend nova: "+contaPegarTaxaPP.getTaxaAcrescRend());
-							System.err.println("\nContas transferidas pagador tx mes nova: "+contaPegarTaxaPP.getTaxaMensal());
-							System.err.println("\nContas transferidas pagador taxas lista nova: "+contaPegarTaxaPP.getTaxas());
-							
-							
-							
-							
-							
-							
-							
+							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)contaReceber;							
 							contaRepository.save(minhaContaPoupanca);
 						}
 						
 					}
+					
 				}
-				
-//				for(Conta contasT : contasTransferidas) {
-//					//Cliente Pagar
-//					if(contasT.getId() == contaPagador.getId()) {
-//					
-//						if(contasT.getTipoConta() == TipoConta.CORRENTE) {
-//							
-//							ContaCorrente minhaContaCorrente = (ContaCorrente)contaPagador;
-//							minhaContaCorrente.getTransferencia().add(novaTransferencia);
-//							minhaContaCorrente.setSaldoConta(contasT.getSaldoConta());
-//							minhaContaCorrente.setCategoriaConta(contasT.getCategoriaConta());
-//							minhaContaCorrente.setTipoConta(contasT.getTipoConta());
-//							minhaContaCorrente.setTaxas(null);
-//							
-//							System.err.println("Minha conta Corrente Pagador: "+minhaContaCorrente);
-//							
-//							contaRepository.save(minhaContaCorrente);
-//							
-//						}
-//						
-//						if(contasT.getTipoConta() == TipoConta.POUPANCA) {
-//							
-//							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)contaPagador;
-//							minhaContaPoupanca.getTransferencia().add(novaTransferencia);
-//							minhaContaPoupanca.setSaldoConta(contasT.getSaldoConta());
-//							minhaContaPoupanca.setCategoriaConta(contasT.getCategoriaConta());
-//							minhaContaPoupanca.setTipoConta(contasT.getTipoConta());
-//							minhaContaPoupanca.setTaxas(null);
-//							
-//							System.err.println("Minha conta poupanca Pagador: "+minhaContaPoupanca);
-//							
-//							contaRepository.save(minhaContaPoupanca);
-//							
-//						}
-//						
-//						contaRepository.save(contaPagador);
-//					}
-//					
-//					
-//					//Cliente Receber
-//					if(contasT.getId() == contaReceber.getId()) {
-//						
-//						if(contasT.getTipoConta() == TipoConta.CORRENTE) {
-//							
-//							ContaCorrente minhaContaCorrente = (ContaCorrente)contaReceber;
-//						
-//							minhaContaCorrente.setSaldoConta(contasT.getSaldoConta());
-//							minhaContaCorrente.setCategoriaConta(contasT.getCategoriaConta());
-//							minhaContaCorrente.setTipoConta(contasT.getTipoConta());
-//							minhaContaCorrente.setTaxas(null);
-//							
-//							System.err.println("Minha conta Corrente Recebedor: "+minhaContaCorrente);
-//							
-//							contaRepository.save(minhaContaCorrente);
-//							
-//						}
-//						
-//						if(contasT.getTipoConta() == TipoConta.POUPANCA) {
-//							
-//							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)contaReceber;
-//						
-//							minhaContaPoupanca.setSaldoConta(contasT.getSaldoConta());
-//							minhaContaPoupanca.setCategoriaConta(contasT.getCategoriaConta());
-//							minhaContaPoupanca.setTipoConta(contasT.getTipoConta());
-//							minhaContaPoupanca.setTaxas(null);
-//							
-//							System.err.println("Minha conta Poupcança Recebedor: "+minhaContaPoupanca);
-//							
-//							contaRepository.save(minhaContaPoupanca);
-//							
-//						}						
-//					}
-//					
-//					
-//				}
-				
+
 			}
 
 				

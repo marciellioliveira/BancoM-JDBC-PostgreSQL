@@ -2,6 +2,8 @@ package br.com.marcielli.BancoM.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import jakarta.persistence.Entity;
@@ -16,6 +18,7 @@ public class ContaCorrente extends Conta {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@JsonIgnore
 	private float taxaManutencaoMensal;
 	
 	public ContaCorrente() {}	
@@ -31,20 +34,7 @@ public class ContaCorrente extends Conta {
 		}
 		
 	}
-
 	
-	//Usava esse
-//	public ContaCorrente(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, float taxaManutencaoMensal, List<Taxas> taxas) {
-//		super(cliente, tipoConta, categoriaConta, saldoConta, numeroConta, taxas);
-//		this.taxaManutencaoMensal = taxaManutencaoMensal;
-//	}
-//
-//	public ContaCorrente(Cliente cliente, TipoConta tipoConta, float saldoConta, String numeroConta) {
-//		super(cliente, tipoConta, saldoConta, numeroConta);		
-//	}
-	
-	
-
 	public float getTaxaManutencaoMensal() {
 		return taxaManutencaoMensal;
 	}
@@ -57,12 +47,4 @@ public class ContaCorrente extends Conta {
 	public String toString() {
 		return "ContaCorrente [taxaManutencaoMensal=" + taxaManutencaoMensal + "]";
 	}
-
-
-	
-	
-
-
-	
-
 }

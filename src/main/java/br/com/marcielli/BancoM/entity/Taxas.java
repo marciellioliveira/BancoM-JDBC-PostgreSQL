@@ -33,11 +33,11 @@ public class Taxas {
 	private Long version;
 
 	@Enumerated(EnumType.STRING)
-	//@JsonIgnore
+	@JsonIgnore
 	private CategoriaConta categoria; // Comum, super ou premium
 
 	@Enumerated(EnumType.STRING)
-	//@JsonIgnore
+	@JsonIgnore
 	private TipoConta tipoConta; // Corrente ou Poupança
 
 	// Taxas da Poupança
@@ -214,38 +214,38 @@ public class Taxas {
 	
 	public Conta atualizarTaxas(Conta contaParaSerAtualizada) {
 		
-			
+			//Teria que receber aqui as duas contas para atualizar? mas pçq a poupança da certo?
 		if (contaParaSerAtualizada.getTipoConta() == TipoConta.CORRENTE) {
 			
-			ContaCorrente cc = (ContaCorrente)contaParaSerAtualizada;			
+			ContaCorrente cc = (ContaCorrente)contaParaSerAtualizada;		
 
 			this.tipoConta = TipoConta.CORRENTE;
 
 			if (contaParaSerAtualizada.getSaldoConta() <= 1000f) {
 
 				this.categoria = CategoriaConta.COMUM;
-				this.taxaManutencaoMensal = 12.00f;
-			
+				this.taxaManutencaoMensal = 12.00f;		
 			}
 
 			if (contaParaSerAtualizada.getSaldoConta() > 1000f && contaParaSerAtualizada.getSaldoConta() <= 5000f) {
 
 				this.categoria = CategoriaConta.SUPER;
-				this.taxaManutencaoMensal = 8.00f;
+				this.taxaManutencaoMensal = 8.00f;		
 			}
 
 			if (contaParaSerAtualizada.getSaldoConta() > 5000f) {
 
 				this.categoria = CategoriaConta.PREMIUM;
 				this.taxaManutencaoMensal = 0f;
+		
 			}
 			
 			cc.setCategoriaConta(categoria);
 			cc.setTaxaManutencaoMensal(taxaManutencaoMensal);
 			
+			
 			return cc;
 			
-			//flagAtualizou = true;
 		}
 
 		if (contaParaSerAtualizada.getTipoConta()  == TipoConta.POUPANCA) {
@@ -259,6 +259,7 @@ public class Taxas {
 				this.categoria = CategoriaConta.COMUM;
 				this.taxaAcrescRend = 0.005f;
 				this.taxaMensal = (float) (Math.pow(1 + taxaAcrescRend, 1.0 / 12) - 1);
+				
 
 			}
 
@@ -267,6 +268,7 @@ public class Taxas {
 				this.categoria = CategoriaConta.SUPER;
 				this.taxaAcrescRend = 0.007f;
 				this.taxaMensal = (float) (Math.pow(1 + taxaAcrescRend, 1.0 / 12) - 1);
+				
 
 			}
 
@@ -275,6 +277,8 @@ public class Taxas {
 				this.categoria = CategoriaConta.PREMIUM;
 				this.taxaAcrescRend = 0.009f;
 				this.taxaMensal = (float) (Math.pow(1 + taxaAcrescRend, 1.0 / 12) - 1);
+				
+				
 
 			}
 						
@@ -333,19 +337,20 @@ public class Taxas {
 		return taxaManutencaoMensal;
 	}
 
-	public void setTaxaManutencaoMensal(float saldo) {
+	public void setTaxaManutencaoMensal(float taxaManutencaoMensal) {
 
-		if (saldo <= 1000f) {
-			this.taxaManutencaoMensal = 12.00f;
-		}
-
-		if (saldo > 1000f && saldo <= 5000f) {
-			this.taxaManutencaoMensal = 8.00f;
-		}
-
-		if (saldo > 5000f) {
-			this.taxaManutencaoMensal = 0f;
-		}
+		this.taxaManutencaoMensal = taxaManutencaoMensal;
+//		if (saldo <= 1000f) {
+//			this.taxaManutencaoMensal = 12.00f;
+//		}
+//
+//		if (saldo > 1000f && saldo <= 5000f) {
+//			this.taxaManutencaoMensal = 8.00f;
+//		}
+//
+//		if (saldo > 5000f) {
+//			this.taxaManutencaoMensal = 0f;
+//		}
 	}
 
 	@Override
