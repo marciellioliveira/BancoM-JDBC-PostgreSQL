@@ -30,6 +30,7 @@ public class ContaCorrente extends Conta {
 		
 		String pixAleatorio = gerarPixAleatorio();		
 		super.setPixAleatorio(pixAleatorio);
+		super.setStatus(true);
 		
 		for(Taxas taxasCorrente : taxas) {
 			if(taxasCorrente.getTipoConta() == TipoConta.CORRENTE) {

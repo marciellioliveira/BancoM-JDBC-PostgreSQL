@@ -51,14 +51,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	//Conta
 	@ExceptionHandler(ContaTipoContaNaoExisteException.class)
 	private ResponseEntity<RestErrorMessage> contaHandler(ContaTipoContaNaoExisteException exception) {		

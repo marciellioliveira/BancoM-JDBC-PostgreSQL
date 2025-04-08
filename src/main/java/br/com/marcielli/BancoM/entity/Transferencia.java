@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -54,12 +55,15 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 	private String codigoOperacao;
 	
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JsonIgnore
 	@Transient //Remover informação do BD
 	private Conta conta;
 
-	public Transferencia() {}
+	public Transferencia() {
+		this.idClienteOrigem = 4905170L;
+		this.idContaOrigem = 20574081L;
+	}
 	
 	public Transferencia(Long idClienteOrigem, Long idClienteDestino) {
 		super();
@@ -192,6 +196,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.setValor(valorTransferencia);
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
+		
 		
 		Conta contaAtualizada = null;
 		Taxas novasTaxas = new Taxas();
@@ -422,6 +427,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.setValor(valorDeposito);
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
+		this.setIdClienteDestino(receber.getId());
 		
 		Conta contaAtualizada = null;
 		Taxas novasTaxas = new Taxas();
@@ -489,6 +495,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.setValor(valorSaque);
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
+		this.setIdClienteDestino(sacar.getId());
 		
 		Conta contaAtualizada = null;
 		Taxas novasTaxas = new Taxas();

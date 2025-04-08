@@ -74,9 +74,7 @@ public abstract class ContaFactory {
 			taxasDaContaCC = new Taxas(novaConta.getSaldoConta(), TipoConta.CORRENTE);
 			List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
 			novaTaxaCC.add(taxasDaContaCC);
-			
-//			ContaCorrente contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
-		
+					
 			Conta contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
 			
 			return contaCorrente;
@@ -90,11 +88,9 @@ public abstract class ContaFactory {
 			List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
 			novaTaxaPP.add(taxasDaContaPP);
 			
-//			ContaPoupanca contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca,novaTaxaPP);
 			Conta contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca,novaTaxaPP);
 								
 			return contaPoupanca;
-			
 	
 		} else {
 			return null;
@@ -102,17 +98,6 @@ public abstract class ContaFactory {
 		
 	}
 	
-	
-
-//	public static Conta atualizarConta(Conta contaInserir, Conta contaAtualizar, List<Conta> todasAsContasH2) {
-//
-//		
-//	
-//		
-//			return contaAtualizar;	
-//		
-//	}
-//	
 	private static String gerarNumeroDaConta(Conta conta) {
 
 		int[] sequencia = new int[8];

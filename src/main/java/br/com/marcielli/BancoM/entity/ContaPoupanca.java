@@ -33,6 +33,7 @@ public class ContaPoupanca extends Conta {
 		
 		String pixAleatorio = gerarPixAleatorio();		
 		super.setPixAleatorio(pixAleatorio);
+		super.setStatus(true);
 		
 		for(Taxas taxasPoupanca : taxas) {
 			if(taxasPoupanca.getTipoConta() == TipoConta.POUPANCA) {

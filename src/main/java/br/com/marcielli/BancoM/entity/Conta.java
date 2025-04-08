@@ -2,13 +2,11 @@ package br.com.marcielli.BancoM.entity;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Random;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
-import br.com.marcielli.BancoM.enuns.Funcao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -22,7 +20,6 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
@@ -73,6 +70,8 @@ public class Conta implements Serializable {
 	@JoinColumn(name = "transferenciaId")
 	private List<Transferencia> transferencia;
 	
+	private boolean status;
+	
 	public Conta() {}
 
 	public Conta(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta,
@@ -106,6 +105,14 @@ public class Conta implements Serializable {
 	
 	
 	
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 	public String getPixAleatorio() {
 		return pixAleatorio;
 	}

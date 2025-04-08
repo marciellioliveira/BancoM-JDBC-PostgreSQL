@@ -98,7 +98,9 @@ public class ContaService {
 			float saldoAntigoDaContaDeletada = contaAntigaDeletar.getSaldoConta();
 			Cliente clienteAntigoDaContaDeletada = contaAntigaDeletar.getCliente();
 			List<Transferencia> transfDaContaDeletada = contaAntigaDeletar.getTransferencia();
-
+			
+			
+			System.err.println("chega aqui?");
 			CategoriaConta categoriaConta = null;
 			float taxaManutencaoMensalCC = 0;
 			float taxaAcrescRendPP1 = 0;
@@ -146,6 +148,7 @@ public class ContaService {
 				taxaMensalPP2 = (float) (Math.pow(1 + taxaAcrescRendPP1, 1.0 / 12) - 1);
 			}
 
+			
 			String numConta = gerarNumeroDaConta();
 
 			if (tipoParaAtualizar == TipoConta.CORRENTE) {
@@ -158,15 +161,15 @@ public class ContaService {
 
 				contaCorrenteNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.CORRENTE, categoriaConta,
 						saldoAntigoDaContaDeletada, numContaCorrente, novaTaxaCC);
-				contaCorrenteNova.setTransferencia(transfDaContaDeletada);
+				contaCorrenteNova.getTransferencia().addAll(transfDaContaDeletada);
 
-				contaRepository.save(contaCorrenteNova);
-
-				for (Conta contasExistem : getAll()) {
-					if (contasExistem.getId() == contaCorrenteNova.getId()
-							|| contasExistem.getId() == contaPoupancaNova.getId()) {
-						contaRepository.deleteById(contaAntigaDeletar.getId());
-					}
+				contaCorrenteNova.setStatus(true);
+				
+				if(contaCorrenteNova != null) {
+					
+					contaAntigaDeletar.setStatus(false);
+					contaRepository.save(contaCorrenteNova);
+					
 				}
 
 				return contaCorrenteNova;
@@ -182,16 +185,17 @@ public class ContaService {
 
 				contaPoupancaNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.POUPANCA, categoriaConta,
 						saldoAntigoDaContaDeletada, numContaPoupanca, novaTaxaPP);
-				contaPoupancaNova.setTransferencia(transfDaContaDeletada);
+				contaPoupancaNova.getTransferencia().addAll(transfDaContaDeletada);
 
-				contaRepository.save(contaPoupancaNova);
-
-				for (Conta contasExistem : getAll()) {
-					if (contasExistem.getId() == contaCorrenteNova.getId()
-							|| contasExistem.getId() == contaPoupancaNova.getId()) {
-						contaRepository.deleteById(contaAntigaDeletar.getId());
-					}
+				contaPoupancaNova.setStatus(true);
+				
+				if(contaPoupancaNova != null) {
+				
+					contaAntigaDeletar.setStatus(false);
+					contaRepository.save(contaPoupancaNova);
+					
 				}
+
 
 				return contaPoupancaNova;
 
