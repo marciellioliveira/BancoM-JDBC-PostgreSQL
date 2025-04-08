@@ -122,10 +122,11 @@ public class ContaController {
 	
 	
 	// Transferencia Depositar
-	@PostMapping("/depositar/{idContaReceber}/deposito")
-	public ResponseEntity<String> transferirDEPOSITAR(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia valorDepositar) {
+	@PostMapping("/depositar/{idClienteReceber}/{idContaReceber}/deposito")
+	public ResponseEntity<String> transferirDEPOSITAR(@PathVariable("idClienteReceber") Long idClienteReceber, @PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia valorDepositar) {
 		
-		boolean depositar = contaService.transferirDEPOSITAR(idContaReceber, valorDepositar);
+		
+		boolean depositar = contaService.transferirDEPOSITAR(idClienteReceber, idContaReceber, valorDepositar);
 
 		if (depositar) {
 

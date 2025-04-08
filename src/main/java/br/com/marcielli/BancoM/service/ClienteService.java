@@ -70,7 +70,7 @@ public class ClienteService {
 		Cliente clienteAtualizado = null;
 		
 		if(clienteH2.isPresent()) {
-			System.err.println("Teste? "+cliente.getEndereco());
+			
 			clienteAtualizado = clienteH2.get();
 			clienteAtualizado.setNome(cliente.getNome());
 			clienteAtualizado.setCpf(cliente.getCpf());		

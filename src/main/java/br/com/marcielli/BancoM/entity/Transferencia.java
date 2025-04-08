@@ -67,6 +67,13 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.idClienteDestino = idClienteDestino;	
 	}
 	
+	public Transferencia(Long idClienteDestino) {
+		super();	
+		this.idClienteOrigem = 0L;
+		this.idContaOrigem = 0L;
+		this.idClienteDestino = idClienteDestino;	
+	}
+	
 	public Transferencia(Long idClienteOrigem, Long idContaOrigem, Long idClienteDestino, Long idContaDestino, float valor, LocalDateTime data,
 			String codigoOperacao, Conta conta) {
 		super();
@@ -405,23 +412,18 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<Conta> depositar(Conta enviar, float valorDeposito, Conta receber) {
+	public List<Conta> depositar(float valorDeposito, Conta receber) {
 		
-		List<Conta> contasTransferidasDeposito = new ArrayList<Conta>();	
+		List<Conta> contasTransferidas = new ArrayList<Conta>();	
 		
 		LocalDateTime dataTransferencia = LocalDateTime.now();
 		String codTransferencia = gerarCodigoTransferencia();		
 		
-		float saldoContaEnviar = enviar.getSaldoConta();
 		float saldoContaReceber = receber.getSaldoConta();
 
-		float novoSaldoEnviar = saldoContaEnviar - valorDeposito;		
-		enviar.setSaldoConta(novoSaldoEnviar);		
-		
 		float novoSaldoReceber = saldoContaReceber + valorDeposito;
 		receber.setSaldoConta(novoSaldoReceber);
-		
-		this.setIdContaOrigem(enviar.getId());		
+			
 		this.setIdContaDestino(receber.getId());
 		
 		this.setValor(valorDeposito);
@@ -431,47 +433,6 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		Conta contaAtualizada = null;
 		Taxas novasTaxas = new Taxas();
 		//Atualizar 
-		
-		//Pagou
-		if(enviar.getTipoConta() == TipoConta.CORRENTE) {
-			
-			ContaCorrente minhaContaCorrentePagou = (ContaCorrente)enviar;
-			
-			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrentePagou);
-			
-			if(contaAtualizada != null) {	
-				
-				ContaCorrente mcc = (ContaCorrente)contaAtualizada;
-				
-				for(Taxas taxasObjPagouCorrente : contaAtualizada.getTaxas()) {
-					
-					taxasObjPagouCorrente.setCategoria(mcc.getCategoriaConta());
-					taxasObjPagouCorrente.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
-				}
-				contasTransferidasDeposito.add(mcc);
-			} 
-		}
-		
-		if(enviar.getTipoConta() == TipoConta.POUPANCA) {
-			
-			ContaPoupanca minhaContaPoupancaPagou = (ContaPoupanca)enviar;
-			
-			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupancaPagou);
-			
-			if(contaAtualizada != null) {	
-				
-				ContaPoupanca mpp = (ContaPoupanca)contaAtualizada;
-				
-				for(Taxas taxasObjPagouPoupanca : contaAtualizada.getTaxas()) {
-					
-					taxasObjPagouPoupanca.setCategoria(mpp.getCategoriaConta());
-					taxasObjPagouPoupanca.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
-					taxasObjPagouPoupanca.setTaxaMensal(mpp.getTaxaMensal());
-				}
-				
-				contasTransferidasDeposito.add(mpp);
-			} 				
-		}
 		
 		//Recebeu
 		if(receber.getTipoConta() == TipoConta.CORRENTE) {
@@ -489,7 +450,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 					taxasObjRecebeuCorrente.setCategoria(mcc.getCategoriaConta());
 					taxasObjRecebeuCorrente.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
 				}
-				contasTransferidasDeposito.add(mcc);
+				contasTransferidas.add(mcc);
 			} 
 		}
 		
@@ -510,11 +471,10 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 					taxasObjRecebeuPoupanca.setTaxaMensal(mpp.getTaxaMensal());
 				}
 				
-				contasTransferidasDeposito.add(mpp);
+				contasTransferidas.add(mpp);
 			} 				
 		}
-		
-		return contasTransferidasDeposito;
+		return contasTransferidas;
 	}
 
 	@Override
