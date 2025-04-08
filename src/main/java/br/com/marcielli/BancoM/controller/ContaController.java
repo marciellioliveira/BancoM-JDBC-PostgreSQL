@@ -130,7 +130,24 @@ public class ContaController {
 
 		if (depositar) {
 
-			return new ResponseEntity<String>("Depósito realizado com sucesso:", HttpStatus.CREATED);
+			return new ResponseEntity<String>("Depósito realizado com sucesso:", HttpStatus.OK);
+
+		} else {
+
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+
+		}
+	}
+	
+	// Transferencia Sacar
+	@PostMapping("/sacar/{idClientePegar}/{idContaPegar}/saque")
+	public ResponseEntity<String> transferirSACAR(@PathVariable("idClientePegar") Long idClientePegar, @PathVariable("idContaPegar") Long idContaPegar, @RequestBody Transferencia valorSacar) {
+		
+		boolean sacar = contaService.transferirSACAR(idClientePegar, idContaPegar, valorSacar);
+
+		if (sacar) {
+
+			return new ResponseEntity<String>("Saque realizado com sucesso", HttpStatus.OK);
 
 		} else {
 
@@ -151,14 +168,6 @@ public class ContaController {
 		} else {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
-
-//		float valorTotal = contaService.exibirSaldo(clienteId);
-//
-//		if (valorTotal >= 0) {
-//			return new ResponseEntity<String>("Saldo atual: " + valorTotal, HttpStatus.CREATED);
-//		} else {
-//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
 	}
 
 }

@@ -14,7 +14,7 @@ public interface TransferenciaContrato {
 	
 	public List<Conta> depositar(float valorTransferencia, Conta receber);
 	
-	public boolean sacar(float valor, Conta receber);
+	public List<Conta> sacar(float valorTransferencia, Conta receber);
 	
 	public float exibirSaldo(Conta conta);
 	

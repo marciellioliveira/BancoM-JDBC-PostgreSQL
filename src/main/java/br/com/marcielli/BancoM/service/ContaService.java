@@ -490,7 +490,7 @@ public class ContaService {
 			
 			if(clienteTemConta) {
 				
-				Transferencia novoDeposito = new Transferencia(contaReceber.getId());
+				Transferencia novoDeposito = new Transferencia();
 
 				List<Conta> contasDeposito = novoDeposito.depositar(valorDeposito, contaReceber);
 
@@ -537,36 +537,83 @@ public class ContaService {
 		
 	}
 
-	// Transferência SAQUE
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirSAQUE(Long idContaReceber, Transferencia dadosContaEnviar) {
-//		
-//		if(idContaReceber == null || dadosContaEnviar.getId() == null ||  dadosContaEnviar.getIdClienteOrigem() == null ) {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//		
-//		//Origem
-//		Optional<Conta> buscarIdContaEnviar = contaRepository.findById(dadosContaEnviar.getId());
-//				
-//		//Destino
-//		Optional<Conta> buscarIdContaReceber = contaRepository.findById(idContaReceber);
-//		
-//		float valorTransferencia = dadosContaEnviar.getValor();		
-//		
-//		if(valorTransferencia <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//		
-//		if(buscarIdContaEnviar.isPresent() && buscarIdContaReceber.isPresent()) {
-//			
-//			
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//		
-//		return true;
-//	}
+	// Transferência sacar
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean transferirSACAR(Long idClientePegar, Long idContaPegar, Transferencia dadosContaEnviar) {
+		
+		if(idClientePegar == null || idContaPegar == null) {
+			throw new ContaNaoRealizouTransferenciaException(
+					"O saque não foi realizado. Confirme os seus dados.");
+		}
+				
+		//Param
+		Optional<Cliente> encontrarClienteSaquePorId = clienteRepository.findById(idClientePegar);
+		Optional<Conta> encontraContaSaquePorId = contaRepository.findById(idContaPegar);
+		
+		float valorSaque = dadosContaEnviar.getValor();
 
+		if (valorSaque <= 0) {
+			throw new ContaNaoRealizouTransferenciaException(
+					"O saque não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
+		}
+		
+		if(encontraContaSaquePorId.isPresent() && encontrarClienteSaquePorId.isPresent()) {
+			
+			//Conta dadosParaEnviar = encontraContaPagadorPorId.get();
+			Conta contaSacar = encontraContaSaquePorId.get();
+			Cliente clienteSacar = encontrarClienteSaquePorId.get();
+			
+			boolean clienteTemConta = false;
+			for(Conta contas : clienteSacar.getContas()) {
+				if(contas.getId() == contaSacar.getId()) {
+					clienteTemConta = true;
+				}
+			}
+			
+			if(clienteTemConta) {
+				
+				Transferencia novoSaque = new Transferencia();
+
+				List<Conta> contasSaque = novoSaque.sacar(valorSaque, contaSacar);
+
+				if (contasSaque != null) {
+					
+					for (Conta contasT : contasSaque) {
+						
+						// Retirou
+						if (contasT.getId() == contaSacar.getId()) {
+
+							if (contasT.getTipoConta() == TipoConta.CORRENTE) {
+
+								ContaCorrente minhaContaCorrente = (ContaCorrente) contaSacar;
+								minhaContaCorrente.getTransferencia().add(novoSaque);
+								contaRepository.save(minhaContaCorrente);
+
+							}
+
+							if (contasT.getTipoConta() == TipoConta.POUPANCA) {
+
+								ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaSacar;
+								minhaContaPoupanca.getTransferencia().add(novoSaque);
+								contaRepository.save(minhaContaPoupanca);
+							}
+
+						}
+
+					}
+					
+				}
+				
+			}			
+			
+		} else {
+			throw new ContaNaoRealizouTransferenciaException(
+					"O saque não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
+		}
+
+		
+		return true;
+	}
 	// MANUTENÇÃO - APLICAR TAXA MANUTENÇÃO MENSAL PARA CONTA CORRENTE
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public boolean transferirMANUTENCAO(Long idContaReceber, Transferencia dadosContaEnviar) {

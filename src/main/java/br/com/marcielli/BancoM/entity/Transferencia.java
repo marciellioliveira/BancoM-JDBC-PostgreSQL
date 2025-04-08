@@ -67,13 +67,6 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.idClienteDestino = idClienteDestino;	
 	}
 	
-	public Transferencia(Long idClienteDestino) {
-		super();	
-		this.idClienteOrigem = 0L;
-		this.idContaOrigem = 0L;
-		this.idClienteDestino = idClienteDestino;	
-	}
-	
 	public Transferencia(Long idClienteOrigem, Long idContaOrigem, Long idClienteDestino, Long idContaDestino, float valor, LocalDateTime data,
 			String codigoOperacao, Conta conta) {
 		super();
@@ -479,9 +472,69 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean sacar(float valorTransferencia, Conta receber) {
+	public List<Conta> sacar(float valorSaque, Conta sacar) {
 		
-		return false;
+		List<Conta> contasSaque = new ArrayList<Conta>();	
+		
+		LocalDateTime dataTransferencia = LocalDateTime.now();
+		String codTransferencia = gerarCodigoTransferencia();		
+		
+		float saldoContaSacar = sacar.getSaldoConta();
+
+		float novoSaldoSacar = saldoContaSacar - valorSaque;
+		sacar.setSaldoConta(novoSaldoSacar);
+			
+		this.setIdContaDestino(sacar.getId());
+		
+		this.setValor(valorSaque);
+		this.setData(dataTransferencia);
+		this.setCodigoOperacao(codTransferencia);
+		
+		Conta contaAtualizada = null;
+		Taxas novasTaxas = new Taxas();
+		//Atualizar 
+		
+		//Recebeu
+		if(sacar.getTipoConta() == TipoConta.CORRENTE) {
+			
+			ContaCorrente minhaContaCorrenteRecebeu = (ContaCorrente)sacar;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrenteRecebeu);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaCorrente mcc = (ContaCorrente)contaAtualizada;
+				
+				for(Taxas taxasObjRecebeuCorrente : contaAtualizada.getTaxas()) {
+					
+					taxasObjRecebeuCorrente.setCategoria(mcc.getCategoriaConta());
+					taxasObjRecebeuCorrente.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
+				}
+				contasSaque.add(mcc);
+			} 
+		}
+		
+		if(sacar.getTipoConta() == TipoConta.POUPANCA) {
+			
+			ContaPoupanca minhaContaPoupancaRecebeu = (ContaPoupanca)sacar;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupancaRecebeu);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaPoupanca mpp = (ContaPoupanca)contaAtualizada;
+				
+				for(Taxas taxasObjRecebeuPoupanca : contaAtualizada.getTaxas()) {
+					
+					taxasObjRecebeuPoupanca.setCategoria(mpp.getCategoriaConta());
+					taxasObjRecebeuPoupanca.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
+					taxasObjRecebeuPoupanca.setTaxaMensal(mpp.getTaxaMensal());
+				}
+				
+				contasSaque.add(mpp);
+			} 				
+		}
+		return contasSaque;
 	}
 
 	@Override
