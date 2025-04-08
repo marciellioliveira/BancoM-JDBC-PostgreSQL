@@ -2,6 +2,7 @@ package br.com.marcielli.BancoM.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Random;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +11,7 @@ import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.Funcao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -62,7 +64,10 @@ public class Conta implements Serializable {
 	@Transient
 	private float valorTransferencia;
 	
-	private String numeroConta;
+	private String numeroConta;	
+	
+	@Column(name = "chave_pix")
+	private String pixAleatorio;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "transferenciaId")
@@ -101,6 +106,14 @@ public class Conta implements Serializable {
 	
 	
 	
+	public String getPixAleatorio() {
+		return pixAleatorio;
+	}
+
+	public void setPixAleatorio(String pixAleatorio) {		
+		this.pixAleatorio = pixAleatorio;
+	}
+
 	public float getValorTransferencia() {
 		return valorTransferencia;
 	}

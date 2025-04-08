@@ -1,6 +1,7 @@
 package br.com.marcielli.BancoM.entity;
 
 import java.util.List;
+import java.util.Random;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,12 +29,15 @@ public class ContaPoupanca extends Conta {
 	public ContaPoupanca() {}	
 
 	public ContaPoupanca(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, List<Taxas> taxas){
-		super(cliente, tipoConta,categoriaConta, saldoConta, numeroConta, taxas);		
+		super(cliente, tipoConta,categoriaConta, saldoConta, numeroConta, taxas);	
+		
+		String pixAleatorio = gerarPixAleatorio();		
+		super.setPixAleatorio(pixAleatorio);
 		
 		for(Taxas taxasPoupanca : taxas) {
 			if(taxasPoupanca.getTipoConta() == TipoConta.POUPANCA) {
 				this.taxaAcrescRend = taxasPoupanca.getTaxaAcrescRend();
-				this.taxaMensal = taxasPoupanca.getTaxaMensal();
+				this.taxaMensal = taxasPoupanca.getTaxaMensal();				
 			}
 		}		
 	}
@@ -52,6 +56,23 @@ public class ContaPoupanca extends Conta {
 
 	public void setTaxaMensal(float taxaMensal) {
 		this.taxaMensal = taxaMensal;
+	}
+	
+	public String gerarPixAleatorio() {
+
+		int[] sequencia = new int[8];
+		Random random = new Random();
+		String minhaConta = "";
+
+		for (int i = 0; i < sequencia.length; i++) {
+			sequencia[i] = 1 + random.nextInt(8);
+		}
+
+		for (int i = 0; i < sequencia.length; i++) {
+			minhaConta += Integer.toString(sequencia[i]);
+		}
+
+		return minhaConta;
 	}
 
 	@Override

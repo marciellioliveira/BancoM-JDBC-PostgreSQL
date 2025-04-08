@@ -93,7 +93,7 @@ public class ContaController {
 
 		if (transferencias) {
 
-			return new ResponseEntity<String>("Transferência realizada com sucesso com sucesso:", HttpStatus.CREATED);
+			return new ResponseEntity<String>("Transferência realizada com sucesso:", HttpStatus.CREATED);
 
 		} else {
 
@@ -104,14 +104,14 @@ public class ContaController {
 	
 	
 	// Transferencia PIX
-	@PostMapping("/transferir/{idContaReceber}/pix")
-	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
+	@PostMapping("/transferir/{pixAleatorio}/pix")
+	public ResponseEntity<String> transferirPIX(@PathVariable("pixAleatorio") String pixAleatorio, @RequestBody Transferencia contaEnviar) {
 		
-		boolean transferenciaPIX = contaService.transferirPIX(idContaReceber, contaEnviar);
+		boolean transferenciaPIX = contaService.transferirPIX(pixAleatorio, contaEnviar);
 
 		if (transferenciaPIX) {
-
-			return new ResponseEntity<String>("PIX realizado com sucesso com sucesso:", HttpStatus.CREATED);
+			
+			return new ResponseEntity<String>("PIX de "+contaEnviar.getValor()+" realizado com sucesso para a chave "+pixAleatorio, HttpStatus.CREATED);
 
 		} else {
 
@@ -121,6 +121,22 @@ public class ContaController {
 	}
 	
 	
+	// Transferencia Depositar
+	@PostMapping("/depositar/{idContaReceber}/deposito")
+	public ResponseEntity<String> transferirDEPOSITAR(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia valorDepositar) {
+		
+		boolean depositar = contaService.transferirDEPOSITAR(idContaReceber, valorDepositar);
+
+		if (depositar) {
+
+			return new ResponseEntity<String>("Depósito realizado com sucesso:", HttpStatus.CREATED);
+
+		} else {
+
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+
+		}
+	}
 	
 	
 	

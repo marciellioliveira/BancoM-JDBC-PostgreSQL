@@ -12,7 +12,7 @@ public interface TransferenciaContrato {
 	
 	public List<Conta> transferirPix(Conta enviar, float valor, Conta receber);
 	
-	public boolean depositar(float valor, Conta receber);
+	public List<Conta> depositar(Conta enviar, float valorTransferencia, Conta receber);
 	
 	public boolean sacar(float valor, Conta receber);
 	

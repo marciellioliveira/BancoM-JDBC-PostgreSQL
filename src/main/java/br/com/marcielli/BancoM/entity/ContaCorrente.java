@@ -1,6 +1,7 @@
 package br.com.marcielli.BancoM.entity;
 
 import java.util.List;
+import java.util.Random;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,6 +28,9 @@ public class ContaCorrente extends Conta {
 	public ContaCorrente(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta, float saldoConta, String numeroConta, List<Taxas> taxas) {
 		super(cliente, tipoConta, categoriaConta, saldoConta, numeroConta, taxas);
 		
+		String pixAleatorio = gerarPixAleatorio();		
+		super.setPixAleatorio(pixAleatorio);
+		
 		for(Taxas taxasCorrente : taxas) {
 			if(taxasCorrente.getTipoConta() == TipoConta.CORRENTE) {
 				this.taxaManutencaoMensal = taxasCorrente.getTaxaManutencaoMensal();
@@ -41,6 +45,23 @@ public class ContaCorrente extends Conta {
 
 	public void setTaxaManutencaoMensal(float taxaManutencaoMensal) {
 		this.taxaManutencaoMensal = taxaManutencaoMensal;
+	}
+	
+	public String gerarPixAleatorio() {
+
+		int[] sequencia = new int[8];
+		Random random = new Random();
+		String minhaConta = "";
+
+		for (int i = 0; i < sequencia.length; i++) {
+			sequencia[i] = 1 + random.nextInt(8);
+		}
+
+		for (int i = 0; i < sequencia.length; i++) {
+			minhaConta += Integer.toString(sequencia[i]);
+		}
+
+		return minhaConta;
 	}
 
 	@Override

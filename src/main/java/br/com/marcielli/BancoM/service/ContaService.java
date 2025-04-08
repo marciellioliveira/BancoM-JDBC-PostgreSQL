@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.service;
 
+import java.lang.foreign.Linker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,8 +81,7 @@ public class ContaService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta update(Long idContaParaAtualizar, Conta dadosParaAtualizar) {
 		
-		Optional<Conta> contaParaAtualizar = contaRepository.findById(idContaParaAtualizar);
-		
+		Optional<Conta> contaParaAtualizar = contaRepository.findById(idContaParaAtualizar);		
 		
 		Conta contaAtualizada = null;
 		Conta contaAntigaDeletar = null;
@@ -332,10 +332,240 @@ public class ContaService {
 	
 	// Transferência PIX
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean transferirPIX(Long idContaReceber, Transferencia dadosContaEnviar) {
+	public boolean transferirPIX(String pixAleatorio, Transferencia dadosContaEnviar) {
 		
-		if(idContaReceber == null || dadosContaEnviar.getId() == null ||  dadosContaEnviar.getIdClienteOrigem() == null ) {
-			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
+		//PAram
+		//Optional<Conta> contaEnviar = contaRepository.findById(dadosContaEnviar.getIdClienteOrigem());	
+		Conta contaReceber = null;
+		
+		//RequestBody
+		Optional<Cliente> encontraPagadorPorId = clienteRepository.findById(dadosContaEnviar.getIdClienteOrigem());
+		Optional<Conta> encontraContaPagadorPorId = contaRepository.findById(dadosContaEnviar.getIdContaOrigem());
+		
+		
+		float valorTransferencia = dadosContaEnviar.getValor();		
+		
+		if(valorTransferencia <= 0) {
+			throw new ContaNaoRealizouTransferenciaException("A transferência não foi realizada. Valor precisa ser maior que 0. Confirme os seus dados.");
+		}
+		
+		if(encontraContaPagadorPorId.isPresent() && encontraPagadorPorId.isPresent() ) {
+			
+			Conta dadosParaEnviar = encontraContaPagadorPorId.get();
+			
+			
+			
+			Transferencia novaTransferencia = null;
+
+			for(Conta getContaPix : getAll()) {	
+				
+				
+				if(getContaPix.getTipoConta() == TipoConta.CORRENTE) {		
+					
+					ContaCorrente minhaContaCorrente = (ContaCorrente)getContaPix;
+					
+					if(pixAleatorio.equals(minhaContaCorrente.getPixAleatorio())) {
+						
+						novaTransferencia = new Transferencia(dadosContaEnviar.getIdClienteOrigem(), minhaContaCorrente.getCliente().getId());
+						contaReceber = minhaContaCorrente;
+						
+						
+					}	
+				}
+				
+				if(getContaPix.getTipoConta() == TipoConta.POUPANCA) {
+
+					ContaPoupanca minhaContaPoupanca = (ContaPoupanca)getContaPix;
+					
+					if(pixAleatorio.equals(minhaContaPoupanca.getPixAleatorio())) {		
+					
+						novaTransferencia = new Transferencia(dadosContaEnviar.getIdClienteOrigem(), minhaContaPoupanca.getCliente().getId());
+						contaReceber = minhaContaPoupanca;
+					}
+					
+				}
+			}
+			
+			
+			List<Conta> contasTransferidas = novaTransferencia.transferirPix(dadosParaEnviar, valorTransferencia, contaReceber);		
+		
+		
+			if (contasTransferidas != null) {	
+				
+				for(Conta contasT : contasTransferidas) {
+					
+					//Pagador
+					if(contasT.getId() == dadosParaEnviar.getId()) {
+						
+						if(contasT.getTipoConta() == TipoConta.CORRENTE) {		
+							
+							ContaCorrente minhaContaCorrente = (ContaCorrente)dadosParaEnviar;
+							minhaContaCorrente.getTransferencia().add(novaTransferencia);
+							contaRepository.save(minhaContaCorrente);
+							
+						}
+						
+						if(contasT.getTipoConta() == TipoConta.POUPANCA) {
+	
+							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)dadosParaEnviar;
+							minhaContaPoupanca.getTransferencia().add(novaTransferencia);
+							contaRepository.save(minhaContaPoupanca);
+						}
+						
+					}
+					
+					//Recebedor
+					if(contasT.getId() == contaReceber.getId()) {
+						
+						if(contasT.getTipoConta() == TipoConta.CORRENTE) {	
+							
+							ContaCorrente minhaContaCorrente = (ContaCorrente)contaReceber;								
+							contaRepository.save(minhaContaCorrente);
+							
+						}
+						
+						if(contasT.getTipoConta() == TipoConta.POUPANCA) {
+							
+							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)contaReceber;							
+							contaRepository.save(minhaContaPoupanca);
+						}
+						
+					}
+					
+				}
+	
+			}
+
+				
+			
+		} else {
+			throw new ContaNaoRealizouTransferenciaException("A transferência não foi realizada. Confirme os seus dados.");
+		}
+		
+		return true;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+//		
+//		Optional<Conta> contaEnviar = contaRepository.findById(dadosContaEnviar.getIdClienteOrigem());
+//		
+//		float valorTransferencia = dadosContaEnviar.getValor();		
+//		
+//		if(valorTransferencia <= 0) {
+//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
+//		}
+//		
+//		if(contaEnviar.isPresent()) {
+//			
+//			Conta enviar = contaEnviar.get();
+//			
+//			
+//			for(Conta getContaPix : getAll()) {	
+//				
+//				
+//				if(getContaPix.getTipoConta() == TipoConta.CORRENTE) {		
+//					
+//					ContaCorrente minhaContaCorrente = (ContaCorrente)getContaPix;
+//					
+//					if(pixAleatorio.equals(minhaContaCorrente.getPixAleatorio())) {
+//						
+//						Transferencia transferirPix = new Transferencia(dadosContaEnviar.getIdClienteOrigem(), minhaContaCorrente.getId());
+//						List<Conta> contasTransferidas = transferirPix.transferirPix(enviar, valorTransferencia, minhaContaCorrente);
+//					
+//						if(contasTransferidas != null) {
+//							
+//							//Pagador
+//							for(Conta contasT : contasTransferidas) {
+//								if(contasT.getId() == enviar.getId()) {
+//									minhaContaCorrente.getTransferencia().add(transferirPix);
+//									contaRepository.save(minhaContaCorrente);
+//								}
+//								
+//								contaRepository.save(minhaContaCorrente);
+//							}
+//							
+//						}
+//					}	
+//				}
+//				
+//				if(getContaPix.getTipoConta() == TipoConta.POUPANCA) {
+//
+//					ContaPoupanca minhaContaPoupanca = (ContaPoupanca)getContaPix;
+//					
+//					if(pixAleatorio.equals(minhaContaPoupanca.getPixAleatorio())) {		
+//						
+//						Transferencia transferirPix = new Transferencia(dadosContaEnviar.getIdClienteOrigem(), minhaContaPoupanca.getId());
+//						List<Conta> contasTransferidas = transferirPix.transferirPix(enviar, dadosContaEnviar.getValor(), minhaContaPoupanca);
+//					
+//						if(contasTransferidas != null) {
+//							
+//							//Pagador
+//							for(Conta contasT : contasTransferidas) {
+//								if(contasT.getId() == enviar.getId()) {
+//									minhaContaPoupanca.getTransferencia().add(transferirPix);
+//									contaRepository.save(minhaContaPoupanca);
+//								}
+//								
+//								contaRepository.save(minhaContaPoupanca);
+//							}
+//							
+//							
+//							
+//						}
+//					}
+//					
+//				}
+//			}
+//			
+//		}
+
+		
+			
+			
+				
+				
+					
+
+		
+//		return true;
+	}
+	
+	
+	// Transferência DEPOSITO
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean transferirDEPOSITAR(Long idContaReceber, Transferencia dadosContaEnviar) {
+		
+		if(idContaReceber == null) {
+			throw new ContaNaoRealizouTransferenciaException("O depósito não foi realizado. Confirme os seus dados.");
 		}
 		
 		//Origem
@@ -347,104 +577,25 @@ public class ContaService {
 		float valorTransferencia = dadosContaEnviar.getValor();		
 		
 		if(valorTransferencia <= 0) {
-			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
+			throw new ContaNaoRealizouTransferenciaException("O depósito não foi realizado. O valor deve ser maior que 0. Confirme os seus dados.");
 		}
 		
 		if(buscarIdContaEnviar.isPresent() && buscarIdContaReceber.isPresent()) {
 			
-			Conta pagador = buscarIdContaEnviar.get();
-			Conta recebedor = buscarIdContaReceber.get();
+			Conta contaEnviar = buscarIdContaEnviar.get();
+			Conta contaReceber = buscarIdContaReceber.get();
 			
-			Transferencia novaTransferencia = new Transferencia(pagador.getCliente().getId(), recebedor.getCliente().getId());
+			Transferencia deposito = new Transferencia(contaEnviar.getId(), contaReceber.getId());
 			
-			List<Conta> contasPixTransferidos = novaTransferencia.transferirPix(pagador, valorTransferencia, recebedor);
 			
-			if (contasPixTransferidos != null) {	
-				
-				for(Conta contasTPix : contasPixTransferidos) {
-					
-					//Pagador
-					if(contasTPix.getId() == pagador.getId()) {
-						
-						if(contasTPix.getTipoConta() == TipoConta.CORRENTE) {		
-							
-							ContaCorrente minhaContaCorrente = (ContaCorrente)pagador;
-							minhaContaCorrente.getTransferencia().add(novaTransferencia);
-							contaRepository.save(minhaContaCorrente);
-							
-						}
-						
-						if(contasTPix.getTipoConta() == TipoConta.POUPANCA) {
-	
-							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)pagador;
-							minhaContaPoupanca.getTransferencia().add(novaTransferencia);
-							contaRepository.save(minhaContaPoupanca);
-						}
-						
-					}
-					
-					
-					//Recebedor
-					if(contasTPix.getId() == recebedor.getId()) {
-						
-						if(contasTPix.getTipoConta() == TipoConta.CORRENTE) {	
-							
-							ContaCorrente minhaContaCorrente = (ContaCorrente)recebedor;								
-							contaRepository.save(minhaContaCorrente);
-							
-						}
-						
-						if(contasTPix.getTipoConta() == TipoConta.POUPANCA) {
-							
-							ContaPoupanca minhaContaPoupanca = (ContaPoupanca)recebedor;							
-							contaRepository.save(minhaContaPoupanca);
-						}
-						
-					}
-				}
-				
-				
-		
 			
 		} else {
-			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
+			throw new ContaNaoRealizouTransferenciaException("O depósito não foi realizado. Confirme os seus dados.");
 		}
-	}
 		
 		return true;
-}
-	
-	
-	// Transferência DEPOSITO
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirDEPOSITO(Long idContaReceber, Transferencia dadosContaEnviar) {
-//		
-//		if(idContaReceber == null || dadosContaEnviar.getId() == null ||  dadosContaEnviar.getIdClienteOrigem() == null ) {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//		
-//		//Origem
-//		Optional<Conta> buscarIdContaEnviar = contaRepository.findById(dadosContaEnviar.getId());
-//				
-//		//Destino
-//		Optional<Conta> buscarIdContaReceber = contaRepository.findById(idContaReceber);
-//		
-//		float valorTransferencia = dadosContaEnviar.getValor();		
-//		
-//		if(valorTransferencia <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//		
-//		if(buscarIdContaEnviar.isPresent() && buscarIdContaReceber.isPresent()) {
-//			
-//			
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//		
-//		return true;
-//	}
-//	
+	}
+
 	
 	// Transferência SAQUE
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
