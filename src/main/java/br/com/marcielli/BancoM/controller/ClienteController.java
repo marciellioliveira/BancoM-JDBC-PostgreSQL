@@ -74,10 +74,12 @@ public class ClienteController {
 	@DeleteMapping("/deletar/{clienteId}")
     public ResponseEntity<String> deletar(@PathVariable("clienteId") Long clienteId) {
 		
-		if(clienteService.delete(clienteId).equals("deletado")) {
+		boolean clienteDeletado = clienteService.delete(clienteId); 
+		
+		if(clienteDeletado) {
 			return new ResponseEntity<String>("Cliente deletado com sucesso", HttpStatus.OK);
-		} 
-		//return clienteService.delete(clienteId);
-		return null;
+		} else {
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
     }
 }

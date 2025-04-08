@@ -29,12 +29,12 @@ public class ContaController {
 
 	// CRUD
 	@PostMapping("/salvar")
-	public ResponseEntity<String> adicionarCliente(@RequestBody Conta conta) {
+	public ResponseEntity<String> adicionarConta(@RequestBody Conta conta) {
 		
 		Conta contaAdicionada = contaService.save(conta);
 
 		if (contaAdicionada != null) {
-			return new ResponseEntity<String>("A conta " + contaAdicionada.getNumeroConta() + " foi adicionada com sucesso", HttpStatus.CREATED);
+			return new ResponseEntity<String>("A conta " + contaAdicionada.getNumeroConta() + " foi adicionada com sucesso.\nPix Gerado automaticamente para a conta: "+contaAdicionada.getPixAleatorio(), HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}

@@ -40,7 +40,7 @@ public class Cliente implements Serializable {
 	@JsonManagedReference
 	private Endereco endereco;
 	
-	@OneToMany(mappedBy = "cliente")
+	@OneToMany(mappedBy = "cliente", cascade = {CascadeType.ALL} )
 	@JsonManagedReference
 	
 	private List<Conta> contas;

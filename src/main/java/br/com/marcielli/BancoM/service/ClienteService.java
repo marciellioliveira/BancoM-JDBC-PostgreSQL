@@ -119,23 +119,17 @@ public class ClienteService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public String delete(Long clienteId) {
+	public boolean delete(Long clienteId) {
 		
 		Optional<Cliente> clienteH2 = clienteRepository.findById(clienteId);
 		
 		if(clienteH2.isPresent()) {
 			clienteRepository.deleteById(clienteId);	
-			return "deletado";
+			return true;
 		} else {
 			throw new ClienteNaoEncontradoException("O cliente não pode ser deletado porque não existe no banco.");
 		}
 	}
-	
-	
-//	public String delete(Long clienteId) {
-//		clienteRepository.deleteById(clienteId);
-//		return "DELETED";
-//	}
 	
 	
 	//Outros métodos

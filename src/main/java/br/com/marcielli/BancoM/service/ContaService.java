@@ -1,6 +1,5 @@
 package br.com.marcielli.BancoM.service;
 
-import java.lang.foreign.Linker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +20,7 @@ import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
-import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
-import br.com.marcielli.BancoM.exception.ContaNaoFoiPossivelAlterarNumeroException;
 import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
 import br.com.marcielli.BancoM.exception.ContaTipoContaNaoExisteException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
@@ -86,7 +83,8 @@ public class ContaService {
 		Conta contaAtualizada = null;
 		Conta contaAntigaDeletar = null;
 		
-		//System.err.println("Tipo "+dadosParaAtualizar);
+		Conta contaCorrenteNova = null;
+		Conta contaPoupancaNova = null;
 		
 		if(dadosParaAtualizar == null) {
 			throw new ContaNaoEncontradaException("Não é possível atualizar a conta no momento!");
@@ -161,11 +159,17 @@ public class ContaService {
 				List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
 				novaTaxaCC.add(taxasDaContaCC);
 				
-				Conta contaCorrenteNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.CORRENTE, categoriaConta, saldoAntigoDaContaDeletada, numContaCorrente,novaTaxaCC);
+				contaCorrenteNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.CORRENTE, categoriaConta, saldoAntigoDaContaDeletada, numContaCorrente,novaTaxaCC);
 				contaCorrenteNova.setTransferencia(transfDaContaDeletada);
 				
 				contaRepository.save(contaCorrenteNova);		
-				contaRepository.deleteById(contaAntigaDeletar.getId());
+//				contaRepository.deleteById(contaAntigaDeletar.getId());
+				
+				for(Conta contasExistem : getAll()) {
+					if(contasExistem.getId() == contaCorrenteNova.getId() || contasExistem.getId() == contaPoupancaNova.getId()) {
+						contaRepository.deleteById(contaAntigaDeletar.getId());
+					}
+				}
 				
 				return contaCorrenteNova;
 				
@@ -178,15 +182,24 @@ public class ContaService {
 				List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
 				novaTaxaPP.add(taxasDaContaPP);
 				
-				Conta contaPoupancaNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.POUPANCA, categoriaConta, saldoAntigoDaContaDeletada, numContaPoupanca,novaTaxaPP);
+				contaPoupancaNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.POUPANCA, categoriaConta, saldoAntigoDaContaDeletada, numContaPoupanca,novaTaxaPP);
 				contaPoupancaNova.setTransferencia(transfDaContaDeletada);
 				
 				contaRepository.save(contaPoupancaNova);	
-				contaRepository.deleteById(contaAntigaDeletar.getId());
+//				contaRepository.deleteById(contaAntigaDeletar.getId());
+				
+				for(Conta contasExistem : getAll()) {
+					if(contasExistem.getId() == contaCorrenteNova.getId() || contasExistem.getId() == contaPoupancaNova.getId()) {
+						contaRepository.deleteById(contaAntigaDeletar.getId());
+					}
+				}
 				
 				return contaPoupancaNova;
 				
 			}
+			
+			
+			
 			
 			return null;
 
@@ -701,9 +714,7 @@ public class ContaService {
 		
 		Optional<Cliente> clienteVerSaldo = clienteRepository.findById(clienteId);
 		
-		float exibirSaldoTotal = 0;
-		//float exibirSaldoContaCorrente = 0;
-		//float exibirSaldoContaPoupanca = 0;
+		
 		float[] saldoContas = {0, 0, 0};
 		
 		if(clienteVerSaldo.isPresent()) {
@@ -732,22 +743,6 @@ public class ContaService {
 		saldoContas[2] = saldoContas[0] + saldoContas[1];
 		
 		return saldoContas;
-
-//		Optional<Conta> contaVerSaldo = contaRepository.findById(idConta);
-//
-//		float exibirSaldo = 0;
-//
-//		if (contaVerSaldo.isPresent()) {
-//
-//			Conta exibirSaldoConta = contaVerSaldo.get();
-//
-//			Transferencia saldoAtual = new Transferencia();
-//			exibirSaldo = saldoAtual.exibirSaldo(exibirSaldoConta);
-//
-//		} else {
-//			throw new ContaExibirSaldoErroException(
-//					"Não foi possível exibir os dados da conta no momento. Tente mais tarde.");
-//		}
 
 		
 	}
