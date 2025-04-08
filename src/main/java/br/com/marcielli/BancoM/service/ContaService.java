@@ -697,25 +697,59 @@ public class ContaService {
 	
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public float exibirSaldo(Long idConta) {
+	public float[] exibirSaldo(Long clienteId) {
+		
+		Optional<Cliente> clienteVerSaldo = clienteRepository.findById(clienteId);
+		
+		float exibirSaldoTotal = 0;
+		//float exibirSaldoContaCorrente = 0;
+		//float exibirSaldoContaPoupanca = 0;
+		float[] saldoContas = {0, 0, 0};
+		
+		if(clienteVerSaldo.isPresent()) {
+			
+			Cliente cliente = clienteVerSaldo.get();
+			
+			for(Conta contaCliente : cliente.getContas()) {
+				
+				if(contaCliente.getTipoConta() == TipoConta.CORRENTE) {		
+					
+					ContaCorrente minhaContaCorrente = (ContaCorrente)contaCliente;
+					
+					saldoContas[0] = minhaContaCorrente.getSaldoConta();
+					
+					
+				}
+				
+				if(contaCliente.getTipoConta() == TipoConta.POUPANCA) {
 
-		Optional<Conta> contaVerSaldo = contaRepository.findById(idConta);
-
-		float exibirSaldo = 0;
-
-		if (contaVerSaldo.isPresent()) {
-
-			Conta exibirSaldoConta = contaVerSaldo.get();
-
-			Transferencia saldoAtual = new Transferencia();
-			exibirSaldo = saldoAtual.exibirSaldo(exibirSaldoConta);
-
-		} else {
-			throw new ContaExibirSaldoErroException(
-					"Não foi possível exibir os dados da conta no momento. Tente mais tarde.");
+					ContaPoupanca minhaContaPoupanca = (ContaPoupanca)contaCliente;
+					saldoContas[1] =  minhaContaPoupanca.getSaldoConta();
+				}
+			}
 		}
+		
+		saldoContas[2] = saldoContas[0] + saldoContas[1];
+		
+		return saldoContas;
 
-		return exibirSaldo;
+//		Optional<Conta> contaVerSaldo = contaRepository.findById(idConta);
+//
+//		float exibirSaldo = 0;
+//
+//		if (contaVerSaldo.isPresent()) {
+//
+//			Conta exibirSaldoConta = contaVerSaldo.get();
+//
+//			Transferencia saldoAtual = new Transferencia();
+//			exibirSaldo = saldoAtual.exibirSaldo(exibirSaldoConta);
+//
+//		} else {
+//			throw new ContaExibirSaldoErroException(
+//					"Não foi possível exibir os dados da conta no momento. Tente mais tarde.");
+//		}
+
+		
 	}
 
 	// Outros métodos

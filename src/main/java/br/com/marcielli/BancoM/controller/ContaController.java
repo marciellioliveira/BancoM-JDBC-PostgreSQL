@@ -137,27 +137,27 @@ public class ContaController {
 
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 
 	// Ver saldo
-	@GetMapping("/{contaId}/saldo")
-	public ResponseEntity<String> exibirSaldo(@PathVariable("contaId") Long contaId) {
+	@GetMapping("/{clienteId}/saldo")
+	public ResponseEntity<String> exibirSaldo(@PathVariable("clienteId") Long clienteId) {
+		
+		float[] saldoAtual = contaService.exibirSaldo(clienteId);
 
-		float valorTotal = contaService.exibirSaldo(contaId);
-
-		if (valorTotal >= 0) {
-			return new ResponseEntity<String>("Saldo atual: " + valorTotal, HttpStatus.CREATED);
+		if (saldoAtual.length >= 0) {
+			return new ResponseEntity<String>("Saldo Total: " + saldoAtual[2]+"\nSaldo Conta Corrente: "+saldoAtual[0]+"\nSaldo Conta Poupança: "+saldoAtual[1], HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
+
+//		float valorTotal = contaService.exibirSaldo(clienteId);
+//
+//		if (valorTotal >= 0) {
+//			return new ResponseEntity<String>("Saldo atual: " + valorTotal, HttpStatus.CREATED);
+//		} else {
+//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+//		}
 	}
 
 }
