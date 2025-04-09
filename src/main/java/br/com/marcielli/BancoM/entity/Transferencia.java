@@ -47,6 +47,8 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	private Long idContaOrigem;
 	
 	private Long idContaDestino;
+	
+	private String tipoTransferencia;
 
 	@JsonInclude
 	private float valor;
@@ -61,8 +63,8 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	private Conta conta;
 
 	public Transferencia() {
-		this.idClienteOrigem = 4905170L;
-		this.idContaOrigem = 20574081L;
+		this.idClienteOrigem = 0L;
+		this.idContaOrigem = 0L;
 	}
 	
 	public Transferencia(Long idClienteOrigem, Long idClienteDestino) {
@@ -82,6 +84,33 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.data = data;
 		this.codigoOperacao = codigoOperacao;
 		this.conta = conta;
+	}
+	
+	
+
+	public String getTipoTransferencia() {
+		return tipoTransferencia;
+	}
+
+	public void setTipoTransferencia(String tipoTransferencia) {
+		
+		if(tipoTransferencia.equalsIgnoreCase("TED")) {
+			this.tipoTransferencia = "TED";
+		}
+		
+		if(tipoTransferencia.equalsIgnoreCase("PIX")) {
+			this.tipoTransferencia = "PIX";
+		}
+		
+		if(tipoTransferencia.equalsIgnoreCase("DEPOSITO")) {
+			this.tipoTransferencia = "DEPOSITO";
+		}
+		
+		if(tipoTransferencia.equalsIgnoreCase("SAQUE")) {
+			this.tipoTransferencia = "SAQUE";
+		}
+		
+		
 	}
 
 	public Long getId() {
@@ -196,6 +225,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.setValor(valorTransferencia);
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
+		this.setTipoTransferencia("TED");
 		
 		
 		Conta contaAtualizada = null;
@@ -317,6 +347,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.setValor(valorTransferencia);
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
+		this.setTipoTransferencia("PIX");
 		
 		Conta contaAtualizada = null;
 		Taxas novasTaxas = new Taxas();
@@ -428,6 +459,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
 		this.setIdClienteDestino(receber.getId());
+		this.setTipoTransferencia("DEPOSITO");
 		
 		Conta contaAtualizada = null;
 		Taxas novasTaxas = new Taxas();
@@ -496,6 +528,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		this.setData(dataTransferencia);
 		this.setCodigoOperacao(codTransferencia);
 		this.setIdClienteDestino(sacar.getId());
+		this.setTipoTransferencia("SAQUE");
 		
 		Conta contaAtualizada = null;
 		Taxas novasTaxas = new Taxas();

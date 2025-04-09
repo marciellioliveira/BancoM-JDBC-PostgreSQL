@@ -205,7 +205,6 @@ public class Taxas {
 			List<Taxas> novasTaxas = new ArrayList<Taxas>();
 			novasTaxas.add(taxasAtualizadas);
 		
-			//contaParaSerAtualizada.getTaxas().removeFirst();
 			contaParaSerAtualizada.setTaxas(novasTaxas);
 		}
 		return contaParaSerAtualizada;
@@ -340,17 +339,6 @@ public class Taxas {
 	public void setTaxaManutencaoMensal(float taxaManutencaoMensal) {
 
 		this.taxaManutencaoMensal = taxaManutencaoMensal;
-//		if (saldo <= 1000f) {
-//			this.taxaManutencaoMensal = 12.00f;
-//		}
-//
-//		if (saldo > 1000f && saldo <= 5000f) {
-//			this.taxaManutencaoMensal = 8.00f;
-//		}
-//
-//		if (saldo > 5000f) {
-//			this.taxaManutencaoMensal = 0f;
-//		}
 	}
 
 	@Override

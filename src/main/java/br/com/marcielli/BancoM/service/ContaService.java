@@ -100,7 +100,6 @@ public class ContaService {
 			List<Transferencia> transfDaContaDeletada = contaAntigaDeletar.getTransferencia();
 			
 			
-			System.err.println("chega aqui?");
 			CategoriaConta categoriaConta = null;
 			float taxaManutencaoMensalCC = 0;
 			float taxaAcrescRendPP1 = 0;
@@ -151,6 +150,7 @@ public class ContaService {
 			
 			String numConta = gerarNumeroDaConta();
 
+			//Era poupança - > Atualizar Corrente
 			if (tipoParaAtualizar == TipoConta.CORRENTE) {
 
 				String numContaCorrente = numConta.concat("-CC");
@@ -161,8 +161,14 @@ public class ContaService {
 
 				contaCorrenteNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.CORRENTE, categoriaConta,
 						saldoAntigoDaContaDeletada, numContaCorrente, novaTaxaCC);
-				contaCorrenteNova.getTransferencia().addAll(transfDaContaDeletada);
-
+				
+				contaCorrenteNova.setCategoriaConta(categoriaConta);
+				contaCorrenteNova.setTipoConta(TipoConta.CORRENTE);
+				
+				if(contaCorrenteNova.getTransferencia() != null) {
+					contaCorrenteNova.getTransferencia().addAll(transfDaContaDeletada);
+				}
+				
 				contaCorrenteNova.setStatus(true);
 				
 				if(contaCorrenteNova != null) {
@@ -171,11 +177,15 @@ public class ContaService {
 					contaRepository.save(contaCorrenteNova);
 					
 				}
+				
+				//Antigo manter na Poupanca como false
+				//Novo, ir para Corrente como true
 
 				return contaCorrenteNova;
 
 			}
 
+			//Era Corrente -> Atualizar Poupança
 			if (tipoParaAtualizar == TipoConta.POUPANCA) {
 
 				String numContaPoupanca = numConta.concat("-PP");
@@ -183,9 +193,16 @@ public class ContaService {
 				List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
 				novaTaxaPP.add(taxasDaContaPP);
 
-				contaPoupancaNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.POUPANCA, categoriaConta,
+				contaPoupancaNova = new ContaPoupanca(clienteAntigoDaContaDeletada, TipoConta.POUPANCA, categoriaConta,
 						saldoAntigoDaContaDeletada, numContaPoupanca, novaTaxaPP);
-				contaPoupancaNova.getTransferencia().addAll(transfDaContaDeletada);
+				
+				contaPoupancaNova.setCategoriaConta(categoriaConta);
+				contaPoupancaNova.setTipoConta(TipoConta.POUPANCA);
+				
+				if(contaPoupancaNova.getTransferencia() !=null) {
+					contaPoupancaNova.getTransferencia().addAll(transfDaContaDeletada);
+				}
+				
 
 				contaPoupancaNova.setStatus(true);
 				
@@ -196,6 +213,8 @@ public class ContaService {
 					
 				}
 
+				//Antigo manter na Corrente como false
+				//Novo, ir para Poupança como true
 
 				return contaPoupancaNova;
 
@@ -230,20 +249,52 @@ public class ContaService {
 
 		return contaH2;
 	}
-
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public String delete(Long contaId) {
+	public boolean delete(Long clienteId, Long contaId) {
 
+		Optional<Cliente> clienteH2 = clienteRepository.findById(clienteId);
 		Optional<Conta> contaH2 = contaRepository.findById(contaId);
 
-		if (contaH2.isPresent()) {
-			contaRepository.deleteById(contaId);
-			return "deletado";
+		if (clienteH2.isPresent() && contaH2.isPresent()) {
+			
+				Cliente clienteConta = clienteH2.get();
+				Conta contaCliente = contaH2.get();
+				
+				for(Conta clienteTemConta : clienteConta.getContas()) {
+					if(clienteTemConta.getId() == contaCliente.getId()) {
+						
+						contaRepository.deleteById(contaId);						
+						return true;
+					} else {
+						throw new ContaNaoEncontradaException("O cliente "+clienteConta+" não possui uma conta com o número "+contaCliente.getNumeroConta()+" e por isso não pode ser deletada.");
+					}
+				}
+			
 		} else {
+			
 			throw new ContaNaoEncontradaException("A conta não pode ser deletada porque não existe no banco.");
+			
 		}
+		
+
+		return false;
 
 	}
+
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public String delete(Long contaId) {
+//
+//		Optional<Conta> contaH2 = contaRepository.findById(contaId);
+//
+//		if (contaH2.isPresent()) {
+//			contaRepository.deleteById(contaId);
+//			return "deletado";
+//		} else {
+//			throw new ContaNaoEncontradaException("A conta não pode ser deletada porque não existe no banco.");
+//		}
+//
+//	}
 
 	// Transferência TED
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -275,9 +326,14 @@ public class ContaService {
 
 			Cliente clienteReceber = encontraRecebedorPorId.get();
 			Conta contaReceber = encontraContaRecebedorPorId.get();
-
+			
 			Cliente clientePagador = encontraPagadorPorId.get();
 			Conta contaPagador = encontraContaPagadorPorId.get();
+			
+			if(contaReceber.isStatus() == false || contaPagador.isStatus() == false ) {
+				throw new ContaNaoRealizouTransferenciaException("Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
+			}
+			
 
 			if (clienteReceber.getId() != null && contaReceber != null) {
 
@@ -372,14 +428,23 @@ public class ContaService {
 			Conta dadosParaEnviar = encontraContaPagadorPorId.get();
 
 			Transferencia novaTransferencia = null;
+			
+			if(dadosParaEnviar.isStatus() == false ) {
+				throw new ContaNaoRealizouTransferenciaException("Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
+			}
 
 			for (Conta getContaPix : getAll()) {
-
+				
 				if (getContaPix.getTipoConta() == TipoConta.CORRENTE) {
 
 					ContaCorrente minhaContaCorrente = (ContaCorrente) getContaPix;
+					
 
 					if (pixAleatorio.equals(minhaContaCorrente.getPixAleatorio())) {
+						
+						if(minhaContaCorrente.isStatus() == false) {
+							throw new ContaNaoRealizouTransferenciaException("Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
+						}
 
 						novaTransferencia = new Transferencia(dadosContaEnviar.getIdClienteOrigem(),
 								minhaContaCorrente.getCliente().getId());
@@ -391,8 +456,12 @@ public class ContaService {
 				if (getContaPix.getTipoConta() == TipoConta.POUPANCA) {
 
 					ContaPoupanca minhaContaPoupanca = (ContaPoupanca) getContaPix;
-
+					
 					if (pixAleatorio.equals(minhaContaPoupanca.getPixAleatorio())) {
+						
+						if(minhaContaPoupanca.isStatus() == false) {
+							throw new ContaNaoRealizouTransferenciaException("Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
+						}
 
 						novaTransferencia = new Transferencia(dadosContaEnviar.getIdClienteOrigem(),
 								minhaContaPoupanca.getCliente().getId());
@@ -688,23 +757,47 @@ public class ContaService {
 		if (clienteVerSaldo.isPresent()) {
 
 			Cliente cliente = clienteVerSaldo.get();
-
-			for (Conta contaCliente : cliente.getContas()) {
-
-				if (contaCliente.getTipoConta() == TipoConta.CORRENTE) {
-
-					ContaCorrente minhaContaCorrente = (ContaCorrente) contaCliente;
-
-					saldoContas[0] = minhaContaCorrente.getSaldoConta();
-
+			
+			for(Conta getContas : cliente.getContas()) {
+				
+				if(getContas.isStatus() == true && getContas.getTipoConta() == TipoConta.CORRENTE) {
+					saldoContas[0] += getContas.getSaldoConta();
+					
+					if(getContas.isStatus() == false) {
+						saldoContas[0] += 0;
+					}
 				}
-
-				if (contaCliente.getTipoConta() == TipoConta.POUPANCA) {
-
-					ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaCliente;
-					saldoContas[1] = minhaContaPoupanca.getSaldoConta();
+				
+				if(getContas.isStatus() == true && getContas.getTipoConta() == TipoConta.POUPANCA) {
+					saldoContas[1] += getContas.getSaldoConta();					
+					
+					if(getContas.isStatus() == false) {
+						saldoContas[1] += 0;
+					}
 				}
+				
+				
+				
+				
+				
 			}
+
+//			for (Conta contaCliente : cliente.getContas()) {
+//
+//				if (contaCliente.getTipoConta() == TipoConta.CORRENTE) {
+//
+//					ContaCorrente minhaContaCorrente = (ContaCorrente) contaCliente;
+//
+//					saldoContas[0] = minhaContaCorrente.getSaldoConta();
+//
+//				}
+//
+//				if (contaCliente.getTipoConta() == TipoConta.POUPANCA) {
+//
+//					ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaCliente;
+//					saldoContas[1] = minhaContaPoupanca.getSaldoConta();
+//				}
+//			}
 		}
 
 		saldoContas[2] = saldoContas[0] + saldoContas[1];

@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.entity;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -74,6 +75,8 @@ public abstract class ContaFactory {
 			taxasDaContaCC = new Taxas(novaConta.getSaldoConta(), TipoConta.CORRENTE);
 			List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
 			novaTaxaCC.add(taxasDaContaCC);
+			
+			
 					
 			Conta contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
 			
