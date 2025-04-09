@@ -129,6 +129,21 @@ public class CartaoService {
 	}
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Optional<Cartao> getContaById(Long id) {
+
+		Optional<Cartao> cartaoH2 = cartaoRepository.findById(id);
+
+		if (!cartaoH2.isPresent()) {
+			throw new ContaNaoEncontradaException("Cartão não encontrado.");
+		}
+
+		return cartaoH2;
+	}
+	
+	
+	
+	
 	
 	
 	

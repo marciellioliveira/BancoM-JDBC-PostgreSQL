@@ -697,9 +697,6 @@ public class ContaService {
 		return true;
 	}
 	
-	// MANUTENÇÃO - APLICAR TAXA MANUTENÇÃO MENSAL PARA CONTA CORRENTE
-	
-	
 	
 	
 	
@@ -757,22 +754,6 @@ public class ContaService {
 				
 			}
 
-//			for (Conta contaCliente : cliente.getContas()) {
-//
-//				if (contaCliente.getTipoConta() == TipoConta.CORRENTE) {
-//
-//					ContaCorrente minhaContaCorrente = (ContaCorrente) contaCliente;
-//
-//					saldoContas[0] = minhaContaCorrente.getSaldoConta();
-//
-//				}
-//
-//				if (contaCliente.getTipoConta() == TipoConta.POUPANCA) {
-//
-//					ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaCliente;
-//					saldoContas[1] = minhaContaPoupanca.getSaldoConta();
-//				}
-//			}
 		}
 
 		saldoContas[2] = saldoContas[0] + saldoContas[1];
@@ -798,50 +779,6 @@ public class ContaService {
 
 		return minhaConta;
 	}
-//	public String gerarNumeroDaConta(Conta conta) {
-//
-//		int[] sequencia = new int[8];
-//		Random random = new Random();
-//		String minhaConta = "";
-//
-//		for (int i = 0; i < sequencia.length; i++) {
-//			sequencia[i] = 1 + random.nextInt(8);
-//		}
-//
-//		for (int i = 0; i < sequencia.length; i++) {
-//			minhaConta += Integer.toString(sequencia[i]);
-//		}
-//
-//		return minhaConta;
-//	}
 
-//	public String atualizarNumeroDaConta(String numeroConta) {
-//
-//		String doisUltimosDigitos = null;
-//		String novoNumConta = null;
-//
-//		if (numeroConta.length() > 2) {
-//
-//			doisUltimosDigitos = numeroConta.substring(numeroConta.length() - 2);
-//
-//			if (numeroConta.equalsIgnoreCase("CC")) {
-//
-//				novoNumConta = numeroConta.replaceAll("CC", "PP");
-//
-//			} else if (numeroConta.equalsIgnoreCase("PP")) {
-//
-//				novoNumConta = numeroConta.replaceAll("PP", "CC");
-//
-//			} else {
-//				throw new ContaNaoFoiPossivelAlterarNumeroException(
-//						"Não foi possível alterar o número da conta no momento.");
-//			}
-//
-//		} else {
-//			doisUltimosDigitos = null;
-//		}
-//
-//		return novoNumConta;
-//	}	
 
 }
