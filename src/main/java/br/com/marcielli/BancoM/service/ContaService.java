@@ -407,9 +407,6 @@ public class ContaService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirPIX(String pixAleatorio, Transferencia dadosContaEnviar) {
 
-		// PAram
-		// Optional<Conta> contaEnviar =
-		// contaRepository.findById(dadosContaEnviar.getIdClienteOrigem());
 		Conta contaReceber = null;
 
 		// RequestBody
@@ -432,6 +429,8 @@ public class ContaService {
 			if(dadosParaEnviar.isStatus() == false ) {
 				throw new ContaNaoRealizouTransferenciaException("Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
 			}
+			
+			boolean pixExiste = false;
 
 			for (Conta getContaPix : getAll()) {
 				
@@ -449,6 +448,8 @@ public class ContaService {
 						novaTransferencia = new Transferencia(dadosContaEnviar.getIdClienteOrigem(),
 								minhaContaCorrente.getCliente().getId());
 						contaReceber = minhaContaCorrente;
+						
+						pixExiste = true;
 
 					}
 				}
@@ -467,10 +468,18 @@ public class ContaService {
 								minhaContaPoupanca.getCliente().getId());
 						contaReceber = minhaContaPoupanca;
 					}
+					
+					pixExiste = true;
 
 				}
 			}
-
+			
+			if(pixExiste == false) {
+				//Pix não existe
+				throw new ContaNaoRealizouTransferenciaException("O PIX "+pixAleatorio+" que você digitou é inválido. Tente transferir para um PIX válido.");
+				
+			}
+			
 			List<Conta> contasTransferidas = novaTransferencia.transferirPix(dadosParaEnviar, valorTransferencia,
 					contaReceber);
 
@@ -554,6 +563,11 @@ public class ContaService {
 			Conta contaReceber = encontraContaRecebedorPorId.get();
 			Cliente clienteReceber = encontrarClienteRecebedorPorId.get();
 			
+			if(contaReceber.isStatus() == false) {
+				throw new ContaNaoRealizouTransferenciaException(
+						"A conta foi desativada.  Confirme os seus dados e faça o depósito em uma conta ativa.");
+			}
+			
 			boolean clienteTemConta = false;
 			for(Conta contas : clienteReceber.getContas()) {
 				if(contas.getId() == contaReceber.getId()) {
@@ -632,9 +646,17 @@ public class ContaService {
 		
 		if(encontraContaSaquePorId.isPresent() && encontrarClienteSaquePorId.isPresent()) {
 			
+			
 			//Conta dadosParaEnviar = encontraContaPagadorPorId.get();
 			Conta contaSacar = encontraContaSaquePorId.get();
 			Cliente clienteSacar = encontrarClienteSaquePorId.get();
+			
+			
+			if(contaSacar.isStatus() == false) {
+				throw new ContaNaoRealizouTransferenciaException(
+						"A conta foi desativada.  Confirme os seus dados e faça o saque através de uma conta ativa.");
+			}
+			
 			
 			boolean clienteTemConta = false;
 			for(Conta contas : clienteSacar.getContas()) {

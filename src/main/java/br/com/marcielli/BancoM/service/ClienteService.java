@@ -72,6 +72,7 @@ public class ClienteService {
 		if(clienteH2.isPresent()) {
 			
 			clienteAtualizado = clienteH2.get();
+			
 			clienteAtualizado.setNome(cliente.getNome());
 			clienteAtualizado.setCpf(cliente.getCpf());		
 			
