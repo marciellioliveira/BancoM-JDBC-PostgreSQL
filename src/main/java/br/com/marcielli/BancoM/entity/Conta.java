@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
@@ -70,6 +71,11 @@ public class Conta implements Serializable {
 	@OneToMany(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "transferenciaId")
 	private List<Transferencia> transferencia;
+	
+	@OneToMany(cascade = {CascadeType.ALL})
+	@JoinColumn(name = "cartaoId")
+	private List<Cartao> cartoes;
+	
 	
 	private boolean status;
 	
@@ -203,9 +209,14 @@ public class Conta implements Serializable {
 	public void setTaxas(List<Taxas> taxas) {
 		this.taxas = taxas;
 	}
-	
 
+	public List<Cartao> getCartoes() {
+		return cartoes;
+	}
 
+	public void setCartoes(List<Cartao> cartoes) {
+		this.cartoes = cartoes;
+	}
 
 	@Override
 	public String toString() {

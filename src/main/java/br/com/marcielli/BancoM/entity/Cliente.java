@@ -44,7 +44,6 @@ public class Cliente implements Serializable {
 	private List<Conta> contas;
 	
 	
-	
 	public Cliente(String nome, Long cpf, Endereco endereco, List<Conta> contas) {
 		super();
 		this.nome = nome;
@@ -89,7 +88,8 @@ public class Cliente implements Serializable {
 
 	public void setContas(List<Conta> contas) {
 		this.contas = contas;
-	}
+	}	
+
 
 	@Override
 	public String toString() {

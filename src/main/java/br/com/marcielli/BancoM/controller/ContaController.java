@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.entity.Conta;
+import br.com.marcielli.BancoM.entity.TaxasManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ContaService;
@@ -89,22 +90,6 @@ public class ContaController {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-//	@DeleteMapping("/deletar/{contaId}")
-//	public ResponseEntity<String> deletar(@PathVariable("contaId") Long contaId) {
-//		if (contaService.delete(contaId).equals("deletado")) {
-//			return new ResponseEntity<String>("Conta deletada com sucesso", HttpStatus.OK);
-//		}
-//		return null;
-//	}
 
 	// Transferencia TED
 	@PostMapping("/transferir/{idClienteReceber}/{idContaReceber}")
@@ -172,6 +157,31 @@ public class ContaController {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+	
+	
+	//Aplicar Taxa de Manutenção Mensal (Conta Corrente)
+//	@PutMapping("/atualizar/{idConta}/manutencao")
+//	public ResponseEntity<String> aplicarTaxaManutencaoMensal(@PathVariable("idConta") Long contaIdParaAtualizar, @RequestBody Conta contaDadosInserir) {
+//			
+//		Conta taxasAplicadas = contaService.aplicarTaxas(contaIdParaAtualizar, contaDadosInserir);
+//		
+//		if (taxasAplicadas != null) {
+//			
+//			return new ResponseEntity<String>("A conta " + taxasAplicadas.getNumeroConta() + " foi atualizada com sucesso.", HttpStatus.OK);
+//			
+//		} else {
+//			
+//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
+//		}
+//
+//	}
+	
+	
+	//Aplicar Rendimentos (Conta Poupança)
+	
+	
+	
+	
 		
 
 	// Ver saldo

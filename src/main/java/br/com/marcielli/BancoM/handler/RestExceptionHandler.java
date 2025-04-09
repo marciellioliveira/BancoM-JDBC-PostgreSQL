@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoTemSaldoSuficienteException;
@@ -99,6 +100,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
 	}
 	
+	
+	
+	//Cartão
+	@ExceptionHandler(CartaoNaoEncontradoException.class)
+	private ResponseEntity<RestErrorMessage> cartaoHandler(CartaoNaoEncontradoException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+
 	
 	
 	

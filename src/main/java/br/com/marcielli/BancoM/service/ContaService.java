@@ -16,6 +16,7 @@ import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaFactory;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.entity.Taxas;
+import br.com.marcielli.BancoM.entity.TaxasManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
@@ -695,65 +696,31 @@ public class ContaService {
 		
 		return true;
 	}
+	
 	// MANUTENÇÃO - APLICAR TAXA MANUTENÇÃO MENSAL PARA CONTA CORRENTE
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirMANUTENCAO(Long idContaReceber, Transferencia dadosContaEnviar) {
-//		
-//		if(idContaReceber == null || dadosContaEnviar.getId() == null ||  dadosContaEnviar.getIdClienteOrigem() == null ) {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//		
-//		//Origem
-//		Optional<Conta> buscarIdContaEnviar = contaRepository.findById(dadosContaEnviar.getId());
-//				
-//		//Destino
-//		Optional<Conta> buscarIdContaReceber = contaRepository.findById(idContaReceber);
-//		
-//		float valorTransferencia = dadosContaEnviar.getValor();		
-//		
-//		if(valorTransferencia <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//		
-//		if(buscarIdContaEnviar.isPresent() && buscarIdContaReceber.isPresent()) {
-//			
-//			
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//		
-//		return true;
-//	}
-
-	// MANUTENÇÃO - APLICAR RENDIMENTOS PARA CONTA POUPANÇA
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirRENDIMENTO(Long idContaReceber, Transferencia dadosContaEnviar) {
-//		
-//		if(idContaReceber == null || dadosContaEnviar.getId() == null ||  dadosContaEnviar.getIdClienteOrigem() == null ) {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//		
-//		//Origem
-//		Optional<Conta> buscarIdContaEnviar = contaRepository.findById(dadosContaEnviar.getId());
-//				
-//		//Destino
-//		Optional<Conta> buscarIdContaReceber = contaRepository.findById(idContaReceber);
-//		
-//		float valorTransferencia = dadosContaEnviar.getValor();		
-//		
-//		if(valorTransferencia <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//		
-//		if(buscarIdContaEnviar.isPresent() && buscarIdContaReceber.isPresent()) {
-//			
-//			
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//		
-//		return true;
-//	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public float[] exibirSaldo(Long clienteId) {
