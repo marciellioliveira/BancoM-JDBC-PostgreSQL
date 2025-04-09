@@ -78,15 +78,11 @@ public class ContaController {
 	}
 
 	@DeleteMapping("/deletar/{clienteId}/{contaId}")
-	public ResponseEntity<String> deletar(@PathVariable("contaId") Long clienteId, @PathVariable("contaId") Long contaId) {
+	public ResponseEntity<String> deletar(@PathVariable("clienteId") Long clienteId, @PathVariable("contaId") Long contaId) {
 		
-		System.err.println("Cliente ID "+clienteId);
-
-		System.err.println("Conta ID "+contaId);
+		boolean contaDeletada = contaService.deleteConta(clienteId, contaId);
 		
-		boolean clienteDeletado = contaService.delete(clienteId, contaId);
-		
-		if (clienteDeletado) {
+		if (contaDeletada) {
 			return new ResponseEntity<String>("Conta deletada com sucesso", HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);			

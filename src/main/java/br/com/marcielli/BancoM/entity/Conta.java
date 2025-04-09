@@ -40,7 +40,8 @@ public class Conta implements Serializable {
 	@Version
 	private Long version;
 	
-	@ManyToOne(cascade = {CascadeType.ALL}) 
+//	@ManyToOne(cascade = {CascadeType.ALL}) 
+	@ManyToOne
 	@JoinColumn(name = "clienteId")
 	@JsonBackReference
 	private Cliente cliente;

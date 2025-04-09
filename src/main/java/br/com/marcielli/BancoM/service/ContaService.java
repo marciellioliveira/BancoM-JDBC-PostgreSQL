@@ -251,7 +251,7 @@ public class ContaService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean delete(Long clienteId, Long contaId) {
+	public boolean deleteConta(Long clienteId, Long contaId) {
 
 		Optional<Cliente> clienteH2 = clienteRepository.findById(clienteId);
 		Optional<Conta> contaH2 = contaRepository.findById(contaId);
@@ -260,41 +260,27 @@ public class ContaService {
 			
 				Cliente clienteConta = clienteH2.get();
 				Conta contaCliente = contaH2.get();
-				
+
 				for(Conta clienteTemConta : clienteConta.getContas()) {
 					if(clienteTemConta.getId() == contaCliente.getId()) {
 						
-						contaRepository.deleteById(contaId);						
-						return true;
-					} else {
-						throw new ContaNaoEncontradaException("O cliente "+clienteConta+" não possui uma conta com o número "+contaCliente.getNumeroConta()+" e por isso não pode ser deletada.");
-					}
+						clienteConta.getContas().remove(clienteTemConta);						
+						contaRepository.deleteById(contaCliente.getId());
+						//contaCliente.setStatus(false);
+						break;
+						
+					} 
 				}
-			
 		} else {
 			
 			throw new ContaNaoEncontradaException("A conta não pode ser deletada porque não existe no banco.");
 			
 		}
-		
 
-		return false;
+		return true;
 
 	}
 
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public String delete(Long contaId) {
-//
-//		Optional<Conta> contaH2 = contaRepository.findById(contaId);
-//
-//		if (contaH2.isPresent()) {
-//			contaRepository.deleteById(contaId);
-//			return "deletado";
-//		} else {
-//			throw new ContaNaoEncontradaException("A conta não pode ser deletada porque não existe no banco.");
-//		}
-//
-//	}
 
 	// Transferência TED
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

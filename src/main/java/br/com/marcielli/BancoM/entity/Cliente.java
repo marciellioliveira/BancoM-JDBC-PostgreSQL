@@ -39,9 +39,8 @@ public class Cliente implements Serializable {
 	@JsonManagedReference
 	private Endereco endereco;
 	
-	@OneToMany(mappedBy = "cliente", cascade = {CascadeType.ALL} )
-	@JsonManagedReference
-	
+	@OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@JsonManagedReference	
 	private List<Conta> contas;
 	
 	
@@ -90,6 +89,12 @@ public class Cliente implements Serializable {
 
 	public void setContas(List<Conta> contas) {
 		this.contas = contas;
+	}
+
+	@Override
+	public String toString() {
+		return "Cliente [id=" + id + ", version=" + version + ", nome=" + nome + ", cpf=" + cpf + ", endereco="
+				+ endereco + ", contas=" + contas + "]";
 	}
 
 	
