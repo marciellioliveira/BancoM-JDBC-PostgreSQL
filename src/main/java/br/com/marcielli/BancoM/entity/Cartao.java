@@ -17,6 +17,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Version;
 
@@ -55,7 +56,10 @@ public class Cartao implements Serializable {
 	
 	public String senha;
 	
-	@ManyToOne(cascade = {CascadeType.ALL})
+//	@ManyToOne(cascade = {CascadeType.ALL})
+//	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name = "contaId")
 	@JsonBackReference
 	private Conta conta;
 	

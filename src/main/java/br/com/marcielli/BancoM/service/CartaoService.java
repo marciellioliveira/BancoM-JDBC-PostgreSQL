@@ -129,49 +129,37 @@ public class CartaoService {
 
 		return cartaoH2;
 	}
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean deleteCartao(Long clienteId, Long contaId) {
-
-		Optional<Cliente> clienteH2 = clienteRepository.findById(clienteId);
-		Optional<Cartao> cartoaH2 = cartaoRepository.findById(contaId);
-
-		if (clienteH2.isPresent() && cartoaH2.isPresent()) {
-			
-				Cliente clienteConta = clienteH2.get();
-				Cartao contaCliente = cartoaH2.get();
-
-				for(Conta clienteTemConta : clienteConta.getContas()) {
-					if(clienteTemConta.getId() == contaCliente.getId()) {
-						
-						clienteConta.getContas().remove(clienteTemConta);						
-						cartaoRepository.deleteById(contaCliente.getId());
-						break;
-						
-					} 
-				}
-		} else {
-			
-			throw new ContaNaoEncontradaException("O cartão não pode ser deletado porque não existe no banco.");
-			
-		}
-
-		return true;
-
-	}
-	
 //	
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Optional<Cartao> getCartaoById1(Long id) {
+//	public boolean deleteCartao(Long clienteId, Long contaId) {
 //
-//		Optional<Cartao> cartaoH2 = cartaoRepository.findById(id);
+//		Optional<Cliente> clienteH2 = clienteRepository.findById(clienteId);
+//		Optional<Cartao> cartoaH2 = cartaoRepository.findById(contaId);
 //
-//		if (!cartaoH2.isPresent()) {
-//			throw new ContaNaoEncontradaException("Cartão não encontrado.");
+//		if (clienteH2.isPresent() && cartoaH2.isPresent()) {
+//			
+//				Cliente clienteConta = clienteH2.get();
+//				Cartao contaCliente = cartoaH2.get();
+//
+//				for(Conta clienteTemConta : clienteConta.getContas()) {
+//					if(clienteTemConta.getId() == contaCliente.getId()) {
+//						
+//						clienteConta.getContas().remove(clienteTemConta);						
+//						cartaoRepository.deleteById(contaCliente.getId());
+//						break;
+//						
+//					} 
+//				}
+//		} else {
+//			
+//			throw new ContaNaoEncontradaException("O cartão não pode ser deletado porque não existe no banco.");
+//			
 //		}
 //
-//		return cartaoH2;
+//		return true;
+//
 //	}
+
 	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -219,7 +207,37 @@ public class CartaoService {
 	}
 	
 	
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean deleteCartao(Cartao cartaoDeletar, Long cartaoId) {
+
+		Optional<Cliente> clienteH2 = clienteRepository.findById(cartaoDeletar.getId());
+		Optional<Conta> contaH2 = contaRepository.findById(cartaoDeletar.getConta().getId());
+		Optional<Cartao> cartaoH2 = cartaoRepository.findById(cartaoId);
+
+		if (clienteH2.isPresent() && contaH2.isPresent() && cartaoH2.isPresent()) {
+			
+				Cliente clienteCartao = clienteH2.get();
+				Conta contaCartao = contaH2.get();
+				Cartao cartaoCliente = cartaoH2.get();
+				
+				for(Cartao cartaoClienteExiste : contaCartao.getCartoes()) {
+					
+					if(cartaoClienteExiste.getConta().getCliente().getId() == clienteCartao.getId() && cartaoClienteExiste.getConta().getId() == contaCartao.getId() && cartaoClienteExiste.getId() == cartaoCliente.getId()) {
+						contaCartao.getCartoes().remove(cartaoClienteExiste);
+						cartaoRepository.deleteById(cartaoId);
+						break;
+					}
+				}
+		
+		} else {
+			
+			throw new ContaNaoEncontradaException("O cartão não pode ser deletado porque não existe no banco.");
+			
+		}
+
+		return true;
+
+	}
 	
 	
 	

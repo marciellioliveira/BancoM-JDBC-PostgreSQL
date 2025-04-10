@@ -61,18 +61,6 @@ public class CartaoController {
 		return cartaoById;
 	}
 	
-	@DeleteMapping("/deletar/{clienteId}/{cartaoId}")
-	public ResponseEntity<String> deletar(@PathVariable("clienteId") Long clienteId, @PathVariable("cartaoId") Long cartaoId) {
-		
-		boolean cartaoDeletada = cartaoService.deleteCartao(clienteId, cartaoId);
-		
-		if (cartaoDeletada) {
-			return new ResponseEntity<String>("Cartão deletado com sucesso", HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
-		}
-	}
-	
 	@PutMapping("/atualizar/{cartaoAtualizar}")
 	public ResponseEntity<String> atualizar(@PathVariable("cartaoAtualizar") Long cartaoAtualizar, @RequestBody Cartao cartaoDadosInserir) {
 			
@@ -80,13 +68,25 @@ public class CartaoController {
 		
 		if (cartaoAtualizado != null) {
 			
-			return new ResponseEntity<String>("A conta " + cartaoAtualizado.getNumeroCartao() + " foi atualizado com sucesso.", HttpStatus.OK);
+			return new ResponseEntity<String>("O cartão " + cartaoAtualizado.getNumeroCartao() + " foi atualizado com sucesso.", HttpStatus.OK);
 			
 		} else {
 			
 			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
 		}
 
+	}
+	
+	@DeleteMapping("/deletar/{cartaoId}")
+	public ResponseEntity<String> deletar(@RequestBody Cartao cartaoDeletar, @PathVariable("cartaoId") Long cartaoId) {
+		
+		boolean cartaoDeletado = cartaoService.deleteCartao(cartaoDeletar, cartaoId);
+		
+		if (cartaoDeletado) {
+			return new ResponseEntity<String>("Cartão deletado com sucesso", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
+		}
 	}
 		
 
