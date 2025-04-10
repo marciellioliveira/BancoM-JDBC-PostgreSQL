@@ -73,7 +73,8 @@ public class Conta implements Serializable {
 	private List<Transferencia> transferencia;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
-	@JoinColumn(name = "cartaoId")
+	@JoinColumn(name = "cartaoId")	
+	@JsonManagedReference
 	private List<Cartao> cartoes;
 	
 	

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.entity.Cartao;
+import br.com.marcielli.BancoM.entity.CartaoDTO;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.service.CartaoService;
 
@@ -25,10 +26,10 @@ public class CartaoController {
 	@Autowired
 	private CartaoService cartaoService;
 	
-	@PostMapping("/salvar/{idCartao}")
-	public ResponseEntity<String> adicionarCartao(@PathVariable("idCartao") Long idCartao, @RequestBody Cartao cartao) {
+	@PostMapping("/salvar")
+	public ResponseEntity<String> adicionarCartao(@RequestBody Cartao cartao) {
 		
-		Cartao cartaoAdicionado = cartaoService.saveCartao(idCartao, cartao);
+		Cartao cartaoAdicionado = cartaoService.saveCartao(cartao);		
 		
 		if (cartaoAdicionado != null) {
 			
@@ -69,5 +70,19 @@ public class CartaoController {
 			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
 		}
 	}
+	
+		
+
+	// Pagamento Cartão
+
+	// Transferencia TED
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

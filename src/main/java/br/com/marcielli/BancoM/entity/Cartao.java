@@ -2,6 +2,7 @@ package br.com.marcielli.BancoM.entity;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
@@ -17,7 +18,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 
 @Entity
@@ -36,24 +36,27 @@ public class Cartao implements Serializable {
 	@Version
 	private Long version;
 	
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)	
+	@JsonIgnore
 	private TipoConta tipoConta;
 	
 	@Enumerated(EnumType.STRING)
+	@JsonIgnore
 	private CategoriaConta categoriaConta;
 	
 	@Enumerated(EnumType.STRING)
 	private TipoCartao tipoCartao;
 	
+	@JsonIgnore
 	private String numeroCartao;
 	
+	@JsonIgnore
 	private boolean status;
 	
 	public String senha;
 	
 	@ManyToOne(cascade = {CascadeType.ALL})
-	@JsonIgnore
-	@Transient //Remover informação do BD
+	@JsonBackReference
 	private Conta conta;
 	
 	public Cartao() {}

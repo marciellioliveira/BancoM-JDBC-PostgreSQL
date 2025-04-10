@@ -2,6 +2,7 @@ package br.com.marcielli.BancoM.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,13 +10,20 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.entity.Cartao;
+import br.com.marcielli.BancoM.entity.CartaoCredito;
+import br.com.marcielli.BancoM.entity.CartaoDebito;
 import br.com.marcielli.BancoM.entity.CartaoFactory;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
+import br.com.marcielli.BancoM.entity.Transferencia;
+import br.com.marcielli.BancoM.enuns.TipoCartao;
+import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
+import br.com.marcielli.BancoM.repository.ContaRepositoy;
 
 @Service
 public class CartaoService {
@@ -26,51 +34,79 @@ public class CartaoService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	
+	@Autowired
+	private ContaRepositoy contaRepository;	
+	
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao saveCartao(Long idConta, Cartao dadosCartao) {
+	public Cartao saveCartao(Cartao dadosCartao) {
+		
+		
+		System.err.println(dadosCartao);
 
 		Cartao cartaoCriado = null;
-		Conta contaDoCartao = null;
+		Cliente clienteCartao = null;
 		
-		if (dadosCartao.getId() == null) {
+		if (dadosCartao.getId() == null ) {
 			throw new CartaoNaoEncontradoException("Para cadastrar um cartão, você precisa ter uma conta no banco.");
 		}
-
-		// Buscar cliente por ID
-		Optional<Cliente> buscarClientePorId = clienteRepository.findById(dadosCartao.getId());		
-	
-		if (buscarClientePorId.isPresent()) {
-
-			Cliente simClienteExiste = buscarClientePorId.get();
+		
+		Optional<Conta> conta = contaRepository.findById(dadosCartao.getConta().getId());
+		
+		if (conta.isPresent()) {	
 			
-			for(Conta contaExiste : simClienteExiste.getContas()) {
-				if(contaExiste.getId().equals(idConta)) {
-					contaDoCartao = contaExiste;
-					break;
-				}
+			Conta contaCartao = conta.get();
+			
+			clienteCartao = contaCartao.getCliente();
+			 
+			String numCartao = gerarNumeroDoCartao();		
+			
+			if (dadosCartao.getTipoCartao() == TipoCartao.CREDITO) {
+				
+				String numCartaoCredito = numCartao.concat("-CC");		
+				
+				cartaoCriado =  new CartaoCredito(numCartaoCredito, contaCartao.getTipoConta(), contaCartao.getCategoriaConta(), TipoCartao.CREDITO, true, dadosCartao.getSenha(), contaCartao);
+			
+			} else if (dadosCartao.getTipoCartao() == TipoCartao.DEBITO) {
+				
+				String numCartaoDebito = numCartao.concat("-CD");
+				cartaoCriado = new CartaoDebito(numCartaoDebito, contaCartao.getTipoConta(), contaCartao.getCategoriaConta(), TipoCartao.DEBITO, true, dadosCartao.getSenha(), contaCartao);
 			}
 			
-			cartaoCriado = CartaoFactory.criarCartao(contaDoCartao, dadosCartao);
-			
-			//System.err.println("Cartão criado: "+cartaoCriado);
-
-			if (cartaoCriado != null) {
+			if(cartaoCriado != null) {
 				
-				contaDoCartao.getCartoes().add(cartaoCriado);	
-				//cartaoRepository.save(cartaoCriado);
+				
+				System.err.println("cartaoCriado "+cartaoCriado);
+				
+				contaCartao.getCartoes().add(cartaoCriado);				
 				cartaoRepository.save(cartaoCriado);
-				
-				//contaRepository.save(contaDoCartao);
-				
 			}
-
+			
 		} else {
 			throw new CartaoNaoEncontradoException("Para cadastrar um cartão, você precisa ter uma conta no banco.");
 		}
+		
+		
 
 		return cartaoCriado;
 	}
 	
+	private static String gerarNumeroDoCartao() {
+
+		int[] sequencia = new int[8];
+		Random random = new Random();
+		String meuCartao = "";
+
+		for (int i = 0; i < sequencia.length; i++) {
+			sequencia[i] = 1 + random.nextInt(8);
+		}
+
+		for (int i = 0; i < sequencia.length; i++) {
+			meuCartao += Integer.toString(sequencia[i]);
+		}
+
+		return meuCartao;
+	}
 	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -113,7 +149,6 @@ public class CartaoService {
 						
 						clienteConta.getContas().remove(clienteTemConta);						
 						cartaoRepository.deleteById(contaCliente.getId());
-						//contaCliente.setStatus(false);
 						break;
 						
 					} 
@@ -141,8 +176,106 @@ public class CartaoService {
 		return cartaoH2;
 	}
 	
-	
-	
+	//Pagamento Cartão
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean pagamentoCartao(Long idClienteReceber, Long idContaReceber, Transferencia dadosContaEnviar) {
+		
+		if(idClienteReceber == null || idContaReceber == null) {
+			throw new ContaNaoRealizouTransferenciaException(
+					"O pagamento não foi realizado. Confirme os seus dados.");
+		}
+				
+		//Param
+		Optional<Cliente> encontrarClienteRecebedorPorId = clienteRepository.findById(idClienteReceber);
+
+		Conta contaReceber = null;
+//		float valorDeposito = dadosContaEnviar.getValor();
+//
+//		if (valorDeposito <= 0) {
+//			throw new ContaNaoRealizouTransferenciaException(
+//					"O pagamento não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
+//		}
+		
+		if(encontrarClienteRecebedorPorId.isPresent()) {
+			
+			Cliente clienteReceber = encontrarClienteRecebedorPorId.get();
+			
+			System.err.println("cliente "+clienteReceber.getContas());
+			
+//			for(Conta clienteExiste : clienteReceber.getContas()) {
+//				if(clienteExiste.getId() == idContaReceber) {
+//					contaReceber = clienteExiste;
+//					break;
+//				}
+//			}
+//			
+//			System.err.println("Cliente receber: "+encontrarClienteRecebedorPorId);
+//			System.err.println("Conta Receber: "+contaReceber.getId());
+//			
+//			
+//			
+//			
+//			
+//			if(contaReceber.isStatus() == false) {
+//				throw new ContaNaoRealizouTransferenciaException(
+//						"A conta foi desativada.  Confirme os seus dados e faça o depósito em uma conta ativa.");
+//			}
+			
+//			boolean clienteTemConta = false;
+//			for(Conta contas : clienteReceber.getContas()) {
+//				if(contas.getId() == contaReceber.getId()) {
+//					clienteTemConta = true;
+//				}
+//			}
+//			
+//			if(clienteTemConta) {
+//				
+//				Transferencia novoDeposito = new Transferencia();
+//
+//				List<Conta> contasDeposito = novoDeposito.depositar(valorDeposito, contaReceber);
+//
+//				if (contasDeposito != null) {
+//					
+//					for (Conta contasT : contasDeposito) {
+//						
+//						// Recebedor
+//						if (contasT.getId() == contaReceber.getId()) {
+//
+//							if (contasT.getTipoConta() == TipoConta.CORRENTE) {
+//
+//								ContaCorrente minhaContaCorrente = (ContaCorrente) contaReceber;
+//								minhaContaCorrente.getTransferencia().add(novoDeposito);
+//								contaRepository.save(minhaContaCorrente);
+//
+//							}
+//
+//							if (contasT.getTipoConta() == TipoConta.POUPANCA) {
+//
+//								ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaReceber;
+//								minhaContaPoupanca.getTransferencia().add(novoDeposito);
+//								contaRepository.save(minhaContaPoupanca);
+//							}
+//
+//						}
+//
+//					}
+//					
+//				}
+//				
+//			}
+//			
+			
+			
+			
+		} else {
+			throw new ContaNaoRealizouTransferenciaException(
+					"O pagamento não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
+		}
+
+		
+		return true;
+		
+	}
 	
 	
 	

@@ -12,10 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -49,6 +52,9 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 	private Long idContaDestino;
 	
 	private String tipoTransferencia;
+	
+	@Enumerated(EnumType.STRING)
+	private TipoCartao tipoCartao;
 
 	@JsonInclude
 	private float valor;
@@ -599,6 +605,12 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 		return codTransferencia;		
 	}
+	
+	
+	
+	
+	//Pagamento com Cartão
+	
 	
 	
 

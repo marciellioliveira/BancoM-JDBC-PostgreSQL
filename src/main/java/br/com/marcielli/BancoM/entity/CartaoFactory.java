@@ -8,44 +8,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
+import br.com.marcielli.BancoM.enuns.TipoConta;
 
 public abstract class CartaoFactory {
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public static Cartao criarCartao(Conta contaDoCartao, Cartao novoCartao) {
+	public static Cartao criarCartao(Cartao dadosCartao, Conta contaDoCartao) {
 		
-		String numCartao = gerarNumeroDoCartao();
+		String numCartao = gerarNumeroDoCartao();		
 		
-		CategoriaConta categoriaConta = null;
-
-		if(contaDoCartao.getSaldoConta() <= 1000) {
-			categoriaConta = CategoriaConta.COMUM;
-		}
-		
-		if(contaDoCartao.getSaldoConta() > 1000 && contaDoCartao.getSaldoConta() <= 5000) {
-			categoriaConta = CategoriaConta.SUPER;
-		}
-		
-		if(contaDoCartao.getSaldoConta() > 5000) {
-			categoriaConta = CategoriaConta.PREMIUM;			
-		}			
-		
-		if (novoCartao.getTipoCartao() == TipoCartao.CREDITO) {	
+		if (dadosCartao.getTipoCartao() == TipoCartao.CREDITO) {
 			
-			String numCartaoCredito = numCartao.concat("-CC");									
-			return new CartaoCredito(numCartaoCredito, contaDoCartao.getTipoConta(), categoriaConta, TipoCartao.CREDITO, true, novoCartao.getSenha(), contaDoCartao);
+			String numCartaoCredito = numCartao.concat("-CC");		
 			
-			
-		} else if (novoCartao.getTipoCartao() == TipoCartao.DEBITO) {
+			return new CartaoCredito(numCartaoCredito, contaDoCartao.getTipoConta(), contaDoCartao.getCategoriaConta(), TipoCartao.CREDITO, true, dadosCartao.getSenha(), contaDoCartao);
+		
+		} else if (dadosCartao.getTipoCartao() == TipoCartao.DEBITO) {
 			
 			String numCartaoDebito = numCartao.concat("-CD");
-			return new CartaoDebito(numCartaoDebito, contaDoCartao.getTipoConta(), categoriaConta, TipoCartao.DEBITO, true, novoCartao.getSenha(), contaDoCartao);
-	
-		} else {
-			return null;
+			return new CartaoDebito(numCartaoDebito, contaDoCartao.getTipoConta(), contaDoCartao.getCategoriaConta(), TipoCartao.DEBITO, true, dadosCartao.getSenha(), contaDoCartao);
 		}
 		
+		return null;
+
 	}
+	
 	
 	private static String gerarNumeroDoCartao() {
 
