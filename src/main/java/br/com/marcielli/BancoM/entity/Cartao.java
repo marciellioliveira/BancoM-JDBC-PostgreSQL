@@ -73,6 +73,15 @@ public class Cartao implements Serializable {
 		this.conta = conta;
 	}	
 	
+	public Cartao(String numeroCartao, TipoCartao tipoCartao, String senha, Conta conta) {
+		super();
+		this.numeroCartao = numeroCartao;
+		this.tipoCartao = tipoCartao;
+		this.senha = senha;
+		this.conta = conta;
+	
+	}	
+	
 	public Long getId() {
 		return id;
 	}

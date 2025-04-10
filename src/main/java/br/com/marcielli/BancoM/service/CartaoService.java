@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -15,7 +16,11 @@ import br.com.marcielli.BancoM.entity.CartaoDebito;
 import br.com.marcielli.BancoM.entity.CartaoFactory;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
+import br.com.marcielli.BancoM.entity.ContaCorrente;
+import br.com.marcielli.BancoM.entity.ContaPoupanca;
+import br.com.marcielli.BancoM.entity.Taxas;
 import br.com.marcielli.BancoM.entity.Transferencia;
+import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
@@ -39,10 +44,7 @@ public class CartaoService {
 	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao saveCartao(Cartao dadosCartao) {
-		
-		
-		System.err.println(dadosCartao);
+	public Cartao saveCartao(Cartao dadosCartao) {		
 
 		Cartao cartaoCriado = null;
 		Cliente clienteCartao = null;
@@ -73,10 +75,7 @@ public class CartaoService {
 				cartaoCriado = new CartaoDebito(numCartaoDebito, contaCartao.getTipoConta(), contaCartao.getCategoriaConta(), TipoCartao.DEBITO, true, dadosCartao.getSenha(), contaCartao);
 			}
 			
-			if(cartaoCriado != null) {
-				
-				
-				System.err.println("cartaoCriado "+cartaoCriado);
+			if(cartaoCriado != null) {				
 				
 				contaCartao.getCartoes().add(cartaoCriado);				
 				cartaoRepository.save(cartaoCriado);
@@ -85,8 +84,6 @@ public class CartaoService {
 		} else {
 			throw new CartaoNaoEncontradoException("Para cadastrar um cartão, você precisa ter uma conta no banco.");
 		}
-		
-		
 
 		return cartaoCriado;
 	}
@@ -163,18 +160,68 @@ public class CartaoService {
 
 	}
 	
+//	
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Optional<Cartao> getCartaoById1(Long id) {
+//
+//		Optional<Cartao> cartaoH2 = cartaoRepository.findById(id);
+//
+//		if (!cartaoH2.isPresent()) {
+//			throw new ContaNaoEncontradaException("Cartão não encontrado.");
+//		}
+//
+//		return cartaoH2;
+//	}
+	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Optional<Cartao> getContaById(Long id) {
+	public Cartao update(Long cartaoAtualizar, Cartao dadosParaAtualizar) {
 
-		Optional<Cartao> cartaoH2 = cartaoRepository.findById(id);
+		Cartao cartaoA = null;
+		Optional<Cartao> cartaoParaAtualizar = cartaoRepository.findById(cartaoAtualizar);
+		
+		Optional<Conta> contaCartao = contaRepository.findById(dadosParaAtualizar.getConta().getId());
+	
+		if (cartaoParaAtualizar.isPresent()) {
+			
+			cartaoA = cartaoParaAtualizar.get();			
+			
+			String numCartao = gerarNumeroDoCartao();		
+			
+			if (dadosParaAtualizar.getTipoCartao() == TipoCartao.CREDITO) {
+				
+				String numCartaoCredito = numCartao.concat("-CC");		
+				
+				cartaoA.setTipoCartao(TipoCartao.CREDITO);
+				cartaoA.setNumeroCartao(numCartaoCredito);
+				cartaoA.setSenha(cartaoA.getSenha());
+			
+			} else if (dadosParaAtualizar.getTipoCartao() == TipoCartao.DEBITO) {
+				
+				String numCartaoDebito = numCartao.concat("-CD");
+				cartaoA.setTipoCartao(TipoCartao.DEBITO);
+				cartaoA.setNumeroCartao(numCartaoDebito);
+				cartaoA.setSenha(cartaoA.getSenha());			
+			}
+			
+			if(cartaoA != null) {				
+				
+				Conta contaA = contaCartao.get();
+				contaA.getCartoes().add(cartaoA);				
+				cartaoRepository.save(cartaoA);
+			}
 
-		if (!cartaoH2.isPresent()) {
-			throw new ContaNaoEncontradaException("Cartão não encontrado.");
+		} else {
+			throw new ContaNaoEncontradaException("O cartão não pode ser atualizado porque não existe no banco.");
 		}
-
-		return cartaoH2;
+		
+		return cartaoA;
 	}
+	
+	
+	
+	
+	
 	
 	//Pagamento Cartão
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

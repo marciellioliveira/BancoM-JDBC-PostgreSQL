@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoDTO;
+import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.service.CartaoService;
 
@@ -71,6 +73,21 @@ public class CartaoController {
 		}
 	}
 	
+	@PutMapping("/atualizar/{cartaoAtualizar}")
+	public ResponseEntity<String> atualizar(@PathVariable("cartaoAtualizar") Long cartaoAtualizar, @RequestBody Cartao cartaoDadosInserir) {
+			
+		Cartao cartaoAtualizado = cartaoService.update(cartaoAtualizar, cartaoDadosInserir);
+		
+		if (cartaoAtualizado != null) {
+			
+			return new ResponseEntity<String>("A conta " + cartaoAtualizado.getNumeroCartao() + " foi atualizado com sucesso.", HttpStatus.OK);
+			
+		} else {
+			
+			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
+		}
+
+	}
 		
 
 	// Pagamento Cartão
