@@ -48,7 +48,7 @@ public class Cartao implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private TipoCartao tipoCartao;
 	
-	@JsonIgnore
+	
 	private String numeroCartao;
 	
 	@JsonIgnore
@@ -56,8 +56,6 @@ public class Cartao implements Serializable {
 	
 	public String senha;
 	
-//	@ManyToOne(cascade = {CascadeType.ALL})
-//	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "contaId")
 	@JsonBackReference

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoDTO;
 import br.com.marcielli.BancoM.entity.Conta;
+import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.service.CartaoService;
 
@@ -91,8 +92,45 @@ public class CartaoController {
 		
 
 	// Pagamento Cartão
+	@PostMapping("/pagamento/{idClienteReceber}/{idContaReceber}")
+	public ResponseEntity<String> pagamentoCartao(@PathVariable("idClienteReceber") Long idClienteReceber, @PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
+		
+		boolean pagamento = cartaoService.pagarCartao(idClienteReceber,idContaReceber, contaEnviar);
 
-	// Transferencia TED
+		if (pagamento) {
+
+			return new ResponseEntity<String>("Pagamento realizado com sucesso.", HttpStatus.CREATED);
+
+		} else {
+
+			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+//	@PostMapping("/pagamento/{idClienteReceber}/{idContaReceber}")
+//	public ResponseEntity<String> transferirPagarCartao(@PathVariable("idClienteReceber") Long idClienteReceber, @PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia valorDepositar) {
+//				
+//		boolean pagamento = cartaoService.pagarCartao(idClienteReceber, idContaReceber, valorDepositar);
+//
+//		if (pagamento) {
+//
+//			return new ResponseEntity<String>("Pagamento realizado com sucesso.", HttpStatus.OK);
+//
+//		} else {
+//
+//			return new ResponseEntity<String>("Dados inválidos.", HttpStatus.NOT_ACCEPTABLE);
+//		}
+//	}
+	
+	
+	
+	
 	
 	
 	

@@ -58,6 +58,9 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 
 	@JsonInclude
 	private float valor;
+	
+	@JsonInclude
+	private String numeroCartao;
 
 	private LocalDateTime data;
 
@@ -117,6 +120,15 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		}
 		
 		
+	}
+
+	
+	public String getNumeroCartao() {
+		return numeroCartao;
+	}
+
+	public void setNumeroCartao(String numeroCartao) {
+		this.numeroCartao = numeroCartao;
 	}
 
 	public Long getId() {
@@ -513,6 +525,204 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 		}
 		return contasTransferidas;
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Conta> pagarCartao(Conta enviar, String numCartao, float valorTransferencia, Conta receber) {
+		
+		List<Conta> contasTransferidas = new ArrayList<Conta>();	
+		
+		LocalDateTime dataTransferencia = LocalDateTime.now();
+		String codTransferencia = gerarCodigoTransferencia();		
+		
+		float saldoContaEnviar = enviar.getSaldoConta();
+		float saldoContaReceber = receber.getSaldoConta();
+
+		
+		if(saldoContaEnviar < valorTransferencia) {
+			
+			throw new TransferenciaNaoRealizadaException("O pagamento não foi realizado porque você tentou enviar R$ "+valorTransferencia+" mas o seu saldo atual é de R$ "+saldoContaEnviar+".");
+		}
+		
+		float novoSaldoEnviar = saldoContaEnviar - valorTransferencia;		
+		enviar.setSaldoConta(novoSaldoEnviar);		
+		
+		float novoSaldoReceber = saldoContaReceber + valorTransferencia;
+		receber.setSaldoConta(novoSaldoReceber);
+		
+		this.setIdContaOrigem(enviar.getId());		
+		this.setIdContaDestino(receber.getId());
+		
+		this.setValor(valorTransferencia);
+		this.setData(dataTransferencia);
+		this.setCodigoOperacao(codTransferencia);
+		this.setTipoTransferencia("CARTAO");
+		this.setNumeroCartao(numCartao);
+		
+		Conta contaAtualizada = null;
+		Taxas novasTaxas = new Taxas();
+		//Atualizar 
+		
+		//Pagou
+		if(enviar.getTipoConta() == TipoConta.CORRENTE) {
+			
+			ContaCorrente minhaContaCorrentePagou = (ContaCorrente)enviar;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrentePagou);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaCorrente mcc = (ContaCorrente)contaAtualizada;
+				
+				for(Taxas taxasObjPagouCorrente : contaAtualizada.getTaxas()) {
+					
+					taxasObjPagouCorrente.setCategoria(mcc.getCategoriaConta());
+					taxasObjPagouCorrente.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
+					
+				}
+				
+				contasTransferidas.add(mcc);
+			} 
+		}
+		
+		if(enviar.getTipoConta() == TipoConta.POUPANCA) {
+			
+			ContaPoupanca minhaContaPoupancaPagou = (ContaPoupanca)enviar;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupancaPagou);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaPoupanca mpp = (ContaPoupanca)contaAtualizada;
+				
+				for(Taxas taxasObjPagouPoupanca : contaAtualizada.getTaxas()) {
+					
+					taxasObjPagouPoupanca.setCategoria(mpp.getCategoriaConta());
+					taxasObjPagouPoupanca.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
+					taxasObjPagouPoupanca.setTaxaMensal(mpp.getTaxaMensal());
+					
+				}
+				
+				contasTransferidas.add(mpp);
+			} 				
+		}
+		
+		
+		//Recebeu
+		if(receber.getTipoConta() == TipoConta.CORRENTE) {
+			
+			ContaCorrente minhaContaCorrenteRecebeu = (ContaCorrente)receber;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrenteRecebeu);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaCorrente mcc = (ContaCorrente)contaAtualizada;
+				
+				for(Taxas taxasObjRecebeuCorrente : contaAtualizada.getTaxas()) {
+					
+					taxasObjRecebeuCorrente.setCategoria(mcc.getCategoriaConta());
+					taxasObjRecebeuCorrente.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
+				}
+				contasTransferidas.add(mcc);
+			} 
+		}
+		
+		if(receber.getTipoConta() == TipoConta.POUPANCA) {
+			
+			ContaPoupanca minhaContaPoupancaRecebeu = (ContaPoupanca)receber;
+			
+			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupancaRecebeu);
+			
+			if(contaAtualizada != null) {	
+				
+				ContaPoupanca mpp = (ContaPoupanca)contaAtualizada;
+				
+				for(Taxas taxasObjRecebeuPoupanca : contaAtualizada.getTaxas()) {
+					
+					taxasObjRecebeuPoupanca.setCategoria(mpp.getCategoriaConta());
+					taxasObjRecebeuPoupanca.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
+					taxasObjRecebeuPoupanca.setTaxaMensal(mpp.getTaxaMensal());
+				}
+				
+				contasTransferidas.add(mpp);
+			} 				
+		}
+		return contasTransferidas;
+		
+	}
+	
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public List<Conta> pagarCartao(float valorDeposito, Conta receber) {
+//		
+//		List<Conta> contaUtilizada = new ArrayList<Conta>();	
+//		
+//		LocalDateTime dataTransferencia = LocalDateTime.now();
+//		String codTransferencia = gerarCodigoTransferencia();		
+//		
+//		float saldoContaReceber = receber.getSaldoConta();
+//
+//		float novoSaldoReceber = saldoContaReceber + valorDeposito;
+//		receber.setSaldoConta(novoSaldoReceber);
+//			
+//		this.setIdContaDestino(receber.getId());
+//		
+//		this.setValor(valorDeposito);
+//		this.setData(dataTransferencia);
+//		this.setCodigoOperacao(codTransferencia);
+//		this.setIdClienteDestino(receber.getId());
+//		this.setTipoTransferencia("PAGCARTAO");
+//		
+//		Conta contaAtualizada = null;
+//
+//		Taxas novasTaxas = new Taxas();
+//		//Atualizar 
+//		
+//		//Recebeu
+//		if(receber.getTipoConta() == TipoConta.CORRENTE) {
+//			
+//			ContaCorrente minhaContaCorrenteRecebeu = (ContaCorrente)receber;
+//			
+//			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaCorrenteRecebeu);
+//			
+//			if(contaAtualizada != null) {	
+//				
+//				ContaCorrente mcc = (ContaCorrente)contaAtualizada;
+//								
+//				for(Taxas taxasObjRecebeuCorrente : contaAtualizada.getTaxas()) {
+//					
+//					taxasObjRecebeuCorrente.setCategoria(mcc.getCategoriaConta());
+//					taxasObjRecebeuCorrente.setTaxaManutencaoMensal(mcc.getTaxaManutencaoMensal());
+//				}
+//				
+//				contaUtilizada.add(mcc);
+//			} 
+//		}
+//		
+//		if(receber.getTipoConta() == TipoConta.POUPANCA) {
+//			
+//			ContaPoupanca minhaContaPoupancaRecebeu = (ContaPoupanca)receber;
+//			
+//			contaAtualizada = novasTaxas.atualizarTaxas(minhaContaPoupancaRecebeu);
+//			
+//			if(contaAtualizada != null) {	
+//				
+//				ContaPoupanca mpp = (ContaPoupanca)contaAtualizada;
+//				
+//				for(Taxas taxasObjRecebeuPoupanca : contaAtualizada.getTaxas()) {
+//					
+//					taxasObjRecebeuPoupanca.setCategoria(mpp.getCategoriaConta());
+//					taxasObjRecebeuPoupanca.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
+//					taxasObjRecebeuPoupanca.setTaxaMensal(mpp.getTaxaMensal());
+//				}
+//				
+//				contaUtilizada.add(mpp);
+//			} 				
+//		}
+//		return contaUtilizada;
+//	}
+//	
+	
+	
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
