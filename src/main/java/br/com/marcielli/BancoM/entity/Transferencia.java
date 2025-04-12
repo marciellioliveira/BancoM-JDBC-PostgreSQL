@@ -598,8 +598,7 @@ public class Transferencia implements TransferenciaContrato, Serializable {
 					
 					taxasObjPagouPoupanca.setCategoria(mpp.getCategoriaConta());
 					taxasObjPagouPoupanca.setTaxaAcrescRend(mpp.getTaxaAcrescRend());
-					taxasObjPagouPoupanca.setTaxaMensal(mpp.getTaxaMensal());
-					
+					taxasObjPagouPoupanca.setTaxaMensal(mpp.getTaxaMensal());					
 				}
 				
 				contasTransferidas.add(mpp);
