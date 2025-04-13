@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
+import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoTemSaldoSuficienteException;
 import br.com.marcielli.BancoM.exception.ClienteNomeInvalidoException;
@@ -27,6 +28,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(ClienteNaoEncontradoException.class)
 	private ResponseEntity<RestErrorMessage> clientHandler(ClienteNaoEncontradoException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respostaTratada);
+	}
+	
+	@ExceptionHandler(ClienteEncontradoException.class)
+	private ResponseEntity<RestErrorMessage> clientHandler(ClienteEncontradoException exception) {		
 		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respostaTratada);
 	}

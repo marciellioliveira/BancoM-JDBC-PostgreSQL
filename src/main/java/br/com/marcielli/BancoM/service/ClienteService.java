@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Endereco;
 import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
+import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNomeInvalidoException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
@@ -23,8 +24,7 @@ public class ClienteService {
 	private ClienteRepository clienteRepository;	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cliente save(Cliente cliente) {
-		
+	public Cliente save(Cliente cliente) {	
 		
 		if(cliente.getCpf() != null) {
 			String novoCpf = ""+cliente.getCpf();
@@ -36,51 +36,70 @@ public class ClienteService {
 			Optional<Cliente> clienteNoBanco = clienteRepository.findById(cliente.getId());
 			
 			if(clienteNoBanco.isPresent()) {
-				Cliente clienteExiste = clienteNoBanco.get();
-				return clienteExiste;		
+				throw new ClienteEncontradoException("Cliente já existe no banco.");	
 			}
 		} 
 		
 		return clienteRepository.save(cliente);	
 	}	
-
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cliente update(Cliente cliente, Long id) {
+	public Cliente update(Long id, Cliente cliente) {
 		
-	
+		Cliente clienteAtualizado = clienteRepository.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException("O cliente não pode ser atualizado porque não existe no banco."));
 		
 		if(cliente.getCpf() != null) {
 			String novoCpf = ""+cliente.getCpf();
 			validarCpf(novoCpf);
 		}		
 		
-		Optional<Cliente> clienteH2 = clienteRepository.findById(id);
+		System.err.println(cliente.getNome());
+		clienteAtualizado.setNome(cliente.getNome());
+		clienteAtualizado.setCpf(cliente.getCpf());
+		clienteAtualizado.setEndereco(cliente.getEndereco());
+		//clienteAtualizado.setContas(cliente.getContas());
 		
-		Cliente clienteAtualizado = null;
-		
-		if(clienteH2.isPresent()) {
-			
-			clienteAtualizado = clienteH2.get();
-			
-			clienteAtualizado.setNome(cliente.getNome());
-			clienteAtualizado.setCpf(cliente.getCpf());		
-			
-			clienteAtualizado.getEndereco().setCidade(cliente.getEndereco().getCidade());
-			clienteAtualizado.getEndereco().setBairro(cliente.getEndereco().getBairro());
-			clienteAtualizado.getEndereco().setCep(cliente.getEndereco().getCep());
-			clienteAtualizado.getEndereco().setComplemento(cliente.getEndereco().getComplemento());
-			clienteAtualizado.getEndereco().setEstado(cliente.getEndereco().getEstado());
-			clienteAtualizado.getEndereco().setNumero(cliente.getEndereco().getNumero());
-			clienteAtualizado.getEndereco().setRua(cliente.getEndereco().getRua());
-			
-			
-			return clienteRepository.save(clienteAtualizado);	
-		} else { 
-			throw new ClienteNaoEncontradoException("O cliente não pode ser atualizado porque não existe no banco.");
-		}	
+		return clienteRepository.save(clienteAtualizado);	
 		
 	}
+
+	
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Cliente update(Cliente cliente, Long id) {
+//		
+//	
+//		
+//		if(cliente.getCpf() != null) {
+//			String novoCpf = ""+cliente.getCpf();
+//			validarCpf(novoCpf);
+//		}		
+//		
+//		Optional<Cliente> clienteH2 = clienteRepository.findById(id);
+//		
+//		Cliente clienteAtualizado = null;
+//		
+//		if(clienteH2.isPresent()) {
+//			
+//			clienteAtualizado = clienteH2.get();
+//			
+//			clienteAtualizado.setNome(cliente.getNome());
+//			clienteAtualizado.setCpf(cliente.getCpf());		
+//			
+//			clienteAtualizado.getEndereco().setCidade(cliente.getEndereco().getCidade());
+//			clienteAtualizado.getEndereco().setBairro(cliente.getEndereco().getBairro());
+//			clienteAtualizado.getEndereco().setCep(cliente.getEndereco().getCep());
+//			clienteAtualizado.getEndereco().setComplemento(cliente.getEndereco().getComplemento());
+//			clienteAtualizado.getEndereco().setEstado(cliente.getEndereco().getEstado());
+//			clienteAtualizado.getEndereco().setNumero(cliente.getEndereco().getNumero());
+//			clienteAtualizado.getEndereco().setRua(cliente.getEndereco().getRua());
+//			
+//			
+//			return clienteRepository.save(clienteAtualizado);	
+//		} else { 
+//			throw new ClienteNaoEncontradoException("O cliente não pode ser atualizado porque não existe no banco.");
+//		}	
+//		
+//	}
 		
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Cliente> getAll(){	
