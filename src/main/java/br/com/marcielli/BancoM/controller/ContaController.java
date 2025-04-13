@@ -28,20 +28,20 @@ public class ContaController {
 	@Autowired
 	private ContaService contaService;
 
-	@PostMapping("/salvar")
-	public ResponseEntity<String> adicionarConta(@RequestBody Conta conta) {
-		
-		Conta contaAdicionada = contaService.save(conta);
-		
-		if (contaAdicionada != null) {
-			
-			return new ResponseEntity<String>("A conta " + contaAdicionada.getNumeroConta() + " foi criada com sucesso.\nPix gerado: "+contaAdicionada.getPixAleatorio()+".", HttpStatus.CREATED);
-			
-		} else {
-			
-			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-		}
-	}
+//	@PostMapping("/salvar")
+//	public ResponseEntity<String> adicionarConta(@RequestBody Conta conta) {
+//		
+//		Conta contaAdicionada = contaService.save(conta);
+//		
+//		if (contaAdicionada != null) {
+//			
+//			return new ResponseEntity<String>("A conta " + contaAdicionada.getNumeroConta() + " foi criada com sucesso.\nPix gerado: "+contaAdicionada.getPixAleatorio()+".", HttpStatus.CREATED);
+//			
+//		} else {
+//			
+//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+//		}
+//	}
 
 
 	@GetMapping("/listar")

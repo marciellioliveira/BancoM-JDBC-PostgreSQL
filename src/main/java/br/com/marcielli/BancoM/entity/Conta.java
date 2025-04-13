@@ -3,6 +3,8 @@ package br.com.marcielli.BancoM.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import org.hibernate.annotations.Cascade;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -41,10 +43,9 @@ public class Conta implements Serializable {
 	@Version
 	private Long version;
 	
-//	@ManyToOne(cascade = {CascadeType.ALL}) 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn(name = "clienteId")
-	@JsonBackReference
+	//@JsonBackReference
 	private Cliente cliente;
 	
 	@Enumerated(EnumType.STRING)

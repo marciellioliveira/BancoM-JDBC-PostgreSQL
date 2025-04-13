@@ -14,7 +14,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 @Entity
 public class Cliente implements Serializable {
 	
@@ -30,71 +42,13 @@ public class Cliente implements Serializable {
 	private String nome;
 	
 	private Long cpf;
-	
 	@OneToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(name = "enderecoId")
+	@JoinColumn(name = "enderecoId", referencedColumnName = "id")
 	@JsonManagedReference
 	private Endereco endereco;
 	
-	@OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@OneToMany(mappedBy = "cliente", cascade = {CascadeType.ALL}, orphanRemoval = true )
 	@JsonManagedReference	
 	private List<Conta> contas;
-	
-	
-	public Cliente(String nome, Long cpf, Endereco endereco, List<Conta> contas) {
-		super();
-		this.nome = nome;
-		this.cpf = cpf;
-		this.endereco = endereco;
-		this.contas = contas;
-	}
-
-	public Cliente() {}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public Long getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(Long cpf) {
-		this.cpf = cpf;
-	}
-
-	public Endereco getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(Endereco endereco) {
-		this.endereco = endereco;
-	}
-
-	public List<Conta> getContas() {
-		return contas;
-	}
-
-	public void setContas(List<Conta> contas) {
-		this.contas = contas;
-	}	
-
-
-	@Override
-	public String toString() {
-		return "Cliente [id=" + id + ", version=" + version + ", nome=" + nome + ", cpf=" + cpf + ", endereco="
-				+ endereco + ", contas=" + contas + "]";
-	}
-
-	
-	
 
 }

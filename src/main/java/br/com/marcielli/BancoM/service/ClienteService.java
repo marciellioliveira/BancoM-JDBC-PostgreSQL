@@ -25,40 +25,30 @@ public class ClienteService {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente save(Cliente cliente) {
 		
-		//Validar Nome		
-		validarNome(cliente.getNome());
 		
 		if(cliente.getCpf() != null) {
 			String novoCpf = ""+cliente.getCpf();
 			validarCpf(novoCpf);
 		}		
 		
-		//Validar CPF
+		if(cliente.getId() != null) {
+			
+			Optional<Cliente> clienteNoBanco = clienteRepository.findById(cliente.getId());
+			
+			if(clienteNoBanco.isPresent()) {
+				Cliente clienteExiste = clienteNoBanco.get();
+				return clienteExiste;		
+			}
+		} 
 		
-		Cliente novoCliente = new Cliente();
-		Endereco novoEndereco = new Endereco();		
-		
-		novoEndereco.setCep(cliente.getEndereco().getCep());
-		novoEndereco.setEstado(cliente.getEndereco().getEstado());
-		novoEndereco.setCidade(cliente.getEndereco().getCidade());
-		novoEndereco.setBairro(cliente.getEndereco().getBairro());
-		novoEndereco.setRua(cliente.getEndereco().getRua());
-		novoEndereco.setNumero(cliente.getEndereco().getNumero());
-		novoEndereco.setComplemento(cliente.getEndereco().getComplemento());
-				
-		novoCliente.setNome(cliente.getNome());
-		novoCliente.setCpf(cliente.getCpf());
-		novoCliente.setEndereco(novoEndereco);
-		//novoCliente.setContas(cliente.getContas());
-		
-		return clienteRepository.save(novoCliente);
-	}
+		return clienteRepository.save(cliente);	
+	}	
+
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente update(Cliente cliente, Long id) {
 		
-		//Validar Nome		
-		validarNome(cliente.getNome());
+	
 		
 		if(cliente.getCpf() != null) {
 			String novoCpf = ""+cliente.getCpf();
@@ -133,39 +123,7 @@ public class ClienteService {
 	}
 	
 	
-	//Outros métodos
-	public boolean validarNome(String nome) {
-		
-		for(int i=0; i<nome.length(); i++) {			
-			char letra = nome.charAt(i);
-			Boolean flag = Character.isDigit(letra);
-			
-			if(flag) {
-				throw new ClienteNomeInvalidoException("O nome '"+nome+"' digitado possui número. O nome do cliente deve conter apenas letras.");
-			}
-		}			
-		
-		if(nome.contains(",") || nome.contains(".") || nome.contains("!") || nome.contains("\\") || nome.contains("\"") || nome.contains("/") || nome.contains("#") || nome.contains("$") || nome.contains("%") || nome.contains("&") || nome.contains("*") || nome.contains(":") || nome.contains(";") || nome.contains("+") || nome.contains("<") || nome.contains(">") || nome.contains("=") || nome.contains("?") || nome.contains("@") || nome.contains("[") || nome.contains("]") || nome.contains("_") || nome.contains("{") || nome.contains("}") || nome.contains("|")) {
-			throw new ClienteNomeInvalidoException("O nome '"+nome+"' digitado possui caracteres especiais. O nome do cliente deve conter apenas letras.");
-		}	
-		
-		String tam = "";
-		
-		if(nome.length() < 2 || nome.length()> 100) {
-			
-			if(nome.length() < 2) {
-				tam = "MAIOR";
-			}
-			
-			if(nome.length() > 2) {
-				tam = "MENOR";
-			}
-			throw new ClienteNomeInvalidoException("O nome '"+nome+"' digitado é inválido. O nome do cliente deve conter entre 2 e 100 caracteres.");
-		}	
-		
-		return true;
-		
-	}	
+	
 	
 	public boolean validarCpf(String cpf)  {
 		

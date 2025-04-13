@@ -35,46 +35,50 @@ public class ContaService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
-
+	
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Conta save(Conta contaParaCriar) {
-
-		Conta contaCriada = null;
-
-		if (contaParaCriar.getId() == null) {
-			throw new ClienteNaoEncontradoException("Para cadastrar uma conta, você precisa ser um cliente do banco.");
-		}
-
-		// Buscar cliente por ID
-		Optional<Cliente> clienteExiste = clienteRepository.findById(contaParaCriar.getId());
-
-		if (clienteExiste.isPresent()) {
-
-			Cliente simClienteExiste = clienteExiste.get();
-			contaParaCriar.setCliente(simClienteExiste);
-
-			// Validar dados
-			if (contaParaCriar.getSaldoConta() < 0) {
-				throw new ContaTipoContaNaoExisteException("O saldo inicial da conta precisa ser positivo");
-			}
-
-			// Padrão de Design Factory
-
-			contaCriada = ContaFactory.criarConta(contaParaCriar);
-
-			if (contaCriada != null) {
-
-				contaRepository.save(contaCriada);
-				simClienteExiste.getContas().add(contaCriada);
-				clienteRepository.save(simClienteExiste);
-			}
-
-		} else {
-			throw new ClienteNaoEncontradoException("Para cadastrar uma conta, você precisa ser um cliente do banco.");
-		}
-
-		return contaCriada;
-	}
+	public Cliente save(Cliente cliente) {
+		return clienteRepository.save(cliente);
+	}	
+	
+//
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Conta save(Conta contaParaCriar) {
+//
+//		Conta contaCriada = null;
+//
+//		if (contaParaCriar.getId() == null) {
+//			throw new ClienteNaoEncontradoException("Para cadastrar uma conta, você precisa ser um cliente do banco.");
+//		}
+//
+//		// Buscar cliente por ID
+//		Optional<Cliente> clienteExiste = clienteRepository.findById(contaParaCriar.getId());
+//
+//		if (clienteExiste.isPresent()) {
+//
+//			Cliente simClienteExiste = clienteExiste.get();
+//			contaParaCriar.setCliente(simClienteExiste);
+//		
+//			if (contaParaCriar.getSaldoConta() < 0) {
+//				throw new ContaTipoContaNaoExisteException("O saldo inicial da conta precisa ser positivo");
+//			}
+//
+//			contaCriada = ContaFactory.criarConta(contaParaCriar);
+//
+//			if (contaCriada != null) {
+//
+//				contaRepository.save(contaCriada);
+//				simClienteExiste.getContas().add(contaCriada);
+//				clienteRepository.save(simClienteExiste);
+//			}
+//
+//		} else {
+//			throw new ClienteNaoEncontradoException("Para cadastrar uma conta, você precisa ser um cliente do banco.");
+//		}
+//
+//		return contaCriada;
+//	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta update(Long idContaParaAtualizar, Conta dadosParaAtualizar) {
