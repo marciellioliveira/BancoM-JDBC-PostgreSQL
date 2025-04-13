@@ -53,10 +53,15 @@ public class ClienteService {
 			validarCpf(novoCpf);
 		}		
 		
-		System.err.println(cliente.getNome());
 		clienteAtualizado.setNome(cliente.getNome());
 		clienteAtualizado.setCpf(cliente.getCpf());
-		clienteAtualizado.setEndereco(cliente.getEndereco());
+		clienteAtualizado.getEndereco().setCep(cliente.getEndereco().getCep());
+		clienteAtualizado.getEndereco().setEstado(cliente.getEndereco().getEstado());
+		clienteAtualizado.getEndereco().setCidade(cliente.getEndereco().getCidade());
+		clienteAtualizado.getEndereco().setBairro(cliente.getEndereco().getBairro());
+		clienteAtualizado.getEndereco().setRua(cliente.getEndereco().getRua());
+		clienteAtualizado.getEndereco().setNumero(cliente.getEndereco().getNumero());
+		clienteAtualizado.getEndereco().setComplemento(cliente.getEndereco().getComplemento());
 		//clienteAtualizado.setContas(cliente.getContas());
 		
 		return clienteRepository.save(clienteAtualizado);	

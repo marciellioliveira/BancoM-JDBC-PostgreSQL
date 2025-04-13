@@ -78,9 +78,8 @@ public class ClienteController {
 		endereco.setNumero(clienteCreateDTO.getNumero());
 		endereco.setComplemento(clienteCreateDTO.getComplemento());
 		
-		cliente.setEndereco(endereco);				
+		cliente.setEndereco(endereco);			
 		
-		System.err.println("teste "+cliente);
 		Cliente clienteAtualizado = clienteService.update(clienteId, cliente);
 		
 		ClienteResponseDTO clienteResponseDTO = clienteMapper.toDTO(clienteAtualizado);
