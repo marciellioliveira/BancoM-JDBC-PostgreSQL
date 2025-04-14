@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,75 +155,18 @@ public class ContaController {
 		}
 	}
 	
-	
-
-
-
-//	// Transferencia Depositar
-//	@PostMapping("/depositar/{idClienteReceber}/{idContaReceber}/deposito")
-//	public ResponseEntity<String> transferirDEPOSITAR(@PathVariable("idClienteReceber") Long idClienteReceber,
-//			@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia valorDepositar) {
-//
-//		boolean depositar = contaService.transferirDEPOSITAR(idClienteReceber, idContaReceber, valorDepositar);
-//
-//		if (depositar) {
-//
-//			return new ResponseEntity<String>("Depósito realizado com sucesso.", HttpStatus.OK);
-//
-//		} else {
-//
-//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-//	}
-//
-//	// Transferencia Sacar
-//	@PostMapping("/sacar/{idClientePegar}/{idContaPegar}/saque")
-//	public ResponseEntity<String> transferirSACAR(@PathVariable("idClientePegar") Long idClientePegar,
-//			@PathVariable("idContaPegar") Long idContaPegar, @RequestBody Transferencia valorSacar) {
-//
-//		boolean sacar = contaService.transferirSACAR(idClientePegar, idContaPegar, valorSacar);
-//
-//		if (sacar) {
-//
-//			return new ResponseEntity<String>("Saque realizado com sucesso.", HttpStatus.OK);
-//
-//		} else {
-//
-//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-//	}
-
-	// Aplicar Taxa de Manutenção Mensal (Conta Corrente)
-//	@PutMapping("/atualizar/{idConta}/manutencao")
-//	public ResponseEntity<String> aplicarTaxaManutencaoMensal(@PathVariable("idConta") Long contaIdParaAtualizar, @RequestBody Conta contaDadosInserir) {
-//			
-//		Conta taxasAplicadas = contaService.aplicarTaxas(contaIdParaAtualizar, contaDadosInserir);
-//		
-//		if (taxasAplicadas != null) {
-//			
-//			return new ResponseEntity<String>("A conta " + taxasAplicadas.getNumeroConta() + " foi atualizada com sucesso.", HttpStatus.OK);
-//			
-//		} else {
-//			
-//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
-//		}
-//
-//	}
-
-	// Aplicar Rendimentos (Conta Poupança)
 
 	// Ver saldo
-//	@GetMapping("/{clienteId}/saldo")
-//	public ResponseEntity<String> exibirSaldo(@PathVariable("clienteId") Long clienteId) {
-//
-//		float[] saldoAtual = contaService.exibirSaldo(clienteId);
-//
-//		if (saldoAtual.length >= 0) {
-//			return new ResponseEntity<String>("Saldo Total: " + saldoAtual[2] + "\nSaldo Conta Corrente: "
-//					+ saldoAtual[0] + "\nSaldo Conta Poupança: " + saldoAtual[1] + ".", HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-//	}
+	@GetMapping("/{clienteId}/saldo")
+	public ResponseEntity<String> exibirSaldo(@PathVariable("clienteId") Long clienteId) {
+
+		BigDecimal saldoAtual = contaService.exibirSaldo(clienteId);
+
+		if (saldoAtual.compareTo(BigDecimal.ZERO) > 0) {
+			return new ResponseEntity<String>("Saldo Total: "+saldoAtual, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
 
 }

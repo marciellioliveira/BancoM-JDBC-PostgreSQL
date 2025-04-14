@@ -215,6 +215,17 @@ public class ContaService {
 				contaOrigem.setTaxas(novaTaxa);
 				contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
 				
+				if(contaOrigem.getTipoConta() == TipoConta.CORRENTE) {
+					ContaCorrente cc = (ContaCorrente)contaOrigem;
+					cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+				}
+				
+				if(contaOrigem.getTipoConta() == TipoConta.POUPANCA) {
+					ContaPoupanca cp = (ContaPoupanca)contaOrigem;
+					cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
+					cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());					
+				}
+							
 				Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED);
 				contaOrigem.getTransferencia().add(transferindo);
 	
@@ -390,61 +401,35 @@ public class ContaService {
 		Conta conta = contaRepository.findById(idConta).orElseThrow(
 				() -> new ContaNaoEncontradaException("A conta não existe."));
 		
-		TaxaManutencao novaTaxa = new TaxaManutencao(dto.getTaxaManutencaoMensal());
-		
-//		TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
-//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-//		novaTaxa.add(taxaContaOrigem);
-//		conta.setTaxas(novaTaxa);
-//		conta.setCategoriaConta(taxaContaOrigem.getCategoria());
+		TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+		novaTaxa.add(taxaContaOrigem);
+		conta.setTaxas(novaTaxa);
+		conta.setCategoriaConta(taxaContaOrigem.getCategoria());
 		
 		return true;
 	}
 	
 	
 
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public float[] exibirSaldo(Long clienteId) {
-//
-//		Optional<Cliente> clienteVerSaldo = clienteRepository.findById(clienteId);
-//
-//		float[] saldoContas = { 0, 0, 0 };
-//
-//		if (clienteVerSaldo.isPresent()) {
-//
-//			Cliente cliente = clienteVerSaldo.get();
-//			
-//			for(Conta getContas : cliente.getContas()) {
-//				
-//				if(getContas.isStatus() == true && getContas.getTipoConta() == TipoConta.CORRENTE) {
-//					saldoContas[0] += getContas.getSaldoConta();
-//					
-//					if(getContas.isStatus() == false) {
-//						saldoContas[0] += 0;
-//					}
-//				}
-//				
-//				if(getContas.isStatus() == true && getContas.getTipoConta() == TipoConta.POUPANCA) {
-//					saldoContas[1] += getContas.getSaldoConta();					
-//					
-//					if(getContas.isStatus() == false) {
-//						saldoContas[1] += 0;
-//					}
-//				}
-//				
-//				
-//				
-//				
-//				
-//			}
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public BigDecimal exibirSaldo(Long clienteId) {
+		
+		Cliente clienteSaldo = clienteRepository.findById(clienteId).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cliente não existe."));
+		
+		BigDecimal saldo = new BigDecimal("0");
+		
+		for(Conta getContas : clienteSaldo.getContas()) {
+			
+			saldo = saldo.add(getContas.getSaldoConta());
+			
+		}
+		
+		return saldo;
+	
 
-	// }
-
-//		saldoContas[2] = saldoContas[0] + saldoContas[1];
-//
-//		return saldoContas;
-//
-//	}
+	}
 
 	// Outros métodos
 	public String gerarNumeroDaConta() {

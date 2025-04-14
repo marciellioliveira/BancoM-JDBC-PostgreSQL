@@ -51,15 +51,8 @@ public class TaxaManutencao implements Serializable {
 	
 	private BigDecimal taxaMensal;
 	
-	
 	public TaxaManutencao(BigDecimal saldoConta, TipoConta tipoConta) {
-		
-		
-//		BigDecimal ccComum = new BigDecimal("12.00");
-//		BigDecimal ccSuper = new BigDecimal("8.00");
-//		BigDecimal ccPremium = new BigDecimal("0");
-		
-
+	
 		if (tipoConta == TipoConta.CORRENTE) {
 
 			this.tipoConta = TipoConta.CORRENTE;
@@ -68,21 +61,18 @@ public class TaxaManutencao implements Serializable {
 
 				this.categoria = CategoriaConta.COMUM;
 				this.taxaManutencaoMensal = new BigDecimal("12.00");
-
 			}
 
 			if (saldoConta.compareTo(new BigDecimal("1000")) > 0 && saldoConta.compareTo(new BigDecimal("5000")) <= 0) {
 
 				this.categoria = CategoriaConta.SUPER;
 				this.taxaManutencaoMensal = new BigDecimal("8.00");
-
 			}
 
 			if (saldoConta.compareTo(new BigDecimal("5000")) > 0) {
 
 				this.categoria = CategoriaConta.PREMIUM;
 				this.taxaManutencaoMensal = new BigDecimal("0");
-
 			}
 		}
 
