@@ -28,5 +28,5 @@ public class ContaMapper {
 	public List<ContaResponseDTO> toDTO(List<Conta> contas) {
 		return contas.stream().map(conta -> toDTO(conta)).collect(Collectors.toList());
 	}
-
+	
 }

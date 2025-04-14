@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.BancoM.dto.ClienteCreateDTO;
 import br.com.marcielli.BancoM.dto.ClienteResponseDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateDTO;
+import br.com.marcielli.BancoM.dto.ContaCreateTransferenciaDTO;
 import br.com.marcielli.BancoM.dto.ContaMapper;
 import br.com.marcielli.BancoM.dto.ContaResponseDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
@@ -37,7 +38,7 @@ public class ContaController {
 
 	@Autowired
 	private ContaMapper contaMapper;
-
+	
 	@PostMapping("/salvar")
 	public ResponseEntity<ContaResponseDTO> adicionarConta(@RequestBody ContaCreateDTO contaCreateDTO) {		
 
@@ -49,8 +50,7 @@ public class ContaController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(contaResponseDTO);
 
-	}
-	
+	}	
 	
 	@PutMapping("/atualizar/{contaId}")
 	public ResponseEntity<ContaResponseDTO> atualizar(@PathVariable("contaId") Long contaId, @RequestBody ContaCreateDTO contaCreateDTO) {
@@ -64,8 +64,6 @@ public class ContaController {
 		return ResponseEntity.status(HttpStatus.OK).body(contaResponseDTO);
 
 	}
-	
-	
 
 	@GetMapping("/listar")
 	public ResponseEntity<List<Conta>> getContas() {
@@ -97,92 +95,93 @@ public class ContaController {
 		}
 	}
 	
+
+	@PostMapping("/transferir/{idContaReceber}")
+	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateTransferenciaDTO contaTransCreateDTO) {
+		
+		boolean tedRealizada = contaService.transferirTED(idContaReceber, contaTransCreateDTO);
+		
+		if(tedRealizada) {
+			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		
+	}	
 	
-//	@DeleteMapping("/deletar/{clienteId}")
-//	public ResponseEntity<String> deletar(@PathVariable("clienteId") Long clienteId) {
+	
+
+//	// Transferencia TED
+//	@PostMapping("/transferir/{idClienteReceber}/{idContaReceber}")
+//	public ResponseEntity<String> transferirTED(@PathVariable("idClienteReceber") Long idClienteReceber,
+//			@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
 //
-//		boolean clienteDeletado = clienteService.delete(clienteId);
+//		boolean transferencias = contaService.transferirTED(idClienteReceber, idContaReceber, contaEnviar);
 //
-//		if (clienteDeletado) {
-//			return new ResponseEntity<String>("Cliente deletado com sucesso", HttpStatus.OK);
+//		if (transferencias) {
+//
+//			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.CREATED);
+//
 //		} else {
+//
 //			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 //		}
 //	}
-	
-	
-	
-
-	// Transferencia TED
-	@PostMapping("/transferir/{idClienteReceber}/{idContaReceber}")
-	public ResponseEntity<String> transferirTED(@PathVariable("idClienteReceber") Long idClienteReceber,
-			@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
-
-		boolean transferencias = contaService.transferirTED(idClienteReceber, idContaReceber, contaEnviar);
-
-		if (transferencias) {
-
-			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.CREATED);
-
-		} else {
-
-			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-		}
-	}
-
-	// Transferencia PIX
-	@PostMapping("/transferir/{pixAleatorio}/pix")
-	public ResponseEntity<String> transferirPIX(@PathVariable("pixAleatorio") String pixAleatorio,
-			@RequestBody Transferencia contaEnviar) {
-
-		boolean transferenciaPIX = contaService.transferirPIX(pixAleatorio, contaEnviar);
-
-		if (transferenciaPIX) {
-
-			return new ResponseEntity<String>(
-					"PIX de " + contaEnviar.getValor() + " realizado com sucesso para a chave " + pixAleatorio + ".",
-					HttpStatus.CREATED);
-
-		} else {
-
-			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-
-		}
-	}
-
-	// Transferencia Depositar
-	@PostMapping("/depositar/{idClienteReceber}/{idContaReceber}/deposito")
-	public ResponseEntity<String> transferirDEPOSITAR(@PathVariable("idClienteReceber") Long idClienteReceber,
-			@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia valorDepositar) {
-
-		boolean depositar = contaService.transferirDEPOSITAR(idClienteReceber, idContaReceber, valorDepositar);
-
-		if (depositar) {
-
-			return new ResponseEntity<String>("Depósito realizado com sucesso.", HttpStatus.OK);
-
-		} else {
-
-			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-		}
-	}
-
-	// Transferencia Sacar
-	@PostMapping("/sacar/{idClientePegar}/{idContaPegar}/saque")
-	public ResponseEntity<String> transferirSACAR(@PathVariable("idClientePegar") Long idClientePegar,
-			@PathVariable("idContaPegar") Long idContaPegar, @RequestBody Transferencia valorSacar) {
-
-		boolean sacar = contaService.transferirSACAR(idClientePegar, idContaPegar, valorSacar);
-
-		if (sacar) {
-
-			return new ResponseEntity<String>("Saque realizado com sucesso.", HttpStatus.OK);
-
-		} else {
-
-			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-		}
-	}
+//
+//	// Transferencia PIX
+//	@PostMapping("/transferir/{pixAleatorio}/pix")
+//	public ResponseEntity<String> transferirPIX(@PathVariable("pixAleatorio") String pixAleatorio,
+//			@RequestBody Transferencia contaEnviar) {
+//
+//		boolean transferenciaPIX = contaService.transferirPIX(pixAleatorio, contaEnviar);
+//
+//		if (transferenciaPIX) {
+//
+//			return new ResponseEntity<String>(
+//					"PIX de " + contaEnviar.getValor() + " realizado com sucesso para a chave " + pixAleatorio + ".",
+//					HttpStatus.CREATED);
+//
+//		} else {
+//
+//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+//
+//		}
+//	}
+//
+//	// Transferencia Depositar
+//	@PostMapping("/depositar/{idClienteReceber}/{idContaReceber}/deposito")
+//	public ResponseEntity<String> transferirDEPOSITAR(@PathVariable("idClienteReceber") Long idClienteReceber,
+//			@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia valorDepositar) {
+//
+//		boolean depositar = contaService.transferirDEPOSITAR(idClienteReceber, idContaReceber, valorDepositar);
+//
+//		if (depositar) {
+//
+//			return new ResponseEntity<String>("Depósito realizado com sucesso.", HttpStatus.OK);
+//
+//		} else {
+//
+//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+//		}
+//	}
+//
+//	// Transferencia Sacar
+//	@PostMapping("/sacar/{idClientePegar}/{idContaPegar}/saque")
+//	public ResponseEntity<String> transferirSACAR(@PathVariable("idClientePegar") Long idClientePegar,
+//			@PathVariable("idContaPegar") Long idContaPegar, @RequestBody Transferencia valorSacar) {
+//
+//		boolean sacar = contaService.transferirSACAR(idClientePegar, idContaPegar, valorSacar);
+//
+//		if (sacar) {
+//
+//			return new ResponseEntity<String>("Saque realizado com sucesso.", HttpStatus.OK);
+//
+//		} else {
+//
+//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+//		}
+//	}
 
 	// Aplicar Taxa de Manutenção Mensal (Conta Corrente)
 //	@PutMapping("/atualizar/{idConta}/manutencao")
