@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.marcielli.BancoM.dto.ContaCreateTransferenciaDTO;
+import br.com.marcielli.BancoM.dto.ContaCreatePixDTO;
+import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
@@ -180,7 +181,7 @@ public class ContaService {
 	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean transferirTED(Long idContaReceber, ContaCreateTransferenciaDTO dto) {
+	public boolean transferirTED(Long idContaReceber, ContaCreateTedDTO dto) {
 		
 		Cliente clienteOrigem = clienteRepository.findById(dto.getIdClienteOrigem()).orElseThrow(
 				() -> new ContaNaoEncontradaException("O cliente origem não existe."));
@@ -245,189 +246,71 @@ public class ContaService {
 	}
 	
 	
-	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public List<Conta> transferirTED(Long idContaReceber, ContaCreateTransferenciaDTO dto) {
-//		
-//		Cliente clienteOrigem = clienteRepository.findById(dto.getIdClienteOrigem()).orElseThrow(
-//				() -> new ContaNaoEncontradaException("O cliente origem não existe."));
-//		
-//		Conta contaOrigem = contaRepository.findById(dto.getIdContaOrigem()).orElseThrow(
-//				() -> new ContaNaoEncontradaException("A conta origem não existe."));
-//		
-//		Cliente clienteDestino = clienteRepository.findById(dto.getIdClienteDestino()).orElseThrow(
-//				() -> new ContaNaoEncontradaException("O cliente destino não existe."));
-//		
-//		Conta contaDestino = contaRepository.findById(idContaReceber).orElseThrow(
-//				() -> new ContaNaoEncontradaException("A conta destino não existe."));
-//		
-//	
-//		List<Conta> contasTransferidas = new ArrayList<Conta>();
-//		
-//		for(Conta contasDoClienteOrigem : clienteOrigem.getContas()) {
-//		
-//			if(contasDoClienteOrigem.getId() == contaOrigem.getId()) {
-//			
-//				contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));
-//				contasTransferidas.add(contaOrigem);
-//				
-//				TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
-//
-//				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-//				novaTaxa.add(taxaContaOrigem);
-//				
-//				contaOrigem.setTaxas(novaTaxa);
-//				contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
-//				
-//				Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED);
-//				List<Transferencia> novaTransferencia = new ArrayList<Transferencia>();
-//				novaTransferencia.add(transferindo);
-//				
-//				contaOrigem.setTransferencia(novaTransferencia);
-//				
-//				contaRepository.save(contaOrigem);
-//				
-//				break;
-//			}
-//		}		
-//		
-//		for(Conta contasDoClienteDestino : clienteDestino.getContas()) {
-//			
-//			if(contasDoClienteDestino.getId() == contaDestino.getId()) {
-//				
-//				contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.getValor()));
-//				contasTransferidas.add(contaDestino);
-//				
-//				TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
-//
-//				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-//				novaTaxa.add(taxaContaDestino);
-//				
-//				contaDestino.setTaxas(novaTaxa);
-//				contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
-//				
-//				contaRepository.save(contaDestino);
-//				
-//				break;
-//			}			
-//		}
-//		
-//		return contasTransferidas;
-//	}
-//	
-	
-	
-	
-	
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean transferirPIX(Long idContaReceber, ContaCreatePixDTO dto) {
+		
+		Cliente clienteOrigem = clienteRepository.findById(dto.getIdClienteOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cliente origem não existe."));
+		
+		Conta contaOrigem = contaRepository.findById(dto.getIdContaOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta origem não existe."));
+		
+		Conta contaDestino = contaRepository.findById(idContaReceber).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta destino não existe."));	
+		
+		Cliente clienteDestino = clienteRepository.findById(contaDestino.getCliente().getId()).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cliente destino não existe."));
+		
+		
+		for(Conta contasDoClienteOrigem : clienteOrigem.getContas()) {
+		
+			if(contasDoClienteOrigem.getId() == contaOrigem.getId()) {
+			
+				contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));				
+				
+				TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
 
+				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+				novaTaxa.add(taxaContaOrigem);
+				
+				contaOrigem.setTaxas(novaTaxa);
+				contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
+				
+				Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.PIX);
+				contaOrigem.getTransferencia().add(transferindo);
+	
+				contaRepository.save(contaOrigem);		
+				break;
+			
+			}
+		}		
+		
+		for(Conta contasDoClienteDestino : clienteDestino.getContas()) {
+			
+			if(contasDoClienteDestino.getId() == contaDestino.getId()) {
+				
+				contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.getValor()));
+				
+				TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
 
-//	// Transferência TED
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirTED(Long idPessoaReceber, Long idContaReceber, Transferencia dadosContaEnviar) {
-//
-//		if (idPessoaReceber == null || idContaReceber == null || dadosContaEnviar.getIdClienteOrigem() == null
-//				|| dadosContaEnviar.getIdContaOrigem() == null) {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"A transferência não foi realizada. Confirme os seus dados.");
-//		}
-//
-//		// PathVariable
-//		Optional<Cliente> encontraRecebedorPorId = clienteRepository.findById(idPessoaReceber);
-//		Optional<Conta> encontraContaRecebedorPorId = contaRepository.findById(idContaReceber);
-//
-//		// RequestBody
-//		Optional<Cliente> encontraPagadorPorId = clienteRepository.findById(dadosContaEnviar.getIdClienteOrigem());
-//		Optional<Conta> encontraContaPagadorPorId = contaRepository.findById(dadosContaEnviar.getIdContaOrigem());
-//
-//		float valorTransferencia = dadosContaEnviar.getValor();
-//
-//		if (valorTransferencia <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"A transferência não foi realizada. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//
-//		if (encontraRecebedorPorId.isPresent() && encontraContaRecebedorPorId.isPresent()
-//				&& encontraPagadorPorId.isPresent() && encontraContaPagadorPorId.isPresent()) {
-//
-//			Cliente clienteReceber = encontraRecebedorPorId.get();
-//			Conta contaReceber = encontraContaRecebedorPorId.get();
-//
-//			Cliente clientePagador = encontraPagadorPorId.get();
-//			Conta contaPagador = encontraContaPagadorPorId.get();
-//
-//			if (contaReceber.isStatus() == false || contaPagador.isStatus() == false) {
-//				throw new ContaNaoRealizouTransferenciaException(
-//						"Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
-//			}
-//
-//			if (clienteReceber.getId() != null && contaReceber != null) {
-//
-//				// Conta pagador -> Request Body (idContaOrigem) -> Conta Recebedor ->
-//				// PathVariable (id)
-//				Transferencia novaTransferencia = new Transferencia(contaPagador.getId(), contaReceber.getId());
-//
-//				List<Conta> contasTransferidas = novaTransferencia.transferirTed(contaPagador, valorTransferencia,
-//						contaReceber);
-//
-//				if (contasTransferidas != null) {
-//
-//					for (Conta contasT : contasTransferidas) {
-//
-//						// Pagador
-//						if (contasT.getId() == contaPagador.getId()) {
-//
-//							if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//								ContaCorrente minhaContaCorrente = (ContaCorrente) contaPagador;
-//								minhaContaCorrente.getTransferencia().add(novaTransferencia);
-//								contaRepository.save(minhaContaCorrente);
-//
-//							}
-//
-//							if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//								ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaPagador;
-//								minhaContaPoupanca.getTransferencia().add(novaTransferencia);
-//								contaRepository.save(minhaContaPoupanca);
-//							}
-//
-//						}
-//
-//						// Recebedor
-//						if (contasT.getId() == contaReceber.getId()) {
-//
-//							if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//								ContaCorrente minhaContaCorrente = (ContaCorrente) contaReceber;
-//								contaRepository.save(minhaContaCorrente);
-//
-//							}
-//
-//							if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//								ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaReceber;
-//								contaRepository.save(minhaContaPoupanca);
-//							}
-//
-//						}
-//
-//					}
-//
-//				}
-//
-//			} else {
-//				throw new ContaNaoRealizouTransferenciaException(
-//						"O cliente para o qual você está tentando transferir não tem essa conta. Confirme os seus dados.");
-//			}
-//
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"A transferência não foi realizada. Confirme os seus dados.");
-//		}
-//
-//		return true;
-//	}
+				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+				novaTaxa.add(taxaContaDestino);
+				
+				contaDestino.setTaxas(novaTaxa);
+				contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
+				
+				contaRepository.save(contaDestino);
+				break;
+			
+			}			
+		}
+		
+		return true;
+	}
+	
+	
+	
+	
 //
 //	// Transferência PIX
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)

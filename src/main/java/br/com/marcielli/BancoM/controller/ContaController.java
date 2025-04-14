@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.BancoM.dto.ClienteCreateDTO;
 import br.com.marcielli.BancoM.dto.ClienteResponseDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateDTO;
-import br.com.marcielli.BancoM.dto.ContaCreateTransferenciaDTO;
+import br.com.marcielli.BancoM.dto.ContaCreatePixDTO;
+import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
 import br.com.marcielli.BancoM.dto.ContaMapper;
 import br.com.marcielli.BancoM.dto.ContaResponseDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
@@ -97,7 +98,7 @@ public class ContaController {
 	
 
 	@PostMapping("/transferir/{idContaReceber}")
-	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateTransferenciaDTO contaTransCreateDTO) {
+	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateTedDTO contaTransCreateDTO) {
 		
 		boolean tedRealizada = contaService.transferirTED(idContaReceber, contaTransCreateDTO);
 		
@@ -106,29 +107,22 @@ public class ContaController {
 		} else {
 			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
-		
-		
 	}	
 	
+	@PostMapping("/transferir/{idContaReceber}/pix")
+	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreatePixDTO contaPixCreateDTO) {
+		
+		boolean pixRealizado = contaService.transferirPIX(idContaReceber, contaPixCreateDTO);
+		
+		if(pixRealizado) {
+			return new ResponseEntity<String>("Pix realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do pix são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
 	
 
-//	// Transferencia TED
-//	@PostMapping("/transferir/{idClienteReceber}/{idContaReceber}")
-//	public ResponseEntity<String> transferirTED(@PathVariable("idClienteReceber") Long idClienteReceber,
-//			@PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
-//
-//		boolean transferencias = contaService.transferirTED(idClienteReceber, idContaReceber, contaEnviar);
-//
-//		if (transferencias) {
-//
-//			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.CREATED);
-//
-//		} else {
-//
-//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-//	}
-//
+
 //	// Transferencia PIX
 //	@PostMapping("/transferir/{pixAleatorio}/pix")
 //	public ResponseEntity<String> transferirPIX(@PathVariable("pixAleatorio") String pixAleatorio,

@@ -16,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class ContaCreateTransferenciaDTO {
+public class ContaCreateTedDTO {
 	
 	@NotBlank(message = "O id do cliente origem deve ser informado.")
 	private Long idClienteOrigem;

@@ -90,6 +90,8 @@ public class Transferencia implements Serializable {
 		this.data = dataTransferencia;		
 		this.codigoOperacao = codTransferencia;
 	}
+	
+	
 
 
 	
