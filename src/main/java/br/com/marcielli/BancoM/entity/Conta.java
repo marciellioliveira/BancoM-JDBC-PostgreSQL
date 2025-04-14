@@ -1,9 +1,8 @@
 package br.com.marcielli.BancoM.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
-
-import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,14 +25,23 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Conta implements Serializable { 
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -45,7 +53,7 @@ public class Conta implements Serializable {
 	
 	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn(name = "clienteId")
-	//@JsonBackReference
+	@JsonBackReference
 	private Cliente cliente;
 	
 	@Enumerated(EnumType.STRING)
@@ -56,13 +64,13 @@ public class Conta implements Serializable {
 	
 	@OneToMany(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "taxasId")
-	private List<Taxas> taxas;
+	private List<TaxaManutencao> taxas;
 	
-	private float saldoConta;	
+	private BigDecimal saldoConta;	
 	
 	@JsonIgnore
 	@Transient
-	private float valorTransferencia;
+	private BigDecimal valorTransferencia;
 	
 	private String numeroConta;	
 	
@@ -80,155 +88,155 @@ public class Conta implements Serializable {
 	
 	private boolean status;
 	
-	public Conta() {}
-
-	public Conta(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta,
-			float saldoConta, String numeroConta, List<Taxas> taxas) {
-		super();	
-		this.cliente = cliente;
-		this.tipoConta = tipoConta;
-		this.categoriaConta = categoriaConta;
-		this.saldoConta = saldoConta;
-		this.numeroConta = numeroConta;
-		this.taxas = taxas;
-	}
-
-	public Conta(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta,
-			float saldoConta, String numeroConta) {
-		super();	
-		this.cliente = cliente;
-		this.tipoConta = tipoConta;
-		this.categoriaConta = categoriaConta;
-		this.saldoConta = saldoConta;
-		this.numeroConta = numeroConta;
-	}
-	
-	public Conta(Cliente cliente, TipoConta tipoConta,float saldoConta, String numeroConta) {
-		super();	
-		this.cliente = cliente;
-		this.tipoConta = tipoConta;	
-		this.saldoConta = saldoConta;
-		this.numeroConta = numeroConta;
-	}
-	
-	
-	
-	
-	
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	public String getPixAleatorio() {
-		return pixAleatorio;
-	}
-
-	public void setPixAleatorio(String pixAleatorio) {		
-		this.pixAleatorio = pixAleatorio;
-	}
-
-	public float getValorTransferencia() {
-		return valorTransferencia;
-	}
-
-
-	public void setValorTransferencia(float valorTransferencia) {
-		this.valorTransferencia = valorTransferencia;
-	}
-
-
-	public List<Transferencia> getTransferencia() {
-		return transferencia;
-	}
-
-
-	public void setTransferencia(List<Transferencia> transferencia) {
-		this.transferencia = transferencia;
-	}
-
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-
-
-	public TipoConta getTipoConta() {
-		return tipoConta;
-	}
-
-
-	public void setTipoConta(TipoConta tipoConta) {
-		this.tipoConta = tipoConta;
-	}
-
-
-	public CategoriaConta getCategoriaConta() {		
-		return categoriaConta;
-	}
-
-
-	public void setCategoriaConta(CategoriaConta categoriaConta) {
-		this.categoriaConta = categoriaConta;
-	}	
-	
-	public float getSaldoConta() {
-		return saldoConta;
-	}
-
-	public void setSaldoConta(float saldoConta) {
-		this.saldoConta = saldoConta;
-	}
-
-
-	public String getNumeroConta() {
-		return numeroConta;
-	}
-
-
-	public void setNumeroConta(String numeroConta) {
-		this.numeroConta = numeroConta;
-	}
-
-
-	public Long getId() {
-		return id;
-	}
-
-
-	public List<Taxas> getTaxas() {
-		return taxas;
-	}
-
-
-	public void setTaxas(List<Taxas> taxas) {
-		this.taxas = taxas;
-	}
-
-	public List<Cartao> getCartoes() {
-		return cartoes;
-	}
-
-	public void setCartoes(List<Cartao> cartoes) {
-		this.cartoes = cartoes;
-	}
-
-	@Override
-	public String toString() {
-		return "Conta [id=" + id + ", version=" + version + ", cliente=" + cliente + ", tipoConta=" + tipoConta
-				+ ", categoriaConta=" + categoriaConta + ", saldoConta=" + saldoConta + ", valorTransferencia="
-				+ valorTransferencia + ", numeroConta=" + numeroConta + ", transferencia=" + transferencia + "]";
-	}
-
-
+//	public Conta() {}
+//
+//	public Conta(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta,
+//			float saldoConta, String numeroConta, List<Taxas> taxas) {
+//		super();	
+//		this.cliente = cliente;
+//		this.tipoConta = tipoConta;
+//		this.categoriaConta = categoriaConta;
+//		this.saldoConta = saldoConta;
+//		this.numeroConta = numeroConta;
+//		this.taxas = taxas;
+//	}
+//
+//	public Conta(Cliente cliente, TipoConta tipoConta, CategoriaConta categoriaConta,
+//			float saldoConta, String numeroConta) {
+//		super();	
+//		this.cliente = cliente;
+//		this.tipoConta = tipoConta;
+//		this.categoriaConta = categoriaConta;
+//		this.saldoConta = saldoConta;
+//		this.numeroConta = numeroConta;
+//	}
+//	
+//	public Conta(Cliente cliente, TipoConta tipoConta,float saldoConta, String numeroConta) {
+//		super();	
+//		this.cliente = cliente;
+//		this.tipoConta = tipoConta;	
+//		this.saldoConta = saldoConta;
+//		this.numeroConta = numeroConta;
+//	}
+//	
+//	
+//	
+//	
+//	
+//	public boolean isStatus() {
+//		return status;
+//	}
+//
+//	public void setStatus(boolean status) {
+//		this.status = status;
+//	}
+//
+//	public String getPixAleatorio() {
+//		return pixAleatorio;
+//	}
+//
+//	public void setPixAleatorio(String pixAleatorio) {		
+//		this.pixAleatorio = pixAleatorio;
+//	}
+//
+//	public float getValorTransferencia() {
+//		return valorTransferencia;
+//	}
+//
+//
+//	public void setValorTransferencia(float valorTransferencia) {
+//		this.valorTransferencia = valorTransferencia;
+//	}
+//
+//
+//	public List<Transferencia> getTransferencia() {
+//		return transferencia;
+//	}
+//
+//
+//	public void setTransferencia(List<Transferencia> transferencia) {
+//		this.transferencia = transferencia;
+//	}
+//
+//
+//	public Cliente getCliente() {
+//		return cliente;
+//	}
+//
+//
+//	public void setCliente(Cliente cliente) {
+//		this.cliente = cliente;
+//	}
+//
+//
+//	public TipoConta getTipoConta() {
+//		return tipoConta;
+//	}
+//
+//
+//	public void setTipoConta(TipoConta tipoConta) {
+//		this.tipoConta = tipoConta;
+//	}
+//
+//
+//	public CategoriaConta getCategoriaConta() {		
+//		return categoriaConta;
+//	}
+//
+//
+//	public void setCategoriaConta(CategoriaConta categoriaConta) {
+//		this.categoriaConta = categoriaConta;
+//	}	
+//	
+//	public float getSaldoConta() {
+//		return saldoConta;
+//	}
+//
+//	public void setSaldoConta(float saldoConta) {
+//		this.saldoConta = saldoConta;
+//	}
+//
+//
+//	public String getNumeroConta() {
+//		return numeroConta;
+//	}
+//
+//
+//	public void setNumeroConta(String numeroConta) {
+//		this.numeroConta = numeroConta;
+//	}
+//
+//
+//	public Long getId() {
+//		return id;
+//	}
+//
+//
+//	public List<Taxas> getTaxas() {
+//		return taxas;
+//	}
+//
+//
+//	public void setTaxas(List<Taxas> taxas) {
+//		this.taxas = taxas;
+//	}
+//
+//	public List<Cartao> getCartoes() {
+//		return cartoes;
+//	}
+//
+//	public void setCartoes(List<Cartao> cartoes) {
+//		this.cartoes = cartoes;
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return "Conta [id=" + id + ", version=" + version + ", cliente=" + cliente + ", tipoConta=" + tipoConta
+//				+ ", categoriaConta=" + categoriaConta + ", saldoConta=" + saldoConta + ", valorTransferencia="
+//				+ valorTransferencia + ", numeroConta=" + numeroConta + ", transferencia=" + transferencia + "]";
+//	}
+//
+//
 
 
 }

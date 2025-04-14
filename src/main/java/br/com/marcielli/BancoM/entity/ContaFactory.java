@@ -17,68 +17,35 @@ public abstract class ContaFactory {
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public static Conta criarConta(Conta novaConta) {
+		
 		String numConta = gerarNumeroDaConta(novaConta);
 		
-		CategoriaConta categoriaConta = null;
-		float taxaManutencaoMensalCC = 0;	
-		float taxaAcrescRendPP1 = 0;
-		float taxaMensalPP2 = 0;			
-		Taxas taxasDaContaPP = null;
-		Taxas taxasDaContaCC = null;
-
-		if(novaConta.getSaldoConta() <= 1000) {
-			
-			//Conta Corrente
-			taxaManutencaoMensalCC = 12.00f;
-			
-			//Todas
-			categoriaConta = CategoriaConta.COMUM;
-			
-			//Conta Poupança
-			taxaAcrescRendPP1 = 0.005f;	
-			taxaMensalPP2 = (float) (Math.pow(1+taxaAcrescRendPP1, 1.0/12) - 1);
-			
-			
-		}
-		
-		if(novaConta.getSaldoConta() > 1000 && novaConta.getSaldoConta() <= 5000) {
-			
-			//Conta Corrente
-			taxaManutencaoMensalCC = 8.00f;
-			
-			//Todas
-			categoriaConta = CategoriaConta.SUPER;
-			
-			//Conta Poupança
-			taxaAcrescRendPP1 = 0.007f;
-			taxaMensalPP2 = (float) (Math.pow(1+taxaAcrescRendPP1, 1.0/12) - 1);
-		}
-		
-		if(novaConta.getSaldoConta() > 5000) {
-			
-			//Conta Corrente
-			taxaManutencaoMensalCC = 0f;	
-			
-			//Todas
-			categoriaConta = CategoriaConta.PREMIUM;
-			
-			//Conta Poupança
-			taxaAcrescRendPP1 = 0.009f;	
-			taxaMensalPP2 = (float) (Math.pow(1+taxaAcrescRendPP1, 1.0/12) - 1);				
-		}	
-		
+		//TaxaManutencao taxa = new TaxaManutencao(novaConta.getSaldoConta(), novaConta.getTipoConta());
+		//List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+		//novaTaxa.add(taxa);
+		//novaConta.setTaxas(novaTaxa);		
 		
 		if (novaConta.getTipoConta() == TipoConta.CORRENTE) {	
 			
 			String numContaCorrente = numConta.concat("-CC");
 			
-			taxasDaContaCC = new Taxas(novaConta.getSaldoConta(), TipoConta.CORRENTE);
-			List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
-			novaTaxaCC.add(taxasDaContaCC);
+//			taxasDaContaCC = new Taxas(novaConta.getSaldoConta(), TipoConta.CORRENTE);
+//			List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
+//			novaTaxaCC.add(taxasDaContaCC);
+//			
+		//	novaConta.setNumeroConta(numContaCorrente);
 			
+			TaxaManutencao taxa = new TaxaManutencao(novaConta.getSaldoConta(), novaConta.getTipoConta());
+			List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+			novaTaxa.add(taxa);
+			
+			Conta contaCorrente = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+			
+			contaCorrente.setTaxas(novaTaxa);	
+			contaCorrente.setNumeroConta(numContaCorrente);
 			
 					
-			Conta contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
+			//Conta contaCorrente = new ContaCorrente(novaConta.getCliente(), TipoConta.CORRENTE, categoriaConta, novaConta.getSaldoConta(), numContaCorrente,novaTaxaCC);
 			
 			return contaCorrente;
 			
@@ -87,13 +54,15 @@ public abstract class ContaFactory {
 			
 			String numContaPoupanca = numConta.concat("-PP");
 			
-			taxasDaContaPP = new Taxas(novaConta.getSaldoConta(), TipoConta.POUPANCA);
-			List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
-			novaTaxaPP.add(taxasDaContaPP);
+			novaConta.setNumeroConta(numContaPoupanca);
 			
-			Conta contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca,novaTaxaPP);
+//			taxasDaContaPP = new Taxas(novaConta.getSaldoConta(), TipoConta.POUPANCA);
+//			List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
+//			novaTaxaPP.add(taxasDaContaPP);
+			
+		//	Conta contaPoupanca = new ContaPoupanca(novaConta.getCliente(), TipoConta.POUPANCA, categoriaConta, novaConta.getSaldoConta(), numContaPoupanca,novaTaxaPP);
 								
-			return contaPoupanca;
+			return new ContaPoupanca();
 	
 		} else {
 			return null;

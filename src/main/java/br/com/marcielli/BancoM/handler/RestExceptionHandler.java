@@ -14,6 +14,7 @@ import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoTemSaldoSuficienteException;
 import br.com.marcielli.BancoM.exception.ClienteNomeInvalidoException;
 import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
+import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.ContaNaoFoiPossivelAlterarNumeroException;
 import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
@@ -62,6 +63,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	//Conta
 	@ExceptionHandler(ContaTipoContaNaoExisteException.class)
 	private ResponseEntity<RestErrorMessage> contaHandler(ContaTipoContaNaoExisteException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+	
+	@ExceptionHandler(ContaExisteNoBancoException.class)
+	private ResponseEntity<RestErrorMessage> contaHandler(ContaExisteNoBancoException exception) {		
 		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
 	}

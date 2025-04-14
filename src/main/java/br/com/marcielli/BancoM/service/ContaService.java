@@ -15,15 +15,12 @@ import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaFactory;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
-import br.com.marcielli.BancoM.entity.Taxas;
-import br.com.marcielli.BancoM.entity.TaxasManutencao;
+import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
-import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
-import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
-import br.com.marcielli.BancoM.exception.ContaTipoContaNaoExisteException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
 
@@ -38,8 +35,49 @@ public class ContaService {
 	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cliente save(Cliente cliente) {
-		return clienteRepository.save(cliente);
+	public Conta save(Conta dto) {
+				
+		Cliente cliente = clienteRepository.findById(dto.getId()).orElseThrow(() -> new ContaExisteNoBancoException("A conta já existe no banco."));	
+		
+		dto.setCliente(cliente);
+		
+		TaxaManutencao taxa = new TaxaManutencao(dto.getSaldoConta(), dto.getTipoConta());
+		
+		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+		novaTaxa.add(taxa);
+		
+		Conta novaConta = null;
+		
+		String numeroConta = gerarNumeroDaConta();
+		String numeroPix = gerarPixAleatorio();
+		
+		String novoPix = numeroPix.concat("-PIX");
+		
+		if(dto.getTipoConta() == TipoConta.CORRENTE) {
+			novaConta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+			novaConta.setTaxas(novaTaxa);
+			
+			String numContaCorrente = numeroConta.concat("-CC");
+			novaConta.setNumeroConta(numContaCorrente);
+		}
+		
+		if(dto.getTipoConta() == TipoConta.POUPANCA) {
+			novaConta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());		
+			novaConta.setTaxas(novaTaxa);
+			
+			String numContaPoupanca = numeroConta.concat("-PP");
+			novaConta.setNumeroConta(numContaPoupanca);
+			
+		}
+		
+		novaConta.setCliente(cliente);
+		novaConta.setSaldoConta(dto.getSaldoConta());
+		novaConta.setCategoriaConta(taxa.getCategoria());
+		novaConta.setTipoConta(dto.getTipoConta());
+		novaConta.setPixAleatorio(novoPix);
+		novaConta.setStatus(true);
+
+		return contaRepository.save(novaConta);
 	}	
 	
 //
@@ -80,156 +118,156 @@ public class ContaService {
 //		return contaCriada;
 //	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Conta update(Long idContaParaAtualizar, Conta dadosParaAtualizar) {
-
-		Optional<Conta> contaParaAtualizar = contaRepository.findById(idContaParaAtualizar);
-
-		Conta contaAtualizada = null;
-		Conta contaAntigaDeletar = null;
-
-		Conta contaCorrenteNova = null;
-		Conta contaPoupancaNova = null;
-
-		if (dadosParaAtualizar == null) {
-			throw new ContaNaoEncontradaException("Não é possível atualizar a conta no momento!");
-		}
-
-		TipoConta tipoParaAtualizar = dadosParaAtualizar.getTipoConta();
-
-		if (contaParaAtualizar.isPresent()) {
-
-			contaAntigaDeletar = contaParaAtualizar.get();
-			float saldoAntigoDaContaDeletada = contaAntigaDeletar.getSaldoConta();
-			Cliente clienteAntigoDaContaDeletada = contaAntigaDeletar.getCliente();
-			List<Transferencia> transfDaContaDeletada = contaAntigaDeletar.getTransferencia();
-			
-			
-			CategoriaConta categoriaConta = null;
-			float taxaManutencaoMensalCC = 0;
-			float taxaAcrescRendPP1 = 0;
-			float taxaMensalPP2 = 0;
-			Taxas taxasDaContaPP = null;
-			Taxas taxasDaContaCC = null;
-
-			if (saldoAntigoDaContaDeletada <= 1000) {
-
-				// Conta Corrente
-				taxaManutencaoMensalCC = 12.00f;
-
-				// Todas
-				categoriaConta = CategoriaConta.COMUM;
-
-				// Conta Poupança
-				taxaAcrescRendPP1 = 0.005f;
-				taxaMensalPP2 = (float) (Math.pow(1 + taxaAcrescRendPP1, 1.0 / 12) - 1);
-
-			}
-
-			if (saldoAntigoDaContaDeletada > 1000 && saldoAntigoDaContaDeletada <= 5000) {
-
-				// Conta Corrente
-				taxaManutencaoMensalCC = 8.00f;
-
-				// Todas
-				categoriaConta = CategoriaConta.SUPER;
-
-				// Conta Poupança
-				taxaAcrescRendPP1 = 0.007f;
-				taxaMensalPP2 = (float) (Math.pow(1 + taxaAcrescRendPP1, 1.0 / 12) - 1);
-			}
-
-			if (saldoAntigoDaContaDeletada > 5000) {
-
-				// Conta Corrente
-				taxaManutencaoMensalCC = 0f;
-
-				// Todas
-				categoriaConta = CategoriaConta.PREMIUM;
-
-				// Conta Poupança
-				taxaAcrescRendPP1 = 0.009f;
-				taxaMensalPP2 = (float) (Math.pow(1 + taxaAcrescRendPP1, 1.0 / 12) - 1);
-			}
-
-			
-			String numConta = gerarNumeroDaConta();
-
-			//Era poupança - > Atualizar Corrente
-			if (tipoParaAtualizar == TipoConta.CORRENTE) {
-
-				String numContaCorrente = numConta.concat("-CC");
-
-				taxasDaContaCC = new Taxas(saldoAntigoDaContaDeletada, TipoConta.CORRENTE);
-				List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
-				novaTaxaCC.add(taxasDaContaCC);
-
-				contaCorrenteNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.CORRENTE, categoriaConta,
-						saldoAntigoDaContaDeletada, numContaCorrente, novaTaxaCC);
-				
-				contaCorrenteNova.setCategoriaConta(categoriaConta);
-				contaCorrenteNova.setTipoConta(TipoConta.CORRENTE);
-				
-				if(contaCorrenteNova.getTransferencia() != null) {
-					contaCorrenteNova.getTransferencia().addAll(transfDaContaDeletada);
-				}
-				
-				contaCorrenteNova.setStatus(true);
-				
-				if(contaCorrenteNova != null) {
-					
-					contaAntigaDeletar.setStatus(false);
-					contaRepository.save(contaCorrenteNova);
-					
-				}
-				
-				//Antigo manter na Poupanca como false
-				//Novo, ir para Corrente como true
-
-				return contaCorrenteNova;
-
-			}
-
-			//Era Corrente -> Atualizar Poupança
-			if (tipoParaAtualizar == TipoConta.POUPANCA) {
-
-				String numContaPoupanca = numConta.concat("-PP");
-				taxasDaContaPP = new Taxas(saldoAntigoDaContaDeletada, TipoConta.POUPANCA);
-				List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
-				novaTaxaPP.add(taxasDaContaPP);
-
-				contaPoupancaNova = new ContaPoupanca(clienteAntigoDaContaDeletada, TipoConta.POUPANCA, categoriaConta,
-						saldoAntigoDaContaDeletada, numContaPoupanca, novaTaxaPP);
-				
-				contaPoupancaNova.setCategoriaConta(categoriaConta);
-				contaPoupancaNova.setTipoConta(TipoConta.POUPANCA);
-				
-				if(contaPoupancaNova.getTransferencia() !=null) {
-					contaPoupancaNova.getTransferencia().addAll(transfDaContaDeletada);
-				}
-				
-
-				contaPoupancaNova.setStatus(true);
-				
-				if(contaPoupancaNova != null) {
-				
-					contaAntigaDeletar.setStatus(false);
-					contaRepository.save(contaPoupancaNova);
-					
-				}
-
-				//Antigo manter na Corrente como false
-				//Novo, ir para Poupança como true
-
-				return contaPoupancaNova;
-
-			}
-			return null;
-
-		} else {
-			throw new ContaNaoEncontradaException("A conta não pode ser atualizada porque não existe no banco.");
-		}
-	}
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Conta update(Long idContaParaAtualizar, Conta dadosParaAtualizar) {
+//
+//		Optional<Conta> contaParaAtualizar = contaRepository.findById(idContaParaAtualizar);
+//
+//		Conta contaAtualizada = null;
+//		Conta contaAntigaDeletar = null;
+//
+//		Conta contaCorrenteNova = null;
+//		Conta contaPoupancaNova = null;
+//
+//		if (dadosParaAtualizar == null) {
+//			throw new ContaNaoEncontradaException("Não é possível atualizar a conta no momento!");
+//		}
+//
+//		TipoConta tipoParaAtualizar = dadosParaAtualizar.getTipoConta();
+//
+//		if (contaParaAtualizar.isPresent()) {
+//
+//			contaAntigaDeletar = contaParaAtualizar.get();
+//			float saldoAntigoDaContaDeletada = contaAntigaDeletar.getSaldoConta();
+//			Cliente clienteAntigoDaContaDeletada = contaAntigaDeletar.getCliente();
+//			List<Transferencia> transfDaContaDeletada = contaAntigaDeletar.getTransferencia();
+//			
+//			
+//			CategoriaConta categoriaConta = null;
+//			float taxaManutencaoMensalCC = 0;
+//			float taxaAcrescRendPP1 = 0;
+//			float taxaMensalPP2 = 0;
+//			Taxas taxasDaContaPP = null;
+//			Taxas taxasDaContaCC = null;
+//
+//			if (saldoAntigoDaContaDeletada <= 1000) {
+//
+//				// Conta Corrente
+//				taxaManutencaoMensalCC = 12.00f;
+//
+//				// Todas
+//				categoriaConta = CategoriaConta.COMUM;
+//
+//				// Conta Poupança
+//				taxaAcrescRendPP1 = 0.005f;
+//				taxaMensalPP2 = (float) (Math.pow(1 + taxaAcrescRendPP1, 1.0 / 12) - 1);
+//
+//			}
+//
+//			if (saldoAntigoDaContaDeletada > 1000 && saldoAntigoDaContaDeletada <= 5000) {
+//
+//				// Conta Corrente
+//				taxaManutencaoMensalCC = 8.00f;
+//
+//				// Todas
+//				categoriaConta = CategoriaConta.SUPER;
+//
+//				// Conta Poupança
+//				taxaAcrescRendPP1 = 0.007f;
+//				taxaMensalPP2 = (float) (Math.pow(1 + taxaAcrescRendPP1, 1.0 / 12) - 1);
+//			}
+//
+//			if (saldoAntigoDaContaDeletada > 5000) {
+//
+//				// Conta Corrente
+//				taxaManutencaoMensalCC = 0f;
+//
+//				// Todas
+//				categoriaConta = CategoriaConta.PREMIUM;
+//
+//				// Conta Poupança
+//				taxaAcrescRendPP1 = 0.009f;
+//				taxaMensalPP2 = (float) (Math.pow(1 + taxaAcrescRendPP1, 1.0 / 12) - 1);
+//			}
+//
+//			
+//			String numConta = gerarNumeroDaConta();
+//
+//			//Era poupança - > Atualizar Corrente
+//			if (tipoParaAtualizar == TipoConta.CORRENTE) {
+//
+//				String numContaCorrente = numConta.concat("-CC");
+//
+//				taxasDaContaCC = new Taxas(saldoAntigoDaContaDeletada, TipoConta.CORRENTE);
+//				List<Taxas> novaTaxaCC = new ArrayList<Taxas>();
+//				novaTaxaCC.add(taxasDaContaCC);
+//
+//				contaCorrenteNova = new ContaCorrente(clienteAntigoDaContaDeletada, TipoConta.CORRENTE, categoriaConta,
+//						saldoAntigoDaContaDeletada, numContaCorrente, novaTaxaCC);
+//				
+//				contaCorrenteNova.setCategoriaConta(categoriaConta);
+//				contaCorrenteNova.setTipoConta(TipoConta.CORRENTE);
+//				
+//				if(contaCorrenteNova.getTransferencia() != null) {
+//					contaCorrenteNova.getTransferencia().addAll(transfDaContaDeletada);
+//				}
+//				
+//				contaCorrenteNova.setStatus(true);
+//				
+//				if(contaCorrenteNova != null) {
+//					
+//					contaAntigaDeletar.setStatus(false);
+//					contaRepository.save(contaCorrenteNova);
+//					
+//				}
+//				
+//				//Antigo manter na Poupanca como false
+//				//Novo, ir para Corrente como true
+//
+//				return contaCorrenteNova;
+//
+//			}
+//
+//			//Era Corrente -> Atualizar Poupança
+//			if (tipoParaAtualizar == TipoConta.POUPANCA) {
+//
+//				String numContaPoupanca = numConta.concat("-PP");
+//				taxasDaContaPP = new Taxas(saldoAntigoDaContaDeletada, TipoConta.POUPANCA);
+//				List<Taxas> novaTaxaPP = new ArrayList<Taxas>();
+//				novaTaxaPP.add(taxasDaContaPP);
+//
+//				contaPoupancaNova = new ContaPoupanca(clienteAntigoDaContaDeletada, TipoConta.POUPANCA, categoriaConta,
+//						saldoAntigoDaContaDeletada, numContaPoupanca, novaTaxaPP);
+//				
+//				contaPoupancaNova.setCategoriaConta(categoriaConta);
+//				contaPoupancaNova.setTipoConta(TipoConta.POUPANCA);
+//				
+//				if(contaPoupancaNova.getTransferencia() !=null) {
+//					contaPoupancaNova.getTransferencia().addAll(transfDaContaDeletada);
+//				}
+//				
+//
+//				contaPoupancaNova.setStatus(true);
+//				
+//				if(contaPoupancaNova != null) {
+//				
+//					contaAntigaDeletar.setStatus(false);
+//					contaRepository.save(contaPoupancaNova);
+//					
+//				}
+//
+//				//Antigo manter na Corrente como false
+//				//Novo, ir para Poupança como true
+//
+//				return contaPoupancaNova;
+//
+//			}
+//			return null;
+//
+//		} else {
+//			throw new ContaNaoEncontradaException("A conta não pode ser atualizada porque não existe no banco.");
+//		}
+//	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<Conta> getAll() {
@@ -723,48 +761,48 @@ public class ContaService {
 	
 	
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public float[] exibirSaldo(Long clienteId) {
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public float[] exibirSaldo(Long clienteId) {
+//
+//		Optional<Cliente> clienteVerSaldo = clienteRepository.findById(clienteId);
+//
+//		float[] saldoContas = { 0, 0, 0 };
+//
+//		if (clienteVerSaldo.isPresent()) {
+//
+//			Cliente cliente = clienteVerSaldo.get();
+//			
+//			for(Conta getContas : cliente.getContas()) {
+//				
+//				if(getContas.isStatus() == true && getContas.getTipoConta() == TipoConta.CORRENTE) {
+//					saldoContas[0] += getContas.getSaldoConta();
+//					
+//					if(getContas.isStatus() == false) {
+//						saldoContas[0] += 0;
+//					}
+//				}
+//				
+//				if(getContas.isStatus() == true && getContas.getTipoConta() == TipoConta.POUPANCA) {
+//					saldoContas[1] += getContas.getSaldoConta();					
+//					
+//					if(getContas.isStatus() == false) {
+//						saldoContas[1] += 0;
+//					}
+//				}
+//				
+//				
+//				
+//				
+//				
+//			}
 
-		Optional<Cliente> clienteVerSaldo = clienteRepository.findById(clienteId);
+	//	}
 
-		float[] saldoContas = { 0, 0, 0 };
-
-		if (clienteVerSaldo.isPresent()) {
-
-			Cliente cliente = clienteVerSaldo.get();
-			
-			for(Conta getContas : cliente.getContas()) {
-				
-				if(getContas.isStatus() == true && getContas.getTipoConta() == TipoConta.CORRENTE) {
-					saldoContas[0] += getContas.getSaldoConta();
-					
-					if(getContas.isStatus() == false) {
-						saldoContas[0] += 0;
-					}
-				}
-				
-				if(getContas.isStatus() == true && getContas.getTipoConta() == TipoConta.POUPANCA) {
-					saldoContas[1] += getContas.getSaldoConta();					
-					
-					if(getContas.isStatus() == false) {
-						saldoContas[1] += 0;
-					}
-				}
-				
-				
-				
-				
-				
-			}
-
-		}
-
-		saldoContas[2] = saldoContas[0] + saldoContas[1];
-
-		return saldoContas;
-
-	}
+//		saldoContas[2] = saldoContas[0] + saldoContas[1];
+//
+//		return saldoContas;
+//
+//	}
 
 	// Outros métodos
 	public String gerarNumeroDaConta() {
@@ -782,6 +820,23 @@ public class ContaService {
 		}
 
 		return minhaConta;
+	}
+	
+	public String gerarPixAleatorio() {
+
+		int[] sequencia = new int[8];
+		Random random = new Random();
+		String meuPix = "";
+
+		for (int i = 0; i < sequencia.length; i++) {
+			sequencia[i] = 1 + random.nextInt(8);
+		}
+
+		for (int i = 0; i < sequencia.length; i++) {
+			meuPix += Integer.toString(sequencia[i]);
+		}
+
+		return meuPix;
 	}
 
 

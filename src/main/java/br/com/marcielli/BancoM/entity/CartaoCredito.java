@@ -43,22 +43,22 @@ public class CartaoCredito extends Cartao {
 		}		
 	}
 	
-	public CartaoCredito(String numeroCartao, TipoCartao tipoCartao, String senha, Conta conta) {
-		super(numeroCartao,tipoCartao,senha, conta);	
-	
-		if(conta.getCategoriaConta().equals(CategoriaConta.COMUM)) {
-			this.limiteCreditoPreAprovado = 1000f;		
-		}
-		
-		if(conta.getCategoriaConta().equals(CategoriaConta.SUPER)) {
-			this.limiteCreditoPreAprovado = 5000f;
-		}
-		
-		if(conta.getCategoriaConta().equals(CategoriaConta.PREMIUM)) {
-			this.limiteCreditoPreAprovado = 10000f;		
-		}		
-	}
-	
+//	public CartaoCredito(String numeroCartao, TipoCartao tipoCartao, String senha, Conta conta) {
+//		super(numeroCartao,tipoCartao,senha, conta);	
+//	
+//		if(conta.getCategoriaConta().equals(CategoriaConta.COMUM)) {
+//			this.limiteCreditoPreAprovado = 1000f;		
+//		}
+//		
+//		if(conta.getCategoriaConta().equals(CategoriaConta.SUPER)) {
+//			this.limiteCreditoPreAprovado = 5000f;
+//		}
+//		
+//		if(conta.getCategoriaConta().equals(CategoriaConta.PREMIUM)) {
+//			this.limiteCreditoPreAprovado = 10000f;		
+//		}		
+//	}
+//	
 	
 
 	public float getLimiteCreditoPreAprovado() {

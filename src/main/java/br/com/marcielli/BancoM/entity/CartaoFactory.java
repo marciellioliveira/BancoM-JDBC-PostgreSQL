@@ -1,14 +1,11 @@
 package br.com.marcielli.BancoM.entity;
 
-import java.security.MessageDigest;
 import java.util.Random;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
-import br.com.marcielli.BancoM.enuns.TipoConta;
 
 public abstract class CartaoFactory {
 	

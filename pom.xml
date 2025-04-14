@@ -58,8 +58,14 @@
 		<dependency>
 		    <groupId>org.projectlombok</groupId>
 		    <artifactId>lombok</artifactId>
-		    <version>1.16.20</version>
+		    <version>1.18.30</version>
 		    <scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>ch.obermuhlner</groupId>
+		    <artifactId>big-math</artifactId>
+		    <version>2.3.2</version>
 		</dependency>
 	
 		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->

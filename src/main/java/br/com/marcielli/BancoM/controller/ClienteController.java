@@ -29,18 +29,19 @@ public class ClienteController {
 
 	@Autowired
 	private ClienteService clienteService;
-	
+
 	@Autowired
 	private ClienteMapper clienteMapper;
-	
+
 	@PostMapping("/salvar")
-	public ResponseEntity<ClienteResponseDTO> adicionarCliente(@RequestBody ClienteCreateDTO clienteCreateDTO) { //Pega o ClienteCreateDTO do Json
-		
-		//Pegar o clienteCreateDTO e transformá-lo em uma entidade
+	public ResponseEntity<ClienteResponseDTO> adicionarCliente(@RequestBody ClienteCreateDTO clienteCreateDTO) { 
+		// Pega o Cliente do JSON
+
+		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
 		Cliente cliente = clienteMapper.toEntity(clienteCreateDTO);
-		
-		if(cliente.getEndereco() == null) {
-			
+
+		if (cliente.getEndereco() == null) {
+
 			Endereco endereco = new Endereco();
 			endereco.setCep(clienteCreateDTO.getCep());
 			endereco.setEstado(clienteCreateDTO.getEstado());
@@ -49,26 +50,28 @@ public class ClienteController {
 			endereco.setRua(clienteCreateDTO.getRua());
 			endereco.setNumero(clienteCreateDTO.getNumero());
 			endereco.setComplemento(clienteCreateDTO.getComplemento());
-			
-			cliente.setEndereco(endereco);		
+
+			cliente.setEndereco(endereco);
 		}
-		
-		//Pegar o objeto/entidade e pedir para salvar no BD usando clienteService.
+
+		// Pegar o objeto/entidade e pedir para salvar no BD usando clienteService.
 		Cliente clienteGravado = clienteService.save(cliente);
-				
-		//Pegar o objeto clienteGravado já com ID e devolver para o cliente informando que foi gravado no Banco, mas primeiro transformando em DTO
+
+		// Pegar o objeto clienteGravado já com ID e devolver para o cliente informando
+		// que foi gravado no Banco, mas primeiro transformando em DTO
 		ClienteResponseDTO clienteResponseDTO = clienteMapper.toDTO(clienteGravado);
-		
-		//Agora que já está mapeado, retornamos "clienteResponseDTO" para o cliente.
+
+		// Agora que já está mapeado, retornamos "clienteResponseDTO" para o cliente.
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteResponseDTO);
-	
-	}	
-	
+
+	}
+
 	@PutMapping("/atualizar/{clienteId}")
-    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable("clienteId") Long clienteId, @RequestBody ClienteCreateDTO clienteCreateDTO) {
-		
+	public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable("clienteId") Long clienteId,
+			@RequestBody ClienteCreateDTO clienteCreateDTO) {
+
 		Cliente cliente = clienteMapper.toEntity(clienteCreateDTO);
-		
+
 		Endereco endereco = new Endereco();
 		endereco.setCep(clienteCreateDTO.getCep());
 		endereco.setEstado(clienteCreateDTO.getEstado());
@@ -77,47 +80,45 @@ public class ClienteController {
 		endereco.setRua(clienteCreateDTO.getRua());
 		endereco.setNumero(clienteCreateDTO.getNumero());
 		endereco.setComplemento(clienteCreateDTO.getComplemento());
-		
-		cliente.setEndereco(endereco);			
-		
+
+		cliente.setEndereco(endereco);
+
 		Cliente clienteAtualizado = clienteService.update(clienteId, cliente);
-		
+
 		ClienteResponseDTO clienteResponseDTO = clienteMapper.toDTO(clienteAtualizado);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(clienteResponseDTO);		
-		
+
+		return ResponseEntity.status(HttpStatus.OK).body(clienteResponseDTO);
+
 	}
-	
+
 	@GetMapping("/listar")
-	public ResponseEntity<List<Cliente>> getClientes(){
+	public ResponseEntity<List<Cliente>> getClientes() {
 		List<Cliente> clientes = clienteService.getAll();
-		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);			
+		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/listar/{clienteId}")
-	public Optional<Cliente> getClienteById(@PathVariable("clienteId") Long clienteId){
-		
+	public Optional<Cliente> getClienteById(@PathVariable("clienteId") Long clienteId) {
+
 		Optional<Cliente> clienteById = clienteService.getClienteById(clienteId);
-		
-		if(!clienteById.isPresent()) {
+
+		if (!clienteById.isPresent()) {
 			throw new ClienteNaoEncontradoException("Cliente não existe no banco.");
 		}
-		
+
 		return clienteById;
-		
+
 	}
-	
-	
-	
+
 	@DeleteMapping("/deletar/{clienteId}")
-    public ResponseEntity<String> deletar(@PathVariable("clienteId") Long clienteId) {
-		
-		boolean clienteDeletado = clienteService.delete(clienteId); 
-		
-		if(clienteDeletado) {
+	public ResponseEntity<String> deletar(@PathVariable("clienteId") Long clienteId) {
+
+		boolean clienteDeletado = clienteService.delete(clienteId);
+
+		if (clienteDeletado) {
 			return new ResponseEntity<String>("Cliente deletado com sucesso", HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
-    }
+	}
 }
