@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.marcielli.BancoM.dto.ContaCorrenteTaxaManutencaoDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateDepositoDTO;
 import br.com.marcielli.BancoM.dto.ContaCreatePixDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateSaqueDTO;
@@ -383,8 +384,22 @@ public class ContaService {
 		return true;
 	}
 	
-	
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean manutencaoTaxaCC(Long idConta, ContaCorrenteTaxaManutencaoDTO dto) {
+		
+		Conta conta = contaRepository.findById(idConta).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta não existe."));
+		
+		TaxaManutencao novaTaxa = new TaxaManutencao(dto.getTaxaManutencaoMensal());
+		
+//		TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+//		novaTaxa.add(taxaContaOrigem);
+//		conta.setTaxas(novaTaxa);
+//		conta.setCategoriaConta(taxaContaOrigem.getCategoria());
+		
+		return true;
+	}
 	
 	
 

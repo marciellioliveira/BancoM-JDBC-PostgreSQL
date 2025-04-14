@@ -1,7 +1,9 @@
 package br.com.marcielli.BancoM.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
@@ -25,8 +27,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class TaxaManutencao {
+public class TaxaManutencao implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -43,9 +47,18 @@ public class TaxaManutencao {
 	
 	//Taxas Conta Poupanca
 	private BigDecimal taxaAcrescRend;
+	
+	
 	private BigDecimal taxaMensal;
 	
+	
 	public TaxaManutencao(BigDecimal saldoConta, TipoConta tipoConta) {
+		
+		
+//		BigDecimal ccComum = new BigDecimal("12.00");
+//		BigDecimal ccSuper = new BigDecimal("8.00");
+//		BigDecimal ccPremium = new BigDecimal("0");
+		
 
 		if (tipoConta == TipoConta.CORRENTE) {
 
@@ -90,8 +103,10 @@ public class TaxaManutencao {
 				 // (1 + taxaAcrescRend) ^ (1/12)
 				BigDecimal exponente = BigDecimal.ONE.divide(new BigDecimal("12"), mc);
 				
-				this.taxaMensal = BigDecimalMath.pow(base, exponente, mc).subtract(BigDecimal.ONE, mc);
-
+				BigDecimal taxa = BigDecimalMath.pow(base, exponente, mc).subtract(BigDecimal.ONE, mc);
+				BigDecimal taxaMensalPercentual = taxa.multiply(new BigDecimal("100"));
+				this.taxaMensal = taxaMensalPercentual;
+				
 			}
 
 			if (saldoConta.compareTo(new BigDecimal("1000")) > 0 && saldoConta.compareTo(new BigDecimal("5000")) <= 0) {
@@ -105,7 +120,10 @@ public class TaxaManutencao {
 				 // (1 + taxaAcrescRend) ^ (1/12)
 				BigDecimal exponente = BigDecimal.ONE.divide(new BigDecimal("12"), mc);
 				
-				this.taxaMensal = BigDecimalMath.pow(base, exponente, mc).subtract(BigDecimal.ONE, mc);
+				BigDecimal taxa = BigDecimalMath.pow(base, exponente, mc).subtract(BigDecimal.ONE, mc);
+				BigDecimal taxaMensalPercentual = taxa.multiply(new BigDecimal("100"));
+				this.taxaMensal = taxaMensalPercentual;
+			
 
 			}
 
@@ -120,7 +138,9 @@ public class TaxaManutencao {
 				 // (1 + taxaAcrescRend) ^ (1/12)
 				BigDecimal exponente = BigDecimal.ONE.divide(new BigDecimal("12"), mc);
 				
-				this.taxaMensal = BigDecimalMath.pow(base, exponente, mc).subtract(BigDecimal.ONE, mc);
+				BigDecimal taxa = BigDecimalMath.pow(base, exponente, mc).subtract(BigDecimal.ONE, mc);
+				BigDecimal taxaMensalPercentual = taxa.multiply(new BigDecimal("100"));
+				this.taxaMensal = taxaMensalPercentual;
 
 			}
 
