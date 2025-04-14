@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.marcielli.BancoM.dto.ContaCreateDepositoDTO;
 import br.com.marcielli.BancoM.dto.ContaCreatePixDTO;
+import br.com.marcielli.BancoM.dto.ContaCreateSaqueDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
@@ -309,307 +311,82 @@ public class ContaService {
 	}
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean transferirDEPOSITO(Long idContaReceber, ContaCreateDepositoDTO dto) {
+		
+		Cliente cliente = clienteRepository.findById(dto.getIdClienteOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cliente não existe."));
+		
+		Conta conta = contaRepository.findById(idContaReceber).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta não existe."));
+
+		
+		for(Conta contasDoClienteOrigem : cliente.getContas()) {
+		
+			if(contasDoClienteOrigem.getId() == conta.getId()) {
+			
+				conta.setSaldoConta(conta.getSaldoConta().add(dto.getValor()));				
+				
+				TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+
+				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+				novaTaxa.add(taxaContaOrigem);
+				
+				conta.setTaxas(novaTaxa);
+				conta.setCategoriaConta(taxaContaOrigem.getCategoria());
+				
+				Transferencia transferindo = new Transferencia(conta, dto.getValor(), conta, TipoTransferencia.DEPOSITO);
+				conta.getTransferencia().add(transferindo);
+	
+				contaRepository.save(conta);		
+				break;
+			
+			}
+		}		
+
+		return true;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean transferirSAQUE(Long idContaReceber, ContaCreateSaqueDTO dto) {
+		
+		Cliente cliente = clienteRepository.findById(dto.getIdClienteOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cliente não existe."));
+		
+		Conta conta = contaRepository.findById(idContaReceber).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta não existe."));
+
+		
+		for(Conta contasDoClienteOrigem : cliente.getContas()) {
+		
+			if(contasDoClienteOrigem.getId() == conta.getId()) {
+			
+				conta.setSaldoConta(conta.getSaldoConta().subtract(dto.getValor()));				
+				
+				TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+
+				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+				novaTaxa.add(taxaContaOrigem);
+				
+				conta.setTaxas(novaTaxa);
+				conta.setCategoriaConta(taxaContaOrigem.getCategoria());
+				
+				Transferencia transferindo = new Transferencia(conta, dto.getValor(), conta, TipoTransferencia.SAQUE);
+				conta.getTransferencia().add(transferindo);
+	
+				contaRepository.save(conta);		
+				break;
+			
+			}
+		}		
+
+		return true;
+	}
 	
 	
-//
-//	// Transferência PIX
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirPIX(String pixAleatorio, Transferencia dadosContaEnviar) {
-//
-//		Conta contaReceber = null;
-//
-//		// RequestBody
-//		Optional<Cliente> encontraPagadorPorId = clienteRepository.findById(dadosContaEnviar.getIdClienteOrigem());
-//		Optional<Conta> encontraContaPagadorPorId = contaRepository.findById(dadosContaEnviar.getIdContaOrigem());
-//
-//		float valorTransferencia = dadosContaEnviar.getValor();
-//
-//		if (valorTransferencia <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"A transferência não foi realizada. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//
-//		if (encontraContaPagadorPorId.isPresent() && encontraPagadorPorId.isPresent()) {
-//
-//			Conta dadosParaEnviar = encontraContaPagadorPorId.get();
-//
-//			Transferencia novaTransferencia = null;
-//
-//			if (dadosParaEnviar.isStatus() == false) {
-//				throw new ContaNaoRealizouTransferenciaException(
-//						"Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
-//			}
-//
-//			boolean pixExiste = false;
-//
-//			for (Conta getContaPix : getAll()) {
-//
-//				if (getContaPix.getTipoConta() == TipoConta.CORRENTE) {
-//
-//					ContaCorrente minhaContaCorrente = (ContaCorrente) getContaPix;
-//
-//					if (pixAleatorio.equals(minhaContaCorrente.getPixAleatorio())) {
-//
-//						if (minhaContaCorrente.isStatus() == false) {
-//							throw new ContaNaoRealizouTransferenciaException(
-//									"Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
-//						}
-//
-//						novaTransferencia = new Transferencia(dadosContaEnviar.getIdClienteOrigem(),
-//								minhaContaCorrente.getCliente().getId());
-//						contaReceber = minhaContaCorrente;
-//
-//						pixExiste = true;
-//
-//					}
-//				}
-//
-//				if (getContaPix.getTipoConta() == TipoConta.POUPANCA) {
-//
-//					ContaPoupanca minhaContaPoupanca = (ContaPoupanca) getContaPix;
-//
-//					if (pixAleatorio.equals(minhaContaPoupanca.getPixAleatorio())) {
-//
-//						if (minhaContaPoupanca.isStatus() == false) {
-//							throw new ContaNaoRealizouTransferenciaException(
-//									"Essa conta foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
-//						}
-//
-//						novaTransferencia = new Transferencia(dadosContaEnviar.getIdClienteOrigem(),
-//								minhaContaPoupanca.getCliente().getId());
-//						contaReceber = minhaContaPoupanca;
-//					}
-//
-//					pixExiste = true;
-//
-//				}
-//			}
-//
-//			if (pixExiste == false) {
-//				// Pix não existe
-//				throw new ContaNaoRealizouTransferenciaException(
-//						"O PIX " + pixAleatorio + " que você digitou é inválido. Tente transferir para um PIX válido.");
-//
-//			}
-//
-//			List<Conta> contasTransferidas = novaTransferencia.transferirPix(dadosParaEnviar, valorTransferencia,
-//					contaReceber);
-//
-//			if (contasTransferidas != null) {
-//
-//				for (Conta contasT : contasTransferidas) {
-//
-//					// Pagador
-//					if (contasT.getId() == dadosParaEnviar.getId()) {
-//
-//						if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//							ContaCorrente minhaContaCorrente = (ContaCorrente) dadosParaEnviar;
-//							minhaContaCorrente.getTransferencia().add(novaTransferencia);
-//							contaRepository.save(minhaContaCorrente);
-//
-//						}
-//
-//						if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//							ContaPoupanca minhaContaPoupanca = (ContaPoupanca) dadosParaEnviar;
-//							minhaContaPoupanca.getTransferencia().add(novaTransferencia);
-//							contaRepository.save(minhaContaPoupanca);
-//						}
-//
-//					}
-//
-//					// Recebedor
-//					if (contasT.getId() == contaReceber.getId()) {
-//
-//						if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//							ContaCorrente minhaContaCorrente = (ContaCorrente) contaReceber;
-//							contaRepository.save(minhaContaCorrente);
-//
-//						}
-//
-//						if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//							ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaReceber;
-//							contaRepository.save(minhaContaPoupanca);
-//						}
-//
-//					}
-//
-//				}
-//
-//			}
-//
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException("O PIX não foi realizado. Confirme os seus dados.");
-//		}
-//
-//		return true;
-//	}
-//
-//	// Transferência DEPOSITO
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirDEPOSITAR(Long idClienteReceber, Long idContaReceber, Transferencia dadosContaEnviar) {
-//
-//		if (idClienteReceber == null || idContaReceber == null) {
-//			throw new ContaNaoRealizouTransferenciaException("O depósito não foi realizado. Confirme os seus dados.");
-//		}
-//
-//		// Param
-//		Optional<Cliente> encontrarClienteRecebedorPorId = clienteRepository.findById(idClienteReceber);
-//		Optional<Conta> encontraContaRecebedorPorId = contaRepository.findById(idContaReceber);
-//
-//		float valorDeposito = dadosContaEnviar.getValor();
-//
-//		if (valorDeposito <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"O depósito não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//
-//		if (encontraContaRecebedorPorId.isPresent() && encontrarClienteRecebedorPorId.isPresent()) {
-//
-//			// Conta dadosParaEnviar = encontraContaPagadorPorId.get();
-//			Conta contaReceber = encontraContaRecebedorPorId.get();
-//			Cliente clienteReceber = encontrarClienteRecebedorPorId.get();
-//
-//			if (contaReceber.isStatus() == false) {
-//				throw new ContaNaoRealizouTransferenciaException(
-//						"A conta foi desativada.  Confirme os seus dados e faça o depósito em uma conta ativa.");
-//			}
-//
-//			boolean clienteTemConta = false;
-//			for (Conta contas : clienteReceber.getContas()) {
-//				if (contas.getId() == contaReceber.getId()) {
-//					clienteTemConta = true;
-//				}
-//			}
-//
-//			if (clienteTemConta) {
-//
-//				Transferencia novoDeposito = new Transferencia();
-//
-//				List<Conta> contasDeposito = novoDeposito.depositar(valorDeposito, contaReceber);
-//
-//				if (contasDeposito != null) {
-//
-//					for (Conta contasT : contasDeposito) {
-//
-//						// Recebedor
-//						if (contasT.getId() == contaReceber.getId()) {
-//
-//							if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//								ContaCorrente minhaContaCorrente = (ContaCorrente) contaReceber;
-//								minhaContaCorrente.getTransferencia().add(novoDeposito);
-//								contaRepository.save(minhaContaCorrente);
-//
-//							}
-//
-//							if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//								ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaReceber;
-//								minhaContaPoupanca.getTransferencia().add(novoDeposito);
-//								contaRepository.save(minhaContaPoupanca);
-//							}
-//
-//						}
-//
-//					}
-//
-//				}
-//
-//			}
-//
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"O depósito não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//
-//		return true;
-//
-//	}
-//
-//	// Transferência sacar
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirSACAR(Long idClientePegar, Long idContaPegar, Transferencia dadosContaEnviar) {
-//
-//		if (idClientePegar == null || idContaPegar == null) {
-//			throw new ContaNaoRealizouTransferenciaException("O saque não foi realizado. Confirme os seus dados.");
-//		}
-//
-//		// Param
-//		Optional<Cliente> encontrarClienteSaquePorId = clienteRepository.findById(idClientePegar);
-//		Optional<Conta> encontraContaSaquePorId = contaRepository.findById(idContaPegar);
-//
-//		float valorSaque = dadosContaEnviar.getValor();
-//
-//		if (valorSaque <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"O saque não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//
-//		if (encontraContaSaquePorId.isPresent() && encontrarClienteSaquePorId.isPresent()) {
-//
-//			// Conta dadosParaEnviar = encontraContaPagadorPorId.get();
-//			Conta contaSacar = encontraContaSaquePorId.get();
-//			Cliente clienteSacar = encontrarClienteSaquePorId.get();
-//
-//			if (contaSacar.isStatus() == false) {
-//				throw new ContaNaoRealizouTransferenciaException(
-//						"A conta foi desativada.  Confirme os seus dados e faça o saque através de uma conta ativa.");
-//			}
-//
-//			boolean clienteTemConta = false;
-//			for (Conta contas : clienteSacar.getContas()) {
-//				if (contas.getId() == contaSacar.getId()) {
-//					clienteTemConta = true;
-//				}
-//			}
-//
-//			if (clienteTemConta) {
-//
-//				Transferencia novoSaque = new Transferencia();
-//
-//				List<Conta> contasSaque = novoSaque.sacar(valorSaque, contaSacar);
-//
-//				if (contasSaque != null) {
-//
-//					for (Conta contasT : contasSaque) {
-//
-//						// Retirou
-//						if (contasT.getId() == contaSacar.getId()) {
-//
-//							if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//								ContaCorrente minhaContaCorrente = (ContaCorrente) contaSacar;
-//								minhaContaCorrente.getTransferencia().add(novoSaque);
-//								contaRepository.save(minhaContaCorrente);
-//
-//							}
-//
-//							if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//								ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaSacar;
-//								minhaContaPoupanca.getTransferencia().add(novoSaque);
-//								contaRepository.save(minhaContaPoupanca);
-//							}
-//
-//						}
-//
-//					}
-//
-//				}
-//
-//			}
-//
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"O saque não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//
-//		return true;
-//	}
+	
+	
+	
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public float[] exibirSaldo(Long clienteId) {

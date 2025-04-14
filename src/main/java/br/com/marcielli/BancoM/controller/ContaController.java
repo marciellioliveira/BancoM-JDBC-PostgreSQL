@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.BancoM.dto.ClienteCreateDTO;
 import br.com.marcielli.BancoM.dto.ClienteResponseDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateDTO;
+import br.com.marcielli.BancoM.dto.ContaCreateDepositoDTO;
 import br.com.marcielli.BancoM.dto.ContaCreatePixDTO;
+import br.com.marcielli.BancoM.dto.ContaCreateSaqueDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
 import br.com.marcielli.BancoM.dto.ContaMapper;
 import br.com.marcielli.BancoM.dto.ContaResponseDTO;
@@ -97,7 +99,7 @@ public class ContaController {
 	}
 	
 
-	@PostMapping("/transferir/{idContaReceber}")
+	@PostMapping("/transferir/{idContaReceber}/ted")
 	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateTedDTO contaTransCreateDTO) {
 		
 		boolean tedRealizada = contaService.transferirTED(idContaReceber, contaTransCreateDTO);
@@ -121,28 +123,34 @@ public class ContaController {
 		}
 	}
 	
+	@PostMapping("/transferir/{idContaReceber}/deposito")
+	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateDepositoDTO contaDepositoCreateDTO) {
+		
+		boolean pixRealizado = contaService.transferirDEPOSITO(idContaReceber, contaDepositoCreateDTO);
+		
+		if(pixRealizado) {
+			return new ResponseEntity<String>("Depósito realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do depósito são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	@PostMapping("/transferir/{idContaReceber}/saque")
+	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateSaqueDTO contaSaqueCreateDTO) {
+		
+		boolean pixRealizado = contaService.transferirSAQUE(idContaReceber, contaSaqueCreateDTO);
+		
+		if(pixRealizado) {
+			return new ResponseEntity<String>("Saque realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do saque são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	
 
 
-//	// Transferencia PIX
-//	@PostMapping("/transferir/{pixAleatorio}/pix")
-//	public ResponseEntity<String> transferirPIX(@PathVariable("pixAleatorio") String pixAleatorio,
-//			@RequestBody Transferencia contaEnviar) {
-//
-//		boolean transferenciaPIX = contaService.transferirPIX(pixAleatorio, contaEnviar);
-//
-//		if (transferenciaPIX) {
-//
-//			return new ResponseEntity<String>(
-//					"PIX de " + contaEnviar.getValor() + " realizado com sucesso para a chave " + pixAleatorio + ".",
-//					HttpStatus.CREATED);
-//
-//		} else {
-//
-//			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//
-//		}
-//	}
-//
+
 //	// Transferencia Depositar
 //	@PostMapping("/depositar/{idClienteReceber}/{idContaReceber}/deposito")
 //	public ResponseEntity<String> transferirDEPOSITAR(@PathVariable("idClienteReceber") Long idClienteReceber,

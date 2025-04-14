@@ -74,13 +74,30 @@ public class Transferencia implements Serializable {
 	@Transient //Remover informação do BD
 	private Conta conta;
 
-	//TED
+	//TED - PIX
 	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia) {
 		super();
 		this.idClienteOrigem = enviar.getCliente().getId();		
 		this.idClienteDestino = receber.getCliente().getId();	
 		this.idContaOrigem = enviar.getId();
 		this.idContaDestino = receber.getId();
+		this.tipoTransferencia = tipoTransferencia;
+		this.valor = valor;
+		
+		LocalDateTime dataTransferencia = LocalDateTime.now();
+		String codTransferencia = gerarCodigoTransferencia();		
+		
+		this.data = dataTransferencia;		
+		this.codigoOperacao = codTransferencia;
+	}
+	
+	//DEPOSITO
+	public Transferencia(Conta deposito, BigDecimal valor, TipoTransferencia tipoTransferencia) {
+		super();
+		this.idClienteOrigem = deposito.getCliente().getId();		
+		this.idClienteDestino = 0L;	
+		this.idContaOrigem = deposito.getId();
+		this.idContaDestino = 0L;
 		this.tipoTransferencia = tipoTransferencia;
 		this.valor = valor;
 		
