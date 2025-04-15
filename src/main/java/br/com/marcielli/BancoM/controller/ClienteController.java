@@ -24,7 +24,7 @@ import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ClienteService;
 
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/clientes") //cliente
 public class ClienteController {
 
 	@Autowired
@@ -33,7 +33,7 @@ public class ClienteController {
 	@Autowired
 	private ClienteMapper clienteMapper;
 
-	@PostMapping("/salvar")
+	@PostMapping("") //salvar - Criar um novo cliente
 	public ResponseEntity<ClienteResponseDTO> adicionarCliente(@RequestBody ClienteCreateDTO clienteCreateDTO) { 
 		// Pega o Cliente do JSON
 
@@ -65,8 +65,21 @@ public class ClienteController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteResponseDTO);
 
 	}
+	
+	@GetMapping("/{clienteId}") //listar/{clienteId} - Obter detalhes de um cliente
+	public Optional<Cliente> getClienteById(@PathVariable("clienteId") Long clienteId) {
 
-	@PutMapping("/atualizar/{clienteId}")
+		Optional<Cliente> clienteById = clienteService.getClienteById(clienteId);
+
+		if (!clienteById.isPresent()) {
+			throw new ClienteNaoEncontradoException("Cliente não existe no banco.");
+		}
+
+		return clienteById;
+
+	}
+
+	@PutMapping("/{clienteId}") //atualizar/{clienteId} - Atualizar informações de um cliente
 	public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable("clienteId") Long clienteId,
 			@RequestBody ClienteCreateDTO clienteCreateDTO) {
 
@@ -90,27 +103,8 @@ public class ClienteController {
 		return ResponseEntity.status(HttpStatus.OK).body(clienteResponseDTO);
 
 	}
-
-	@GetMapping("/listar")
-	public ResponseEntity<List<Cliente>> getClientes() {
-		List<Cliente> clientes = clienteService.getAll();
-		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);
-	}
-
-	@GetMapping("/listar/{clienteId}")
-	public Optional<Cliente> getClienteById(@PathVariable("clienteId") Long clienteId) {
-
-		Optional<Cliente> clienteById = clienteService.getClienteById(clienteId);
-
-		if (!clienteById.isPresent()) {
-			throw new ClienteNaoEncontradoException("Cliente não existe no banco.");
-		}
-
-		return clienteById;
-
-	}
-
-	@DeleteMapping("/deletar/{clienteId}")
+	
+	@DeleteMapping("/{clienteId}") //deletar/{clienteId} - Remover um cliente
 	public ResponseEntity<String> deletar(@PathVariable("clienteId") Long clienteId) {
 
 		boolean clienteDeletado = clienteService.delete(clienteId);
@@ -121,4 +115,10 @@ public class ClienteController {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+
+	@GetMapping("") //listar
+	public ResponseEntity<List<Cliente>> getClientes() {
+		List<Cliente> clientes = clienteService.getAll();
+		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);
+	}	
 }

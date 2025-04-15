@@ -205,7 +205,6 @@ public class CartaoService {
 					cartaoD.atualizarLimiteDiarioTransacao(dto.getValor());
 					cartaoD.atualizarTotalGastoMes(dto.getValor());
 					
-					
 				}
 				
 				TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
@@ -261,9 +260,6 @@ public class CartaoService {
 			}
 			
 		}
-		
-		
-		
 		return true;
 	}
 	

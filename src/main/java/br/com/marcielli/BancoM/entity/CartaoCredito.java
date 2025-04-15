@@ -38,8 +38,11 @@ public class CartaoCredito extends Cartao {
 	
 	public void atualizarLimiteCreditoPreAprovado(BigDecimal valor) {
 		
-		this.limiteCreditoPreAprovado = limiteCreditoPreAprovado.subtract(valor);
-		
+		this.limiteCreditoPreAprovado = limiteCreditoPreAprovado.subtract(valor);		
+	}
+	
+	public void alterarLimiteCreditoPreAprovado(BigDecimal valor) {
+		this.limiteCreditoPreAprovado = valor;
 	}
 
 }

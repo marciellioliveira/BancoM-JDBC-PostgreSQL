@@ -113,53 +113,6 @@ public class CartaoController {
 	
 	
 	
-		
-//
-//	// Pagamento Cartão
-//	@PostMapping("/pagamento/{idClienteReceber}/{idContaReceber}")
-//	public ResponseEntity<String> pagamentoCartao(@PathVariable("idClienteReceber") Long idClienteReceber, @PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia contaEnviar) {
-//		
-//		boolean pagamento = cartaoService.pagarCartao(idClienteReceber,idContaReceber, contaEnviar);
-//
-//		if (pagamento) {
-//
-//			return new ResponseEntity<String>("Pagamento realizado com sucesso.", HttpStatus.CREATED);
-//
-//		} else {
-//
-//			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-//	}
-//	
-//	
-//	
-//	
-	
-	
-	
-//	@PostMapping("/pagamento/{idClienteReceber}/{idContaReceber}")
-//	public ResponseEntity<String> transferirPagarCartao(@PathVariable("idClienteReceber") Long idClienteReceber, @PathVariable("idContaReceber") Long idContaReceber, @RequestBody Transferencia valorDepositar) {
-//				
-//		boolean pagamento = cartaoService.pagarCartao(idClienteReceber, idContaReceber, valorDepositar);
-//
-//		if (pagamento) {
-//
-//			return new ResponseEntity<String>("Pagamento realizado com sucesso.", HttpStatus.OK);
-//
-//		} else {
-//
-//			return new ResponseEntity<String>("Dados inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-//	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
