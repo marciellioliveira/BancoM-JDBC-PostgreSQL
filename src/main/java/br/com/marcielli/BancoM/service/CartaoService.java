@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.CartaoDebito;
@@ -63,15 +64,15 @@ public class CartaoService {
 			String numeroCartao = numCartao.concat("-CC");
 			
 			novoCartao = new CartaoCredito();
-			cartoes.add(novoCartao);			
-			
-			conta.setCartoes(cartoes);
-			contaRepository.save(conta);
 			
 			novoCartao.setConta(conta);
 			novoCartao.setTipoCartao(cartao.getTipoCartao());
 			novoCartao.setSenha(cartao.getSenha());
 			novoCartao.setNumeroCartao(numeroCartao);
+			
+			cartoes.add(novoCartao);	
+			conta.setCartoes(cartoes);
+//			contaRepository.save(conta);
 			
 		}
 		
@@ -79,27 +80,59 @@ public class CartaoService {
 			
 			String numeroCartao = numCartao.concat("-CD");
 			
-			novoCartao = new CartaoDebito();
-			cartoes.add(novoCartao);
-			
-			conta.setCartoes(cartoes);			
-			contaRepository.save(conta);
+			novoCartao = new CartaoDebito();		
 			
 			novoCartao.setConta(conta);
 			novoCartao.setTipoCartao(cartao.getTipoCartao());
 			novoCartao.setSenha(cartao.getSenha());
 			novoCartao.setNumeroCartao(numeroCartao);
 			
+			cartoes.add(novoCartao);
+			conta.setCartoes(cartoes);			
+//			contaRepository.save(conta);
+			
 		}
 		
 		return cartaoRepository.save(novoCartao);
 
 	}
+		
 	
-	
-	
-	
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao update(Long cartaoId, CartaoUpdateDTO dto) {		
+		
+		System.err.println("Teste "+dto);
+		
+		Cliente cliente = clienteRepository.findById(dto.getIdCliente())
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
+		
+		Conta conta = contaRepository.findById(dto.getIdConta())
+				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
+		
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		
+		
+		for(Conta temConta : cliente.getContas()) {
+			
+			if(temConta.getId() == conta.getId()) {
+				System.err.println(conta);
+				for(Cartao temCartao : conta.getCartoes()) {
+					if(temCartao.getId() == cartaoId) {
+						cartao.setSenha(dto.getSenha());
+						System.err.println(cartao);
+					}
+				}
+				
+				
+			}			
+		}
+		
+		
+			
+		return cartaoRepository.save(cartao);
+	}
 	
 	
 	
@@ -139,95 +172,31 @@ public class CartaoService {
 	}
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Cartao> getAll() {
+
+		List<Cartao> cartoesH2 = cartaoRepository.findAll();
+
+		if (cartoesH2.size() <= 0) {
+			throw new ContaNaoEncontradaException("Não existem cartões cadastrados no banco.");
+		}
+
+		return cartoesH2;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Optional<Cartao> getCartaoById(Long id) {
+
+		Optional<Cartao> cartaoH2 = cartaoRepository.findById(id);
+
+		if (!cartaoH2.isPresent()) {
+			throw new ContaNaoEncontradaException("Cartão não encontrado.");
+		}
+
+		return cartaoH2;
+	}
+
 	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Cartao saveCartao(Cartao dadosCartao) {		
-//
-//		Cartao cartaoCriado = null;
-//		Cliente clienteCartao = null;
-//		
-//		if (dadosCartao.getId() == null ) {
-//			throw new CartaoNaoEncontradoException("Para cadastrar um cartão, você precisa ter uma conta no banco.");
-//		}
-//		
-//		Optional<Conta> conta = contaRepository.findById(dadosCartao.getConta().getId());
-//		
-//		if (conta.isPresent()) {	
-//			
-//			Conta contaCartao = conta.get();
-//			
-//			clienteCartao = contaCartao.getCliente();
-//			 
-//			String numCartao = gerarNumeroDoCartao();		
-//			
-//			if (dadosCartao.getTipoCartao() == TipoCartao.CREDITO) {
-//				
-//				String numCartaoCredito = numCartao.concat("-CC");					
-//				cartaoCriado =  new CartaoCredito(numCartaoCredito, contaCartao.getTipoConta(), contaCartao.getCategoriaConta(), TipoCartao.CREDITO, true, dadosCartao.getSenha(), contaCartao);
-//			
-//			} else if (dadosCartao.getTipoCartao() == TipoCartao.DEBITO) {
-//				
-//				String numCartaoDebito = numCartao.concat("-CD");
-//				cartaoCriado = new CartaoDebito(numCartaoDebito, contaCartao.getTipoConta(), contaCartao.getCategoriaConta(), TipoCartao.DEBITO, true, dadosCartao.getSenha(), contaCartao);
-//			}
-//			
-//			if(cartaoCriado != null) {
-//				
-//				contaCartao.getCartoes().add(cartaoCriado);				
-//				cartaoRepository.save(cartaoCriado);
-//				
-//			}
-//			
-//		} else {
-//			throw new CartaoNaoEncontradoException("Para cadastrar um cartão, você precisa ter uma conta no banco.");
-//		}
-//
-//		return cartaoCriado;
-//	}
-//	
-//	private static String gerarNumeroDoCartao() {
-//
-//		int[] sequencia = new int[8];
-//		Random random = new Random();
-//		String meuCartao = "";
-//
-//		for (int i = 0; i < sequencia.length; i++) {
-//			sequencia[i] = 1 + random.nextInt(8);
-//		}
-//
-//		for (int i = 0; i < sequencia.length; i++) {
-//			meuCartao += Integer.toString(sequencia[i]);
-//		}
-//
-//		return meuCartao;
-//	}
-//	
-//	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public List<Cartao> getAll() {
-//
-//		List<Cartao> cartoesH2 = cartaoRepository.findAll();
-//
-//		if (cartoesH2.size() <= 0) {
-//			throw new ContaNaoEncontradaException("Não existem cartões cadastrados no banco.");
-//		}
-//
-//		return cartoesH2;
-//	}
-//
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Optional<Cartao> getCartaoById(Long id) {
-//
-//		Optional<Cartao> cartaoH2 = cartaoRepository.findById(id);
-//
-//		if (!cartaoH2.isPresent()) {
-//			throw new ContaNaoEncontradaException("Cartão não encontrado.");
-//		}
-//
-//		return cartaoH2;
-//	}
-//
-//	
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public Cartao update(Long cartaoAtualizar, Cartao dadosParaAtualizar) {
 //

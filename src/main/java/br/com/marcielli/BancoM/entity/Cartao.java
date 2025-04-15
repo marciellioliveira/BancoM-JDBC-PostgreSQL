@@ -45,14 +45,6 @@ public class Cartao implements Serializable {
 	@Version
 	private Long version;
 	
-//	@JsonIgnore
-//	@Transient
-//	private Long idCliente;	
-//	
-//	@JsonIgnore
-//	@Transient
-//	private Long idConta;	
-	
 	@Enumerated(EnumType.STRING)	
 	@JsonIgnore
 	private TipoConta tipoConta;
