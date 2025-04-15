@@ -1,5 +1,7 @@
 package br.com.marcielli.BancoM.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.AllArgsConstructor;
@@ -19,12 +21,25 @@ public class CartaoCredito extends Cartao {
 
 	private static final long serialVersionUID = 1L;
 
-	private float limiteCreditoPreAprovado;
+	private BigDecimal limiteCreditoPreAprovado = new BigDecimal("600");
 	
-	private float taxaUtilizacao;
+	private BigDecimal taxaUtilizacao;
 
-	private float taxaSeguroViagem;
+	private BigDecimal taxaSeguroViagem;
 
-	private float totalGastoMesCredito;
+	private BigDecimal totalGastoMesCredito = BigDecimal.ZERO;
+	
+	
+	public void atualizarTotalGastoMes(BigDecimal valor) {		
+		
+		this.totalGastoMesCredito = totalGastoMesCredito.add(valor);		
+		
+	}
+	
+	public void atualizarLimiteCreditoPreAprovado(BigDecimal valor) {
+		
+		this.limiteCreditoPreAprovado = limiteCreditoPreAprovado.subtract(valor);
+		
+	}
 
 }

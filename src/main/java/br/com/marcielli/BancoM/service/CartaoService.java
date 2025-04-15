@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
 import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
@@ -69,6 +71,13 @@ public class CartaoService {
 			novoCartao.setTipoCartao(cartao.getTipoCartao());
 			novoCartao.setSenha(cartao.getSenha());
 			novoCartao.setNumeroCartao(numeroCartao);
+			novoCartao.setStatus(true);	
+			novoCartao.setTipoConta(conta.getTipoConta());
+			conta.setCategoriaConta(conta.getCategoriaConta());
+			
+			if(novoCartao instanceof CartaoCredito) {
+				((CartaoCredito) novoCartao).setLimiteCreditoPreAprovado(new BigDecimal("600"));
+			}
 			
 			cartoes.add(novoCartao);	
 			conta.setCartoes(cartoes);
@@ -85,6 +94,13 @@ public class CartaoService {
 			novoCartao.setTipoCartao(cartao.getTipoCartao());
 			novoCartao.setSenha(cartao.getSenha());
 			novoCartao.setNumeroCartao(numeroCartao);
+			novoCartao.setStatus(true);
+			novoCartao.setTipoConta(conta.getTipoConta());
+			conta.setCategoriaConta(conta.getCategoriaConta());
+			
+			if(novoCartao instanceof CartaoDebito) {
+				((CartaoDebito) novoCartao).setLimiteDiarioTransacao(new BigDecimal("600"));
+			}
 			
 			cartoes.add(novoCartao);
 			conta.setCartoes(cartoes);			
@@ -152,14 +168,45 @@ public class CartaoService {
 		Conta contaDestino = contaRepository.findById(idContaReceber).orElseThrow(
 				() -> new ContaNaoEncontradaException("A conta destino não existe."));	
 		
-		Cliente clienteDestino = clienteRepository.getById(contaDestino.getCliente().getId());
+		Optional<Cliente> clienteDestino = clienteRepository.findById(contaDestino.getCliente().getId());
 		
 		
 		for(Conta contasDoClienteOrigem : clienteOrigem.getContas()) {
 			
-			if(contasDoClienteOrigem.getId() == contaOrigem.getId()) {
-			
-				contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));
+			if(contasDoClienteOrigem.getId() == contaOrigem.getId()) {				
+				
+				if(cartaoOrigem.getTipoCartao() == TipoCartao.CREDITO) { //Não retira da conta 					
+					CartaoCredito cartaoC = (CartaoCredito)cartaoOrigem;
+					
+					if(dto.getValor().compareTo(cartaoC.getLimiteCreditoPreAprovado()) > 0) {
+						throw new TransferenciaNaoRealizadaException("Você está tentando realizar um pagamento com um valor maior que o seu limite");
+					}		
+					
+					if(cartaoC.getLimiteCreditoPreAprovado().compareTo(BigDecimal.ZERO) <= 0) {
+						throw new TransferenciaNaoRealizadaException("O cartão não tem limite de crédito.");
+					}
+					
+					cartaoC.atualizarTotalGastoMes(dto.getValor());
+					cartaoC.atualizarLimiteCreditoPreAprovado(dto.getValor());
+				}
+				
+				if(cartaoOrigem.getTipoCartao() == TipoCartao.DEBITO) { //Retira da conta
+					CartaoDebito cartaoD = (CartaoDebito)cartaoOrigem;
+					contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));
+					
+					if(dto.getValor().compareTo(cartaoD.getLimiteDiarioTransacao()) > 0) {
+						throw new TransferenciaNaoRealizadaException("Você está tentando realizar um pagamento com um valor maior que o seu limite");
+					}		
+					
+					if(cartaoD.getLimiteDiarioTransacao().compareTo(BigDecimal.ZERO) <= 0) {
+						throw new TransferenciaNaoRealizadaException("O cartão não tem limite de transação.");
+					}
+					
+					cartaoD.atualizarLimiteDiarioTransacao(dto.getValor());
+					cartaoD.atualizarTotalGastoMes(dto.getValor());
+					
+					
+				}
 				
 				TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
 
@@ -171,7 +218,7 @@ public class CartaoService {
 				
 				if(contaOrigem.getTipoConta() == TipoConta.CORRENTE) {
 					ContaCorrente cc = (ContaCorrente)contaOrigem;
-					cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+					cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());					
 				}
 				
 				if(contaOrigem.getTipoConta() == TipoConta.POUPANCA) {
@@ -189,26 +236,33 @@ public class CartaoService {
 			}
 		}	
 		
-		
-		for(Conta contasDoClienteDestino : clienteDestino.getContas()) {
+		if(clienteDestino.isPresent()) {
 			
-			if(contasDoClienteDestino.getId() == contaDestino.getId()) {
+			Cliente cdestino = clienteDestino.get();
+			
+			for(Conta contasDoClienteDestino : cdestino.getContas()) {
 				
-				contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.getValor()));
-				
-				TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+				if(contasDoClienteDestino.getId() == contaDestino.getId()) {
+					
+					contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.getValor()));
+					
+					TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
 
-				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-				novaTaxa.add(taxaContaDestino);
+					List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+					novaTaxa.add(taxaContaDestino);
+					
+					contaDestino.setTaxas(novaTaxa);
+					contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
+					
+					contaRepository.save(contaDestino);
+					break;
 				
-				contaDestino.setTaxas(novaTaxa);
-				contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
-				
-				contaRepository.save(contaDestino);
-				break;
+				}			
+			}
 			
-			}			
 		}
+		
+		
 		
 		return true;
 	}
