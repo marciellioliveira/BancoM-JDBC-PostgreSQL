@@ -58,8 +58,7 @@ public class Cartao implements Serializable {
 	private TipoCartao tipoCartao;
 	
 	private String numeroCartao;
-		
-	@JsonIgnore
+	
 	private boolean status;
 	
 	public String senha;

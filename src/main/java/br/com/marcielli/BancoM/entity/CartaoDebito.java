@@ -30,9 +30,11 @@ public class CartaoDebito extends Cartao {
 		
 	}
 
-	public void atualizarLimiteDiarioTransacao(BigDecimal valor) {
-		
-		this.limiteDiarioTransacao = limiteDiarioTransacao.subtract(valor);
-		
+	public void atualizarLimiteDiarioTransacao(BigDecimal valor) {		
+		this.limiteDiarioTransacao = limiteDiarioTransacao.subtract(valor);		
+	}
+	
+	public void alterarLimiteDiarioTransacao(BigDecimal valor) {
+		this.limiteDiarioTransacao = valor;
 	}
 }

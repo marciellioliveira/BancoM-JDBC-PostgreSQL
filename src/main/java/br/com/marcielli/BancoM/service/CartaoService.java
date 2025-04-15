@@ -15,6 +15,8 @@ import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateStatusDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.CartaoDebito;
@@ -27,6 +29,7 @@ import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
+import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
@@ -264,10 +267,128 @@ public class CartaoService {
 	}
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarLimiteCartaoCredito(Long cartaoId, CartaoUpdateLimiteDTO dto) {	
+		
+		Cliente cliente = clienteRepository.findById(dto.getIdCliente())
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
+		
+		Conta conta = contaRepository.findById(dto.getIdConta())
+				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
+		
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		if(dto.getNovoLimite() == null) {
+			throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão");
+		}
+		
+		BigDecimal novoLimite = dto.getNovoLimite();
+		
+		for(Conta temConta : cliente.getContas()) {
+			
+			if(temConta.getId() == conta.getId()) {
+				for(Cartao temCartao : conta.getCartoes()) {
+					if(temCartao.getId() == cartaoId) {
+					
+						if(temCartao instanceof CartaoCredito) {
+							((CartaoCredito) temCartao).alterarLimiteCreditoPreAprovado(novoLimite);
+							cartaoRepository.save(cartao);
+							break;
+						}	
+					}
+				}
+				
+				
+			}			
+		}
+		return cartao;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarStatusC(Long cartaoId, CartaoUpdateStatusDTO dto) {	
+		
+		Cliente cliente = clienteRepository.findById(dto.getIdCliente())
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
+		
+		Conta conta = contaRepository.findById(dto.getIdConta())
+				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
+		
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		if(!dto.getNovoStatus().equalsIgnoreCase("true") && !dto.getNovoStatus().equalsIgnoreCase("false") ) {
+			throw new CartaoNaoEncontradoException("Digite (True ou False) para o status.");
+		}
+		
+		String statusNovo = dto.getNovoStatus();
+		
+		for(Conta temConta : cliente.getContas()) {
+			
+			if(temConta.getId() == conta.getId()) {
+				for(Cartao temCartao : conta.getCartoes()) {
+					if(temCartao.getId() == cartaoId) {
+						
+						if(statusNovo.equalsIgnoreCase("true")) {
+							cartao.setStatus(true);							
+						} 
+
+						if(statusNovo.equalsIgnoreCase("false")){
+							cartao.setStatus(false);
+						}
+						
+						cartaoRepository.save(cartao);
+						break;
+						
+					}
+				}
+				
+				
+			}			
+		}
+		return cartao;
+	}
 	
 	
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarLimiteCartaoDebito(Long cartaoId, CartaoUpdateLimiteDTO dto) {	
+		
+		Cliente cliente = clienteRepository.findById(dto.getIdCliente())
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
+		
+		Conta conta = contaRepository.findById(dto.getIdConta())
+				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
+		
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		if(dto.getNovoLimite() == null) {
+			throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão");
+		}
+		
+		BigDecimal novoLimite = dto.getNovoLimite();
+		
+		for(Conta temConta : cliente.getContas()) {
+			
+			if(temConta.getId() == conta.getId()) {
+				for(Cartao temCartao : conta.getCartoes()) {
+					if(temCartao.getId() == cartaoId) {
+										
+						if(temCartao instanceof CartaoDebito) {
+							((CartaoDebito) temCartao).alterarLimiteDiarioTransacao(novoLimite);
+							cartaoRepository.save(cartao);
+							break;
+						}
+					}
+				}
+				
+				
+			}			
+		}
+		return cartao;
+	}
 	
 	
 	

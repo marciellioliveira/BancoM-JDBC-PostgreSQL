@@ -22,8 +22,14 @@ import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
 import br.com.marcielli.BancoM.dto.CartaoMapper;
 import br.com.marcielli.BancoM.dto.CartaoResponseDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteMapper;
+import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteResponseDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateMapper;
 import br.com.marcielli.BancoM.dto.CartaoUpdateResponseDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateStatusDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateStatusMapper;
+import br.com.marcielli.BancoM.dto.CartaoUpdateStatusResponseDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.service.CartaoService;
@@ -40,6 +46,12 @@ public class CartaoController {
 	
 	@Autowired
 	private CartaoUpdateMapper cartaoUpdateMapper;
+	
+	@Autowired
+	private CartaoUpdateLimiteMapper cartaoUpdateLimiteMapper;
+	
+	@Autowired
+	private CartaoUpdateStatusMapper cartaoUpdateStatusMapper;
 		
 	@PostMapping("") //@PostMapping("/salvar") - salvar - Criar um novo cartão
 	public ResponseEntity<CartaoResponseDTO> adicionarCartao(@RequestBody CartaoCreateDTO cartaoCreateDTO) {		
@@ -97,9 +109,6 @@ public class CartaoController {
 	}
 
 	
-
-	
-	
 	@PostMapping("/{idContaReceber}/pagamento")
 	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody CartaoCreateTedDTO cartaoTransCreateDTO) {
 		
@@ -113,6 +122,47 @@ public class CartaoController {
 	}	
 	
 	
+	@PutMapping("/{cartaoId}/limite") //@PutMapping("/atualizar/{cartaoId}") - Alterar limite do cartão de crédito
+	public ResponseEntity<CartaoUpdateLimiteResponseDTO> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateLimiteDTO cartaoUpdateLimiteDTO) {
+
+		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
+
+		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, cartaoUpdateLimiteDTO);
+
+		CartaoUpdateLimiteResponseDTO cartaoResponseDTO = cartaoUpdateLimiteMapper.toDTO(limiteAtualizado);
+
+		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
+
+	}
+	
+	@PutMapping("/{cartaoId}/status") //@PutMapping("/atualizar/{cartaoId}") - Alterar limite do cartão de crédito
+	public ResponseEntity<CartaoUpdateStatusResponseDTO> alterarStatusCartao(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateStatusDTO cartaoUpdateStatusDTO) {
+
+		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
+
+		Cartao statusAtualizado = cartaoService.alterarStatusC(cartaoId, cartaoUpdateStatusDTO);
+
+		CartaoUpdateStatusResponseDTO cartaoResponseDTO = cartaoUpdateStatusMapper.toDTO(statusAtualizado);
+
+		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
+
+	}
+
+	
+	@PutMapping("/{cartaoId}/limite-diario") //@PutMapping("/atualizar/{cartaoId}") - Alterar limite diario do cartão de débito
+	public ResponseEntity<CartaoUpdateLimiteResponseDTO> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateLimiteDTO cartaoUpdateLimiteDTO) {
+
+		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
+
+		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, cartaoUpdateLimiteDTO);
+
+		CartaoUpdateLimiteResponseDTO cartaoResponseDTO = cartaoUpdateLimiteMapper.toDTO(limiteAtualizado);
+
+		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
+
+	}
+	
+
 	
 	
 	
