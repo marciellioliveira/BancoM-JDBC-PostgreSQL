@@ -16,6 +16,7 @@ import br.com.marcielli.BancoM.dto.ContaCreateDepositoDTO;
 import br.com.marcielli.BancoM.dto.ContaCreatePixDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateSaqueDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
+import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
@@ -166,19 +167,13 @@ public class ContaService {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean deleteConta(Long contaId) {
-
-		Optional<Conta> contaH2 = contaRepository.findById(contaId);
-
-		if (contaH2.isPresent()) {
-
-			contaRepository.deleteById(contaId);
-			return true;
-
-		} else {
-
-			throw new ContaNaoEncontradaException("A conta não pode ser deletada porque não existe no banco.");
-
-		}
+		
+		Conta conta = contaRepository.findById(contaId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		contaRepository.deleteById(conta.getId());
+		
+		return true;
 
 	}
 	

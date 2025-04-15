@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
+import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
@@ -72,7 +73,6 @@ public class CartaoService {
 			
 			cartoes.add(novoCartao);	
 			conta.setCartoes(cartoes);
-//			contaRepository.save(conta);
 			
 		}
 		
@@ -89,7 +89,6 @@ public class CartaoService {
 			
 			cartoes.add(novoCartao);
 			conta.setCartoes(cartoes);			
-//			contaRepository.save(conta);
 			
 		}
 		
@@ -99,9 +98,7 @@ public class CartaoService {
 		
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao update(Long cartaoId, CartaoUpdateDTO dto) {		
-		
-		System.err.println("Teste "+dto);
+	public Cartao update(Long cartaoId, CartaoUpdateDTO dto) {	
 		
 		Cliente cliente = clienteRepository.findById(dto.getIdCliente())
 				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
@@ -112,30 +109,33 @@ public class CartaoService {
 		Cartao cartao = cartaoRepository.findById(cartaoId)
 				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
 		
-		
-		
 		for(Conta temConta : cliente.getContas()) {
 			
 			if(temConta.getId() == conta.getId()) {
-				System.err.println(conta);
 				for(Cartao temCartao : conta.getCartoes()) {
 					if(temCartao.getId() == cartaoId) {
 						cartao.setSenha(dto.getSenha());
-						System.err.println(cartao);
 					}
 				}
 				
 				
 			}			
 		}
-		
-		
-			
 		return cartaoRepository.save(cartao);
 	}
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean deleteCartao(Long cartaoId, CartaoDeleteDTO dto) {	
 	
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		cartaoRepository.deleteById(cartao.getId());
+		
+		return true;
+
+	}
 	
 	
 	
