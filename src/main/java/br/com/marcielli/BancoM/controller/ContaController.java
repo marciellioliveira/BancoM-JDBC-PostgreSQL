@@ -29,7 +29,7 @@ import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ContaService;
 
 @RestController
-@RequestMapping("/conta")
+@RequestMapping("/contas")
 public class ContaController {
 
 	@Autowired
@@ -38,7 +38,7 @@ public class ContaController {
 	@Autowired
 	private ContaMapper contaMapper;
 	
-	@PostMapping("/salvar")
+	@PostMapping("") //salvar - Criar uma nova conta.
 	public ResponseEntity<ContaResponseDTO> adicionarConta(@RequestBody ContaCreateDTO contaCreateDTO) {		
 
 		Conta conta = contaMapper.toEntity(contaCreateDTO);
@@ -51,26 +51,7 @@ public class ContaController {
 
 	}	
 	
-	@PutMapping("/atualizar/{contaId}")
-	public ResponseEntity<ContaResponseDTO> atualizar(@PathVariable("contaId") Long contaId, @RequestBody ContaCreateDTO contaCreateDTO) {
-
-		Conta conta = contaMapper.toEntity(contaCreateDTO);
-
-		Conta contaAtualizado = contaService.update(contaId, conta);
-
-		ContaResponseDTO contaResponseDTO = contaMapper.toDTO(contaAtualizado);
-
-		return ResponseEntity.status(HttpStatus.OK).body(contaResponseDTO);
-
-	}
-
-	@GetMapping("/listar")
-	public ResponseEntity<List<Conta>> getContas() {
-		List<Conta> contas = contaService.getAll();
-		return new ResponseEntity<List<Conta>>(contas, HttpStatus.OK);
-	}
-
-	@GetMapping("/listar/{contaId}")
+	@GetMapping("/{contaId}") //listar/{clienteId} - Obter detalhes de uma conta
 	public Optional<Conta> getContaById(@PathVariable("contaId") Long contaId) {
 
 		Optional<Conta> contaById = contaService.getContaById(contaId);
@@ -82,7 +63,20 @@ public class ContaController {
 		return contaById;
 	}
 	
-	@DeleteMapping("/deletar/{contaId}")
+	@PutMapping("/{contaId}") //atualizar/{clienteId} - Atualizar informações de uma conta
+	public ResponseEntity<ContaResponseDTO> atualizar(@PathVariable("contaId") Long contaId, @RequestBody ContaCreateDTO contaCreateDTO) {
+
+		Conta conta = contaMapper.toEntity(contaCreateDTO);
+
+		Conta contaAtualizado = contaService.update(contaId, conta);
+
+		ContaResponseDTO contaResponseDTO = contaMapper.toDTO(contaAtualizado);
+
+		return ResponseEntity.status(HttpStatus.OK).body(contaResponseDTO);
+
+	}
+	
+	@DeleteMapping("/{contaId}") //deletar/{clienteId} - Remover uma conta
 	public ResponseEntity<String> deletar(@PathVariable("contaId") Long contaId) {
 
 		boolean contaDeletada = contaService.deleteConta(contaId);
@@ -93,9 +87,17 @@ public class ContaController {
 			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
 
-	@PostMapping("/transferir/{idContaReceber}/ted")
+	@GetMapping("") //listar
+	public ResponseEntity<List<Conta>> getContas() {
+		List<Conta> contas = contaService.getAll();
+		return new ResponseEntity<List<Conta>>(contas, HttpStatus.OK);
+	}
+
+
+	//Pagamentos
+
+	@PostMapping("/{idContaReceber}/transferencia") //@PostMapping("/transferir/{idContaReceber}/ted")
 	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateTedDTO contaTransCreateDTO) {
 		
 		boolean tedRealizada = contaService.transferirTED(idContaReceber, contaTransCreateDTO);
@@ -107,7 +109,19 @@ public class ContaController {
 		}
 	}	
 	
-	@PostMapping("/transferir/{idContaReceber}/pix")
+	@GetMapping("/{clienteId}/saldo") 
+	public ResponseEntity<String> exibirSaldo(@PathVariable("clienteId") Long clienteId) {
+
+		BigDecimal saldoAtual = contaService.exibirSaldo(clienteId);
+
+		if (saldoAtual.compareTo(BigDecimal.ZERO) > 0) {
+			return new ResponseEntity<String>("Saldo Total: "+saldoAtual, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	@PostMapping("/{idContaReceber}/pix") //@PostMapping("/transferir/{idContaReceber}/pix")
 	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreatePixDTO contaPixCreateDTO) {
 		
 		boolean pixRealizado = contaService.transferirPIX(idContaReceber, contaPixCreateDTO);
@@ -119,7 +133,7 @@ public class ContaController {
 		}
 	}
 	
-	@PostMapping("/transferir/{idContaReceber}/deposito")
+	@PostMapping("/{idContaReceber}/deposito") //@PostMapping("/transferir/{idContaReceber}/deposito")
 	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateDepositoDTO contaDepositoCreateDTO) {
 		
 		boolean depositoRealizado = contaService.transferirDEPOSITO(idContaReceber, contaDepositoCreateDTO);
@@ -131,7 +145,7 @@ public class ContaController {
 		}
 	}
 	
-	@PostMapping("/transferir/{idContaReceber}/saque")
+	@PostMapping("/{idContaReceber}/saque") //@PostMapping("/transferir/{idContaReceber}/saque")
 	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateSaqueDTO contaSaqueCreateDTO) {
 		
 		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, contaSaqueCreateDTO);
@@ -156,17 +170,7 @@ public class ContaController {
 	}
 	
 
-	// Ver saldo
-	@GetMapping("/{clienteId}/saldo")
-	public ResponseEntity<String> exibirSaldo(@PathVariable("clienteId") Long clienteId) {
+	
 
-		BigDecimal saldoAtual = contaService.exibirSaldo(clienteId);
-
-		if (saldoAtual.compareTo(BigDecimal.ZERO) > 0) {
-			return new ResponseEntity<String>("Saldo Total: "+saldoAtual, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-		}
-	}
 
 }
