@@ -16,6 +16,7 @@ import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateSenhaDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateStatusDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
@@ -348,8 +349,39 @@ public class CartaoService {
 		}
 		return cartao;
 	}
-	
-	
+		
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarSenhaC(Long cartaoId, CartaoUpdateSenhaDTO dto) {	
+		
+		Cliente cliente = clienteRepository.findById(dto.getIdCliente())
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
+		
+		Conta conta = contaRepository.findById(dto.getIdConta())
+				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
+		
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		String novaSenha = dto.getNovaSenha();
+		
+		for(Conta temConta : cliente.getContas()) {
+			
+			if(temConta.getId() == conta.getId()) {
+				for(Cartao temCartao : conta.getCartoes()) {
+					if(temCartao.getId() == cartaoId) {
+						
+						cartao.setSenha(novaSenha);
+						
+						cartaoRepository.save(cartao);
+						break;
+						
+					}
+				}
+			}			
+		}
+		
+		return cartao; //colocar null aqui e o return ali dentro da função pra ver se retorna ja com os dados
+	}
 	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

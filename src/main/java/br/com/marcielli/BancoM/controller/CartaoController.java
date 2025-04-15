@@ -27,6 +27,9 @@ import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteMapper;
 import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteResponseDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateMapper;
 import br.com.marcielli.BancoM.dto.CartaoUpdateResponseDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateSenhaDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateSenhaMapper;
+import br.com.marcielli.BancoM.dto.CartaoUpdateSenhaResponseDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateStatusDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateStatusMapper;
 import br.com.marcielli.BancoM.dto.CartaoUpdateStatusResponseDTO;
@@ -52,6 +55,9 @@ public class CartaoController {
 	
 	@Autowired
 	private CartaoUpdateStatusMapper cartaoUpdateStatusMapper;
+	
+	@Autowired
+	private CartaoUpdateSenhaMapper cartaoUpdateSenhaMapper;
 		
 	@PostMapping("") //@PostMapping("/salvar") - salvar - Criar um novo cartão
 	public ResponseEntity<CartaoResponseDTO> adicionarCartao(@RequestBody CartaoCreateDTO cartaoCreateDTO) {		
@@ -135,7 +141,7 @@ public class CartaoController {
 
 	}
 	
-	@PutMapping("/{cartaoId}/status") //@PutMapping("/atualizar/{cartaoId}") - Alterar limite do cartão de crédito
+	@PutMapping("/{cartaoId}/status") //@PutMapping("/atualizar/{cartaoId}") - Alterar status do cartao
 	public ResponseEntity<CartaoUpdateStatusResponseDTO> alterarStatusCartao(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateStatusDTO cartaoUpdateStatusDTO) {
 
 		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
@@ -143,6 +149,19 @@ public class CartaoController {
 		Cartao statusAtualizado = cartaoService.alterarStatusC(cartaoId, cartaoUpdateStatusDTO);
 
 		CartaoUpdateStatusResponseDTO cartaoResponseDTO = cartaoUpdateStatusMapper.toDTO(statusAtualizado);
+
+		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
+
+	}
+	
+	@PutMapping("/{cartaoId}/senha") //Alterar senha do cartao 
+	public ResponseEntity<CartaoUpdateSenhaResponseDTO> alterarSenhaCartao(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateSenhaDTO cartaoUpdateSenhaDTO) {
+
+		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
+
+		Cartao statusAtualizado = cartaoService.alterarSenhaC(cartaoId, cartaoUpdateSenhaDTO);
+
+		CartaoUpdateSenhaResponseDTO cartaoResponseDTO = cartaoUpdateSenhaMapper.toDTO(statusAtualizado);
 
 		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
 
