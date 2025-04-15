@@ -29,7 +29,7 @@ import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.service.CartaoService;
 
 @RestController
-@RequestMapping("/cartao")
+@RequestMapping("/cartoes")
 public class CartaoController {
 	
 	@Autowired
@@ -41,7 +41,7 @@ public class CartaoController {
 	@Autowired
 	private CartaoUpdateMapper cartaoUpdateMapper;
 		
-	@PostMapping("/salvar")
+	@PostMapping("") //@PostMapping("/salvar") - salvar - Criar um novo cartão
 	public ResponseEntity<CartaoResponseDTO> adicionarCartao(@RequestBody CartaoCreateDTO cartaoCreateDTO) {		
 
 		//Cartao cartao = cartaoMapper.toEntity(cartaoCreateDTO);
@@ -53,7 +53,19 @@ public class CartaoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(cartaoResponseDTO);
 	}	
 	
-	@PutMapping("/atualizar/{cartaoId}")
+	@GetMapping("/{cartaoId}") //@GetMapping("/listar/{cartaoId}") - Obter detalhes de um cartão
+	public Optional<Cartao> getCartaoById(@PathVariable("cartaoId") Long cartaoId) {
+
+		Optional<Cartao> cartaoById = cartaoService.getCartaoById(cartaoId);
+
+		if (!cartaoById.isPresent()) {
+			throw new CartaoNaoEncontradoException("Cartão não existe no banco.");
+		}
+
+		return cartaoById;
+	}
+	
+	@PutMapping("/{cartaoId}") //@PutMapping("/atualizar/{cartaoId}") - Atualizar
 	public ResponseEntity<CartaoUpdateResponseDTO> atualizar(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateDTO cartaoUpdateDTO) {
 
 		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
@@ -66,26 +78,7 @@ public class CartaoController {
 
 	}
 	
-	
-	@GetMapping("/listar")
-	public ResponseEntity<List<Cartao>> getContas() {
-		List<Cartao> cartoes = cartaoService.getAll();
-		return new ResponseEntity<List<Cartao>>(cartoes, HttpStatus.OK);
-	}
-
-	@GetMapping("/listar/{cartaoId}")
-	public Optional<Cartao> getCartaoById(@PathVariable("cartaoId") Long cartaoId) {
-
-		Optional<Cartao> cartaoById = cartaoService.getCartaoById(cartaoId);
-
-		if (!cartaoById.isPresent()) {
-			throw new CartaoNaoEncontradoException("Cartão não existe no banco.");
-		}
-
-		return cartaoById;
-	}
-
-	@DeleteMapping("/deletar/{cartaoId}")
+	@DeleteMapping("/{cartaoId}") //@DeleteMapping("/deletar/{cartaoId}") - Deletar
 	public ResponseEntity<String> deletar(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoDeleteDTO cartaoDeleteDTO) {
 		
 		boolean cartaoDeletado = cartaoService.deleteCartao(cartaoId, cartaoDeleteDTO);
@@ -96,8 +89,18 @@ public class CartaoController {
 			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
 		}
 	}
+		
+	@GetMapping("") //@GetMapping("/listar")
+	public ResponseEntity<List<Cartao>> getContas() {
+		List<Cartao> cartoes = cartaoService.getAll();
+		return new ResponseEntity<List<Cartao>>(cartoes, HttpStatus.OK);
+	}
+
 	
-	@PostMapping("/pagamento/{idContaReceber}")
+
+	
+	
+	@PostMapping("/{idContaReceber}/pagamento")
 	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody CartaoCreateTedDTO cartaoTransCreateDTO) {
 		
 		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, cartaoTransCreateDTO);
