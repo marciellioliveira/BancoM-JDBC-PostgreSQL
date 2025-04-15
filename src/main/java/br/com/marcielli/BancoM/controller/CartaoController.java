@@ -17,16 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
+import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
 import br.com.marcielli.BancoM.dto.CartaoMapper;
 import br.com.marcielli.BancoM.dto.CartaoResponseDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateMapper;
 import br.com.marcielli.BancoM.dto.CartaoUpdateResponseDTO;
-import br.com.marcielli.BancoM.dto.ContaCreateDTO;
-import br.com.marcielli.BancoM.dto.ContaResponseDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
-import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.service.CartaoService;
 
@@ -98,6 +96,23 @@ public class CartaoController {
 			return new ResponseEntity<String>("Dados do cartão são inválidos.", HttpStatus.NOT_ACCEPTABLE);			
 		}
 	}
+	
+	@PostMapping("/pagamento/{idContaReceber}")
+	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody CartaoCreateTedDTO cartaoTransCreateDTO) {
+		
+		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, cartaoTransCreateDTO);
+		
+		if(pagamentoRealizado) {
+			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}	
+	
+	
+	
+	
+	
 		
 //
 //	// Pagamento Cartão

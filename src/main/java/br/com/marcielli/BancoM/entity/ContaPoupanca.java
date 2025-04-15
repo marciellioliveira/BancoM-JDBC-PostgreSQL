@@ -1,7 +1,6 @@
 package br.com.marcielli.BancoM.entity;
 
 import java.math.BigDecimal;
-import java.util.Random;
 
 
 import jakarta.persistence.Entity;
@@ -28,13 +27,4 @@ public class ContaPoupanca extends Conta {
 	
 	private BigDecimal taxaMensal;
 	
-//	public ContaPoupanca(BigDecimal taxaAcrescRend, BigDecimal taxaMensal) {
-//		super();
-//		this.taxaAcrescRend = taxaAcrescRend;	
-//		this.taxaMensal = taxaMensal;		
-//	}
-//	
-
-
-
 }

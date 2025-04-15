@@ -16,7 +16,6 @@ import br.com.marcielli.BancoM.dto.ContaCreateDepositoDTO;
 import br.com.marcielli.BancoM.dto.ContaCreatePixDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateSaqueDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
-import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;

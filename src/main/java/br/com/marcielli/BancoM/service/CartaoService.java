@@ -11,24 +11,23 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
+import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.CartaoDebito;
-import br.com.marcielli.BancoM.entity.CartaoFactory;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
+import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
-import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
-import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
+import br.com.marcielli.BancoM.enuns.TipoTransferencia;
 import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
-import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
@@ -138,7 +137,81 @@ public class CartaoService {
 	}
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean pagCartao(Long idContaReceber, CartaoCreateTedDTO dto) {
+		
+		Cliente clienteOrigem = clienteRepository.findById(dto.getIdClienteOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cliente origem não existe."));
+		
+		Conta contaOrigem = contaRepository.findById(dto.getIdContaOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta origem não existe."));
+		
+		Cartao cartaoOrigem = cartaoRepository.findById(dto.getIdCartaoOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cartão origem não existe."));
+		
+		Conta contaDestino = contaRepository.findById(idContaReceber).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta destino não existe."));	
+		
+		Cliente clienteDestino = clienteRepository.getById(contaDestino.getCliente().getId());
+		
+		
+		for(Conta contasDoClienteOrigem : clienteOrigem.getContas()) {
+			
+			if(contasDoClienteOrigem.getId() == contaOrigem.getId()) {
+			
+				contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));
+				
+				TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
+
+				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+				novaTaxa.add(taxaContaOrigem);
+				
+				contaOrigem.setTaxas(novaTaxa);
+				contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
+				
+				if(contaOrigem.getTipoConta() == TipoConta.CORRENTE) {
+					ContaCorrente cc = (ContaCorrente)contaOrigem;
+					cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+				}
+				
+				if(contaOrigem.getTipoConta() == TipoConta.POUPANCA) {
+					ContaPoupanca cp = (ContaPoupanca)contaOrigem;
+					cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
+					cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());					
+				}
+							
+				Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
+				contaOrigem.getTransferencia().add(transferindo);
 	
+				contaRepository.save(contaOrigem);		
+				break;
+			
+			}
+		}	
+		
+		
+		for(Conta contasDoClienteDestino : clienteDestino.getContas()) {
+			
+			if(contasDoClienteDestino.getId() == contaDestino.getId()) {
+				
+				contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.getValor()));
+				
+				TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+
+				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+				novaTaxa.add(taxaContaDestino);
+				
+				contaDestino.setTaxas(novaTaxa);
+				contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
+				
+				contaRepository.save(contaDestino);
+				break;
+			
+			}			
+		}
+		
+		return true;
+	}
 	
 	
 	
@@ -196,273 +269,4 @@ public class CartaoService {
 		return cartaoH2;
 	}
 
-	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Cartao update(Long cartaoAtualizar, Cartao dadosParaAtualizar) {
-//
-//		Cartao cartaoA = null;
-//		Optional<Cartao> cartaoParaAtualizar = cartaoRepository.findById(cartaoAtualizar);
-//		
-//		Optional<Conta> contaCartao = contaRepository.findById(dadosParaAtualizar.getConta().getId());
-//	
-//		if (cartaoParaAtualizar.isPresent()) {
-//			
-//			cartaoA = cartaoParaAtualizar.get();			
-//			
-//			String numCartao = gerarNumeroDoCartao();		
-//			
-//			if (dadosParaAtualizar.getTipoCartao() == TipoCartao.CREDITO) {
-//				
-//				String numCartaoCredito = numCartao.concat("-CC");		
-//				
-//				cartaoA.setTipoCartao(TipoCartao.CREDITO);
-//				cartaoA.setNumeroCartao(numCartaoCredito);
-//				cartaoA.setSenha(cartaoA.getSenha());
-//			
-//			} else if (dadosParaAtualizar.getTipoCartao() == TipoCartao.DEBITO) {
-//				
-//				String numCartaoDebito = numCartao.concat("-CD");
-//				cartaoA.setTipoCartao(TipoCartao.DEBITO);
-//				cartaoA.setNumeroCartao(numCartaoDebito);
-//				cartaoA.setSenha(cartaoA.getSenha());			
-//			}
-//			
-//			if(cartaoA != null) {				
-//				
-//				Conta contaA = contaCartao.get();
-//				contaA.getCartoes().add(cartaoA);				
-//				cartaoRepository.save(cartaoA);
-//			}
-//
-//		} else {
-//			throw new ContaNaoEncontradaException("O cartão não pode ser atualizado porque não existe no banco.");
-//		}
-//		
-//		return cartaoA;
-//	}
-//	
-//	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean deleteCartao(Cartao cartaoDeletar, Long cartaoId) {
-//
-//		Optional<Cliente> clienteH2 = clienteRepository.findById(cartaoDeletar.getId());
-//		Optional<Conta> contaH2 = contaRepository.findById(cartaoDeletar.getConta().getId());
-//		Optional<Cartao> cartaoH2 = cartaoRepository.findById(cartaoId);
-//
-//		if (clienteH2.isPresent() && contaH2.isPresent() && cartaoH2.isPresent()) {
-//			
-//				Cliente clienteCartao = clienteH2.get();
-//				Conta contaCartao = contaH2.get();
-//				Cartao cartaoCliente = cartaoH2.get();
-//				
-//				for(Cartao cartaoClienteExiste : contaCartao.getCartoes()) {
-//					
-//					if(cartaoClienteExiste.getConta().getCliente().getId() == clienteCartao.getId() && cartaoClienteExiste.getConta().getId() == contaCartao.getId() && cartaoClienteExiste.getId() == cartaoCliente.getId()) {
-//						contaCartao.getCartoes().remove(cartaoClienteExiste);
-//						cartaoRepository.deleteById(cartaoId);
-//						break;
-//					}
-//				}
-//		
-//		} else {
-//			
-//			throw new ContaNaoEncontradaException("O cartão não pode ser deletado porque não existe no banco.");			
-//		}
-//
-//		return true;
-//	}
-//	
-//	
-//	// Pagamento Cartão	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean pagarCartao(Long idPessoaReceber, Long idContaReceber, Transferencia dadosContaEnviar) {
-//
-//	if (idPessoaReceber == null || idContaReceber == null || dadosContaEnviar.getIdClienteOrigem() == null
-//			|| dadosContaEnviar.getIdContaOrigem() == null) {
-//		throw new ContaNaoRealizouTransferenciaException(
-//				"O pagamento não foi realizado. Confirme os seus dados.");
-//	}
-//
-//	// PathVariable
-//	Optional<Cliente> encontraRecebedorPorId = clienteRepository.findById(idPessoaReceber);
-//	Optional<Conta> encontraContaRecebedorPorId = contaRepository.findById(idContaReceber);
-//
-//	// RequestBody
-//	Optional<Cliente> encontraPagadorPorId = clienteRepository.findById(dadosContaEnviar.getIdClienteOrigem());
-//	Optional<Conta> encontraContaPagadorPorId = contaRepository.findById(dadosContaEnviar.getIdContaOrigem());
-//
-//	float valorTransferencia = dadosContaEnviar.getValor();
-//	
-//	//String numeroCartao = dadosContaEnviar.getNumeroCartao();
-//
-//	if (valorTransferencia <= 0) {
-//		throw new ContaNaoRealizouTransferenciaException(
-//				"O pagamento não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//	}
-//
-//	if (encontraRecebedorPorId.isPresent() && encontraContaRecebedorPorId.isPresent()
-//			&& encontraPagadorPorId.isPresent() && encontraContaPagadorPorId.isPresent()) {
-//
-//		Cliente clienteReceber = encontraRecebedorPorId.get();
-//		Conta contaReceber = encontraContaRecebedorPorId.get();
-//		
-//		Cliente clientePagador = encontraPagadorPorId.get();
-//		Conta contaPagador = encontraContaPagadorPorId.get();
-//		
-//		if(contaReceber.isStatus() == false || contaPagador.isStatus() == false ) {
-//			throw new ContaNaoRealizouTransferenciaException("Esse cartão foi desativada e não pode receber ou enviar transferência. Tente utilizar uma conta válida.");
-//		}
-//		
-//
-//		if (clienteReceber.getId() != null && contaReceber != null) {
-//
-//			// Conta pagador -> Request Body (idContaOrigem) -> Conta Recebedor ->
-//			// PathVariable (id)
-//			
-//			String numCartao = dadosContaEnviar.getNumeroCartao();
-//			
-//			Transferencia novaTransferencia = new Transferencia(contaPagador.getId(), contaReceber.getId());
-//
-//			List<Conta> contasTransferidas = novaTransferencia.pagarCartao(contaPagador, numCartao, valorTransferencia,
-//					contaReceber);
-//
-//			if (contasTransferidas != null) {
-//
-//				for (Conta contasT : contasTransferidas) {
-//
-//					// Pagador
-//					if (contasT.getId() == contaPagador.getId()) {
-//
-//						if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//							ContaCorrente minhaContaCorrente = (ContaCorrente) contaPagador;
-//							minhaContaCorrente.getTransferencia().add(novaTransferencia);
-//							contaRepository.save(minhaContaCorrente);
-//
-//						}
-//
-//						if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//							ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaPagador;
-//							minhaContaPoupanca.getTransferencia().add(novaTransferencia);
-//							contaRepository.save(minhaContaPoupanca);
-//						}
-//
-//					}
-//
-//					// Recebedor
-//					if (contasT.getId() == contaReceber.getId()) {
-//
-//						if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//							ContaCorrente minhaContaCorrente = (ContaCorrente) contaReceber;
-//							contaRepository.save(minhaContaCorrente);
-//
-//						}
-//
-//						if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//							ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaReceber;
-//							contaRepository.save(minhaContaPoupanca);
-//						}
-//
-//					}
-//
-//				}
-//
-//			}
-//
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"O cliente para o qual você está tentando transferir não tem essa conta. Confirme os seus dados.");
-//		}
-//
-//	} else {
-//		throw new ContaNaoRealizouTransferenciaException(
-//				"O pagamento não foi realizado. Confirme os seus dados.");
-//	}
-//
-//	return true;
-//}
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean pagarCartao(Long idClienteReceber, Long idContaReceber, Transferencia dadosContaEnviar) {
-//		
-//		if(idClienteReceber == null || idContaReceber == null) {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"O pagamento não foi realizado. Confirme os seus dados.");
-//		}
-//				
-//		//Param
-//		Optional<Cliente> encontrarClienteRecebedorPorId = clienteRepository.findById(idClienteReceber);
-//		Optional<Conta> encontraContaRecebedorPorId = contaRepository.findById(idContaReceber);
-//		
-//		float valorDeposito = dadosContaEnviar.getValor();
-//
-//		if (valorDeposito <= 0) {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"O pagamento não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//		
-//		if( encontraContaRecebedorPorId.isPresent() && encontrarClienteRecebedorPorId.isPresent()) {
-//			
-//			Conta contaReceber = encontraContaRecebedorPorId.get();
-//			Cliente clienteReceber = encontrarClienteRecebedorPorId.get();
-//			
-//			String numeroCartao = dadosContaEnviar.getNumeroCartao();
-//			
-//			if(contaReceber.isStatus() == false) {
-//				throw new ContaNaoRealizouTransferenciaException(
-//						"O cartão foi desativado.  Confirme os seus dados e faça o pagamento em uma conta ativa.");
-//			}
-//			
-//			boolean clienteTemConta = false;
-//			for(Conta contas : clienteReceber.getContas()) {
-//				if(contas.getId() == contaReceber.getId()) {
-//					clienteTemConta = true;
-//				}
-//			}
-//			
-//			if(clienteTemConta) {
-//				
-//				Transferencia novoPagamento = new Transferencia();
-//
-//				List<Conta> contasPagamento = novoPagamento.pagarCartao(valorDeposito, contaReceber);
-//
-//				if (contasPagamento != null) {
-//					
-//					for (Conta contasT : contasPagamento) {
-//						
-//						// Recebedor
-//						if (contasT.getId() == contaReceber.getId()) {
-//
-//							if (contasT.getTipoConta() == TipoConta.CORRENTE) {
-//
-//								ContaCorrente minhaContaCorrente = (ContaCorrente) contaReceber;
-//								minhaContaCorrente.getTransferencia().add(novoPagamento);
-//								contaRepository.save(minhaContaCorrente);
-//							}
-//
-//							if (contasT.getTipoConta() == TipoConta.POUPANCA) {
-//
-//								ContaPoupanca minhaContaPoupanca = (ContaPoupanca) contaReceber;
-//								minhaContaPoupanca.getTransferencia().add(novoPagamento);
-//								contaRepository.save(minhaContaPoupanca);
-//							}
-//
-//						}
-//
-//					}
-//					
-//				}
-//				
-//			}
-//			
-//		} else {
-//			throw new ContaNaoRealizouTransferenciaException(
-//					"O pagamento não foi realizado. Valor precisa ser maior que 0. Confirme os seus dados.");
-//		}
-//		
-//		return true;
-//		
-//	}
 }

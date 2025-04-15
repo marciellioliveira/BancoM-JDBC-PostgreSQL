@@ -3,25 +3,15 @@ package br.com.marcielli.BancoM.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
-import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
-import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -69,6 +59,8 @@ public class Transferencia implements Serializable {
 
 	private String codigoOperacao;
 	
+	private TipoCartao tipoCartao;
+	
 	@ManyToOne(cascade = {CascadeType.ALL})
 	@JsonIgnore
 	@Transient //Remover informação do BD
@@ -107,6 +99,62 @@ public class Transferencia implements Serializable {
 		this.data = dataTransferencia;		
 		this.codigoOperacao = codTransferencia;
 	}
+	
+	//CARTÃO CRÉDITO - DÉBITO
+	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia, TipoCartao tipoCartao) {
+		super();
+		this.idClienteOrigem = enviar.getCliente().getId();		
+		this.idClienteDestino = receber.getCliente().getId();	
+		this.idContaOrigem = enviar.getId();
+		this.idContaDestino = receber.getId();
+		this.tipoTransferencia = tipoTransferencia;
+		this.valor = valor;
+		
+		LocalDateTime dataTransferencia = LocalDateTime.now();
+		String codTransferencia = gerarCodigoTransferencia();		
+		
+		this.data = dataTransferencia;		
+		this.codigoOperacao = codTransferencia;
+		this.tipoCartao = tipoCartao;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -400,22 +448,6 @@ public class Transferencia implements Serializable {
 
 		return codTransferencia;		
 	}
-//	
-//	
-//	
-//	
-//	//Pagamento com Cartão
-//	
-//	
-//	
-//
-//	@Override
-//	public String toString() {
-//		return "Transferencia [id=" + id + ", version=" + version + ", idContaOrigem=" + idContaOrigem
-//				+ ", idContaDestino=" + idContaDestino + ", valor=" + valor + ", data=" + data + ", codigoOperacao="
-//				+ codigoOperacao + ", conta=" + conta + "]";
-//	}
-
 
 	
 }
