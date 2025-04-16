@@ -69,7 +69,13 @@ public class Fatura  implements Serializable {
 		
 	}
 	
-	
+//	public void atualizarLimiteCredito() {
+//		
+//	}
+//	
+//	public void atualizarTotalGastoMes() {
+//		
+//	}
 	
 	
 	

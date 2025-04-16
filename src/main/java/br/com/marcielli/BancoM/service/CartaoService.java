@@ -52,14 +52,11 @@ public class CartaoService {
 	private ContaRepositoy contaRepository;	
 	
 	
-	
-	
-	
-	
-	
+	private BigDecimal limiteCredito = new BigDecimal("600");
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cartao save(CartaoCreateDTO cartao) {		
+		
 		
 		
 		Cliente cliente = clienteRepository.findById(cartao.getIdCliente())
@@ -89,6 +86,8 @@ public class CartaoService {
 			
 			if(novoCartao instanceof CartaoCredito) {
 				((CartaoCredito) novoCartao).setLimiteCreditoPreAprovado(new BigDecimal("600"));
+			//	((CartaoCredito) novoCartao).setLimiteCreditoPreAprovado(limiteCredito);
+			
 			}
 			
 			cartoes.add(novoCartao);	
@@ -229,7 +228,8 @@ public class CartaoService {
 				
 				if(contaOrigem.getTipoConta() == TipoConta.CORRENTE) {
 					ContaCorrente cc = (ContaCorrente)contaOrigem;
-					cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());					
+					cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());		
+					
 				}
 				
 				if(contaOrigem.getTipoConta() == TipoConta.POUPANCA) {
@@ -245,6 +245,13 @@ public class CartaoService {
 					//Criar uma fatura nova					
 					Fatura novaFatura = new Fatura();
 					
+					if(cartaoOrigem.getTipoCartao() == TipoCartao.CREDITO) {
+						CartaoCredito cartaoC = (CartaoCredito)cartaoOrigem;
+						
+						novaFatura.setLimiteCredito(cartaoC.getLimiteCreditoPreAprovado());
+					}
+					
+					//novaFatura.setLimiteCredito(new BigDecimal("600"));
 					contaOrigem.setFatura(novaFatura);
 					novaFatura.setConta(contaOrigem);
 				}
@@ -318,8 +325,12 @@ public class CartaoService {
 					
 						if(temCartao instanceof CartaoCredito) {
 							((CartaoCredito) temCartao).alterarLimiteCreditoPreAprovado(novoLimite);
-							cartaoRepository.save(cartao);
-							break;
+							((CartaoCredito) temCartao).getConta().getFatura().setLimiteCredito(novoLimite);
+							
+							return cartaoRepository.save(temCartao);
+							
+							//cartaoRepository.save(cartao);
+							//break;
 						}	
 					}
 				}
@@ -327,7 +338,8 @@ public class CartaoService {
 				
 			}			
 		}
-		return cartao;
+		//return cartao;
+		return null;
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -425,15 +437,19 @@ public class CartaoService {
 		}
 		
 		BigDecimal novoLimite = dto.getNovoLimite();
+
 		
 		for(Conta temConta : cliente.getContas()) {
 			
 			if(temConta.getId() == conta.getId()) {
+				
+				
 				for(Cartao temCartao : conta.getCartoes()) {
 					if(temCartao.getId() == cartaoId) {
 										
 						if(temCartao instanceof CartaoDebito) {
 							((CartaoDebito) temCartao).alterarLimiteDiarioTransacao(novoLimite);
+						
 							cartaoRepository.save(cartao);
 							break;
 						}
