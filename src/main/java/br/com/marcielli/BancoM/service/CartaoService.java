@@ -51,7 +51,7 @@ public class CartaoService {
 	@Autowired
 	private ContaRepositoy contaRepository;	
 	
-	private Fatura novaFatura = new Fatura();
+	
 	
 	
 	
@@ -191,7 +191,7 @@ public class CartaoService {
 					CartaoCredito cartaoC = (CartaoCredito)cartaoOrigem;
 					
 					if(dto.getValor().compareTo(cartaoC.getLimiteCreditoPreAprovado()) > 0) {
-						throw new TransferenciaNaoRealizadaException("Você está tentando realizar um pagamento com um valor maior que o seu limite");
+						throw new TransferenciaNaoRealizadaException("Você já utilizou o seu limite de crédito pré aprovado para envio.");
 					}		
 					
 					if(cartaoC.getLimiteCreditoPreAprovado().compareTo(BigDecimal.ZERO) <= 0) {
@@ -207,7 +207,7 @@ public class CartaoService {
 					contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));
 					
 					if(dto.getValor().compareTo(cartaoD.getLimiteDiarioTransacao()) > 0) {
-						throw new TransferenciaNaoRealizadaException("Você está tentando realizar um pagamento com um valor maior que o seu limite");
+						throw new TransferenciaNaoRealizadaException("Você já utilizou o seu limite de crédito pré aprovado para envio.");
 					}		
 					
 					if(cartaoD.getLimiteDiarioTransacao().compareTo(BigDecimal.ZERO) <= 0) {
@@ -237,19 +237,26 @@ public class CartaoService {
 					cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
 					cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());					
 				}
+				
+				//Já tem uma fatura associada?
+				Fatura faturaExistente = contaOrigem.getFatura();
+				if(faturaExistente == null) {
+					
+					//Criar uma fatura nova					
+					Fatura novaFatura = new Fatura();
+					
+					contaOrigem.setFatura(novaFatura);
+					novaFatura.setConta(contaOrigem);
+				}
 							
 				Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
 				contaOrigem.getTransferencia().add(transferindo);
 				
 				if(cartaoOrigem.getTipoCartao() == TipoCartao.CREDITO) { //Adiciona na lista transferenciasCredito
 					
-					List<Transferencia> transfCred = new ArrayList<Transferencia>();
-					transfCred.add(transferindo);
-					
-					novaFatura.setTransferenciasCredito(transfCred);
-					contaOrigem.setFatura(novaFatura);
+					contaOrigem.getFatura().adicionarTransfCredito(transferindo);
 				}
-	
+
 				contaRepository.save(contaOrigem);		
 				break;
 			

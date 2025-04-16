@@ -70,9 +70,10 @@ public class Transferencia implements Serializable {
 	@Transient //Remover informação do BD
 	private Conta conta;
 	
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+	@ManyToOne
 	@JoinColumn(name = "faturaId")
 	@JsonBackReference
+	@ToString.Exclude
 	private Fatura fatura;
 	
 	

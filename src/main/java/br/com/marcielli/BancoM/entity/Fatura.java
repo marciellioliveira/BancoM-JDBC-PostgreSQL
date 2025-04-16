@@ -3,6 +3,7 @@ package br.com.marcielli.BancoM.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -13,21 +14,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
@@ -43,7 +42,7 @@ public class Fatura  implements Serializable {
 	private Long version;
 	
 	//Apenas para teste
-	private LocalDateTime dataVencimento = LocalDateTime.now();
+	private LocalDateTime dataVencimento;
 	
 	private BigDecimal limiteCredito; 
 	
@@ -53,21 +52,35 @@ public class Fatura  implements Serializable {
 	@JsonManagedReference
 	private List<Transferencia> transferenciasCredito;
 	
+	public Fatura() {
+		this.dataVencimento = LocalDateTime.now();
+		this.transferenciasCredito = new ArrayList<Transferencia>();
+	}
 	
 	
+	@OneToOne(mappedBy = "fatura")
+	@JsonBackReference
+	private Conta conta;
+	
+	public void adicionarTransfCredito(Transferencia transferindo) {
+		
+		this.transferenciasCredito.add(transferindo);
+		transferindo.setFatura(this);
+		
+	}
+	
+	
+	
+	
+	
+	
+
 //	@OneToOne(mappedBy = "faturaMensal")
 //	private Cartao cartao;
 	
 //	@OneToMany(cascade = {CascadeType.ALL})
 //	@JoinColumn(name = "transferenciaId")
 //	private List<Transferencia> transferenciasCredito;
-	
-	@OneToOne(mappedBy = "fatura")
-	@JsonBackReference
-	private Conta conta;
-	
-	
-	
 	
 	//Ver como colocar a lista de transferencias aqui quando for transferencia de Cartão de Crédito
 	//pegar o ultimo limite de credito, ou seja o atualizado na rota da API sempre
