@@ -22,7 +22,10 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
@@ -80,13 +83,16 @@ public class Conta implements Serializable {
 	
 	@OneToMany(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "transferenciaId")
-	private List<Transferencia> transferencia;
+	private List<Transferencia> transferencia;	
 	
-	
-	//@OneToMany(mappedBy = "conta", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@OneToMany(mappedBy = "conta", cascade = {CascadeType.ALL})
 	@JsonManagedReference
 	private List<Cartao> cartoes;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "faturaId", referencedColumnName = "id")
+	@JsonManagedReference
+	private Fatura fatura;
 	
 	private boolean status;
 }

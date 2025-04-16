@@ -121,7 +121,7 @@ public class CartaoController {
 		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, cartaoTransCreateDTO);
 		
 		if(pagamentoRealizado) {
-			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.OK);
+			return new ResponseEntity<String>("Pagamento realizado com sucesso.", HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}

@@ -25,6 +25,7 @@ import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
+import br.com.marcielli.BancoM.entity.Fatura;
 import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
@@ -50,9 +51,16 @@ public class CartaoService {
 	@Autowired
 	private ContaRepositoy contaRepository;	
 	
+	private Fatura novaFatura = new Fatura();
+	
+	
+	
+	
+	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cartao save(CartaoCreateDTO cartao) {		
+		
 		
 		Cliente cliente = clienteRepository.findById(cartao.getIdCliente())
 				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
@@ -232,6 +240,15 @@ public class CartaoService {
 							
 				Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
 				contaOrigem.getTransferencia().add(transferindo);
+				
+				if(cartaoOrigem.getTipoCartao() == TipoCartao.CREDITO) { //Adiciona na lista transferenciasCredito
+					
+					List<Transferencia> transfCred = new ArrayList<Transferencia>();
+					transfCred.add(transferindo);
+					
+					novaFatura.setTransferenciasCredito(transfCred);
+					contaOrigem.setFatura(novaFatura);
+				}
 	
 				contaRepository.save(contaOrigem);		
 				break;

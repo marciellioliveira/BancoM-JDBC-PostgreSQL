@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
@@ -19,6 +18,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -67,4 +67,8 @@ public class Cartao implements Serializable {
 	@JoinColumn(name = "contaId")
 	@JsonBackReference
 	private Conta conta;
+	
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "faturaId", referencedColumnName = "id")
+//	private Fatura faturaMensal;
 }
