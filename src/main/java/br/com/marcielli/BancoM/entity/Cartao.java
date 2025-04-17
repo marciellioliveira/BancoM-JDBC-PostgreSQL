@@ -1,6 +1,7 @@
 package br.com.marcielli.BancoM.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,6 +21,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
@@ -75,14 +77,9 @@ public class Cartao implements Serializable {
 	@JsonManagedReference
 	private Fatura fatura;
 	
+	@OneToMany(mappedBy = "cartao", cascade = {CascadeType.ALL})
+	@JsonManagedReference
+	private List<Seguro> seguros;
 	
 	
-	
-	
-	
-	
-	
-//	@OneToOne(cascade = CascadeType.ALL)
-//	@JoinColumn(name = "faturaId", referencedColumnName = "id")
-//	private Fatura faturaMensal;
 }

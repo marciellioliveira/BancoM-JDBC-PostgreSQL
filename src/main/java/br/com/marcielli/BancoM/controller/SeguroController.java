@@ -34,7 +34,7 @@ public class SeguroController {
 
 	    @PostMapping
 	    public ResponseEntity<SeguroResponseDTO> contratarSeguro(@RequestBody @Valid SeguroCreateDTO dto) {
-	       System.err.println("teste");
+	      
 	    	Seguro seguro = seguroService.contratarSeguro(dto.getIdCartao(), dto.getTipo());
 	        SeguroResponseDTO response = seguroMapper.toDTO(seguro);
 	        
