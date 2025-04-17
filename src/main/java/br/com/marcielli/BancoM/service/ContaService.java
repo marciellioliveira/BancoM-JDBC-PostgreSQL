@@ -331,6 +331,10 @@ public class ContaService {
 		
 		Cliente cliente = clienteRepository.findById(dto.getIdCliente()).orElseThrow(() -> new ContaNaoEncontradaException("O cliente não tem essa conta."));
 		
+		 if (conta.getSaldoConta() == null) {
+		        throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
+		 }
+		
 		if(cliente.getContas().contains(conta)) {
 			if (!(conta instanceof ContaCorrente)) {
 				throw new ContaNaoEncontradaException("Taxa de manutenção só pode ser aplicada a contas correntes.");
@@ -343,8 +347,6 @@ public class ContaService {
 				TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
 				conta.setCategoriaConta(novaTaxa.getCategoria());
 			}
-
-			
 		}
 		
 		return contaRepository.save(conta);
@@ -359,6 +361,10 @@ public class ContaService {
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
 	    
 	    Cliente cliente = clienteRepository.findById(dto.getIdCliente()).orElseThrow(() -> new ContaNaoEncontradaException("O cliente não tem essa conta."));
+	    
+	    if (conta.getSaldoConta() == null) {
+	        throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
+	 }
 
 	    if(cliente.getContas().contains(conta)) {
 	    	
