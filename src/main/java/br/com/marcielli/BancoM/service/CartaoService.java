@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import br.com.marcielli.BancoM.dto.CartaoPagarFaturaDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
@@ -31,7 +30,6 @@ import br.com.marcielli.BancoM.entity.Fatura;
 import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
-import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
@@ -358,7 +356,7 @@ public class CartaoService {
 					
 						if(temCartao instanceof CartaoCredito cartaoCredito) {
 							cartaoCredito.alterarLimiteCreditoPreAprovado(novoLimite);
-						//	cartaoCredito.getFatura().setLimiteCredito(novoLimite);
+						
 							return cartaoRepository.save(temCartao);
 							
 						}	
@@ -368,7 +366,6 @@ public class CartaoService {
 				
 			}			
 		}
-		//return cartao;
 		return null;
 	}
 	
@@ -390,30 +387,21 @@ public class CartaoService {
 		
 		String statusNovo = dto.getNovoStatus();
 		
-		for(Conta temConta : cliente.getContas()) {
-			
-			if(temConta.getId() == conta.getId()) {
-				for(Cartao temCartao : conta.getCartoes()) {
-					if(temCartao.getId() == cartaoId) {
-						
-						if(statusNovo.equalsIgnoreCase("true")) {
-							cartao.setStatus(true);							
-						} 
+		
+		if(cliente.getContas().contains(conta) && conta.getCartoes().contains(cartao)) {
+			if(statusNovo.equalsIgnoreCase("true")) {
+				cartao.setStatus(true);							
+			} 
 
-						if(statusNovo.equalsIgnoreCase("false")){
-							cartao.setStatus(false);
-						}
-						
-						cartaoRepository.save(cartao);
-						break;
-						
-					}
-				}
-				
-				
-			}			
+			if(statusNovo.equalsIgnoreCase("false")){
+				cartao.setStatus(false);
+			}
+			
+			
 		}
-		return cartao;
+		
+		
+		return cartaoRepository.save(cartao);
 	}
 		
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -430,23 +418,11 @@ public class CartaoService {
 		
 		String novaSenha = dto.getNovaSenha();
 		
-		for(Conta temConta : cliente.getContas()) {
-			
-			if(temConta.getId() == conta.getId()) {
-				for(Cartao temCartao : conta.getCartoes()) {
-					if(temCartao.getId() == cartaoId) {
-						
-						cartao.setSenha(novaSenha);
-						
-						cartaoRepository.save(cartao);
-						break;
-						
-					}
-				}
-			}			
+		if(cliente.getContas().contains(conta) && conta.getCartoes().contains(cartao)) {
+			cartao.setSenha(novaSenha);
 		}
 		
-		return cartao; //colocar null aqui e o return ali dentro da função pra ver se retorna ja com os dados
+		return cartaoRepository.save(cartao);
 	}
 	
 	
@@ -467,25 +443,19 @@ public class CartaoService {
 		}
 		
 		BigDecimal novoLimite = dto.getNovoLimite();
-
-		for (Conta temConta : new ArrayList<>(cliente.getContas())) {
-		    if (temConta.getId().equals(conta.getId())) {
-		        for (Cartao temCartao : new ArrayList<>(conta.getCartoes())) {
-		            if (temCartao.getId().equals(cartaoId)) {
-		                if (temCartao instanceof CartaoDebito cartaoDebito) {
-		                    cartaoDebito.alterarLimiteDiarioTransacao(novoLimite);
-		                    cartaoRepository.save(cartao);
-		                    break;
-		                }
-		                if (temCartao instanceof CartaoCredito cartaoC) {
-		                	throw new CartaoNaoEncontradoException("Não é possível alterar o limite desse cartão porque ele é de Crédito.");
-		                }
-		            }
-		        }
-		    }
+		
+		if(cliente.getContas().contains(conta) && conta.getCartoes().contains(cartao)) {
+			 if (cartao instanceof CartaoDebito cartaoDebito) {
+                 cartaoDebito.alterarLimiteDiarioTransacao(novoLimite);
+                 
+             }
+             if (cartao instanceof CartaoCredito ) {
+             		throw new CartaoNaoEncontradoException("Não é possível alterar o limite desse cartão porque ele é de Crédito.");
+             }
 		}
 		
-		return cartao;
+		return cartaoRepository.save(cartao);
+
 	}
 	
 	

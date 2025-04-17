@@ -22,6 +22,7 @@ import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Endereco;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ClienteService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/clientes") //cliente
@@ -34,7 +35,7 @@ public class ClienteController {
 	private ClienteMapper clienteMapper;
 
 	@PostMapping("") //salvar - Criar um novo cliente
-	public ResponseEntity<ClienteResponseDTO> adicionarCliente(@RequestBody ClienteCreateDTO clienteCreateDTO) { 
+	public ResponseEntity<ClienteResponseDTO> adicionarCliente(@Valid @RequestBody ClienteCreateDTO clienteCreateDTO) { 
 		// Pega o Cliente do JSON
 
 		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
@@ -81,7 +82,7 @@ public class ClienteController {
 
 	@PutMapping("/{clienteId}") //atualizar/{clienteId} - Atualizar informações de um cliente
 	public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable("clienteId") Long clienteId,
-			@RequestBody ClienteCreateDTO clienteCreateDTO) {
+			@Valid @RequestBody ClienteCreateDTO clienteCreateDTO) {
 
 		Cliente cliente = clienteMapper.toEntity(clienteCreateDTO);
 

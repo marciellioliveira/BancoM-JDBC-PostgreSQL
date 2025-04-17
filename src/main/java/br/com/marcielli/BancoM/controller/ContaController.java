@@ -24,9 +24,13 @@ import br.com.marcielli.BancoM.dto.ContaCreateSaqueDTO;
 import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
 import br.com.marcielli.BancoM.dto.ContaMapper;
 import br.com.marcielli.BancoM.dto.ContaResponseDTO;
+import br.com.marcielli.BancoM.dto.ContaUpdatePixDTO;
+import br.com.marcielli.BancoM.dto.ContaUpdatePixMapper;
+import br.com.marcielli.BancoM.dto.ContaUpdatePixResponseDTO;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ContaService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/contas")
@@ -38,8 +42,11 @@ public class ContaController {
 	@Autowired
 	private ContaMapper contaMapper;
 	
+	@Autowired
+	private ContaUpdatePixMapper contaUpdatePixMapper;
+	
 	@PostMapping("") //salvar - Criar uma nova conta.
-	public ResponseEntity<ContaResponseDTO> adicionarConta(@RequestBody ContaCreateDTO contaCreateDTO) {		
+	public ResponseEntity<ContaResponseDTO> adicionarConta(@Valid @RequestBody ContaCreateDTO contaCreateDTO) {		
 
 		Conta conta = contaMapper.toEntity(contaCreateDTO);
 
@@ -64,17 +71,30 @@ public class ContaController {
 	}
 	
 	@PutMapping("/{contaId}") //atualizar/{clienteId} - Atualizar informações de uma conta
-	public ResponseEntity<ContaResponseDTO> atualizar(@PathVariable("contaId") Long contaId, @RequestBody ContaCreateDTO contaCreateDTO) {
+	public ResponseEntity<ContaUpdatePixResponseDTO> atualizar(@PathVariable("contaId") Long contaId, @Valid @RequestBody ContaUpdatePixDTO contaUpdatePixDTO) {
 
-		Conta conta = contaMapper.toEntity(contaCreateDTO);
+	//	Conta conta = contaUpdatePixMapper.toEntity(contaUpdatePixDTO);
 
-		Conta contaAtualizado = contaService.update(contaId, conta);
+		Conta contaAtualizado = contaService.update(contaId, contaUpdatePixDTO);
 
-		ContaResponseDTO contaResponseDTO = contaMapper.toDTO(contaAtualizado);
+		ContaUpdatePixResponseDTO contaResponseDTO = contaUpdatePixMapper.toDTO(contaAtualizado);
 
 		return ResponseEntity.status(HttpStatus.OK).body(contaResponseDTO);
 
 	}
+	
+//	@PutMapping("/{contaId}") //atualizar/{clienteId} - Atualizar informações de uma conta
+//	public ResponseEntity<ContaResponseDTO> atualizar(@PathVariable("contaId") Long contaId, @Valid @RequestBody ContaCreateDTO contaCreateDTO) {
+//
+//		Conta conta = contaMapper.toEntity(contaCreateDTO);
+//
+//		Conta contaAtualizado = contaService.update(contaId, conta);
+//
+//		ContaResponseDTO contaResponseDTO = contaMapper.toDTO(contaAtualizado);
+//
+//		return ResponseEntity.status(HttpStatus.OK).body(contaResponseDTO);
+//
+//	}
 	
 	@DeleteMapping("/{contaId}") //deletar/{clienteId} - Remover uma conta
 	public ResponseEntity<String> deletar(@PathVariable("contaId") Long contaId) {
@@ -98,7 +118,7 @@ public class ContaController {
 	//Pagamentos
 
 	@PostMapping("/{idContaReceber}/transferencia") //@PostMapping("/transferir/{idContaReceber}/ted")
-	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateTedDTO contaTransCreateDTO) {
+	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber, @Valid @RequestBody ContaCreateTedDTO contaTransCreateDTO) {
 		
 		boolean tedRealizada = contaService.transferirTED(idContaReceber, contaTransCreateDTO);
 		
@@ -122,7 +142,7 @@ public class ContaController {
 	}
 	
 	@PostMapping("/{idContaReceber}/pix") //@PostMapping("/transferir/{idContaReceber}/pix")
-	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreatePixDTO contaPixCreateDTO) {
+	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @Valid @RequestBody ContaCreatePixDTO contaPixCreateDTO) {
 		
 		boolean pixRealizado = contaService.transferirPIX(idContaReceber, contaPixCreateDTO);
 		
@@ -134,7 +154,7 @@ public class ContaController {
 	}
 	
 	@PostMapping("/{idContaReceber}/deposito") //@PostMapping("/transferir/{idContaReceber}/deposito")
-	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateDepositoDTO contaDepositoCreateDTO) {
+	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber, @Valid @RequestBody ContaCreateDepositoDTO contaDepositoCreateDTO) {
 		
 		boolean depositoRealizado = contaService.transferirDEPOSITO(idContaReceber, contaDepositoCreateDTO);
 		
@@ -146,7 +166,7 @@ public class ContaController {
 	}
 	
 	@PostMapping("/{idContaReceber}/saque") //@PostMapping("/transferir/{idContaReceber}/saque")
-	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody ContaCreateSaqueDTO contaSaqueCreateDTO) {
+	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber, @Valid @RequestBody ContaCreateSaqueDTO contaSaqueCreateDTO) {
 		
 		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, contaSaqueCreateDTO);
 		
@@ -158,7 +178,7 @@ public class ContaController {
 	}
 	
 	@PutMapping("/{idConta}/manutencao")
-	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, @RequestBody ContaCorrenteTaxaManutencaoDTO contaCorrenteTaxaCreateDTO) {
+	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, @Valid @RequestBody ContaCorrenteTaxaManutencaoDTO contaCorrenteTaxaCreateDTO) {
 		
 		boolean manutencaoCCRealizada = contaService.manutencaoTaxaCC(idConta, contaCorrenteTaxaCreateDTO);
 		

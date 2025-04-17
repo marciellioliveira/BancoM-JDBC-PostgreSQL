@@ -22,10 +22,10 @@ public class ContaCreateDepositoDTO {
 	@NotNull(message = "O id do cliente origem deve ser informado.")
 	private Long idClienteOrigem;
 	
-	@NotNull(message = "O id da conta origem deve ser informado.")
+	//@NotNull(message = "O id da conta origem deve ser informado.")
 	private Long idContaOrigem;
 	
-	@NotNull(message = "O valor do depósito deve ser informado.")
+	//@NotNull(message = "O valor do depósito deve ser informado.")
 	private BigDecimal valor;
 
 }

@@ -23,12 +23,5 @@ public class ContaCorrente extends Conta {
 	private static final long serialVersionUID = 1L;	
 
 	private BigDecimal taxaManutencaoMensal;
-	
-//	public ContaCorrente(BigDecimal taxaManutencaoMensal) {
-//		super();
-//		this.taxaManutencaoMensal = taxaManutencaoMensal;		
-//	}
-
-	
 
 }

@@ -95,6 +95,7 @@ public class Transferencia implements Serializable {
 		
 		this.data = dataTransferencia;		
 		this.codigoOperacao = codTransferencia;
+	//	this.tipoCartao = Queria tirar o null do Banco, tentar colocar algum valor tipo "sem cartão ou algo assim, mas vou deixar pra melhorias futuras)
 	}
 	
 	//DEPOSITO - SAQUE
@@ -112,6 +113,7 @@ public class Transferencia implements Serializable {
 		
 		this.data = dataTransferencia;		
 		this.codigoOperacao = codTransferencia;
+//		this.tipoCartao = Queria tirar o null do Banco, tentar colocar algum valor tipo "sem cartão ou algo assim, mas vou deixar pra melhorias futuras)
 	}
 	
 	//CARTÃO CRÉDITO - DÉBITO

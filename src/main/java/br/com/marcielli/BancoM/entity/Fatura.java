@@ -60,7 +60,7 @@ public class Fatura  implements Serializable {
 	@JsonBackReference
 	private Cartao cartao;
 	
-	public boolean status = false;
+	public boolean status = false; //Se tiver verdadeiro é porque a fatura foi paga
 
 	
 	public void adicionarTransfCredito(Transferencia transferindo) {
@@ -71,41 +71,4 @@ public class Fatura  implements Serializable {
 		transferindo.setFatura(this);
 		
 	}
-	
-
-	
-
-	
-	
-	//pegar todos os valores das transferencias daquele usuario e somar.
-	
-	//Dps fazer: GET /cartoes/{id}/fatura** - Consultar fatura do cartão de crédito
-	//Dps dazer? **POST /cartoes/{id}/fatura/pagamento** - Realizar pagamento da fatura do cartão de crédito
-	//Dps voltar pra conta e fazer: - **PUT /contas/{id}/manutencao** - Aplicar taxa de manutenção mensal (para conta corrente)
-	//Aionda tem conta: - **PUT /contas/{id}/rendimentos** - Aplicar rendimentos (para conta poupança)
-	
-	//O conta foi o que vi com a Aline das taxas de rendimento.
-	
-	//Dps arrumar as taxas dos cartões
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 }
