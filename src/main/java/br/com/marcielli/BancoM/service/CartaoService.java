@@ -202,6 +202,26 @@ public class CartaoService {
 					
 					cartaoC.atualizarTotalGastoMes(dto.getValor());
 					cartaoC.atualizarLimiteCreditoPreAprovado(dto.getValor());
+					
+					//Já tem uma fatura associada?			
+					Fatura faturaExistente = cartaoOrigem.getFatura();
+					
+					if(faturaExistente == null) {
+						
+						faturaExistente = new Fatura();
+					
+						faturaExistente.setCartao(cartaoOrigem);										
+						cartaoOrigem.setFatura(faturaExistente);
+					}
+					
+								
+					Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
+					contaOrigem.getTransferencia().add(transferindo);
+					
+					transferindo.setFatura(faturaExistente);
+					faturaExistente.getTransferenciasCredito().add(transferindo);
+						
+						cartaoRepository.save(cartaoC);
 				}
 				
 				if(cartaoOrigem instanceof CartaoDebito cartaoD) {
@@ -217,9 +237,7 @@ public class CartaoService {
 					
 					cartaoD.atualizarLimiteDiarioTransacao(dto.getValor());
 					cartaoD.atualizarTotalGastoMes(dto.getValor());
-				}
-		
-				if(cartaoOrigem instanceof CartaoDebito) {
+				
 					TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
 
 					List<TaxaManutencao> novaTaxa = new ArrayList<>();
@@ -236,36 +254,13 @@ public class CartaoService {
 						cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
 						cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
 					}
-				}
-				
-				
-				BigDecimal limitePreAprovadoAntigo = limiteCredito;
-				
-				if(cartaoOrigem instanceof CartaoCredito cartaoC) {
-				
-				//Já tem uma fatura associada?			
-				Fatura faturaExistente = cartaoOrigem.getFatura();
-				
-				if(faturaExistente == null) {
 					
-					faturaExistente = new Fatura();
-				
-					faturaExistente.setCartao(cartaoOrigem);										
-					cartaoOrigem.setFatura(faturaExistente);
-				}
-				
-							
-				Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
-				contaOrigem.getTransferencia().add(transferindo);
-				
-				
+					Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
+					contaOrigem.getTransferencia().add(transferindo);
 					
-					cartaoRepository.save(cartaoC);
-				}
-				
-				if (cartaoOrigem instanceof CartaoDebito) {
 					contaRepository.save(contaOrigem);
-				}	
+				}
+				
 				break;
 			
 			}
