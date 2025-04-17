@@ -60,9 +60,8 @@ public class Fatura  implements Serializable {
 	@JsonBackReference
 	private Cartao cartao;
 	
-//	@OneToOne(mappedBy = "fatura")
-//	@JsonBackReference
-//	private Conta conta;
+	public boolean status = false;
+
 	
 	public void adicionarTransfCredito(Transferencia transferindo) {
 		if (transferenciasCredito == null) {
@@ -73,23 +72,7 @@ public class Fatura  implements Serializable {
 		
 	}
 	
-//	public void atualizarTotalGastoMes(BigDecimal valor) {		
-//		if (this.totalGastoNoMes == null) {
-//	        this.totalGastoNoMes = BigDecimal.ZERO; 
-//	    }
-//
-//		this.totalGastoNoMes = this.totalGastoNoMes.add(valor);		
-//		
-//	}
-//	
-//	public void atualizarLimiteCredito(BigDecimal valor) {
-//		if (this.limiteCredito == null) {
-//	        this.limiteCredito = BigDecimal.ZERO; 
-//	    }
-//		this.limiteCredito = this.limiteCredito.subtract(valor);		
-//	}
 
-	
 	
 
 	

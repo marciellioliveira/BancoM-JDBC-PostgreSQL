@@ -320,6 +320,7 @@ public class CartaoService {
 					
 					cc.getTotalGastoMesCredito();
 					contaOrigem.pagarFatura(cc.getTotalGastoMesCredito());
+					cc.getFatura().setStatus(true);
 				}
 				
 			}
@@ -494,12 +495,16 @@ public class CartaoService {
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Optional<Fatura> getFaturaCartaoDeCreditoService(Long cartaoId) {
-		
-		
+
 		return cartaoRepository.findById(cartaoId)
 		        .filter(c -> c instanceof CartaoCredito)
-		        .map(c -> ((CartaoCredito) c).getFatura());
-
+		        .map(c -> {
+		            Fatura fatura = ((CartaoCredito) c).getFatura();
+		            if (fatura.isStatus()) {
+		                throw new CartaoNaoEncontradoException("A fatura já foi paga.");
+		            }
+		            return fatura;
+		        });
 
 	}
 	

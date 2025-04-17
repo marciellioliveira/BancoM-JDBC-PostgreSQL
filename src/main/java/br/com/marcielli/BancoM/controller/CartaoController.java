@@ -180,7 +180,7 @@ public class CartaoController {
 	}
 
 	
-	@PostMapping("/{idCartao}/fatura/pagamento")
+	@PostMapping("/{idCartao}/fatura/pagamento") //Pagar fatura
 	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao, @RequestBody @Valid CartaoPagarFaturaDTO cartaoPagarFaturaDTO) {
 		
 		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao, cartaoPagarFaturaDTO);
