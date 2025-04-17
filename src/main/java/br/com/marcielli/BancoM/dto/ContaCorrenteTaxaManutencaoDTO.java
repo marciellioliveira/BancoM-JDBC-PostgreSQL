@@ -1,7 +1,5 @@
 package br.com.marcielli.BancoM.dto;
 
-import java.math.BigDecimal;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,8 +16,13 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class ContaCorrenteTaxaManutencaoDTO {
-
-	@NotNull(message = "A nova taxa deve ser informada.")
-	private BigDecimal taxaManutencaoMensal;
+	
+	@NotNull(message = "O id do cliente deve ser informado.")
+	private Long idCliente;	
+	
+	@NotBlank(message = "Status: true para aplicar a taxa.")
+	private String aplicarTaxa;	
+	
+	//ID conta no request param
 	
 }

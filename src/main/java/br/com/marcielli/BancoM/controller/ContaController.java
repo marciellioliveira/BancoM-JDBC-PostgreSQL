@@ -70,10 +70,8 @@ public class ContaController {
 		return contaById;
 	}
 	
-	@PutMapping("/{contaId}") //atualizar/{clienteId} - Atualizar informações de uma conta
+	@PutMapping("/{contaId}") //Atualizar informações de uma conta
 	public ResponseEntity<ContaUpdatePixResponseDTO> atualizar(@PathVariable("contaId") Long contaId, @Valid @RequestBody ContaUpdatePixDTO contaUpdatePixDTO) {
-
-	//	Conta conta = contaUpdatePixMapper.toEntity(contaUpdatePixDTO);
 
 		Conta contaAtualizado = contaService.update(contaId, contaUpdatePixDTO);
 
@@ -82,21 +80,8 @@ public class ContaController {
 		return ResponseEntity.status(HttpStatus.OK).body(contaResponseDTO);
 
 	}
-	
-//	@PutMapping("/{contaId}") //atualizar/{clienteId} - Atualizar informações de uma conta
-//	public ResponseEntity<ContaResponseDTO> atualizar(@PathVariable("contaId") Long contaId, @Valid @RequestBody ContaCreateDTO contaCreateDTO) {
-//
-//		Conta conta = contaMapper.toEntity(contaCreateDTO);
-//
-//		Conta contaAtualizado = contaService.update(contaId, conta);
-//
-//		ContaResponseDTO contaResponseDTO = contaMapper.toDTO(contaAtualizado);
-//
-//		return ResponseEntity.status(HttpStatus.OK).body(contaResponseDTO);
-//
-//	}
-	
-	@DeleteMapping("/{contaId}") //deletar/{clienteId} - Remover uma conta
+
+	@DeleteMapping("/{contaId}") // Remover uma conta
 	public ResponseEntity<String> deletar(@PathVariable("contaId") Long contaId) {
 
 		boolean contaDeletada = contaService.deleteConta(contaId);
@@ -117,7 +102,7 @@ public class ContaController {
 
 	//Pagamentos
 
-	@PostMapping("/{idContaReceber}/transferencia") //@PostMapping("/transferir/{idContaReceber}/ted")
+	@PostMapping("/{idContaReceber}/transferencia") //TED Transferência
 	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber, @Valid @RequestBody ContaCreateTedDTO contaTransCreateDTO) {
 		
 		boolean tedRealizada = contaService.transferirTED(idContaReceber, contaTransCreateDTO);
@@ -177,12 +162,12 @@ public class ContaController {
 		}
 	}
 	
-	@PutMapping("/{idConta}/manutencao")
+	@PutMapping("/{idConta}/manutencao") //Somente Conta Corrente
 	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, @Valid @RequestBody ContaCorrenteTaxaManutencaoDTO contaCorrenteTaxaCreateDTO) {
 		
-		boolean manutencaoCCRealizada = contaService.manutencaoTaxaCC(idConta, contaCorrenteTaxaCreateDTO);
+		Conta manutencaoCCRealizada = contaService.manutencaoTaxaCC(idConta, contaCorrenteTaxaCreateDTO);
 		
-		if(manutencaoCCRealizada) {
+		if(manutencaoCCRealizada != null) {
 			return new ResponseEntity<String>("Taxas aplicadas com sucesso.", HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>("Taxas inválidas.", HttpStatus.NOT_ACCEPTABLE);
@@ -190,7 +175,16 @@ public class ContaController {
 	}
 	
 
-	
-
-
+	@PutMapping("/{idConta}/rendimentos") //Somente Conta Poupança
+	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta, @Valid @RequestBody ContaCorrenteTaxaManutencaoDTO contaCorrenteTaxaCreateDTO) {
+		
+		Conta manutencaoCPRealizada = contaService.rendimentoTaxaCP(idConta, contaCorrenteTaxaCreateDTO);
+		
+		if(manutencaoCPRealizada != null) {
+			return new ResponseEntity<String>("Taxas aplicadas com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Taxas inválidas.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	    
+	}
 }
