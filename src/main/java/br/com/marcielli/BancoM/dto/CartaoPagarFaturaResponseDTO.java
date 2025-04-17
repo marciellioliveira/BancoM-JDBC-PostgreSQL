@@ -13,11 +13,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class CartaoConsultarFaturaResponseDTO {
+public class CartaoPagarFaturaResponseDTO {
 	
 	
-	private Long idCliente;	
-	private Long idConta;		
+	private Long idClienteOrigem;	
+	private Long idContaOrigem;		
 	
 	//ID cartão como Request Param	
 

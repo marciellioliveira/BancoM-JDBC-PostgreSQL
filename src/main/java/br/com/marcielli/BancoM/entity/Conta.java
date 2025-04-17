@@ -95,4 +95,19 @@ public class Conta implements Serializable {
 //	private Fatura fatura;
 	
 	private boolean status;
+	
+	
+	public void pagarFatura(BigDecimal valor) {
+		if(saldoConta == null) {
+			this.saldoConta = BigDecimal.ZERO;
+		}
+		
+		this.saldoConta = this.saldoConta.subtract(valor);
+	}
+	
+	
+	
+	
 }
+
+

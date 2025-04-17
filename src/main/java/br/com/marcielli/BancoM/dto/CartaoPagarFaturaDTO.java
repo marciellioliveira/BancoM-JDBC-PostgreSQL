@@ -1,6 +1,8 @@
 package br.com.marcielli.BancoM.dto;
 
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,14 +16,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class CartaoConsultarFaturaDTO {
+public class CartaoPagarFaturaDTO {
 
-	@NotBlank(message = "O id do cliente deve ser informado.")
-	private Long idCliente;	
+	@NotNull(message = "O id do cliente deve ser informado.")
+	private Long idClienteOrigem;	
 	
-	@NotBlank(message = "O id da conta deve ser informado.")
-	private Long idConta;		
-	
+	@NotNull(message = "O id da conta deve ser informado.")
+	private Long idContaOrigem;	
+
+	//Pagar com saldo da conta
 	//ID cartão como Request Param	
 	
 }

@@ -10,22 +10,22 @@ import org.springframework.stereotype.Component;
 import br.com.marcielli.BancoM.entity.Cartao;
 
 @Component
-public class CartaoConsultarFaturaMapper {
+public class CartaoPagarFaturaMapper {
 	
 	@Autowired
 	private ModelMapper mapper;
 
-	public Cartao toEntity(CartaoConsultarFaturaDTO dto) {
+	public Cartao toEntity(CartaoPagarFaturaDTO dto) {
 		Cartao entity = mapper.map(dto, Cartao.class);
 		return entity;
 	}
 
-	public CartaoConsultarFaturaResponseDTO toDTO(Cartao entity) {
-		CartaoConsultarFaturaResponseDTO dto = mapper.map(entity, CartaoConsultarFaturaResponseDTO.class);
+	public CartaoPagarFaturaResponseDTO toDTO(Cartao entity) {
+		CartaoPagarFaturaResponseDTO dto = mapper.map(entity, CartaoPagarFaturaResponseDTO.class);
 		return dto;
 	}
 
-	public List<CartaoConsultarFaturaResponseDTO> toDTO(List<Cartao> cartoes) {
+	public List<CartaoPagarFaturaResponseDTO> toDTO(List<Cartao> cartoes) {
 		return cartoes.stream().map(cartao -> toDTO(cartao)).collect(Collectors.toList());
 	}
 

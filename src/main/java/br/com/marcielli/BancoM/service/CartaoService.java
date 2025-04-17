@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import br.com.marcielli.BancoM.dto.CartaoConsultarFaturaDTO;
+import br.com.marcielli.BancoM.dto.CartaoPagarFaturaDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
@@ -292,6 +292,42 @@ public class CartaoService {
 			
 		}
 		return true;
+	}
+	
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean pagFaturaCartaoC(Long idCartao, CartaoPagarFaturaDTO dto) {
+		
+		Cliente clienteOrigem = clienteRepository.findById(dto.getIdClienteOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cliente origem não existe."));
+		
+		Conta contaOrigem = contaRepository.findById(dto.getIdContaOrigem()).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta origem não existe."));
+		
+		Cartao cartaoOrigem = cartaoRepository.findById(idCartao).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cartão origem não existe."));
+		
+		
+		
+		if(clienteOrigem.getContas().contains(contaOrigem)) {
+			if(contaOrigem.getCartoes().contains(cartaoOrigem)) {
+				
+				if(cartaoOrigem instanceof CartaoCredito cc) {
+					
+					if(cc.getTotalGastoMesCredito().compareTo(contaOrigem.getSaldoConta()) > 0 ) {
+						throw new CartaoNaoEncontradoException("Você não tem saldo suficiente para realizar o pagamento.");
+					}
+					
+					cc.getTotalGastoMesCredito();
+					contaOrigem.pagarFatura(cc.getTotalGastoMesCredito());
+				}
+				
+			}
+		}
+		
+		
+		return true;
+		
 	}
 	
 	

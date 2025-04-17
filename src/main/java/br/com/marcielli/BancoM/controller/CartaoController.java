@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.marcielli.BancoM.dto.CartaoConsultarFaturaDTO;
-import br.com.marcielli.BancoM.dto.CartaoConsultarFaturaResponseDTO;
+import br.com.marcielli.BancoM.dto.CartaoPagarFaturaDTO;
+import br.com.marcielli.BancoM.dto.CartaoPagarFaturaResponseDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
@@ -39,6 +39,7 @@ import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.Fatura;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.service.CartaoService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/cartoes")
@@ -63,7 +64,7 @@ public class CartaoController {
 	private CartaoUpdateSenhaMapper cartaoUpdateSenhaMapper;
 		
 	@PostMapping("") //@PostMapping("/salvar") - salvar - Criar um novo cartão
-	public ResponseEntity<CartaoResponseDTO> adicionarCartao(@RequestBody CartaoCreateDTO cartaoCreateDTO) {		
+	public ResponseEntity<CartaoResponseDTO> adicionarCartao(@Valid @RequestBody CartaoCreateDTO cartaoCreateDTO) {		
 
 		//Cartao cartao = cartaoMapper.toEntity(cartaoCreateDTO);
 
@@ -87,7 +88,7 @@ public class CartaoController {
 	}
 	
 	@PutMapping("/{cartaoId}") //@PutMapping("/atualizar/{cartaoId}") - Atualizar
-	public ResponseEntity<CartaoUpdateResponseDTO> atualizar(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateDTO cartaoUpdateDTO) {
+	public ResponseEntity<CartaoUpdateResponseDTO> atualizar(@PathVariable("cartaoId") Long cartaoId,@Valid @RequestBody CartaoUpdateDTO cartaoUpdateDTO) {
 
 		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
 
@@ -100,7 +101,7 @@ public class CartaoController {
 	}
 	
 	@DeleteMapping("/{cartaoId}") //@DeleteMapping("/deletar/{cartaoId}") - Deletar
-	public ResponseEntity<String> deletar(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoDeleteDTO cartaoDeleteDTO) {
+	public ResponseEntity<String> deletar(@PathVariable("cartaoId") Long cartaoId, @Valid @RequestBody CartaoDeleteDTO cartaoDeleteDTO) {
 		
 		boolean cartaoDeletado = cartaoService.deleteCartao(cartaoId, cartaoDeleteDTO);
 		
@@ -119,7 +120,7 @@ public class CartaoController {
 
 	
 	@PostMapping("/{idContaReceber}/pagamento")
-	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody CartaoCreateTedDTO cartaoTransCreateDTO) {
+	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @Valid @RequestBody CartaoCreateTedDTO cartaoTransCreateDTO) {
 		
 		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, cartaoTransCreateDTO);
 		
@@ -132,7 +133,7 @@ public class CartaoController {
 	
 	
 	@PutMapping("/{cartaoId}/limite") //@PutMapping("/atualizar/{cartaoId}") - Alterar limite do cartão de crédito
-	public ResponseEntity<CartaoUpdateLimiteResponseDTO> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateLimiteDTO cartaoUpdateLimiteDTO) {
+	public ResponseEntity<CartaoUpdateLimiteResponseDTO> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId, @Valid @RequestBody CartaoUpdateLimiteDTO cartaoUpdateLimiteDTO) {
 
 		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
 		System.out.println();
@@ -145,7 +146,7 @@ public class CartaoController {
 	}
 	
 	@PutMapping("/{cartaoId}/status") //@PutMapping("/atualizar/{cartaoId}") - Alterar status do cartao
-	public ResponseEntity<CartaoUpdateStatusResponseDTO> alterarStatusCartao(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateStatusDTO cartaoUpdateStatusDTO) {
+	public ResponseEntity<CartaoUpdateStatusResponseDTO> alterarStatusCartao(@PathVariable("cartaoId") Long cartaoId, @Valid @RequestBody CartaoUpdateStatusDTO cartaoUpdateStatusDTO) {
 
 		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
 
@@ -158,7 +159,7 @@ public class CartaoController {
 	}
 	
 	@PutMapping("/{cartaoId}/senha") //Alterar senha do cartao 
-	public ResponseEntity<CartaoUpdateSenhaResponseDTO> alterarSenhaCartao(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateSenhaDTO cartaoUpdateSenhaDTO) {
+	public ResponseEntity<CartaoUpdateSenhaResponseDTO> alterarSenhaCartao(@PathVariable("cartaoId") Long cartaoId, @Valid @RequestBody CartaoUpdateSenhaDTO cartaoUpdateSenhaDTO) {
 
 		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
 
@@ -175,20 +176,21 @@ public class CartaoController {
 	public Fatura getFaturaCartaoDeCredito(@PathVariable("cartaoId") Long cartaoId) {
 		
 		return cartaoService.getFaturaCartaoDeCreditoService(cartaoId)
-		        .orElseThrow(() -> new CartaoNaoEncontradoException("Não existe fatura para esse cartão."));
-		
-//		Optional<Fatura> fatura = cartaoService.getFaturaCartaoDeCreditoService(cartaoId);
-//		
-//		if (!fatura.isPresent()) {
-//			throw new CartaoNaoEncontradoException("Não existe fatura para essa conta.");
-//		}
-//
-//		return fatura;
-		
+		        .orElseThrow(() -> new CartaoNaoEncontradoException("Não existe fatura para esse cartão."));	
 	}
 
 	
-	
+	@PostMapping("/{idCartao}/fatura/pagamento")
+	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao, @RequestBody @Valid CartaoPagarFaturaDTO cartaoPagarFaturaDTO) {
+		
+		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao, cartaoPagarFaturaDTO);
+		
+		if(pagamentoFaturaOk) {
+			return new ResponseEntity<String>("Fatura paga.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}	
 	
 	
 	
