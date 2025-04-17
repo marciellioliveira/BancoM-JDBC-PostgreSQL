@@ -192,7 +192,18 @@ public class CartaoController {
 		}
 	}	
 	
-	
+	@PutMapping("/{cartaoId}/limite-diario") //Alterar limite do cartão de debito
+	public ResponseEntity<CartaoUpdateLimiteResponseDTO> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId, @Valid @RequestBody CartaoUpdateLimiteDTO cartaoUpdateLimiteDTO) {
+
+		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
+		System.out.println();
+		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoDebito(cartaoId, cartaoUpdateLimiteDTO);
+
+		CartaoUpdateLimiteResponseDTO cartaoResponseDTO = cartaoUpdateLimiteMapper.toDTO(limiteAtualizado);
+
+		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
+
+	}
 	
 	
 	

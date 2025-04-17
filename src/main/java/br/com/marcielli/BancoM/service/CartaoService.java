@@ -468,27 +468,23 @@ public class CartaoService {
 		
 		BigDecimal novoLimite = dto.getNovoLimite();
 
-		
-		for(Conta temConta : cliente.getContas()) {
-			
-			if(temConta.getId() == conta.getId()) {
-				
-				
-				for(Cartao temCartao : conta.getCartoes()) {
-					if(temCartao.getId() == cartaoId) {
-										
-						if(temCartao instanceof CartaoDebito cartaoDebito) {
-							cartaoDebito.alterarLimiteDiarioTransacao(novoLimite);
-						
-							cartaoRepository.save(cartao);
-							break;
-						}
-					}
-				}
-				
-				
-			}			
+		for (Conta temConta : new ArrayList<>(cliente.getContas())) {
+		    if (temConta.getId().equals(conta.getId())) {
+		        for (Cartao temCartao : new ArrayList<>(conta.getCartoes())) {
+		            if (temCartao.getId().equals(cartaoId)) {
+		                if (temCartao instanceof CartaoDebito cartaoDebito) {
+		                    cartaoDebito.alterarLimiteDiarioTransacao(novoLimite);
+		                    cartaoRepository.save(cartao);
+		                    break;
+		                }
+		                if (temCartao instanceof CartaoCredito cartaoC) {
+		                	throw new CartaoNaoEncontradoException("Não é possível alterar o limite desse cartão porque ele é de Crédito.");
+		                }
+		            }
+		        }
+		    }
 		}
+		
 		return cartao;
 	}
 	
@@ -505,14 +501,7 @@ public class CartaoService {
 		            }
 		            return fatura;
 		        });
-
 	}
-	
-	
-	
-	
-	
-	
 	
 	// Outros métodos
 	public String gerarNumeroDoCartao() {
