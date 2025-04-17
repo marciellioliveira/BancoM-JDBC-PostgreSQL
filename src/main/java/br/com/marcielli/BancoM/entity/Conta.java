@@ -89,10 +89,10 @@ public class Conta implements Serializable {
 	@JsonManagedReference
 	private List<Cartao> cartoes;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "faturaId", referencedColumnName = "id")
-	@JsonManagedReference
-	private Fatura fatura;
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "faturaId", referencedColumnName = "id")
+//	@JsonManagedReference
+//	private Fatura fatura;
 	
 	private boolean status;
 }

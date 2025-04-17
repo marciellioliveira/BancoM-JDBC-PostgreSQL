@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import br.com.marcielli.BancoM.dto.CartaoConsultarFaturaDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
@@ -70,6 +72,8 @@ public class CartaoService {
 		
 		String numCartao = gerarNumeroDoCartao();
 		
+		
+		
 		if(cartao.getTipoCartao() == TipoCartao.CREDITO) {
 			
 			String numeroCartao = numCartao.concat("-CC");
@@ -84,9 +88,9 @@ public class CartaoService {
 			novoCartao.setTipoConta(conta.getTipoConta());
 			conta.setCategoriaConta(conta.getCategoriaConta());
 			
-			if(novoCartao instanceof CartaoCredito) {
-				((CartaoCredito) novoCartao).setLimiteCreditoPreAprovado(new BigDecimal("600"));
-			//	((CartaoCredito) novoCartao).setLimiteCreditoPreAprovado(limiteCredito);
+			if(novoCartao instanceof CartaoCredito cartaoCredito) {
+				//((CartaoCredito) novoCartao).setLimiteCreditoPreAprovado(new BigDecimal("600"));
+				cartaoCredito.setLimiteCreditoPreAprovado(limiteCredito);
 			
 			}
 			
@@ -109,8 +113,8 @@ public class CartaoService {
 			novoCartao.setTipoConta(conta.getTipoConta());
 			conta.setCategoriaConta(conta.getCategoriaConta());
 			
-			if(novoCartao instanceof CartaoDebito) {
-				((CartaoDebito) novoCartao).setLimiteDiarioTransacao(new BigDecimal("600"));
+			if(novoCartao instanceof CartaoDebito cartaoDebito) {
+				cartaoDebito.setLimiteDiarioTransacao(new BigDecimal("600"));
 			}
 			
 			cartoes.add(novoCartao);
@@ -184,11 +188,10 @@ public class CartaoService {
 		
 		for(Conta contasDoClienteOrigem : clienteOrigem.getContas()) {
 			
-			if(contasDoClienteOrigem.getId() == contaOrigem.getId()) {				
+			if(contasDoClienteOrigem.getId() == contaOrigem.getId()) {	
 				
-				if(cartaoOrigem.getTipoCartao() == TipoCartao.CREDITO) { //Não retira da conta 					
-					CartaoCredito cartaoC = (CartaoCredito)cartaoOrigem;
-					
+				
+				if(cartaoOrigem instanceof CartaoCredito cartaoC) {
 					if(dto.getValor().compareTo(cartaoC.getLimiteCreditoPreAprovado()) > 0) {
 						throw new TransferenciaNaoRealizadaException("Você já utilizou o seu limite de crédito pré aprovado para envio.");
 					}		
@@ -201,8 +204,7 @@ public class CartaoService {
 					cartaoC.atualizarLimiteCreditoPreAprovado(dto.getValor());
 				}
 				
-				if(cartaoOrigem.getTipoCartao() == TipoCartao.DEBITO) { //Retira da conta
-					CartaoDebito cartaoD = (CartaoDebito)cartaoOrigem;
+				if(cartaoOrigem instanceof CartaoDebito cartaoD) {
 					contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));
 					
 					if(dto.getValor().compareTo(cartaoD.getLimiteDiarioTransacao()) > 0) {
@@ -215,56 +217,55 @@ public class CartaoService {
 					
 					cartaoD.atualizarLimiteDiarioTransacao(dto.getValor());
 					cartaoD.atualizarTotalGastoMes(dto.getValor());
-					
 				}
-				
-				TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
+		
+				if(cartaoOrigem instanceof CartaoDebito) {
+					TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
 
-				List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-				novaTaxa.add(taxaContaOrigem);
-				
-				contaOrigem.setTaxas(novaTaxa);
-				contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
-				
-				if(contaOrigem.getTipoConta() == TipoConta.CORRENTE) {
-					ContaCorrente cc = (ContaCorrente)contaOrigem;
-					cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());		
-					
+					List<TaxaManutencao> novaTaxa = new ArrayList<>();
+					novaTaxa.add(taxaContaOrigem);
+
+					contaOrigem.setTaxas(novaTaxa);
+					contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
+
+					if (contaOrigem instanceof ContaCorrente cc) {
+						cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+					}
+
+					if (contaOrigem instanceof ContaPoupanca cp) {
+						cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
+						cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
+					}
 				}
 				
-				if(contaOrigem.getTipoConta() == TipoConta.POUPANCA) {
-					ContaPoupanca cp = (ContaPoupanca)contaOrigem;
-					cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-					cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());					
-				}
 				
-				//Já tem uma fatura associada?
-				Fatura faturaExistente = contaOrigem.getFatura();
+				BigDecimal limitePreAprovadoAntigo = limiteCredito;
+				
+				if(cartaoOrigem instanceof CartaoCredito cartaoC) {
+				
+				//Já tem uma fatura associada?			
+				Fatura faturaExistente = cartaoOrigem.getFatura();
+				
 				if(faturaExistente == null) {
 					
-					//Criar uma fatura nova					
-					Fatura novaFatura = new Fatura();
-					
-					if(cartaoOrigem.getTipoCartao() == TipoCartao.CREDITO) {
-						CartaoCredito cartaoC = (CartaoCredito)cartaoOrigem;
-						
-						novaFatura.setLimiteCredito(cartaoC.getLimiteCreditoPreAprovado());
-					}
-					
-					//novaFatura.setLimiteCredito(new BigDecimal("600"));
-					contaOrigem.setFatura(novaFatura);
-					novaFatura.setConta(contaOrigem);
+					faturaExistente = new Fatura();
+				
+					faturaExistente.setCartao(cartaoOrigem);										
+					cartaoOrigem.setFatura(faturaExistente);
 				}
+				
 							
 				Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
 				contaOrigem.getTransferencia().add(transferindo);
 				
-				if(cartaoOrigem.getTipoCartao() == TipoCartao.CREDITO) { //Adiciona na lista transferenciasCredito
+				
 					
-					contaOrigem.getFatura().adicionarTransfCredito(transferindo);
+					cartaoRepository.save(cartaoC);
 				}
-
-				contaRepository.save(contaOrigem);		
+				
+				if (cartaoOrigem instanceof CartaoDebito) {
+					contaRepository.save(contaOrigem);
+				}	
 				break;
 			
 			}
@@ -323,14 +324,11 @@ public class CartaoService {
 				for(Cartao temCartao : conta.getCartoes()) {
 					if(temCartao.getId() == cartaoId) {
 					
-						if(temCartao instanceof CartaoCredito) {
-							((CartaoCredito) temCartao).alterarLimiteCreditoPreAprovado(novoLimite);
-							((CartaoCredito) temCartao).getConta().getFatura().setLimiteCredito(novoLimite);
-							
+						if(temCartao instanceof CartaoCredito cartaoCredito) {
+							cartaoCredito.alterarLimiteCreditoPreAprovado(novoLimite);
+						//	cartaoCredito.getFatura().setLimiteCredito(novoLimite);
 							return cartaoRepository.save(temCartao);
 							
-							//cartaoRepository.save(cartao);
-							//break;
 						}	
 					}
 				}
@@ -447,8 +445,8 @@ public class CartaoService {
 				for(Cartao temCartao : conta.getCartoes()) {
 					if(temCartao.getId() == cartaoId) {
 										
-						if(temCartao instanceof CartaoDebito) {
-							((CartaoDebito) temCartao).alterarLimiteDiarioTransacao(novoLimite);
+						if(temCartao instanceof CartaoDebito cartaoDebito) {
+							cartaoDebito.alterarLimiteDiarioTransacao(novoLimite);
 						
 							cartaoRepository.save(cartao);
 							break;
@@ -462,6 +460,17 @@ public class CartaoService {
 		return cartao;
 	}
 	
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Optional<Fatura> getFaturaCartaoDeCreditoService(Long cartaoId) {
+		
+		
+		return cartaoRepository.findById(cartaoId)
+		        .filter(c -> c instanceof CartaoCredito)
+		        .map(c -> ((CartaoCredito) c).getFatura());
+
+
+	}
 	
 	
 	

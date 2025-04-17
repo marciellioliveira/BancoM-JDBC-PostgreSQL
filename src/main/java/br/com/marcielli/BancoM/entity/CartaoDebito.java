@@ -25,16 +25,26 @@ public class CartaoDebito extends Cartao {
 	private BigDecimal totalGastoMes = BigDecimal.ZERO;
 	
 	public void atualizarTotalGastoMes(BigDecimal valor) {
-		
-		this.totalGastoMes = totalGastoMes.add(valor);
+		if (this.totalGastoMes == null) {
+	        this.totalGastoMes = BigDecimal.ZERO; 
+	    }
+		this.totalGastoMes = this.totalGastoMes.add(valor);
 		
 	}
 
-	public void atualizarLimiteDiarioTransacao(BigDecimal valor) {		
-		this.limiteDiarioTransacao = limiteDiarioTransacao.subtract(valor);		
+	public void atualizarLimiteDiarioTransacao(BigDecimal valor) {	
+		if (this.limiteDiarioTransacao == null) {
+	        this.limiteDiarioTransacao = BigDecimal.ZERO; 
+	    }
+		
+		this.limiteDiarioTransacao = this.limiteDiarioTransacao.subtract(valor);		
 	}
 	
 	public void alterarLimiteDiarioTransacao(BigDecimal valor) {
+		if (this.limiteDiarioTransacao == null) {
+	        this.limiteDiarioTransacao = BigDecimal.ZERO; 
+	    }
+		
 		this.limiteDiarioTransacao = valor;
 	}
 }

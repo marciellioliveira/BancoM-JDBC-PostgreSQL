@@ -1,7 +1,6 @@
 package br.com.marcielli.BancoM.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +43,11 @@ public class Fatura  implements Serializable {
 	//Apenas para teste
 	private LocalDateTime dataVencimento;
 	
-	private BigDecimal limiteCredito; 
+//	private BigDecimal limiteCredito; 
+//	
+//	private BigDecimal totalGastoNoMes;
 	
-	private BigDecimal totalGastoNoMes;
-	
-	@OneToMany(mappedBy = "fatura", cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "fatura", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Transferencia> transferenciasCredito;
 	
@@ -57,39 +56,44 @@ public class Fatura  implements Serializable {
 		this.transferenciasCredito = new ArrayList<Transferencia>();
 	}
 	
-	
 	@OneToOne(mappedBy = "fatura")
 	@JsonBackReference
-	private Conta conta;
+	private Cartao cartao;
+	
+//	@OneToOne(mappedBy = "fatura")
+//	@JsonBackReference
+//	private Conta conta;
 	
 	public void adicionarTransfCredito(Transferencia transferindo) {
-		
+		if (transferenciasCredito == null) {
+			transferenciasCredito = new ArrayList<>();
+		}
 		this.transferenciasCredito.add(transferindo);
 		transferindo.setFatura(this);
 		
 	}
 	
-//	public void atualizarLimiteCredito() {
+//	public void atualizarTotalGastoMes(BigDecimal valor) {		
+//		if (this.totalGastoNoMes == null) {
+//	        this.totalGastoNoMes = BigDecimal.ZERO; 
+//	    }
+//
+//		this.totalGastoNoMes = this.totalGastoNoMes.add(valor);		
 //		
 //	}
 //	
-//	public void atualizarTotalGastoMes() {
-//		
+//	public void atualizarLimiteCredito(BigDecimal valor) {
+//		if (this.limiteCredito == null) {
+//	        this.limiteCredito = BigDecimal.ZERO; 
+//	    }
+//		this.limiteCredito = this.limiteCredito.subtract(valor);		
 //	}
-	
-	
+
 	
 	
 
-//	@OneToOne(mappedBy = "faturaMensal")
-//	private Cartao cartao;
 	
-//	@OneToMany(cascade = {CascadeType.ALL})
-//	@JoinColumn(name = "transferenciaId")
-//	private List<Transferencia> transferenciasCredito;
 	
-	//Ver como colocar a lista de transferencias aqui quando for transferencia de Cartão de Crédito
-	//pegar o ultimo limite de credito, ou seja o atualizado na rota da API sempre
 	//pegar todos os valores das transferencias daquele usuario e somar.
 	
 	//Dps fazer: GET /cartoes/{id}/fatura** - Consultar fatura do cartão de crédito

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.marcielli.BancoM.dto.CartaoConsultarFaturaDTO;
+import br.com.marcielli.BancoM.dto.CartaoConsultarFaturaResponseDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.CartaoDeleteDTO;
@@ -34,6 +36,7 @@ import br.com.marcielli.BancoM.dto.CartaoUpdateStatusDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateStatusMapper;
 import br.com.marcielli.BancoM.dto.CartaoUpdateStatusResponseDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
+import br.com.marcielli.BancoM.entity.Fatura;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.service.CartaoService;
 
@@ -166,22 +169,25 @@ public class CartaoController {
 		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
 
 	}
-
 	
-	@PutMapping("/{cartaoId}/limite-diario") //@PutMapping("/atualizar/{cartaoId}") - Alterar limite diario do cartão de débito
-	public ResponseEntity<CartaoUpdateLimiteResponseDTO> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId, @RequestBody CartaoUpdateLimiteDTO cartaoUpdateLimiteDTO) {
-
-		//Conta conta = cartaoMapper.toEntity(cartaoCreateDTO);
-
-		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, cartaoUpdateLimiteDTO);
-
-		CartaoUpdateLimiteResponseDTO cartaoResponseDTO = cartaoUpdateLimiteMapper.toDTO(limiteAtualizado);
-
-		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
-
+	
+	@GetMapping("/{cartaoId}/fatura") //Consultar fatura do cartão de crédito
+	public Fatura getFaturaCartaoDeCredito(@PathVariable("cartaoId") Long cartaoId) {
+		
+		return cartaoService.getFaturaCartaoDeCreditoService(cartaoId)
+		        .orElseThrow(() -> new CartaoNaoEncontradoException("Não existe fatura para esse cartão."));
+		
+//		Optional<Fatura> fatura = cartaoService.getFaturaCartaoDeCreditoService(cartaoId);
+//		
+//		if (!fatura.isPresent()) {
+//			throw new CartaoNaoEncontradoException("Não existe fatura para essa conta.");
+//		}
+//
+//		return fatura;
+		
 	}
-	
 
+	
 	
 	
 	
