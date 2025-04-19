@@ -42,6 +42,14 @@ public class JwtService {
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
+	
+	public Long extractUserId(String token) {
+        return extractAllClaims(token).get("userId", Long.class);
+    }
+
+    public Long extractClienteId(String token) {
+        return extractAllClaims(token).get("clienteId", Long.class);
+    }
 
 	public boolean isValid(String token, UserDetails user) {
 		String username = extractUsername(token);
@@ -87,6 +95,13 @@ public class JwtService {
 	public String generateAccessToken(User user) {
 
 		Map<String, Object> claims = new HashMap<String, Object>();
+		claims.put("userId", user.getId()); //Adiciono o ID do User
+		
+		//Se tiver algum cliente com o ID
+		if(user.getCliente() != null) {
+			claims.put("clienteId", user.getCliente().getId());
+		}
+		
 		claims.put("authorities",
 				user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 

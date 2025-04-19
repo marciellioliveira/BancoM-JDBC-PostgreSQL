@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import br.com.marcielli.BancoM.filter.JwtAuthenticationFilter;
 import br.com.marcielli.BancoM.service.UserDetailsServiceImp;
+import lombok.RequiredArgsConstructor;
 
 
 @Configuration
@@ -40,30 +41,32 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     	
-    	return http    			
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        req->req.requestMatchers("/login/**","/register/**","/refresh_token/**","/h2-console/**","/clientes/**", "/contas/**", "/cartoes/**", "/seguros/**")
-                                .permitAll()
-                                .requestMatchers("/clientes/**", "/contas/**", "/cartoes/**", "/seguros/**").hasAuthority("ADMIN")
-                                .anyRequest()
-                                .authenticated()
-                ).userDetailsService(userDetailsServiceImp)
-                .sessionManagement(session->session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(
-                        e->e.accessDeniedHandler(
-                                        (request, response, accessDeniedException)->response.setStatus(403)
-                                )
-                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .logout(l->l
-                        .logoutUrl("/logout")
-                        .addLogoutHandler(logoutHandler)
-                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()
-                        ))
-                .headers((headers) -> headers.disable())
-                .build();
+    	return http
+    	        .csrf(AbstractHttpConfigurer::disable)
+    	        .authorizeHttpRequests(req -> req
+    	            // ROTAS PÚBLICAS (sem autenticação)
+    	            .requestMatchers("/login/**", "/register/**", "/refresh_token/**", "/h2-console/**").permitAll()
+
+    	            // ADMIN pode acessar tudo
+    	            .requestMatchers("/clientes/**", "/contas/**", "/cartoes/**", "/seguros/**").hasAuthority("ROLE_ADMIN")
+
+    	            // Qualquer outra requisição precisa estar autenticada (user ou admin)
+    	            .anyRequest().authenticated()
+    	        )
+    	        .userDetailsService(userDetailsServiceImp)
+    	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    	        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+    	        .exceptionHandling(e -> e
+    	            .accessDeniedHandler((request, response, accessDeniedException) -> response.setStatus(403))
+    	            .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+    	        )
+    	        .logout(l -> l
+    	            .logoutUrl("/logout")
+    	            .addLogoutHandler(logoutHandler)
+    	            .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+    	        )
+    	        .headers(headers -> headers.disable())
+    	        .build();
     }
     
     @Bean

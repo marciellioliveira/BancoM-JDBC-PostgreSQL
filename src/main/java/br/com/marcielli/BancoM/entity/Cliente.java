@@ -50,5 +50,8 @@ public class Cliente implements Serializable {
 	@OneToMany(mappedBy = "cliente", cascade = {CascadeType.ALL}, orphanRemoval = true )
 	@JsonManagedReference	
 	private List<Conta> contas;
+	
+	@OneToOne(mappedBy = "cliente")
+    private User user;
 
 }

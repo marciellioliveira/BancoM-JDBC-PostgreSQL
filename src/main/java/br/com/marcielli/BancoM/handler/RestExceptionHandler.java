@@ -20,6 +20,7 @@ import br.com.marcielli.BancoM.exception.ContaNaoFoiPossivelAlterarNumeroExcepti
 import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
 import br.com.marcielli.BancoM.exception.ContaTipoContaNaoExisteException;
 import br.com.marcielli.BancoM.exception.ContaTipoNaoPodeSerAlteradaException;
+import br.com.marcielli.BancoM.exception.SeguroNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 
 @ControllerAdvice
@@ -119,6 +120,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	//Cartão
 	@ExceptionHandler(CartaoNaoEncontradoException.class)
 	private ResponseEntity<RestErrorMessage> cartaoHandler(CartaoNaoEncontradoException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+	
+	//Seguro
+	@ExceptionHandler(SeguroNaoEncontradoException.class)
+	private ResponseEntity<RestErrorMessage> seguroHandler(SeguroNaoEncontradoException exception) {		
 		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
 	}

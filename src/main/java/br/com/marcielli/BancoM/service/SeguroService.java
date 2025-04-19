@@ -2,6 +2,7 @@ package br.com.marcielli.BancoM.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Seguro;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoSeguro;
+import br.com.marcielli.BancoM.exception.SeguroNaoEncontradoException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
 import br.com.marcielli.BancoM.repository.SeguroRepository;
 
@@ -73,9 +75,8 @@ public class SeguroService {
         return seguroRepository.save(seguro);
     }
     
-    public Seguro buscarPorId(Long id) {
-        return seguroRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Seguro não encontrado."));
+    public Optional<Seguro> buscarPorId(Long id) {
+        return seguroRepository.findById(id);
     }
 
     public List<Seguro> listarTodos() {
@@ -83,12 +84,15 @@ public class SeguroService {
     }
 
     public Seguro cancelarSeguro(Long id) {
-        Seguro seguro = buscarPorId(id);
+        Seguro seguro = buscarPorId(id)
+            .orElseThrow(() -> new SeguroNaoEncontradoException("Seguro não encontrado."));
 
+        // Verifica se o seguro já está cancelado
         if (!seguro.getAtivo()) {
             throw new IllegalStateException("Seguro já está cancelado.");
         }
 
+        // Cancela o seguro
         seguro.setAtivo(false);
         return seguroRepository.save(seguro);
     }
