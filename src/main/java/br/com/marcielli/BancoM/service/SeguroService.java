@@ -12,8 +12,6 @@ import br.com.marcielli.BancoM.entity.Seguro;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoSeguro;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
-import br.com.marcielli.BancoM.repository.ClienteRepository;
-import br.com.marcielli.BancoM.repository.ContaRepositoy;
 import br.com.marcielli.BancoM.repository.SeguroRepository;
 
 @Service
@@ -25,11 +23,11 @@ public class SeguroService {
     @Autowired
     private CartaoRepository cartaoRepository;
 
-    @Autowired
-    private ContaRepositoy contaRepository;
-
-    @Autowired
-    private ClienteRepository clienteRepository;
+//    @Autowired
+//    private ContaRepositoy contaRepository;
+//
+//    @Autowired
+//    private ClienteRepository clienteRepository;
     
     public Seguro contratarSeguro(Long idCartao, TipoSeguro tipo) {
         Cartao cartao = cartaoRepository.findById(idCartao)
