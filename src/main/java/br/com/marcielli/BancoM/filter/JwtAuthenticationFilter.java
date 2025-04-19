@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	                                 @NonNull HttpServletResponse response,
 	                                 @NonNull FilterChain filterChain) throws ServletException, IOException {
 
+		// Recupera o token JWT da requisição
 	    String authHeader = request.getHeader("Authorization");
 
 	    // Se não há token no header, libera a requisição para os outros filtros
@@ -87,6 +88,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	        // Define o contexto de segurança com o token gerado
 	        SecurityContextHolder.getContext().setAuthentication(authToken);
+	    }
+	    
+	    String role = claims.get("role", String.class);
+	    if (role != null && role.equals("ADMIN")) {
+	        // Logado como Funcionário
+	        response.addHeader("Logged-As", "Logado como Funcionário: " + username);
+	    } else {
+	        // Caso o role seja null ou não seja ADMIN
+	        response.addHeader("Logged-As", "Logado como Cliente: " + username);
 	    }
 
 	    // Aqui você pode adicionar lógica para verificar permissões específicas para Admin ou Cliente
