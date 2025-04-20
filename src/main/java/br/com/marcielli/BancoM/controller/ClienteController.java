@@ -106,8 +106,10 @@ public class ClienteController {
 	public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable("clienteId") Long clienteId,
 			@Valid @RequestBody ClienteCreateDTO clienteCreateDTO, HttpServletRequest request) {
 		
+		
 		 // Extrair o clienteId do token JWT
         Long clienteIdDoToken = (Long) request.getAttribute("clienteId");
+        System.err.println("a");
 
         // Verificar se o usuário logado tem permissões
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

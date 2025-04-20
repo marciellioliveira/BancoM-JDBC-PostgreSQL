@@ -29,6 +29,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 import { useRouter } from 'vue-router' // Importando o router
 
 const router = useRouter() // Instanciando o roteador
@@ -42,20 +43,26 @@ async function login() {
 
   console.log('Tentando login com:', username.value, password.value)
 
-  try {
-      const response = await fetch('http://localhost:8086/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username.value,
-          password: password.value
-        })
-      })
- const data = await response.json()
+ try {
+     const response = await axios({
+       method: 'POST',
+       url: 'http://localhost:8086/login',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       data: {
+         username: username.value,
+         password: password.value
+       }
+     })
 
- if (data.access_token) {
+     console.log('Login bem-sucedido', response);
+
+
+ // Verificando se o token foi retornado
+     if (response.data.access_token) {
+       localStorage.setItem('token', response.data.access_token) // Salvando o token no localStorage
+
        // Se o login for bem-sucedido
        message.value = 'Login com sucesso!'
        messageType.value = 'sucesso'
@@ -72,9 +79,9 @@ async function login() {
    } catch (error) {
      message.value = 'Erro ao tentar autenticar'
      messageType.value = 'erro'
+     console.error('Erro ao tentar autenticar', error) // Para ajudar a depurar o erro
    }
-
-}
+ }
 </script>
 
 <style scoped>

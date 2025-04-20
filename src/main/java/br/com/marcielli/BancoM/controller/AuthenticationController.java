@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.marcielli.BancoM.dto.AuthenticationRequestDTO;
 import br.com.marcielli.BancoM.dto.ClienteCreateDTO;
 import br.com.marcielli.BancoM.dto.ClienteMapper;
 import br.com.marcielli.BancoM.dto.UserRegisterDTO;
@@ -65,11 +66,18 @@ public class AuthenticationController {
 	    AuthenticationResponse response = authService.register(user);
 	    return ResponseEntity.ok(response);
 	}
-
+	
 	@PostMapping("/login")
-	public ResponseEntity<AuthenticationResponse> login(@RequestBody User request) {
+	public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequestDTO request) {
+		
+		System.err.println("cntroller "+request.getUsername() + " - " + request.getPassword());
 		return ResponseEntity.ok(authService.authenticate(request));
 	}
+
+//	@PostMapping("/login")
+//	public ResponseEntity<AuthenticationResponse> login(@RequestBody User request) {
+//		return ResponseEntity.ok(authService.authenticate(request));
+//	}
 
 	@PostMapping("/refresh_token")
 	public ResponseEntity refreshToken(HttpServletRequest request, HttpServletResponse response) {

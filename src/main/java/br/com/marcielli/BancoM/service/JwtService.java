@@ -104,11 +104,15 @@ public class JwtService {
 
 	public String generateAccessToken(User user) {
 		System.out.println("CHAVE SECRETA (geração): " + secretKey);
-		Map<String, Object> claims = new HashMap<>();
+	    Map<String, Object> claims = new HashMap<>();
 	    claims.put("userId", user.getId());
 	    
+	    // Verificando se o usuário é um cliente (ROLE=USER)
 	    if (user.getCliente() != null) {
 	        claims.put("clienteId", user.getCliente().getId());
+	    } else {
+	        // Para administradores, o clienteId não é necessário
+	        claims.put("clienteId", null); // ou você pode usar -1L se preferir
 	    }
 	    
 	    claims.put("authorities",
@@ -128,6 +132,32 @@ public class JwtService {
 	               .setExpiration(Date.from(expiration))
 	               .signWith(getSigninKey())
 	               .compact();
+//		System.out.println("CHAVE SECRETA (geração): " + secretKey);
+//		Map<String, Object> claims = new HashMap<>();
+//	    claims.put("userId", user.getId());    
+//	    
+//	    
+//	    if (user.getCliente() != null) {
+//	        claims.put("clienteId", user.getCliente().getId());
+//	    }
+//	    
+//	    claims.put("authorities",
+//	            user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+//
+//	    Instant issuedAt = Instant.now();
+//	    Instant expiration = issuedAt.plusMillis(accessTokenExpire);
+//
+//	    // Log para verificar os tempos de emissão e expiração
+//	    System.out.println("Issued At: " + issuedAt);
+//	    System.out.println("Expiration: " + expiration);
+//
+//	    return Jwts.builder()
+//	               .setClaims(claims)
+//	               .setSubject(user.getUsername())
+//	               .setIssuedAt(Date.from(issuedAt))
+//	               .setExpiration(Date.from(expiration))
+//	               .signWith(getSigninKey())
+//	               .compact();
 
 
 	}
