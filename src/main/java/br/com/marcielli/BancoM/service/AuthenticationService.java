@@ -79,7 +79,9 @@ public class AuthenticationService {
 		        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
 		    );
 
-		    User user = repository.findByUsername(request.getUsername()).orElseThrow();
+//		    User user = repository.findByUsername(request.getUsername()).orElseThrow();
+	 User user = repository.findByUsername(request.getUsername())
+			    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 		    System.err.println(user);
 		    // Adiciona os dados extras no token
 		    Map<String, Object> extraClaims = new HashMap<>();

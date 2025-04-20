@@ -33,7 +33,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "tokens") // Exclui o campo 'tokens' do toString
 @EqualsAndHashCode
 public class User implements UserDetails {
 
