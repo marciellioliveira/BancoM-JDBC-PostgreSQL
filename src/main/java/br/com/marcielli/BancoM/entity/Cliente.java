@@ -25,7 +25,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = {"contas", "user"}) 
 @EqualsAndHashCode
 @Entity
 public class Cliente implements Serializable {
