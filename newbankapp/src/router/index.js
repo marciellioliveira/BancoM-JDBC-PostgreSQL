@@ -1,15 +1,3 @@
-//import { createRouter, createWebHistory } from 'vue-router'
-//import Login from '../views/Login.vue'
-//import Register from '../views/Register.vue'
-//import Dashboard from '../views/Dashboard.vue'
-//import Admin from '../views/Admin.vue'
-//import RegisterView from '../views/RegisterView.vue'
-//import LoginView from '../views/LoginView.vue'
-//import Clientes from '../views/Clientes.vue'
-//import Contas from '../views/Contas.vue'
-//import Cartoes from '../views/Cartoes.vue'
-//import Seguros from '../views/Seguros.vue'
-
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
@@ -47,22 +35,22 @@ const routes = [
                   {
                     path: 'listar',
                     name: 'Listar Clientes',
-                    component: () => import('../views/ListarClientes.vue')  // A página de Listar Clientes
+                    component: () => import('../views/Clientes/ListarClientes.vue')  // A página de Listar Clientes
                   },
                   {
                     path: 'procurar',
                     name: 'Procurar Cliente',
-                    component: () => import('../views/ProcurarCliente.vue')  // A página de Procurar Cliente
+                    component: () => import('../views/Clientes/ProcurarCliente.vue')  // A página de Procurar Cliente
                   },
                   {
                     path: 'atualizar',
                     name: 'Atualizar Dados',
-                    component: () => import('../views/AtualizarCliente.vue')  // A página de Atualizar Cliente
+                    component: () => import('../views/Clientes/AtualizarCliente.vue')  // A página de Atualizar Cliente
                   },
                   {
                     path: 'deletar',
                     name: 'Deletar Cliente',
-                    component: () => import('../views/DeletarCliente.vue')  // A página de Deletar Cliente
+                    component: () => import('../views/Clientes/DeletarCliente.vue')  // A página de Deletar Cliente
                   }
                 ]
       },
@@ -70,16 +58,97 @@ const routes = [
         path: 'contas',
         name: 'Contas',
         component: Contas,
+        children: [
+         {
+                path: 'criar',
+                name: 'Criar Conta',
+                component: () => import('../views/Contas/CriarConta.vue')
+              },
+              {
+                path: 'listar',
+                name: 'Listar Contas',
+                component: () => import('../views/Contas/ListarContas.vue')
+              },
+              {
+                path: 'procurar',
+                name: 'Procurar Conta',
+                component: () => import('../views/Contas/ProcurarConta.vue')
+              },
+              {
+                path: 'atualizar',
+                name: 'Atualizar Dados',
+                component: () => import('../views/Contas/AtualizarConta.vue')
+              },
+              {
+                path: 'deletar',
+                name: 'Deletar Conta',
+                component: () => import('../views/Contas/DeletarConta.vue')
+              }
+            ]
       },
       {
         path: 'cartoes',
         name: 'Cartões',
         component: Cartoes,
+        children: [
+         {
+                path: 'criar',
+                name: 'Criar Cartão',
+                component: () => import('../views/Cartoes/CriarCartao.vue')
+              },
+              {
+                path: 'listar',
+                name: 'Listar Cartão',
+                component: () => import('../views/Cartoes/ListarCartao.vue')
+              },
+              {
+                path: 'procurar',
+                name: 'Procurar Cartão',
+                component: () => import('../views/Cartoes/ProcurarCartao.vue')
+              },
+              {
+                path: 'atualizar',
+                name: 'Atualizar Dados',
+                component: () => import('../views/Cartoes/AtualizarCartao.vue')
+              },
+              {
+                path: 'deletar',
+                name: 'Deletar Cartão',
+                component: () => import('../views/Cartoes/DeletarCartao.vue')
+              }
+            ]
       },
       {
         path: 'seguros',
         name: 'Seguros',
         component: Seguros,
+        children: [
+                 {
+                        path: 'criar',
+                        name: 'Criar Seguro',
+                        component: () => import('../views/Seguros/CriarSeguro.vue')
+                      },
+                      {
+                        path: 'listar',
+                        name: 'Listar Seguro',
+                        component: () => import('../views/Seguros/ListarSeguros.vue')
+                      },
+                      {
+                        path: 'procurar',
+                        name: 'Procurar Seguro',
+                        component: () => import('../views/Seguros/ProcurarSeguro.vue')
+                      },
+                      {
+                        path: 'atualizar',
+                        name: 'Atualizar Dados',
+                        component: () => import('../views/Seguros/AtualizarSeguros.vue')
+                      },
+                      {
+                        path: 'deletar',
+                        name: 'Deletar Seguro',
+                        component: () => import('../views/Seguros/DeletarSeguro.vue')
+                      }
+                    ]
       },
     ],
   },
