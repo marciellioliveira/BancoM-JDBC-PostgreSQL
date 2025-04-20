@@ -2,6 +2,7 @@ package br.com.marcielli.BancoM.service;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import br.com.marcielli.BancoM.repository.TokenRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -52,6 +55,7 @@ public class AuthenticationService {
 		user.setFirstName(request.getFirstName());
 		user.setLastName(request.getLastName());
 		user.setUsername(request.getUsername());
+		user.setCliente(request.getCliente());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 
 		user.setRole(request.getRole());
@@ -61,6 +65,9 @@ public class AuthenticationService {
 		String accessToken = jwtService.generateAccessToken(user);
 		String refreshToken = jwtService.generateRefreshToken(user);
 
+		System.err.println("UseR: "+user);
+		System.err.println("Acces Tokenb "+accessToken);
+		System.err.println("Refresh oken "+refreshToken);
 		saveUserToken(accessToken, refreshToken, user);
 
 		return new AuthenticationResponse(accessToken, refreshToken, "Cadastro realizado com sucesso.");
@@ -68,17 +75,36 @@ public class AuthenticationService {
 	}
 
 	public AuthenticationResponse authenticate(User request) {
-		authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+	 authenticationManager.authenticate(
+		        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+		    );
 
-		User user = repository.findByUsername(request.getUsername()).orElseThrow();
-		String accessToken = jwtService.generateAccessToken(user);
-		String refreshToken = jwtService.generateRefreshToken(user);
+		    User user = repository.findByUsername(request.getUsername()).orElseThrow();
+		    System.err.println(user);
+		    // Adiciona os dados extras no token
+		    Map<String, Object> extraClaims = new HashMap<>();
+		    extraClaims.put("authorities", List.of(user.getRole().name())); // USER ou ADMIN
+		    extraClaims.put("userId", user.getId());
 
-		revokeAllTokenByUser(user);
-		saveUserToken(accessToken, refreshToken, user);
+		    System.out.println(user.getCliente());
+		    if (user.getCliente() != null) {
+		    	 System.out.println(user.getCliente());
+		        extraClaims.put("clienteId", user.getCliente().getId());
+		        System.out.println(extraClaims);
+		    }
 
-		return new AuthenticationResponse(accessToken, refreshToken, "Login realizado com sucesso.");
+		    System.out.println("Antes de gerar o token de acesso");
+		    // Usa o método do JwtService que aceita os extraClaims
+		    String accessToken = jwtService.generateAccessToken(user, extraClaims);
+		    String refreshToken = jwtService.generateRefreshToken(user);
+		    
+		    System.err.println(accessToken);
+		    System.err.println(refreshToken);
+
+		    revokeAllTokenByUser(user);
+		    saveUserToken(accessToken, refreshToken, user);
+
+		    return new AuthenticationResponse(accessToken, refreshToken, "Login realizado com sucesso.");
 
 	}
 

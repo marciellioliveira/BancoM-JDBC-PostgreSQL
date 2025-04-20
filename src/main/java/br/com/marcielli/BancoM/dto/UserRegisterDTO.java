@@ -1,6 +1,7 @@
 package br.com.marcielli.BancoM.dto;
 
 import br.com.marcielli.BancoM.enuns.Role;
+import br.com.marcielli.BancoM.validation.ValidarClienteSeForUser;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@ValidarClienteSeForUser //Criei essa anotação para validar os campos e aceitar somente alguns dados caso o cadastro seja de ADMIN
 public class UserRegisterDTO {
 	
 	private String firstName;

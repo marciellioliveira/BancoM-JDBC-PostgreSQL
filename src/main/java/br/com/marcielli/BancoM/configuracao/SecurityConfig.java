@@ -2,6 +2,7 @@ package br.com.marcielli.BancoM.configuracao;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -18,8 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import br.com.marcielli.BancoM.filter.JwtAuthenticationFilter;
 import br.com.marcielli.BancoM.service.UserDetailsServiceImp;
-import lombok.RequiredArgsConstructor;
-
+import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableWebSecurity
@@ -42,19 +42,24 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     	
     	return http
+    			.cors(Customizer.withDefaults()) // habilita CORS para o Front end
     	        .csrf(AbstractHttpConfigurer::disable)
-    	        .authorizeHttpRequests(req -> req
+    	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    	        .authorizeHttpRequests(req -> req    	       
+    	        		
+    	        	//Permitindo para o Front end
+    	        	.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
     	            // ROTAS PÚBLICAS (sem autenticação)
     	            .requestMatchers("/login/**", "/register/**", "/refresh_token/**", "/h2-console/**").permitAll()
-
+    	            .requestMatchers("/clientes/**", "/contas/**", "/cartoes/**", "/seguros/**").permitAll()
     	            // ADMIN pode acessar tudo
-    	            .requestMatchers("/clientes/**", "/contas/**", "/cartoes/**", "/seguros/**").hasAuthority("ROLE_ADMIN")
+    	           // .requestMatchers("/clientes/**", "/contas/**", "/cartoes/**", "/seguros/**").hasAuthority("ROLE_ADMIN")
 
     	            // Qualquer outra requisição precisa estar autenticada (user ou admin)
     	            .anyRequest().authenticated()
     	        )
     	        .userDetailsService(userDetailsServiceImp)
-    	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    	        
     	        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
     	        .exceptionHandling(e -> e
     	            .accessDeniedHandler((request, response, accessDeniedException) -> response.setStatus(403))

@@ -2,6 +2,7 @@ package br.com.marcielli.BancoM.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,6 +74,27 @@ public class AuthenticationController {
 	@PostMapping("/refresh_token")
 	public ResponseEntity refreshToken(HttpServletRequest request, HttpServletResponse response) {
 		return authService.refreshToken(request, response);
+	}
+	
+	
+	//Front end
+	@PostMapping("/register-form")
+	public String registerFromForm(UserRegisterDTO request) {
+	    User user = new User();
+	    user.setFirstName(request.getFirstName());
+	    user.setLastName(request.getLastName());
+	    user.setUsername(request.getUsername());
+	    user.setPassword(request.getPassword());
+	    user.setRole(request.getRole());
+
+	    if (Role.USER.equals(request.getRole())) {
+	        ClienteCreateDTO cliente = new ClienteCreateDTO();
+	        // (aqui você pode preencher cliente com valores fixos ou um novo form depois)
+	        user.setCliente(clienteService.save(clienteMapper.toEntity(cliente)));
+	    }
+
+	    authService.register(user);
+	    return "redirect:/cadastro?sucesso";
 	}
 
 }

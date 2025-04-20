@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -311,30 +312,30 @@ public class CartaoController {
 		return ResponseEntity.status(HttpStatus.OK).body(cartaoResponseDTO);
 
 	}
-
-	// Verificação de autorização de acesso
+//
+//	// Verificação de autorização de acesso
 	private boolean podeAcessarCliente(Long clienteId, Long clienteIdToken, Authentication auth) {
-		return clienteId.equals(clienteIdToken)
-				|| auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
+	    // Verifica se o usuário é um administrador ou se o cliente logado é o dono do cartão
+	    return auth.getAuthorities().stream()
+	        .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || clienteId.equals(clienteIdToken));
 	}
-
-	// Verifica se o cliente tem permissão para listar cartões
+//
+//	// Verifica se o cliente tem permissão para listar cartões
 	private boolean temPermissaoListarCartoes(Long clienteIdToken, Authentication auth) {
-		// Verifica se o cliente logado é o mesmo do clienteIdToken ou se é um
-		// administrador
-		return auth.getAuthorities().stream()
-				.anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || clienteIdToken.equals(clienteIdToken));
+	    // Verifica se o cliente logado é o dono do cartão ou se ele é um administrador
+	    return auth.getAuthorities().stream()
+	        .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || clienteIdToken.equals(clienteIdToken));
 	}
-
-	// Verifica se o cliente tem permissão para realizar o pagamento do cartão
+//
+//	// Verifica se o cliente tem permissão para realizar o pagamento do cartão
 	private boolean temPermissaoPagamentoCartao(Long idContaReceber, Long clienteIdToken, Authentication auth) {
-		// Verifica se o cliente logado é o mesmo do clienteIdToken ou se é um
-		// administrador
-		Cartao cartao = cartaoService.getCartaoById(idContaReceber)
-				.orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado."));
-
-		// Verifica se o cliente logado é o dono do cartão ou se é um administrador
-		return auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN")
-				|| cartao.getConta().getCliente().getId().equals(clienteIdToken));
+	    // Verifica se o cliente logado é o dono da conta do cartão ou se ele é um administrador
+	    Cartao cartao = cartaoService.getCartaoById(idContaReceber)
+	        .orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado."));
+	    
+	    Long clienteIdDoCartao = cartao.getConta().getCliente().getId();
+	    
+	    return auth.getAuthorities().stream()
+	        .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || clienteIdDoCartao.equals(clienteIdToken));
 	}
 }

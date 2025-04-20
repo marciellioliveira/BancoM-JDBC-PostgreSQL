@@ -8,11 +8,17 @@ import br.com.marcielli.BancoM.entity.Token;
 import br.com.marcielli.BancoM.repository.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 public class CustomLogoutHandler implements LogoutHandler {
 
 	private final TokenRepository tokenRepository;
+	
+	 // Definindo o logger corretamente
+    private static final Logger logger = LoggerFactory.getLogger(CustomLogoutHandler.class);
+
 
 	public CustomLogoutHandler(TokenRepository tokenRepository) {
 		this.tokenRepository = tokenRepository;
@@ -33,6 +39,7 @@ public class CustomLogoutHandler implements LogoutHandler {
 		if (storedToken != null) {
 			storedToken.setLoggedOut(true);
 			tokenRepository.save(storedToken);
+			logger.info("Token marcado como logout: " + storedToken.getAccessToken());
 		}
 
 	}

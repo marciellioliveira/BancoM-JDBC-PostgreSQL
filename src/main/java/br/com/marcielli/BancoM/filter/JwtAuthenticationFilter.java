@@ -9,15 +9,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -44,20 +40,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(@NonNull HttpServletRequest request, 
 	                                 @NonNull HttpServletResponse response,
 	                                 @NonNull FilterChain filterChain) throws ServletException, IOException {
-
-		// Recupera o token JWT da requisição
-	    String authHeader = request.getHeader("Authorization");
-
+		
+		String authHeader = request.getHeader("Authorization");
+//		 String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		
 	    // Se não há token no header, libera a requisição para os outros filtros
 	    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	    	logger.info("Token JWT não encontrado ou mal formatado.");
 	        filterChain.doFilter(request, response);
 	        return;
 	    }
 
-	    String token = authHeader.substring(7);
-
-	    // Extrai as claims do token diretamente
-	    Claims claims = jwtService.extractAllClaims(token);
+	    String token = authHeader.substring(7); //Pegando somente o token sem o Bearer
+	    Claims claims;
+	    
+	    try {
+	        claims = jwtService.extractAllClaims(token);
+	    } catch (Exception e) {
+	        logger.error("Erro ao extrair claims do token: " + e.getMessage());
+	        filterChain.doFilter(request, response);
+	        return;
+	    }
 	    String username = claims.getSubject();
 	    Long userId = claims.get("userId", Long.class);
 	    Long clienteId = claims.get("clienteId", Long.class);
@@ -89,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	        // Define o contexto de segurança com o token gerado
 	        SecurityContextHolder.getContext().setAuthentication(authToken);
 	    }
-	    
+	   
 	    String role = claims.get("role", String.class);
 	    if (role != null && role.equals("ADMIN")) {
 	        // Logado como Funcionário
