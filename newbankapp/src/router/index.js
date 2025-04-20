@@ -43,6 +43,28 @@ const routes = [
         path: 'clientes',
         name: 'Clientes',
         component: Clientes,
+        children: [
+                  {
+                    path: 'listar',
+                    name: 'Listar Clientes',
+                    component: () => import('../views/ListarClientes.vue')  // A página de Listar Clientes
+                  },
+                  {
+                    path: 'procurar',
+                    name: 'Procurar Cliente',
+                    component: () => import('../views/ProcurarCliente.vue')  // A página de Procurar Cliente
+                  },
+                  {
+                    path: 'atualizar',
+                    name: 'Atualizar Dados',
+                    component: () => import('../views/AtualizarCliente.vue')  // A página de Atualizar Cliente
+                  },
+                  {
+                    path: 'deletar',
+                    name: 'Deletar Cliente',
+                    component: () => import('../views/DeletarCliente.vue')  // A página de Deletar Cliente
+                  }
+                ]
       },
       {
         path: 'contas',
