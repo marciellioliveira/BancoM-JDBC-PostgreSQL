@@ -50,7 +50,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
             clienteId = user.getCliente().getId(); // Só recupera clienteId se o usuário não for admin
         }
         
-        clienteId = 0L;
+        clienteId = 1L;
       //  Long clienteId = (user.getCliente() != null) ? user.getCliente().getId() : null;
         
         System.err.println("Cliente ID: "+clienteId);

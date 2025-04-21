@@ -44,9 +44,9 @@ public class AuthenticationController {
 	    user.setPassword(request.getPassword());
 	    user.setRole(request.getRole());
 
-	    Role role = request.getRole(); // <- isso evita o erro de .equals em null
+	  //  Role role = request.getRole(); // <- isso evita o erro de .equals em null
 
-	    if (Role.USER.equals(role)) {
+	  //  if (Role.USER.equals(role)) {
 	        ClienteCreateDTO clienteCreateDTO = new ClienteCreateDTO();
 	        clienteCreateDTO.setNome(request.getNome());
 	        clienteCreateDTO.setCpf(request.getCpf());
@@ -61,7 +61,7 @@ public class AuthenticationController {
 	        Cliente cliente = clienteMapper.toEntity(clienteCreateDTO);
 	        cliente = clienteService.save(cliente);
 	        user.setCliente(cliente);
-	    }
+	 //   }
 
 	    AuthenticationResponse response = authService.register(user);
 	    return ResponseEntity.ok(response);

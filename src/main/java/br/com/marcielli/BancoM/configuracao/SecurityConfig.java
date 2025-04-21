@@ -52,9 +52,6 @@ public class SecurityConfig {
         authenticationManagerBuilder.userDetailsService(userDetailsServiceImp)
                                      .passwordEncoder(passwordEncoder()); // Configura o PasswordEncoder
         return authenticationManagerBuilder.build();
-//        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.userDetailsService(userDetailsServiceImp).passwordEncoder(passwordEncoder());
-//        return authenticationManagerBuilder.build(); // Configura o AuthenticationManager com UserDetailsService e PasswordEncoder
     }
     
     
@@ -69,14 +66,7 @@ public class SecurityConfig {
     	        		
     	        	//Permitindo para o Front end
     	        	.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-    	            // ROTAS PÚBLICAS (sem autenticação)
-    	        	.requestMatchers("/login", "/login/**", "/register", "/register/**", "/refresh_token", "/refresh_token/**", "/h2-console/**").permitAll()
-    	            .requestMatchers("/clientes/**", "/contas/**", "/cartoes/**", "/seguros/**").permitAll()
-    	            // ADMIN pode acessar tudo
-    	           // .requestMatchers("/clientes/**", "/contas/**", "/cartoes/**", "/seguros/**").hasAuthority("ROLE_ADMIN")
-
-    	            // Qualquer outra requisição precisa estar autenticada (user ou admin)
-    	            .anyRequest().authenticated()
+    	        	.anyRequest().permitAll()
     	        )
     	        .userDetailsService(userDetailsServiceImp)
     	        
@@ -94,12 +84,4 @@ public class SecurityConfig {
     	        .build();
     }
     
-  
-    
-   
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-//        return configuration.getAuthenticationManager();
-//    }
-	
 }

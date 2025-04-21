@@ -110,12 +110,12 @@ public class JwtService {
 	    claims.put("userId", user.getId());
 	    
 	    // Verificando se o usuário é um cliente (ROLE=USER)
-	    if (user.getCliente() != null) {
-	        claims.put("clienteId", user.getCliente().getId());
-	    } else {
-	        // Para administradores, o clienteId não é necessário
-	        claims.put("clienteId", null); // ou você pode usar -1L se preferir
-	    }
+//	    if (user.getCliente() != null) {
+//	        claims.put("clienteId", user.getCliente().getId());
+//	    } else {
+//	        // Para administradores, o clienteId não é necessário
+//	        claims.put("clienteId", null); // ou você pode usar -1L se preferir
+//	    }
 	    
 	    claims.put("authorities",
 	            user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));

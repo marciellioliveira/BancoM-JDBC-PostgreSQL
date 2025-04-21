@@ -129,42 +129,49 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	        response.addHeader("Logged-As", "Logado como Cliente: " + username);
 	    }
 
-	    // Verificações de permissão para Admin e Cliente
-	    if (isAdminRequest(request) && !isAdmin(request)) {
-	        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Você não tem permissão para acessar essa rota.");
-	        return;
-	    }
+	    
+//	    // Verificações de permissão para Admin e Cliente
+//	    if (isAdminRequest(request) && !isAdmin(request)) {
+//	    	
+//	        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Você não tem permissão para acessar essa rota.");
+//	        return;
+//	    }
+//
+//	    if (isClienteRequest(request) && !isCliente(request, clienteId)) {
+//	        logger.warn("Acesso negado: clienteId inválido ou rota não permitida.");
+//	        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Você não tem permissão para acessar essa rota.");
+//	        return;
+//	    }
 
-	    if (isClienteRequest(request) && !isCliente(request, clienteId)) {
-	        logger.warn("Acesso negado: clienteId inválido ou rota não permitida.");
-	        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Você não tem permissão para acessar essa rota.");
-	        return;
-	    }
-
+	    System.err.println("request: "+request);
+	    System.err.println("response: "+response);
 	    // Continua o fluxo da requisição
 	    filterChain.doFilter(request, response);
 	}
 
 	
 	// Verifica se a rota requer um usuário Admin
-	private boolean isAdminRequest(HttpServletRequest request) {
+	private boolean isAdminRequest(HttpServletRequest request) { //Verifica se a URL acessada exige permissão de admin.
+		System.err.println("isAdminRequest: "+request);
 	    return request.getRequestURI().startsWith("/admin");
 	}
 
 	// Verifica se o usuário logado é um Admin
-	private boolean isAdmin(HttpServletRequest request) {
+	private boolean isAdmin(HttpServletRequest request) { //Verifica se o usuário logado tem a role ADMIN.
+		System.err.println("isAdmin: "+request);
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    return auth.getAuthorities().stream()
 	            .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 	}
 
 	// Verifica se a rota requer um cliente específico
-	private boolean isClienteRequest(HttpServletRequest request) {
-		System.out.println("HttpServletRequest (isClienteRequest(HttpServletRequest request)) = " + request);
+	private boolean isClienteRequest(HttpServletRequest request) { //Verifica se a rota acessada é uma rota de cliente.
+		System.err.println("isClienteRequest: "+request);
 	    return request.getRequestURI().startsWith("/clientes");
 	}
 
-	private boolean isCliente(HttpServletRequest request, Long clienteId) {
+	private boolean isCliente(HttpServletRequest request, Long clienteId) { //Verifica se o usuário logado tem permissão para acessar os dados do cliente específico
+		System.err.println("isCliente: "+request);
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    Object principal = auth.getPrincipal();
 
@@ -192,7 +199,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	        // Se clienteIdToken não for null, compara com clienteId
 	        return clienteIdToken.equals(clienteId);
 	    } else {
-	        System.err.println("Principal não é CustomUserDetails, é: " + principal.getClass().getName());
+//	        System.err.println("Principal não é CustomUserDetails, é: " + principal.getClass().getName());
 	        return false;
 	    }
 	}

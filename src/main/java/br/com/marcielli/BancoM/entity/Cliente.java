@@ -3,6 +3,7 @@ package br.com.marcielli.BancoM.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -52,6 +53,7 @@ public class Cliente implements Serializable {
 	private List<Conta> contas;
 	
 	@OneToOne(mappedBy = "cliente")
+	@JsonIgnore
     private User user;
 
 }
