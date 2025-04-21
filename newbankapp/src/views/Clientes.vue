@@ -5,7 +5,7 @@
     <!-- Submenu -->
         <div class="submenu">
           <ul>
-            <li><router-link to="/dashboard/clientes/criar">Criar Clientes</router-link></li>
+           <!-- <li><router-link to="/dashboard/clientes/criar">Criar Clientes</router-link></li>-->
             <li><router-link to="/dashboard/clientes/listar">Listar Clientes</router-link></li>
             <li><router-link to="/dashboard/clientes/procurar">Procurar Cliente</router-link></li>
             <li><router-link to="/dashboard/clientes/atualizar">Atualizar Dados</router-link></li>

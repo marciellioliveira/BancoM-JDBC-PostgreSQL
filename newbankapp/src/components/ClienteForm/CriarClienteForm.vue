@@ -145,8 +145,6 @@ async function criarOuAtualizarCliente() {
     return
   }
 
- 
-
   try {
     const payload = {
     ...form,
@@ -173,32 +171,16 @@ async function criarOuAtualizarCliente() {
     }
 
   } catch (error) {
-    // Se o erro for 404, significa que o CPF não existe — atualiza cliente/user admin
-    if (error.response && error.response.status === 404) { 
-      try {
-        await axios.post('http://localhost:8086/clientes/', payload, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
-        })
-
-        message.value = 'Cliente cadastrado com sucesso!'
-        messageType.value = 'sucesso'
-
-      } catch (cadastroError) {
-        message.value = 'Erro ao cadastrar Cliente.'
-        messageType.value = 'erro'
-        errors.push('Erro ao cadastrar Cliente.')
-        console.error('Erro ao cadastrar Cliente:', cadastroError)
-      }
-    } else {
+    // Se o erro, significa que o CPF não existe — atualiza cliente/user admin
+      //Mostrar mensagem que não tem cliente com o cpf
+    
       message.value = 'Erro ao buscar CPF no servidor.'
       messageType.value = 'erro'
       errors.push('Erro ao buscar CPF no servidor.')
       console.error('Erro ao buscar CPF:', error)
-    }
+   
   }
+  
 }
 </script>
 

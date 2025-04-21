@@ -3,6 +3,8 @@ package br.com.marcielli.BancoM.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.marcielli.BancoM.dto.AuthenticationRequestDTO;
+import br.com.marcielli.BancoM.dto.ClienteListarDTO;
 import br.com.marcielli.BancoM.entity.AuthenticationResponse;
+import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Token;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.repository.TokenRepository;
@@ -254,4 +258,24 @@ public class AuthenticationService {
 		return new ResponseEntity(HttpStatus.UNAUTHORIZED);
 
 	}
+	
+	
+	
+	
+	public List<ClienteListarDTO> buscarPorNome(String nome) {
+	    List<User> usuarios = repository.findByFirstNameContainingIgnoreCase(nome);
+	    
+	    return usuarios.stream()
+	            .map(User::getCliente) // pega o cliente relacionado
+	            .filter(Objects::nonNull) // só entra se o cliente existir
+	            .map(cliente -> new ClienteListarDTO(
+	                cliente.getId(),
+	                cliente.getNome()
+	            ))
+	            .collect(Collectors.toList());
+	}
+
+	
+	
+	
 }

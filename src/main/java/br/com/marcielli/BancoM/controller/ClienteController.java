@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.dto.ClienteCreateDTO;
+import br.com.marcielli.BancoM.dto.ClienteListarDTO;
 import br.com.marcielli.BancoM.dto.ClienteMapper;
 import br.com.marcielli.BancoM.dto.ClienteResponseDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
@@ -72,6 +74,8 @@ public class ClienteController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteResponseDTO);
 
 	}
+	
+	
 	
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<?> getClienteById(@PathVariable("clienteId") Long clienteId, HttpServletRequest request) {

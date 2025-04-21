@@ -3,12 +3,16 @@ package br.com.marcielli.BancoM.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import br.com.marcielli.BancoM.dto.ClienteListarDTO;
 import br.com.marcielli.BancoM.entity.AuthenticationResponse;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.User;
@@ -47,6 +51,17 @@ public class ClienteService {
 		return clienteRepository.save(cliente);
 	}
 	
+//	public List<ClienteListarDTO> buscarPorNome(String nome) {
+//	    List<Cliente> clientes = clienteRepository.findByNomeContainingIgnoreCase(nome);
+//	    return clientes.stream()
+//	                   .map(cliente -> new ClienteListarDTO(
+//	                       cliente.getId(),
+//	                       cliente.getNome(),
+//	                       cliente.getCpf().toString() // se o cpf for Long
+//	                   ))
+//	                   .collect(Collectors.toList());
+//	}
+
 	
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
