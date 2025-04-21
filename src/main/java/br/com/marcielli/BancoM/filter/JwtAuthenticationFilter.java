@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.filter;
 
+import br.com.marcielli.BancoM.entity.CustomUserDetails;
 import br.com.marcielli.BancoM.service.JwtService;
 import br.com.marcielli.BancoM.service.UserDetailsServiceImp;
 import io.jsonwebtoken.Claims;
@@ -9,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +31,8 @@ import org.springframework.security.core.Authentication;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
+		
+	@Lazy
 	private final UserDetailsServiceImp userDetailsService;
 
 	public JwtAuthenticationFilter(JwtService jwtService, UserDetailsServiceImp userDetailsService) {
@@ -40,6 +44,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(@NonNull HttpServletRequest request, 
 	                                 @NonNull HttpServletResponse response,
 	                                 @NonNull FilterChain filterChain) throws ServletException, IOException {
+		
+		String path = request.getServletPath();
+		if (path.equals("/register") || path.equals("/auth/login")) {
+		    filterChain.doFilter(request, response);
+		    return;
+		}
 
 	    String authHeader = request.getHeader("Authorization");
 
@@ -51,10 +61,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	    String token = authHeader.substring(7); // Remove o prefixo "Bearer "
 	    Claims claims;
+//	    Long clienteId = null;
 
 	    try {
 	        // Tenta extrair as claims do token
 	        claims = jwtService.extractAllClaims(token);
+//	        clienteId = claims.get("clienteId", Long.class);
+//	        System.out.println("clienteId extraído do token: " + clienteId);
+	        
 	    } catch (Exception e) {
 	        logger.error("Erro ao extrair claims do token: " + e.getMessage());
 	        filterChain.doFilter(request, response);
@@ -75,9 +89,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	    request.setAttribute("userId", userId);
 	    request.setAttribute("clienteId", clienteId);
 	    request.setAttribute("authorities", roles);
+	    
+	    CustomUserDetails userDetails = new CustomUserDetails(username, null, clienteId, roles.stream()
+	            .map(role1 -> new SimpleGrantedAuthority("ROLE_" + role))
+	            .collect(Collectors.toList())); 
+	    userDetails.setUsername(username);
+	    userDetails.setClienteId(clienteId);
+	    userDetails.setAuthorities(roles.stream().map(SimpleGrantedAuthority::new).toList());
 
 	    // Autentica o usuário se ainda não estiver autenticado
 	    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+	    	
+	    	 // Carregue os detalhes do usuário (CustomUserDetails) a partir do username
+	    	Object userDetailsObj = userDetailsService.loadUserByUsername(username);
+	    	
+	    	if (userDetailsObj instanceof CustomUserDetails) {
+	    	    CustomUserDetails userDetails1 = (CustomUserDetails) userDetailsObj;
+	    	    // Agora você pode usar 'userDetails1' como CustomUserDetails
+	    	} else {
+	    	    // Tratar o caso onde o tipo não é CustomUserDetails
+	    	    logger.error("O tipo retornado não é CustomUserDetails.");
+	    	}
+	        
 	        List<GrantedAuthority> authorities = roles.stream()
 	                .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
 	                .collect(Collectors.toList());
@@ -113,99 +146,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	
-//	@Override
-//	protected void doFilterInternal(@NonNull HttpServletRequest request, 
-//	                                 @NonNull HttpServletResponse response,
-//	                                 @NonNull FilterChain filterChain) throws ServletException, IOException {
-//		
-//		String authHeader = request.getHeader("Authorization");
-//		
-//	    // Se não há token no header, libera a requisição para os outros filtros
-//	    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//	    	//logger.info("Token JWT não encontrado ou mal formatado.");
-//	        filterChain.doFilter(request, response);
-//	        return;
-//	    }
-//
-//	    String token = authHeader.substring(7); //Pegando somente o token sem o Bearer
-//	    Claims claims;
-//	    
-//	    try {
-//	        claims = jwtService.extractAllClaims(token);
-//	        
-//	     // Pegar os dados do token
-//	        Object clienteId = claims.get("clienteId");
-//	        Object authorities = claims.get("authorities");
-//	        
-//	     // Salvar no request
-//	        request.setAttribute("clienteId", clienteId);
-//	        request.setAttribute("authorities", authorities);
-//	        
-//	    } catch (Exception e) {
-//	        logger.error("Erro ao extrair claims do token: " + e.getMessage());
-//	        filterChain.doFilter(request, response);
-//	        return;
-//	    }
-//	    String username = claims.getSubject();
-//	    Long userId = claims.get("userId", Long.class);
-//	    Long clienteId = claims.get("clienteId", Long.class);
-//	    System.out.println("clienteId extraído do JWT: " + clienteId);
-//
-//	    request.setAttribute("userId", userId);
-//	    request.setAttribute("clienteId", clienteId);
-//	    System.out.println("clienteId adicionado ao request: " + clienteId);
-//
-//	    // Verifica se o contexto ainda não está autenticado
-//	    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//
-//	        // Extrai a lista de roles (authorities) da claim
-//	        List<String> roles = claims.get("authorities", List.class);
-//	        
-//	        if (roles == null) {
-//	            roles = new ArrayList<>(); // Se for null, inicializa uma lista vazia
-//	        }
-//
-//	        // Converte para lista de GrantedAuthority
-//	        List<GrantedAuthority> authorities = roles.stream()
-//	                .map(role -> new SimpleGrantedAuthority("ROLE_" + role)) // Adicionando o prefixo "ROLE_"
-//	                .collect(Collectors.toList());
-//
-//	        // Cria token de autenticação usando o que veio do JWT
-//	        UsernamePasswordAuthenticationToken authToken =
-//	                new UsernamePasswordAuthenticationToken(username, null, authorities);
-//
-//	        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//
-//	        // Define o contexto de segurança com o token gerado
-//	        SecurityContextHolder.getContext().setAuthentication(authToken);
-//	    }
-//	   
-//	    String role = claims.get("role", String.class);
-//	    if (role != null && role.equals("ADMIN")) {
-//	        // Logado como Funcionário
-//	        response.addHeader("Logged-As", "Logado como Funcionário: " + username);
-//	    } else {
-//	        // Caso o role seja null ou não seja ADMIN
-//	        response.addHeader("Logged-As", "Logado como Cliente: " + username);
-//	    }
-//
-//	    // Aqui você pode adicionar lógica para verificar permissões específicas para Admin ou Cliente
-//	    if (isAdminRequest(request) && !isAdmin(request)) {
-//	        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Você não tem permissão para acessar essa rota.");
-//	        return;
-//	    }
-//
-//	    if (isClienteRequest(request) && !isCliente(request, clienteId)) {
-//	    	 System.err.println("Negado! clienteId inválido ou rota não permitida.");
-//	    	 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Você não tem permissão para acessar essa rota.");
-//	        //response.sendError(HttpServletResponse.SC_FORBIDDEN, "Você não tem permissão para acessar essa rota.");
-//	        return;
-//	    }
-//
-//	    // Continua o fluxo da requisição
-//	    filterChain.doFilter(request, response);
-//	}
-	
 	// Verifica se a rota requer um usuário Admin
 	private boolean isAdminRequest(HttpServletRequest request) {
 	    return request.getRequestURI().startsWith("/admin");
@@ -224,41 +164,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	    return request.getRequestURI().startsWith("/clientes");
 	}
 
-	// Verifica se o usuário logado é o cliente correto
 	private boolean isCliente(HttpServletRequest request, Long clienteId) {
-		System.err.println();
-		 System.out.println("clienteId da URL (isCliente(HttpServletRequest request, Long clienteId)) = " + clienteId);
-		 System.out.println("HttpServletRequest (isCliente(HttpServletRequest request, Long clienteId)) = " + request);
-	    Long clienteIdToken = (Long) request.getAttribute("clienteId");
-	    
-	    if (clienteIdToken == null) {
-	        System.out.println("clienteIdToken é null!");
-	        // Se o clienteId não for encontrado, talvez seja um admin, você pode fazer a verificação conforme necessário
-	        // Exemplo: Verificar se a rota exige um cliente específico ou se é uma rota de admin
-	        // Negue o acesso ou passe normalmente, dependendo do caso
-	        System.out.println("Negado! clienteId inválido ou rota não permitida.");
-	        // Você pode lançar uma exceção ou fazer outro tipo de controle
-	    } else {
-	        // Se clienteIdToken não for null, então é um usuário com clienteId válido
-	        System.out.println("clienteIdToken extraído com sucesso: " + clienteIdToken);
-	    }
-	    
-	    if (clienteIdToken == null) {
-	        System.err.println("clienteIdToken é null!");
-	        // Pega roles para checar se é admin
-	        List<String> roles = (List<String>) request.getAttribute("authorities");
-	        
-	        if (roles != null && roles.contains("ADMIN")) {
-	            System.out.println("Acesso liberado para ADMIN");
-	            return true;
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    Object principal = auth.getPrincipal();
+
+	    if (principal instanceof CustomUserDetails) {
+	        CustomUserDetails userDetails = (CustomUserDetails) principal;
+	        Long clienteIdToken = userDetails.getClienteId();
+
+	        System.out.println("clienteId da URL: " + clienteId);
+	        System.out.println("clienteIdToken do token: " + clienteIdToken);
+
+	        // Se clienteIdToken for null, talvez seja um admin. Verificar as roles.
+	        if (clienteIdToken == null) {
+	            System.out.println("clienteIdToken é null, verificando se é ADMIN...");
+
+	            List<String> roles = (List<String>) request.getAttribute("authorities");
+	            if (roles != null && roles.contains("ADMIN")) {
+	                System.out.println("Acesso liberado para ADMIN");
+	                return true;
+	            } else {
+	                System.out.println("Acesso negado: clienteIdToken nulo e não é ADMIN");
+	                return false;
+	            }
 	        }
-	        return false; // Ou qualquer outra lógica para lidar com isso
+
+	        // Se clienteIdToken não for null, compara com clienteId
+	        return clienteIdToken.equals(clienteId);
+	    } else {
+	        System.err.println("Principal não é CustomUserDetails, é: " + principal.getClass().getName());
+	        return false;
 	    }
-	    System.out.println("clienteIdToken: " + clienteIdToken);
-	   
-	    return clienteIdToken.equals(clienteId);
 	}
-	
+}
 	
 
-}

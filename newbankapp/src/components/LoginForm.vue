@@ -40,48 +40,45 @@ const message = ref('') // Mensagem de sucesso ou erro
 const messageType = ref('') // Tipo de mensagem ('sucesso' ou 'erro')
 
 async function login() {
-
   console.log('Tentando login com:', username.value, password.value)
 
- try {
-     const response = await axios({
-       method: 'POST',
-       url: 'http://localhost:8086/login',
-       headers: {
-         'Content-Type': 'application/json',
-       },
-       data: {
-         username: username.value,
-         password: password.value
-       }
-     })
+  try {
+    // Requisição POST para a API de login
+    const response = await axios({
+      method: 'POST',
+      url: 'http://localhost:8086/login',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        username: username.value,
+        password: password.value,
+      },
+    })
 
-     console.log('Login bem-sucedido', response);
+    // Verificando se o token foi retornado
+    if (response.data && response.data.access_token) {
+      localStorage.setItem('token', response.data.access_token) // Salvando o token no localStorage
 
+      // Se o login for bem-sucedido
+      message.value = 'Login com sucesso!'
+      messageType.value = 'sucesso'
 
- // Verificando se o token foi retornado
-     if (response.data.access_token) {
-       localStorage.setItem('token', response.data.access_token) // Salvando o token no localStorage
-
-       // Se o login for bem-sucedido
-       message.value = 'Login com sucesso!'
-       messageType.value = 'sucesso'
-
-       // Redirecionar para outra rota
-       setTimeout(() => {
-         router.push('/dashboard')
-       }, 1000)
-     } else {
-       // Caso o login falhe
-       message.value = 'Usuário ou senha incorretos'
-       messageType.value = 'erro'
-     }
-   } catch (error) {
-     message.value = 'Erro ao tentar autenticar'
-     messageType.value = 'erro'
-     console.error('Erro ao tentar autenticar', error) // Para ajudar a depurar o erro
-   }
- }
+      // Redirecionar para outra rota
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1000)
+    } else {
+      // Caso o login falhe
+      message.value = 'Usuário ou senha incorretos'
+      messageType.value = 'erro'
+    }
+  } catch (error) {
+    message.value = 'Erro ao tentar autenticar'
+    messageType.value = 'erro'
+    console.error('Erro ao tentar autenticar', error) // Para ajudar a depurar o erro
+  }
+}
 </script>
 
 <style scoped>

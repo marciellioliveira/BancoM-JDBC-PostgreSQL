@@ -97,6 +97,8 @@ public class JwtService {
 		                .build()
 		                .parseClaimsJws(token)
 		                .getBody();
+		        
+		       
 		    } catch (JwtException e) {
 		        throw new RuntimeException("Token inválido ou expirado");
 		    }

@@ -26,5 +26,11 @@ public class AuthenticationResponse {
 
 	@JsonProperty("message")
 	private String message;
+	
+	// Construtor com apenas a mensagem
+    public AuthenticationResponse(String message) {
+        this.message = message;
+    }
+	
 
 }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,18 +51,20 @@ public class AuthenticationService {
 		if (repository.findByUsername(request.getUsername()).isPresent()) {
 			return new AuthenticationResponse(null, null, "O usuário já existe!");
 		}
-
 	
 		User user = new User();
 		user.setFirstName(request.getFirstName());
 		user.setLastName(request.getLastName());
 		user.setUsername(request.getUsername());
 		user.setCliente(request.getCliente());
-		user.setPassword(passwordEncoder.encode(request.getPassword()));
-
+		
+		System.err.println("1 Senha criptografada do banco (com length): "+request.getPassword().trim());
+		user.setPassword(passwordEncoder.encode(request.getPassword().trim()));
+		System.err.println("2 Senha criptografada do banco (com length): '" + user.getPassword() + "' (len: " + user.getPassword().length() + ")");
 		user.setRole(request.getRole());
 
 		user = repository.save(user);
+		
 
 		String accessToken = jwtService.generateAccessToken(user);
 		String refreshToken = jwtService.generateRefreshToken(user);
@@ -76,39 +79,88 @@ public class AuthenticationService {
 	}
 	
 	public AuthenticationResponse authenticate(AuthenticationRequestDTO request) {
+		System.err.println("Método authenticate chamado");
+		  // Aqui o Spring vai tentar autenticar com o AuthenticationManager
 		
-		System.err.println(request.getUsername() +" - "+ request.getPassword());
-	 authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-    );
-
-	 User user = repository.findByUsername(request.getUsername())
-			    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-		    System.err.println(user);
-		    // Adiciona os dados extras no token
-		    Map<String, Object> extraClaims = new HashMap<>();
-		    extraClaims.put("authorities", List.of(user.getRole().name())); // USER ou ADMIN
-		    extraClaims.put("userId", user.getId());
-
-		    System.err.println(user.getCliente());
-		    if (user.getCliente() != null) {
-		    	 System.err.println(user.getCliente());
-		        extraClaims.put("clienteId", user.getCliente().getId());
-		        System.err.println(extraClaims);
-		    }
-
-		    System.err.println("Antes de gerar o token de acesso");
-		    // Usa o método do JwtService que aceita os extraClaims
-		    String accessToken = jwtService.generateAccessToken(user, extraClaims);
-		    String refreshToken = jwtService.generateRefreshToken(user);
-		    
-		    System.err.println(accessToken);
-		    System.err.println(refreshToken);
-
-		    revokeAllTokenByUser(user);
-		    saveUserToken(accessToken, refreshToken, user);
-
-		    return new AuthenticationResponse(accessToken, refreshToken, "Login realizado com sucesso.");
+		 String accessToken = null;
+		String refreshToken  = null;
+				 
+	    try {
+	    	System.err.println("teste");
+	    	System.err.println("User: "+request.getUsername());
+	    	System.err.println("Pass: "+request.getPassword());
+	        authenticationManager.authenticate(
+	            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+	        );
+	        User user = repository.findByUsername(request.getUsername())
+				    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+			    System.err.println(user);
+			    // Adiciona os dados extras no token
+			    Map<String, Object> extraClaims = new HashMap<>();
+			    extraClaims.put("authorities", List.of(user.getRole().name())); // USER ou ADMIN
+			    extraClaims.put("userId", user.getId());
+	
+			    System.err.println(user.getCliente());
+			    if (user.getCliente() != null) {
+			    	 System.err.println(user.getCliente());
+			        extraClaims.put("clienteId", user.getCliente().getId());
+			        System.err.println(extraClaims);
+			    }
+	
+			    System.err.println("Antes de gerar o token de acesso");
+			    // Usa o método do JwtService que aceita os extraClaims
+			    accessToken = jwtService.generateAccessToken(user, extraClaims);
+			    refreshToken = jwtService.generateRefreshToken(user);
+			    
+			    System.err.println(accessToken);
+			    System.err.println(refreshToken);
+	
+			    revokeAllTokenByUser(user);
+			    saveUserToken(accessToken, refreshToken, user);
+			    
+	        System.err.println("teste 2");
+	    } catch (Exception e) {
+	    	System.err.println("Erro ao autenticar: " + e.getClass().getSimpleName());
+	        e.printStackTrace(); // imprime o stack trace completo
+	        throw new RuntimeException("Erro durante autenticação: " + e.getMessage());
+	    }
+	    
+	    // Supondo que as credenciais estejam corretas, o resto da lógica de resposta vai aqui
+	    return new AuthenticationResponse(accessToken, refreshToken, "Login realizado com sucesso.");
+		
+		
+//		System.err.println(request.getUsername() +" - "+ request.getPassword());
+//	 authenticationManager.authenticate(
+//        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+//    );
+//
+//	 User user = repository.findByUsername(request.getUsername())
+//			    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+//		    System.err.println(user);
+//		    // Adiciona os dados extras no token
+//		    Map<String, Object> extraClaims = new HashMap<>();
+//		    extraClaims.put("authorities", List.of(user.getRole().name())); // USER ou ADMIN
+//		    extraClaims.put("userId", user.getId());
+//
+//		    System.err.println(user.getCliente());
+//		    if (user.getCliente() != null) {
+//		    	 System.err.println(user.getCliente());
+//		        extraClaims.put("clienteId", user.getCliente().getId());
+//		        System.err.println(extraClaims);
+//		    }
+//
+//		    System.err.println("Antes de gerar o token de acesso");
+//		    // Usa o método do JwtService que aceita os extraClaims
+//		    String accessToken = jwtService.generateAccessToken(user, extraClaims);
+//		    String refreshToken = jwtService.generateRefreshToken(user);
+//		    
+//		    System.err.println(accessToken);
+//		    System.err.println(refreshToken);
+//
+//		    revokeAllTokenByUser(user);
+//		    saveUserToken(accessToken, refreshToken, user);
+//
+//		    return new AuthenticationResponse(accessToken, refreshToken, "Login realizado com sucesso.");
 
 	}
 
