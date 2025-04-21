@@ -1,5 +1,7 @@
 package br.com.marcielli.BancoM.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +17,7 @@ import br.com.marcielli.BancoM.entity.AuthenticationResponse;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.enuns.Role;
+import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.AuthenticationService;
 import br.com.marcielli.BancoM.service.ClienteService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +31,8 @@ public class AuthenticationController {
 	
 	@Autowired
 	private ClienteMapper clienteMapper;
+	
+	@Autowired UserRepository userRepository;
 
 	public AuthenticationController(AuthenticationService authService, ClienteService clienteService) {
 		this.authService = authService;
@@ -36,35 +41,32 @@ public class AuthenticationController {
 
 	@PostMapping("/register")
 	public ResponseEntity<AuthenticationResponse> register(@RequestBody UserRegisterDTO request) {
-
+		
+        ClienteCreateDTO clienteCreateDTO = new ClienteCreateDTO();
+        clienteCreateDTO.setNome(request.getNome());
+        clienteCreateDTO.setCpf(request.getCpf());
+        clienteCreateDTO.setCep(request.getCep());
+        clienteCreateDTO.setCidade(request.getCidade());
+        clienteCreateDTO.setEstado(request.getEstado());
+        clienteCreateDTO.setRua(request.getRua());
+        clienteCreateDTO.setNumero(request.getNumero());
+        clienteCreateDTO.setBairro(request.getBairro());
+        clienteCreateDTO.setComplemento(request.getComplemento());
+      
+		// USER ou novo ADMIN: cria usuário + cliente
+		Cliente cliente = clienteMapper.toEntity(clienteCreateDTO);
+		cliente = clienteService.save(cliente);
 		User user = new User();
 		user.setFirstName(request.getFirstName());
 	    user.setLastName(request.getLastName());
 	    user.setUsername(request.getUsername());
 	    user.setPassword(request.getPassword());
 	    user.setRole(request.getRole());
-
-	  //  Role role = request.getRole(); // <- isso evita o erro de .equals em null
-
-	  //  if (Role.USER.equals(role)) {
-	        ClienteCreateDTO clienteCreateDTO = new ClienteCreateDTO();
-	        clienteCreateDTO.setNome(request.getNome());
-	        clienteCreateDTO.setCpf(request.getCpf());
-	        clienteCreateDTO.setCep(request.getCep());
-	        clienteCreateDTO.setCidade(request.getCidade());
-	        clienteCreateDTO.setEstado(request.getEstado());
-	        clienteCreateDTO.setRua(request.getRua());
-	        clienteCreateDTO.setNumero(request.getNumero());
-	        clienteCreateDTO.setBairro(request.getBairro());
-	        clienteCreateDTO.setComplemento(request.getComplemento());
-
-	        Cliente cliente = clienteMapper.toEntity(clienteCreateDTO);
-	        cliente = clienteService.save(cliente);
-	        user.setCliente(cliente);
-	 //   }
-
+	    user.setCliente(cliente);
+	    
 	    AuthenticationResponse response = authService.register(user);
 	    return ResponseEntity.ok(response);
+		
 	}
 	
 	@PostMapping("/login")

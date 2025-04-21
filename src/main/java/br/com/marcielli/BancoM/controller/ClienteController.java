@@ -46,24 +46,21 @@ public class ClienteController {
 
 	@PostMapping("") 
 	public ResponseEntity<ClienteResponseDTO> adicionarCliente(@Valid @RequestBody ClienteCreateDTO clienteCreateDTO) { 
-		  System.out.println("Método de cadastro de cliente chamado!");
+		  
 		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
 		Cliente cliente = clienteMapper.toEntity(clienteCreateDTO);
 
-		if (cliente.getEndereco() == null) {
+		Endereco endereco = new Endereco();
+		endereco.setCep(clienteCreateDTO.getCep());
+		endereco.setEstado(clienteCreateDTO.getEstado());
+		endereco.setCidade(clienteCreateDTO.getCidade());
+		endereco.setBairro(clienteCreateDTO.getBairro());
+		endereco.setRua(clienteCreateDTO.getRua());
+		endereco.setNumero(clienteCreateDTO.getNumero());
+		endereco.setComplemento(clienteCreateDTO.getComplemento());
 
-			Endereco endereco = new Endereco();
-			endereco.setCep(clienteCreateDTO.getCep());
-			endereco.setEstado(clienteCreateDTO.getEstado());
-			endereco.setCidade(clienteCreateDTO.getCidade());
-			endereco.setBairro(clienteCreateDTO.getBairro());
-			endereco.setRua(clienteCreateDTO.getRua());
-			endereco.setNumero(clienteCreateDTO.getNumero());
-			endereco.setComplemento(clienteCreateDTO.getComplemento());
-
-			cliente.setEndereco(endereco);
-		}
-
+		cliente.setEndereco(endereco);
+		
 		// Pegar o objeto/entidade e pedir para salvar no BD usando clienteService.
 		Cliente clienteGravado = clienteService.save(cliente);
 
@@ -100,6 +97,13 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
 
 
+	}
+	
+	@GetMapping("/cpf/{cpf}")
+	public ResponseEntity<ClienteResponseDTO> buscarPorCpf(@PathVariable Long cpf) {
+	    Cliente cliente = clienteService.buscarPorCpf(cpf);
+	    if (cliente == null) return ResponseEntity.notFound().build();
+	    return ResponseEntity.ok(clienteMapper.toDTO(cliente));
 	}
 
 	@PutMapping("/{clienteId}") 

@@ -27,6 +27,16 @@
             </div>
 
             <div class="mb-3">
+                <label for="nome" class="form-label">Nome Social</label>
+                <input type="text" v-model="form.nome" id="nome" class="form-control" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="cpf" class="form-label">CPF</label>
+                <input type="text" v-model="form.cpf" id="cpf" class="form-control" required />
+              </div>
+
+            <div class="mb-3">
               <label for="username" class="form-label">Username</label>
               <input type="text" v-model="form.username" id="username" class="form-control" required />
             </div>
@@ -35,6 +45,8 @@
               <label for="password" class="form-label">Password</label>
               <input type="password" v-model="form.password" id="password" class="form-control" required />
             </div>
+
+            
 
             <!-- Role -->
             <div class="mb-3">
@@ -46,16 +58,16 @@
             </div>
 
             <!-- Campos adicionais só se for USER -->
-            <div v-if="form.role === 'USER'">
+           <!-- <div v-if="form.role === 'USER'">
               <div class="mb-3">
                 <label for="nome" class="form-label">Nome Social</label>
                 <input type="text" v-model="form.nome" id="nome" class="form-control" required />
               </div>
-              <div class="mb-3">
+               <div class="mb-3">
                 <label for="cpf" class="form-label">CPF</label>
                 <input type="text" v-model="form.cpf" id="cpf" class="form-control" required />
-              </div>
-
+              </div> -->
+             <!-- <div v-if="form.role === 'USER'">
               <div class="row">
                 <div class="col-md-4 mb-3">
                   <label for="cep" class="form-label">CEP</label>
@@ -90,7 +102,7 @@
                 <label for="complemento" class="form-label">Complemento</label>
                 <input type="text" v-model="form.complemento" id="complemento" class="form-control" />
               </div>
-            </div>
+            </div>-->
 
             <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
           </form>
@@ -116,18 +128,11 @@ const router = useRouter()
 const form = reactive({
   firstName: '',
   lastName: '',
+  nome: '',
+  cpf: '',
   username: '',
   password: '',
   role: 'USER',
-  nome: '',
-  cpf: '',
-  cep: '',
-  cidade: '',
-  estado: '',
-  rua: '',
-  numero: '',
-  bairro: '',
-  complemento: ''
 })
 
 const message = ref(''); // Mensagem de sucesso ou erro
@@ -140,20 +145,12 @@ function register() {
   // Validação de campos obrigatórios
   if (!form.firstName) errors.push('First name é obrigatório')
   if (!form.lastName) errors.push('Last name é obrigatório')
+  if (!form.nome) errors.push('Nome é obrigatório')
+  if (!form.cpf) errors.push('CPF é obrigatório')
   if (!form.username) errors.push('Username é obrigatório')
   if (!form.password) errors.push('Senha é obrigatória')
   if (!form.role) errors.push('Role é obrigatório')
 
-  if (form.role === 'USER') {
-    if (!form.nome) errors.push('Nome é obrigatório')
-    if (!form.cpf) errors.push('CPF é obrigatório')
-    if (!form.cep) errors.push('CEP é obrigatório')
-    if (!form.cidade) errors.push('Cidade é obrigatória')
-    if (!form.estado) errors.push('Estado é obrigatório')
-    if (!form.rua) errors.push('Rua é obrigatória')
-    if (!form.numero) errors.push('Número é obrigatório')
-    if (!form.bairro) errors.push('Bairro é obrigatório')
-  }
 
   if (errors.length > 0) {
     return

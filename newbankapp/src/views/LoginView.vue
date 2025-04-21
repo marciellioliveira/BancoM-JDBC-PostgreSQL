@@ -1,7 +1,5 @@
 <template>
-
     <LoginForm />
-
 </template>
 
 <script setup>

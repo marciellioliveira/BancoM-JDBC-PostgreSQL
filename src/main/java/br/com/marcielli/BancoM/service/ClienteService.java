@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.marcielli.BancoM.entity.AuthenticationResponse;
 import br.com.marcielli.BancoM.entity.Cliente;
+import br.com.marcielli.BancoM.entity.User;
+import br.com.marcielli.BancoM.enuns.Role;
 import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
@@ -20,14 +23,18 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private  AuthenticationService authService;
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente save(Cliente cliente) {
+		System.err.println("Cliente: "+cliente);
 
 		if (cliente.getCpf() != null) {
 			String novoCpf = "" + cliente.getCpf();
 			validarCpf(novoCpf);
-		}
+		}		
 
 		if (cliente.getId() != null) {
 
@@ -37,9 +44,10 @@ public class ClienteService {
 				throw new ClienteEncontradoException("Cliente já existe no banco.");
 			}
 		}
-
 		return clienteRepository.save(cliente);
 	}
+	
+	
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente update(Long id, Cliente cliente) {
@@ -91,6 +99,11 @@ public class ClienteService {
 		return clienteH2;
 	}
 
+	public Cliente buscarPorCpf(Long cpf) {
+        
+		return clienteRepository.findByCpf(cpf).orElse(null);
+    }
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean delete(Long clienteId) {
 
