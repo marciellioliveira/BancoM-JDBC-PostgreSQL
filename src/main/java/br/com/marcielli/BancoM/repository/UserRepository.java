@@ -14,8 +14,6 @@ import br.com.marcielli.BancoM.entity.User;
 public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	  Optional<User> findByUsername(String username);
-	  
-//	  Optional<Cliente> findByCpf(Long cpf);
 		 
 	  List<User> findByFirstNameContainingIgnoreCase(String firstName);
 	

@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.marcielli.BancoM.dto.ClienteListarDTO;
-import br.com.marcielli.BancoM.entity.AuthenticationResponse;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.enuns.Role;
 import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
@@ -28,8 +26,8 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	
-	@Autowired
-	private  AuthenticationService authService;
+//	@Autowired
+//	private  AuthenticationService authService;
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente save(Cliente cliente) {
@@ -75,7 +73,7 @@ public class ClienteService {
 			validarCpf(novoCpf);
 		}
 
-		clienteAtualizado.setNome(cliente.getNome());
+		//clienteAtualizado.setNome(cliente.getNome());
 		clienteAtualizado.setCpf(cliente.getCpf());
 		clienteAtualizado.getEndereco().setCep(cliente.getEndereco().getCep());
 		clienteAtualizado.getEndereco().setEstado(cliente.getEndereco().getEstado());

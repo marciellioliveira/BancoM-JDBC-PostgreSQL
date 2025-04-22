@@ -40,6 +40,7 @@ public class Cliente implements Serializable {
 	@Version
 	private Long version;
 	
+	@JsonIgnore
 	private String nome;
 	
 	private Long cpf;

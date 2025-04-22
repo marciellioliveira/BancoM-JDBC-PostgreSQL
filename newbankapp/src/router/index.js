@@ -7,6 +7,7 @@ import ClienteView from '@/views/ClienteView.vue';
 import Contas from '../views/Contas.vue';
 import Cartoes from '../views/Cartoes.vue';
 import Seguros from '../views/Seguros.vue';
+import ProcurarCliente from '@/views/Clientes/ProcurarCliente.vue';
 
 const routes = [
   {
@@ -31,34 +32,8 @@ const routes = [
       {
         path: 'clientes',
         name: 'Clientes',
-        component: Clientes,
-        children: [
-          {
-            path: 'criar',
-            name: 'Criar Clientes',
-            component: () => import('../views/Clientes/CriarCliente.vue')  
-          },
-          {
-            path: 'listar',
-            name: 'Listar Clientes',
-            component: () => import('../views/Clientes/ListarClientes.vue') 
-          },
-          {
-            path: 'procurar',
-            name: 'Procurar Cliente',
-            component: () => import('../views/Clientes/ProcurarCliente.vue') 
-          },
-          {
-            path: 'atualizar',
-            name: 'Atualizar Dados',
-            component: () => import('../views/Clientes/AtualizarCliente.vue')  
-          },
-          {
-            path: 'deletar',
-            name: 'Deletar Cliente',
-            component: () => import('../views/Clientes/DeletarCliente.vue')  
-          }
-        ]
+        component: ProcurarCliente,
+       
       },
       {
         path: 'contas',

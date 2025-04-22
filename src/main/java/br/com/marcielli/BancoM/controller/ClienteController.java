@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,16 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.dto.ClienteCreateDTO;
-import br.com.marcielli.BancoM.dto.ClienteListarDTO;
 import br.com.marcielli.BancoM.dto.ClienteMapper;
 import br.com.marcielli.BancoM.dto.ClienteResponseDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Endereco;
-import br.com.marcielli.BancoM.enuns.Role;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.service.ClienteService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,10 +37,6 @@ public class ClienteController {
 
 	@Autowired
 	private ClienteMapper clienteMapper;
-	
-	 // Constantes para facilitar a comparação usando o Enum Role
-    private static final String ROLE_ADMIN = Role.ADMIN.name();  // Usando Role enum
-    private static final String ROLE_USER = Role.USER.name();  // Usando Role enum
 
 	@PostMapping("") 
 	public ResponseEntity<ClienteResponseDTO> adicionarCliente(@Valid @RequestBody ClienteCreateDTO clienteCreateDTO) { 
@@ -80,35 +72,46 @@ public class ClienteController {
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<?> getClienteById(@PathVariable("clienteId") Long clienteId, HttpServletRequest request) {
 		
-		// Extrair o clienteId do token JWT
-        Long clienteIdDoToken = (Long) request.getAttribute("clienteId");
-
-        // Verificar se o usuário logado tem permissões
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name()));  // Usando o Enum Role
-
-        // Se for admin ou o clienteId da URL for o mesmo do clienteId no token
-        if (isAdmin || clienteId.equals(clienteIdDoToken)) {
-            Optional<Cliente> clienteById = clienteService.getClienteById(clienteId);
-            if (!clienteById.isPresent()) {
-                throw new ClienteNaoEncontradoException("Cliente não existe no banco.");
-            }
-            return ResponseEntity.ok(clienteById.get());
-        }
-
-        // Se não for admin e o clienteId não for do mesmo usuário, acesso negado
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
+		 // Recupera o cliente pelo ID fornecido
+	    Optional<Cliente> clienteById = clienteService.getClienteById(clienteId);
+	    
+	    // Se o cliente não for encontrado, lança exceção
+	    if (!clienteById.isPresent()) {
+	        throw new ClienteNaoEncontradoException("Cliente não existe no banco.");
+	    }
+	    
+	    // Retorna a resposta com o cliente encontrado
+	    return ResponseEntity.ok(clienteById.get());
+//		
+//		// Extrair o clienteId do token JWT
+//        Long clienteIdDoToken = (Long) request.getAttribute("clienteId");
+//
+//        // Verificar se o usuário logado tem permissões
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        boolean isAdmin = auth.getAuthorities().stream()
+//                .anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name()));  // Usando o Enum Role
+//
+//        // Se for admin ou o clienteId da URL for o mesmo do clienteId no token
+//        if (isAdmin || clienteId.equals(clienteIdDoToken)) {
+//            Optional<Cliente> clienteById = clienteService.getClienteById(clienteId);
+//            if (!clienteById.isPresent()) {
+//                throw new ClienteNaoEncontradoException("Cliente não existe no banco.");
+//            }
+//            return ResponseEntity.ok(clienteById.get());
+//        }
+//
+//        // Se não for admin e o clienteId não for do mesmo usuário, acesso negado
+//        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
 
 
 	}
 	
-	@GetMapping("/cpf/{cpf}")
-	public ResponseEntity<ClienteResponseDTO> buscarPorCpf(@PathVariable Long cpf) {
-	    Cliente cliente = clienteService.buscarPorCpf(cpf);
-	    if (cliente == null) return ResponseEntity.notFound().build();
-	    return ResponseEntity.ok(clienteMapper.toDTO(cliente));
-	}
+//	@GetMapping("/cpf/{cpf}")
+//	public ResponseEntity<ClienteResponseDTO> buscarPorCpf(@PathVariable Long cpf) {
+//	    Cliente cliente = clienteService.buscarPorCpf(cpf);
+//	    if (cliente == null) return ResponseEntity.notFound().build();
+//	    return ResponseEntity.ok(clienteMapper.toDTO(cliente));
+//	}
 
 	@PutMapping("/{clienteId}") 
 	public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable("clienteId") Long clienteId,
@@ -117,15 +120,15 @@ public class ClienteController {
 		
 		 // Extrair o clienteId do token JWT
         Long clienteIdDoToken = (Long) request.getAttribute("clienteId");
-        System.err.println("a");
+        System.err.println("clienteIdDoToken: "+clienteIdDoToken);
 
         // Verificar se o usuário logado tem permissões
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name()));  // Usando o Enum Role
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        boolean isAdmin = auth.getAuthorities().stream()
+//                .anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name()));  // Usando o Enum Role
 
         // Se for admin ou o clienteId da URL for o mesmo do clienteId no token
-        if (isAdmin || clienteId.equals(clienteIdDoToken)) {
+       // if (isAdmin || clienteId.equals(clienteIdDoToken)) {
             Cliente cliente = clienteMapper.toEntity(clienteCreateDTO);
 
             Endereco endereco = new Endereco();
@@ -144,10 +147,10 @@ public class ClienteController {
             ClienteResponseDTO clienteResponseDTO = clienteMapper.toDTO(clienteAtualizado);
 
             return ResponseEntity.status(HttpStatus.OK).body(clienteResponseDTO);
-        }
+     //   }
 
         // Se não for admin ou o clienteId não for do mesmo usuário, acesso negado
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+       // return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 
 	}
 	
@@ -158,12 +161,12 @@ public class ClienteController {
         Long clienteIdDoToken = (Long) request.getAttribute("clienteId");
 
         // Verificar se o usuário logado tem permissões
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name()));  // Usando o Enum Role
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        boolean isAdmin = auth.getAuthorities().stream()
+//                .anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name()));  // Usando o Enum Role
 
         // Se for admin ou o clienteId da URL for o mesmo do clienteId no token
-        if (isAdmin || clienteId.equals(clienteIdDoToken)) {
+       // if (isAdmin || clienteId.equals(clienteIdDoToken)) {
             boolean clienteDeletado = clienteService.delete(clienteId);
 
             if (clienteDeletado) {
@@ -171,33 +174,42 @@ public class ClienteController {
             } else {
                 return new ResponseEntity<String>("Dados da conta são inválidos.", HttpStatus.NOT_ACCEPTABLE);
             }
-        }
+       // }
 
         // Se não for admin ou o clienteId não for do mesmo usuário, acesso negado
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
+    //    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
 
 	}
 
 	@GetMapping("")
 	public ResponseEntity<?> getClientes(HttpServletRequest request) {
-		Long clienteIdDoToken = (Long) request.getAttribute("clienteId");
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		boolean isAdmin = auth.getAuthorities().stream()
-				.anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name())); //Vê todos os clientes e User vê somente o dele.
-
-		if (isAdmin) {
-			List<Cliente> clientes = clienteService.getAll();
-			return ResponseEntity.ok(clientes);
-		} else if (clienteIdDoToken != null) {
-			Optional<Cliente> cliente = clienteService.getClienteById(clienteIdDoToken);
-			if (cliente.isPresent()) {
-				return ResponseEntity.ok(List.of(cliente.get())); // Retorna uma lista com 1 cliente
-			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado.");
-			}
+		
+//		Long clienteIdDoToken = (Long) request.getAttribute("clienteId");
+//		System.out.println("\n\n\n----------------------------\nclienteIdDoToken (GET): " + clienteIdDoToken);
+		
+		List<Cliente> clientes = clienteService.getAll();
+//		return ResponseEntity.ok(clientes);
+		if (clientes != null) {
+			
+			return ResponseEntity.ok(clientes); // Retorna uma lista com 1 cliente
 		}
-
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado.");
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		boolean isAdmin = auth.getAuthorities().stream()
+//				.anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name())); //Vê todos os clientes e User vê somente o dele.
+//
+//		if (isAdmin) {
+//			List<Cliente> clientes = clienteService.getAll();
+//			return ResponseEntity.ok(clientes);
+//		} else if (clienteIdDoToken != null) {
+//			Optional<Cliente> cliente = clienteService.getClienteById(clienteIdDoToken);
+//			if (cliente.isPresent()) {
+//				return ResponseEntity.ok(List.of(cliente.get())); // Retorna uma lista com 1 cliente
+//			} else {
+//				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado.");
+//			}
+//		}
+//
+//		return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
 	}	
 }
