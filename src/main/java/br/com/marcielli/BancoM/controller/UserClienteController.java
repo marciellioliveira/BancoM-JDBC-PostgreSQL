@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.marcielli.BancoM.dto.security.CreateUserDTO;
+import br.com.marcielli.BancoM.dto.security.UserCreateDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Endereco;
 import br.com.marcielli.BancoM.entity.Role;
@@ -21,6 +21,7 @@ import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.RoleRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
+import br.com.marcielli.BancoM.service.UserClienteService;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -30,17 +31,20 @@ public class UserClienteController {
 	private final ClienteRepository clienteRepository;
 	private final RoleRepository roleRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	
+	private final UserClienteService clienteService;
 
-	public UserClienteController(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository) {
+	public UserClienteController(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository, UserClienteService clienteService) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.clienteRepository = clienteRepository;
+		this.clienteService = clienteService;
 	}
 	
 	@PostMapping("/users")
 	@Transactional
-	public ResponseEntity<Void> newUser(@RequestBody CreateUserDTO dto){
+	public ResponseEntity<Void> newUser(@RequestBody UserCreateDTO dto){
 		
 		var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
 		var userFromDb = userRepository.findByUsername(dto.username());
