@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.marcielli.BancoM.dto.security.CreateUserDTO;
+import br.com.marcielli.BancoM.entity.Cliente;
+import br.com.marcielli.BancoM.entity.Endereco;
 import br.com.marcielli.BancoM.entity.Role;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
@@ -25,13 +27,15 @@ import jakarta.transaction.Transactional;
 public class UserClienteController {
 
 	private final UserRepository userRepository;
+	private final ClienteRepository clienteRepository;
 	private final RoleRepository roleRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
-	public UserClienteController(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+	public UserClienteController(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.clienteRepository = clienteRepository;
 	}
 	
 	@PostMapping("/users")
@@ -50,6 +54,27 @@ public class UserClienteController {
 		user.setUsername(dto.username());
 		user.setPassword(passwordEncoder.encode(dto.password()));
 		user.setRoles(Set.of(basicRole));
+				
+		//Marcielli inseriu
+		Cliente client = new Cliente();
+		client.setNome(dto.nome());
+		client.setCpf(dto.cpf());
+	
+		Endereco address = new Endereco();
+		address.setCep(dto.cep());
+		address.setCidade(dto.cidade());
+		address.setEstado(dto.estado());
+		address.setRua(dto.rua());
+		address.setNumero(dto.numero());
+		address.setBairro(dto.bairro());
+		address.setComplemento(dto.complemento());
+		
+		client.setEndereco(address);
+		client.setUser(user);
+		user.setCliente(client);
+		
+		clienteRepository.save(client);
+		//Fecha Marcielli Inseriu
 		
 		userRepository.save(user);
 		

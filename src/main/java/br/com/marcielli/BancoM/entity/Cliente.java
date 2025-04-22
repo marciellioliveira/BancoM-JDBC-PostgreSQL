@@ -22,8 +22,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
+
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"contas", "user"}) 
