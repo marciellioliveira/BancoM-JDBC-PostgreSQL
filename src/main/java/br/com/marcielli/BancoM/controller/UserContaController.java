@@ -1,8 +1,11 @@
 package br.com.marcielli.BancoM.controller;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
+import br.com.marcielli.BancoM.dto.security.ConversionResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaPixDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaRendimentoDTO;
@@ -27,7 +31,10 @@ import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.entity.User;
+import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.repository.ContaRepositoy;
 import br.com.marcielli.BancoM.repository.UserRepository;
+import br.com.marcielli.BancoM.service.ExchangeRateService;
 import br.com.marcielli.BancoM.service.UserContaService;
 import jakarta.transaction.Transactional;
 
@@ -36,6 +43,12 @@ public class UserContaController {
 
 	private final UserContaService contaService;
 	private final UserRepository userRepository;
+	
+	@Autowired
+	private ExchangeRateService exchangeRateService;
+	
+	@Autowired
+	private ContaRepositoy contaRepositoy;
 
 	public UserContaController(UserContaService contaService, UserRepository userRepository) {
 		this.contaService = contaService;
@@ -191,20 +204,13 @@ public class UserContaController {
 			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-
+	
 	@GetMapping("/contas/{contaId}/saldo")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<String> exibirSaldo(@PathVariable("contaId") Long contaId) {
-
-		BigDecimal saldoAtual = contaService.exibirSaldo(contaId);
-
-		if (saldoAtual.compareTo(BigDecimal.ZERO) >= 0) {
-			return ResponseEntity.ok("Saldo Total: " + saldoAtual);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Dados da conta são inválidos.");
-		}
+	public Map<String, BigDecimal> exibirSaldoConvertido(@PathVariable("contaId") Long contaId) {
+	    return contaService.exibirSaldoConvertido(contaId);
 	}
-
+	
 	@PostMapping("/contas/{idContaReceber}/pix")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber,

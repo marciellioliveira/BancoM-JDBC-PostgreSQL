@@ -23,6 +23,7 @@ import br.com.marcielli.BancoM.exception.ContaNaoRealizouTransferenciaException;
 import br.com.marcielli.BancoM.exception.ContaTipoContaNaoExisteException;
 import br.com.marcielli.BancoM.exception.ContaTipoNaoPodeSerAlteradaException;
 import br.com.marcielli.BancoM.exception.SeguroNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.TaxaDeCambioException;
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 
 @ControllerAdvice
@@ -139,6 +140,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
 	}
+	
+	
+	
+	//API Cambio
+	@ExceptionHandler(TaxaDeCambioException.class)
+	private ResponseEntity<RestErrorMessage> apiTaxaCambioHandler(TaxaDeCambioException exception) {		
+		RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());		
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(respostaTratada);
+	}
+	
+	
 
 	
 	

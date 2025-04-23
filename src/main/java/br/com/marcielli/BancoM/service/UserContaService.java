@@ -2,7 +2,9 @@ package br.com.marcielli.BancoM.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
+import br.com.marcielli.BancoM.dto.security.ConversionResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaPixDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaRendimentoDTO;
@@ -38,10 +41,12 @@ public class UserContaService {
 	
 	private final ContaRepositoy contaRepository;
 	private final UserRepository userRepository;
+	private final ExchangeRateService exchangeRateService;
 
-	public UserContaService(ContaRepositoy contaRepository, UserRepository userRepository) {
+	public UserContaService(ContaRepositoy contaRepository, UserRepository userRepository, ExchangeRateService exchangeRateService) {
 		this.contaRepository = contaRepository;
 		this.userRepository = userRepository;
+		this.exchangeRateService = exchangeRateService;
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -218,6 +223,26 @@ public class UserContaService {
 		return contaSaldo.getSaldoConta();
 
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId) {
+
+	    Conta contaSaldo = contaRepository.findById(contaId)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
+
+	    BigDecimal saldo = contaSaldo.getSaldoConta();
+
+	    ConversionResponseDTO saldoUSD = exchangeRateService.convertAmount(saldo, "BRL", "USD");
+	    ConversionResponseDTO saldoEUR = exchangeRateService.convertAmount(saldo, "BRL", "EUR");
+
+	    Map<String, BigDecimal> saldosConvertidos = new HashMap<>();
+	    saldosConvertidos.put("Saldo em Real - R$", saldo);
+	    saldosConvertidos.put("Convertido de Real para Dólar - $", saldoUSD.getValorConvertido());
+	    saldosConvertidos.put("Convertido de Real para Euro - €", saldoEUR.getValorConvertido());
+
+	    return saldosConvertidos;
+	}
+
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirPIX(Long idContaReceber, UserContaPixDTO dto) {
