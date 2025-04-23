@@ -40,10 +40,10 @@ public class User{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name = "username")
+	@Column(name = "username", unique = true, nullable = false)
 	private String username;
 
-	@Column(name = "password")
+	@Column(name = "password", nullable = false)
 	private String password;
 	
 	private boolean userAtivo = true;

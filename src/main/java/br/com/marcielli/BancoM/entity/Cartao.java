@@ -11,6 +11,7 @@ import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

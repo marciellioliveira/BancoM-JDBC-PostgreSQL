@@ -67,6 +67,7 @@ public class Conta implements Serializable {
 	@JoinColumn(name = "taxasId")
 	private List<TaxaManutencao> taxas;
 
+	@Column(nullable = false)
 	private BigDecimal saldoConta;
 
 	@JsonIgnore

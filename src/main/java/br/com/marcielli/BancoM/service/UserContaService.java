@@ -21,9 +21,11 @@ import br.com.marcielli.BancoM.dto.security.UserContaRendimentoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaSaqueDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaTaxaManutencaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaTedDTO;
+import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
+import br.com.marcielli.BancoM.entity.Role;
 import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.entity.User;
@@ -38,20 +40,21 @@ import br.com.marcielli.BancoM.repository.UserRepository;
 
 @Service
 public class UserContaService {
-	
+
 	private final ContaRepositoy contaRepository;
 	private final UserRepository userRepository;
 	private final ExchangeRateService exchangeRateService;
 
-	public UserContaService(ContaRepositoy contaRepository, UserRepository userRepository, ExchangeRateService exchangeRateService) {
+	public UserContaService(ContaRepositoy contaRepository, UserRepository userRepository,
+			ExchangeRateService exchangeRateService) {
 		this.contaRepository = contaRepository;
 		this.userRepository = userRepository;
 		this.exchangeRateService = exchangeRateService;
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta save(ContaCreateDTO dto, JwtAuthenticationToken token) {
-		
+
 		//Receber o usuário que está logado e criar a conta desse usuário.
 		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
 		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
@@ -67,7 +70,7 @@ public class UserContaService {
 			Integer userId = Integer.parseInt(token.getName());
 			
 			User user = userRepository.findById(userId)
-				    .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + userId));
+				    .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado com o ID: " + userId));
 			
 			ValidacaoUsuarioUtil.verificarUsuarioAtivo(user);			
 			
@@ -99,54 +102,51 @@ public class UserContaService {
 		}
 		
 		return conta;
-		
+
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta getContasById(Long id) {
 		return contaRepository.findById(id).orElse(null);
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta update(Long id, ContaUpdateDTO dto) {
-		
+
 		Conta contaExistente = contaRepository.findById(id).orElse(null);
-		
+
 		if (contaExistente == null) {
-			 return null;
+			return null;
 		}
-		
+
 		String novoPix = dto.pixAleatorio().concat("-PIX");
-		contaExistente.setPixAleatorio(novoPix);	
+		contaExistente.setPixAleatorio(novoPix);
 		contaExistente.setStatus(true);
-		
+
 		contaRepository.save(contaExistente);
-		
+
 		return contaExistente;
-	
+
 	}
-	
-	
+
 	@Transactional
 	public boolean delete(Long id) {
-		
+
 		Conta contaExistente = contaRepository.findById(id).orElse(null);
-		
+
 		boolean isAdmin = contaExistente.getCliente().getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-	
-		if(isAdmin) {
+				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+
+		if (isAdmin) {
 			throw new ClienteNaoEncontradoException("Não é possível deletar a conta administradora do sistema.");
 		}
-		
+
 		contaExistente.setStatus(false);
-		
-	    return true;
+
+		return true;
 	}
-	
-	
-	
-	//Transferências
+
+	// Transferências
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirTED(Long idContaReceber, UserContaTedDTO dto) {
 
@@ -183,8 +183,7 @@ public class UserContaService {
 			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
 		}
 
-		Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino,
-				TipoTransferencia.TED);
+		Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
 		contaOrigem.getTransferencia().add(transferindo);
 
 		contaRepository.save(contaOrigem);
@@ -213,37 +212,36 @@ public class UserContaService {
 
 		return true;
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public BigDecimal exibirSaldo(Long contaId) {
-		
+
 		Conta contaSaldo = contaRepository.findById(contaId)
 				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
-		
+
 		return contaSaldo.getSaldoConta();
 
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId) {
 
-	    Conta contaSaldo = contaRepository.findById(contaId)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
+		Conta contaSaldo = contaRepository.findById(contaId)
+				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
 
-	    BigDecimal saldo = contaSaldo.getSaldoConta();
+		BigDecimal saldo = contaSaldo.getSaldoConta();
 
-	    ConversionResponseDTO saldoUSD = exchangeRateService.convertAmount(saldo, "BRL", "USD");
-	    ConversionResponseDTO saldoEUR = exchangeRateService.convertAmount(saldo, "BRL", "EUR");
+		ConversionResponseDTO saldoUSD = exchangeRateService.convertAmount(saldo, "BRL", "USD");
+		ConversionResponseDTO saldoEUR = exchangeRateService.convertAmount(saldo, "BRL", "EUR");
 
-	    Map<String, BigDecimal> saldosConvertidos = new HashMap<>();
-	    saldosConvertidos.put("Saldo em Real - R$", saldo);
-	    saldosConvertidos.put("Convertido de Real para Dólar - $", saldoUSD.getValorConvertido());
-	    saldosConvertidos.put("Convertido de Real para Euro - €", saldoEUR.getValorConvertido());
+		Map<String, BigDecimal> saldosConvertidos = new HashMap<>();
+		saldosConvertidos.put("Saldo em Real - R$", saldo);
+		saldosConvertidos.put("Convertido de Real para Dólar - $", saldoUSD.getValorConvertido());
+		saldosConvertidos.put("Convertido de Real para Euro - €", saldoEUR.getValorConvertido());
 
-	    return saldosConvertidos;
+		return saldosConvertidos;
 	}
 
-	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirPIX(Long idContaReceber, UserContaPixDTO dto) {
 
@@ -263,8 +261,7 @@ public class UserContaService {
 		contaOrigem.setTaxas(novaTaxa);
 		contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
 
-		Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino,
-				TipoTransferencia.PIX);
+		Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.PIX);
 		contaOrigem.getTransferencia().add(transferindo);
 
 		if (contaOrigem instanceof ContaCorrente cc) {
@@ -301,8 +298,7 @@ public class UserContaService {
 
 		return true;
 	}
-	
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirDEPOSITO(Long idContaReceber, UserContaDepositoDTO dto) {
 
@@ -335,15 +331,14 @@ public class UserContaService {
 
 		return true;
 	}
-	
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirSAQUE(Long idContaReceber, UserContaSaqueDTO dto) {
 
 		Conta conta = contaRepository.findById(idContaReceber)
 				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
-		
-		if(conta.getSaldoConta().compareTo(dto.valor()) < 0 || conta.getSaldoConta().compareTo(BigDecimal.ZERO) == 0) {
+
+		if (conta.getSaldoConta().compareTo(dto.valor()) < 0 || conta.getSaldoConta().compareTo(BigDecimal.ZERO) == 0) {
 			throw new ContaExibirSaldoErroException("Saldo insuficiente.");
 		}
 
@@ -373,72 +368,61 @@ public class UserContaService {
 
 		return true;
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta manutencaoTaxaCC(Long idConta, UserContaTaxaManutencaoDTO dto) {
 
 		Conta conta = contaRepository.findById(idConta)
 				.orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
-		
-		 if (conta.getSaldoConta() == null) {
-		        throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
-		 }
-		 
-		 if (!(conta instanceof ContaCorrente)) {
-				throw new ContaNaoEncontradaException("Taxa de manutenção só pode ser aplicada a contas correntes.");
-			}
-		 
-		 if(conta instanceof ContaCorrente cc) {				
+
+		if (conta.getSaldoConta() == null) {
+			throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
+		}
+
+		if (!(conta instanceof ContaCorrente)) {
+			throw new ContaNaoEncontradaException("Taxa de manutenção só pode ser aplicada a contas correntes.");
+		}
+
+		if (conta instanceof ContaCorrente cc) {
 			BigDecimal taxa = cc.getTaxaManutencaoMensal();
 			conta.setSaldoConta(conta.getSaldoConta().subtract(taxa));
 			TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
 			conta.setCategoriaConta(novaTaxa.getCategoria());
-		}		
-		 
-		 contaRepository.save(conta);
-		
+		}
+
+		contaRepository.save(conta);
+
 		return conta;
 	}
-	
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta rendimentoTaxaCP(Long idConta, UserContaRendimentoDTO dto) {
-		
-	    Conta conta = contaRepository.findById(idConta)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));	    
-	    
-	    if (conta.getSaldoConta() == null) {
-	        throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
-	    }
-	    
-	    if (!(conta instanceof ContaPoupanca)) {
-	        throw new ContaNaoEncontradaException("Rendimentos só podem ser aplicados a contas poupança.");
-	    }
-	    
-	    if(conta instanceof ContaPoupanca cp) {
-	    	
-	    	BigDecimal saldoAtual = conta.getSaldoConta();
-	    	BigDecimal rendimento = saldoAtual
-		            .multiply(cp.getTaxaAcrescRend())
-		            .subtract(cp.getTaxaMensal());
-	
-		    conta.setSaldoConta(saldoAtual.add(rendimento));
-		   
-		    TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
-		    conta.setCategoriaConta(novaTaxa.getCategoria());
-	    }	    
 
-	    return contaRepository.save(conta);
+		Conta conta = contaRepository.findById(idConta)
+				.orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
+
+		if (conta.getSaldoConta() == null) {
+			throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
+		}
+
+		if (!(conta instanceof ContaPoupanca)) {
+			throw new ContaNaoEncontradaException("Rendimentos só podem ser aplicados a contas poupança.");
+		}
+
+		if (conta instanceof ContaPoupanca cp) {
+
+			BigDecimal saldoAtual = conta.getSaldoConta();
+			BigDecimal rendimento = saldoAtual.multiply(cp.getTaxaAcrescRend()).subtract(cp.getTaxaMensal());
+
+			conta.setSaldoConta(saldoAtual.add(rendimento));
+
+			TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+			conta.setCategoriaConta(novaTaxa.getCategoria());
+		}
+
+		return contaRepository.save(conta);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	// Outros métodos
 	public String gerarNumeroDaConta() {
 
@@ -473,7 +457,5 @@ public class UserContaService {
 
 		return meuPix;
 	}
-	
-
 
 }

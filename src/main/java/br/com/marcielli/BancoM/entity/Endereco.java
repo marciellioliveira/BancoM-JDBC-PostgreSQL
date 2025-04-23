@@ -29,6 +29,7 @@ public class Endereco {
 	@Column(name = "id")
 	private Long id;
 	
+	
 	private String cep;
 	private String cidade;
 	private String estado;

@@ -16,7 +16,7 @@ import lombok.ToString;
 public class UserClienteResponseDTO {
 	
 	private Long id;
-	private String nome;		
+	private String nome;
 	private Long cpf;	
 	private String cep;	
 	private String cidade;	

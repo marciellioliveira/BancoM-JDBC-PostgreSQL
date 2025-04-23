@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 
 import br.com.marcielli.BancoM.enuns.TipoConta;
 
-public record ContaCreateDTO(TipoConta tipoConta, BigDecimal saldoConta) {
+public record ContaCreateDTO(Long idUsuario, TipoConta tipoConta, BigDecimal saldoConta) {
 
 }
