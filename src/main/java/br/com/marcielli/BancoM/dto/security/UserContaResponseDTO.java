@@ -1,15 +1,14 @@
 package br.com.marcielli.BancoM.dto.security;
 
 import java.math.BigDecimal;
-import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import br.com.marcielli.BancoM.entity.Cartao;
-import br.com.marcielli.BancoM.entity.Cliente;
-import br.com.marcielli.BancoM.entity.TaxaManutencao;
-import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoConta;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,18 +22,31 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonInclude(JsonInclude.Include.NON_NULL) 
 public class UserContaResponseDTO {
 
 	private Long id;
+	
+	@Enumerated(EnumType.STRING)
 	private TipoConta tipoConta;
+	
+	@Enumerated(EnumType.STRING)
 	private CategoriaConta categoriaConta;
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private BigDecimal taxaManutencaoMensal;
-	private BigDecimal taxaAcrescRend;
-	private BigDecimal taxaMensal;
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
+	private BigDecimal taxaAcrescRend;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
+	private BigDecimal taxaMensal;		
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private BigDecimal saldoConta;	
+	
 	private String numeroConta;	
+	
 	private String pixAleatorio;
 	
 	private Boolean status;

@@ -1,5 +1,7 @@
 package br.com.marcielli.BancoM.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import br.com.marcielli.BancoM.enuns.TipoCartao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonInclude(JsonInclude.Include.NON_NULL) 
 public class CartaoCreateDTO {
 
 	@NotNull(message = "O id do cliente deve ser informado.")
@@ -24,7 +27,6 @@ public class CartaoCreateDTO {
 	@NotNull(message = "O id da conta deve ser informado.")
 	private Long idConta;	
 	
-	//@NotBlank(message = "O tipo de cartão (Crédito ou Débito) deve ser informado.")
 	@NotNull(message = "O tipo de cartão (Crédito ou Débito) deve ser informado.")
 	private TipoCartao tipoCartao;
 	

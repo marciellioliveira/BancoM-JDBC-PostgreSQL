@@ -2,7 +2,8 @@ package br.com.marcielli.BancoM.dto.security;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
@@ -22,15 +23,29 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonInclude(JsonInclude.Include.NON_NULL) 
 public class UserCartaoResponseDTO {
 
 	private Long id;	
+	
+	@Enumerated(EnumType.STRING)
 	private TipoCartao tipoCartao;
+	
 	private String numeroCartao;
-	private boolean status;
+	
+	private Boolean status;
+	
 	public String senha;
+	
+	@Enumerated(EnumType.STRING)
 	private TipoConta tipoConta;
+	
+	@Enumerated(EnumType.STRING)
 	private CategoriaConta categoriaConta;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private BigDecimal limiteCreditoPreAprovado;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private BigDecimal limiteDiarioTransacao;
 }

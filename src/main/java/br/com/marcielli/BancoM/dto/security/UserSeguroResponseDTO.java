@@ -2,6 +2,9 @@ package br.com.marcielli.BancoM.dto.security;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import br.com.marcielli.BancoM.enuns.TipoSeguro;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,12 +21,20 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonInclude(JsonInclude.Include.NON_NULL) 
 public class UserSeguroResponseDTO {
 	
 	private Long id;
+	
+	@Enumerated(EnumType.STRING)
     private TipoSeguro tipo;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal valorMensal;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal valorApolice;
+    
     private Boolean ativo;
 
 }

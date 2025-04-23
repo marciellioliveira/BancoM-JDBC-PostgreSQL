@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -47,11 +48,13 @@ public class UserCartaoService {
 	private final CartaoRepository cartaoRepository;
 	private final ContaRepositoy contaRepository;
 	private final UserRepository userRepository;
+	private final BCryptPasswordEncoder passwordEncoder;
 	
-	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository, ContaRepositoy contaRepository) {
+	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository, ContaRepositoy contaRepository, BCryptPasswordEncoder passwordEncoder) {
 		this.cartaoRepository = cartaoRepository;
 		this.userRepository = userRepository;
 		this.contaRepository = contaRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -88,7 +91,10 @@ public class UserCartaoService {
 				cartao = new CartaoCredito();
 				
 				cartao.setTipoCartao(dto.tipoCartao());
-				cartao.setSenha(dto.senha());
+				
+				//user.setPassword(passwordEncoder.encode(cliente.password()));
+				//cartao.setSenha(dto.senha());
+				cartao.setSenha(passwordEncoder.encode(dto.senha()));
 				cartao.setNumeroCartao(numeroCartao);
 				cartao.setStatus(true);	
 				cartoes.add(cartao);
