@@ -63,6 +63,7 @@ public class UserClienteController {
 	}
 	
 	@GetMapping("/users/{id}")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
 	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id) {
 		
@@ -98,6 +99,7 @@ public class UserClienteController {
 	}
 	
 	@PutMapping("/users/{id}") 
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
 	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
 
@@ -106,9 +108,6 @@ public class UserClienteController {
 		if (clienteUnico == null || clienteUnico.getUser() == null) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
 	    }
-		
-		
-		
 		boolean isAdmin = clienteUnico.getUser().getRoles().stream()
 			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
 		
@@ -136,6 +135,7 @@ public class UserClienteController {
 	}
 	
 	@DeleteMapping("/users/{id}")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
 

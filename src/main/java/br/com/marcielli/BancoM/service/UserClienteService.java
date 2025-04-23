@@ -47,7 +47,7 @@ public class UserClienteService {
 		var user = new User();
 		user.setUsername(cliente.username());
 		user.setPassword(passwordEncoder.encode(cliente.password()));
-		user.setRoles(Set.of(basicRole));
+		user.setRoles(Set.of(basicRole)); //Preciso para saber se ele é basic e poder acessar certas paginas
 				
 		Cliente client = new Cliente();
 		client.setNome(cliente.nome());
@@ -135,7 +135,11 @@ public class UserClienteService {
 			throw new ClienteNaoEncontradoException("Não é possível deletar o admin do sistema.");
 		}
 		
-		userRepository.deleteById(clienteExistente.getUser().getId());
+		
+		clienteExistente.setClienteAtivo(false);
+		clienteExistente.getUser().setUserAtivo(false);
+		
+		//userRepository.deleteById(clienteExistente.getUser().getId());
 		
 	    return true;
 	}

@@ -12,11 +12,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
+import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
+import br.com.marcielli.BancoM.dto.security.UserCreateDTO;
+import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.entity.TaxaManutencao;
+import br.com.marcielli.BancoM.entity.User;
+import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;
 import br.com.marcielli.BancoM.enuns.TipoConta;
+import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
+import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
 import br.com.marcielli.BancoM.repository.UserRepository;
 
@@ -35,7 +42,6 @@ public class UserContaService {
 	public Conta save(ContaCreateDTO dto, JwtAuthenticationToken token) {
 		
 		//Receber o usuário que está logado e criar a conta desse usuário.
-		Integer userId = null;
 		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
 		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
 		novaTaxa.add(taxa);
@@ -47,39 +53,86 @@ public class UserContaService {
 		Conta conta = null;
 		
 		try {
-			userId = Integer.parseInt(token.getName());
+			Integer userId = Integer.parseInt(token.getName());
+			
+			User user = userRepository.findById(userId)
+				    .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + userId));
+			
+			ValidacaoUsuarioUtil.verificarUsuarioAtivo(user);			
+			
+			if (dto.tipoConta() == TipoConta.CORRENTE) {
+				
+				conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+				conta.setTaxas(novaTaxa);
+				String numContaCorrente = numeroConta.concat("-CC");
+				conta.setNumeroConta(numContaCorrente);
+				
+			} else if (dto.tipoConta() == TipoConta.POUPANCA) {
+				
+				conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
+				conta.setTaxas(novaTaxa);
+				String numContaPoupanca = numeroConta.concat("-PP");
+				conta.setNumeroConta(numContaPoupanca);
+			}
+			
+			conta.setPixAleatorio(novoPix);
+			conta.setCategoriaConta(taxa.getCategoria());
+			conta.setCliente(user.getCliente());
+			conta.setTipoConta(dto.tipoConta());
+			conta.setSaldoConta(dto.saldoConta());
+			conta.setStatus(true);
+			
 		} catch (NumberFormatException e) {			
 			System.out.println("ID inválido no token: " + token.getName());
 		}
-		
-		var user = userRepository.findById(userId);
-		
-		if (dto.tipoConta() == TipoConta.CORRENTE) {
-			
-			conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
-			conta.setTaxas(novaTaxa);
-			String numContaCorrente = numeroConta.concat("-CC");
-			conta.setNumeroConta(numContaCorrente);
-			
-		} else if (dto.tipoConta() == TipoConta.POUPANCA) {
-			
-			conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
-			conta.setTaxas(novaTaxa);
-			String numContaPoupanca = numeroConta.concat("-PP");
-			conta.setNumeroConta(numContaPoupanca);
-		}
-		
-		conta.setPixAleatorio(novoPix);
-		conta.setCategoriaConta(taxa.getCategoria());
-		conta.setCliente(user.get().getCliente());
-		conta.setTipoConta(dto.tipoConta());
-		conta.setSaldoConta(dto.saldoConta());
-		conta.setStatus(true);
 		
 		contaRepository.save(conta);
 		
 		return conta;
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Conta getContasById(Long id) {
+		return contaRepository.findById(id).orElse(null);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Conta update(Long id, ContaUpdateDTO dto) {
+		
+		Conta contaExistente = contaRepository.findById(id).orElse(null);
+		
+		if (contaExistente == null) {
+			 return null;
+		}
+		
+		contaExistente.setPixAleatorio(dto.pixAleatorio());		
+		
+		contaRepository.save(contaExistente);
+		
+		return contaExistente;
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// Outros métodos
 	public String gerarNumeroDaConta() {
@@ -115,6 +168,7 @@ public class UserContaService {
 
 		return meuPix;
 	}
+	
 
 
 }

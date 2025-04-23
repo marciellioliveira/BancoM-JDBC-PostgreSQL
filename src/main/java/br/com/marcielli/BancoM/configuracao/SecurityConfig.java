@@ -51,7 +51,7 @@ public class SecurityConfig { //Passo 1
 				.requestMatchers("/h2-console/**").permitAll() //Permite H2
 				.requestMatchers(HttpMethod.POST,"/users").permitAll()
 				.requestMatchers(HttpMethod.POST,"/login").permitAll() 
-				
+				.requestMatchers(HttpMethod.POST,"/contas").permitAll() 
 				.anyRequest().authenticated())
 				.csrf(csrf -> csrf
 						.ignoringRequestMatchers("/h2-console/**") // ignora CSRF no H2

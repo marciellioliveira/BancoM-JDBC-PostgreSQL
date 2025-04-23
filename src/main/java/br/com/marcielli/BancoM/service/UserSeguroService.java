@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.marcielli.BancoM.dto.security.SeguroCreateDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.Cliente;
+import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Seguro;
 import br.com.marcielli.BancoM.entity.User;
+import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoSeguro;
 import br.com.marcielli.BancoM.repository.SeguroRepository;
@@ -35,34 +37,34 @@ public class UserSeguroService {
 		Integer userId = null;
 		 BigDecimal valorMensal = BigDecimal.ZERO;
 	     BigDecimal valorApolice = BigDecimal.ZERO;
-		
+	     Seguro seguro = new Seguro();
+	     
 		try {
 			userId = Integer.parseInt(token.getName());
 			
+			User user = userRepository.findById(userId)
+				    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 			
-		} catch (NumberFormatException e) {			
-			System.out.println("ID inválido no token: " + token.getName());
-		}
-		
-		var user = userRepository.findById(userId);	
-		
-		Optional<Cartao> cartaoDaConta = user
-			    .map(User::getCliente)
-			    .map(Cliente::getContas)
-			    .flatMap(contas -> contas.stream()
-			        .flatMap(conta -> conta.getCartoes().stream())
-			        .filter(cartao -> cartao.getId().equals(dto.idCartao()))
-			        .findFirst());
-		
-		Seguro seguro = new Seguro();
-		seguro.setTipo(dto.tipoSeguro());
-		seguro.setAtivo(true);
-		
-		if(cartaoDaConta.isPresent()) {
+			ValidacaoUsuarioUtil.verificarUsuarioAtivo(user);	
 			
-			Cartao cartaodaContaDoUser = cartaoDaConta.get();
+			Cliente cliente = user.getCliente();
+			if (cliente == null) {
+			    throw new RuntimeException("Cliente não associado ao cartão");
+			}
 			
-			if(dto.tipoSeguro() == TipoSeguro.SEGURO_VIAGEM && cartaodaContaDoUser.getCategoriaConta() == CategoriaConta.PREMIUM) {
+			
+			Cartao cartaoDaConta = cliente.getContas().stream()
+				    .flatMap(conta -> conta.getCartoes().stream())
+				    .filter(c -> c.getId().equals(dto.idCartao()))
+				    .findFirst()
+				    .orElseThrow(() -> new RuntimeException("Cartão não pertence a este cliente"));
+			
+			
+			seguro.setTipo(dto.tipoSeguro());
+			seguro.setAtivo(true);
+			
+				
+			if(dto.tipoSeguro() == TipoSeguro.SEGURO_VIAGEM && cartaoDaConta.getCategoriaConta() == CategoriaConta.PREMIUM) {
 				 valorMensal = BigDecimal.ZERO;
 			} else {
 				 valorMensal = new BigDecimal("50.00");
@@ -72,11 +74,48 @@ public class UserSeguroService {
 				valorApolice = new BigDecimal("5000.00");
 			}
 			
-			seguro.setCartao(cartaodaContaDoUser);
+			seguro.setCartao(cartaoDaConta);
+				
 			
-		} else {
-			throw new RuntimeException("Cartão não está vinculado a uma conta.");
+			
+			
+		} catch (NumberFormatException e) {			
+			System.out.println("ID inválido no token: " + token.getName());
 		}
+		
+//		var user = userRepository.findById(userId);	
+//		
+//		Optional<Cartao> cartaoDaConta = user
+//			    .map(User::getCliente)
+//			    .map(Cliente::getContas)
+//			    .flatMap(contas -> contas.stream()
+//			        .flatMap(conta -> conta.getCartoes().stream())
+//			        .filter(cartao -> cartao.getId().equals(dto.idCartao()))
+//			        .findFirst());
+//		
+//		Seguro seguro = new Seguro();
+//		seguro.setTipo(dto.tipoSeguro());
+//		seguro.setAtivo(true);
+//		
+//		if(cartaoDaConta.isPresent()) {
+//			
+//			Cartao cartaodaContaDoUser = cartaoDaConta.get();
+//			
+//			if(dto.tipoSeguro() == TipoSeguro.SEGURO_VIAGEM && cartaodaContaDoUser.getCategoriaConta() == CategoriaConta.PREMIUM) {
+//				 valorMensal = BigDecimal.ZERO;
+//			} else {
+//				 valorMensal = new BigDecimal("50.00");
+//			}
+//			
+//			if(dto.tipoSeguro() == TipoSeguro.SEGURO_FRAUDE) {
+//				valorApolice = new BigDecimal("5000.00");
+//			}
+//			
+//			seguro.setCartao(cartaodaContaDoUser);
+//			
+//		} else {
+//			throw new RuntimeException("Cartão não está vinculado a uma conta.");
+//		}
 
         seguroRepository.save(seguro);
 		

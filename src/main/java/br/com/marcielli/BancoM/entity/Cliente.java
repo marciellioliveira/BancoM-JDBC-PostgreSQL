@@ -46,6 +46,8 @@ public class Cliente implements Serializable {
 	
 	private Long cpf;
 	
+	private boolean clienteAtivo = true;
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "enderecoId", referencedColumnName = "id")
 	@JsonManagedReference

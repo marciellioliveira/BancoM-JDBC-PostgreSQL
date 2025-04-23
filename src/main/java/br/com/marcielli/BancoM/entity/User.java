@@ -46,6 +46,8 @@ public class User{
 	@Column(name = "password")
 	private String password;
 	
+	private boolean userAtivo = true;
+	
 	//Criando uma tabela intermediária para o Id do usuário como userId e o id da role como roleId
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) 
 	@JoinTable(name = "tb_users_roles", joinColumns = @JoinColumn(referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(referencedColumnName = "role_id"))
