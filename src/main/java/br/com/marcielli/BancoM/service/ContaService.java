@@ -132,72 +132,72 @@ public class ContaService {
 //
 //	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean transferirTED(Long idContaReceber, ContaCreateTedDTO dto) {
-
-		Conta contaOrigem = contaRepository.findById(dto.getIdContaOrigem())
-				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
-
-		Conta contaDestino = contaRepository.findById(idContaReceber)
-				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
-
-		// Verificar se o saldo da conta origem é suficiente para a transferência
-		if (contaOrigem.getSaldoConta().compareTo(dto.getValor()) < 0) {
-			throw new ContaExibirSaldoErroException("Saldo insuficiente na conta origem.");
-		}
-
-		List<Conta> contasTransferidas = new ArrayList<Conta>();
-
-		contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));
-		contasTransferidas.add(contaOrigem);
-
-		TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
-
-		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-		novaTaxa.add(taxaContaOrigem);
-
-		contaOrigem.setTaxas(novaTaxa);
-		contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
-
-		if (contaOrigem instanceof ContaCorrente cc) {
-			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
-		}
-
-		if (contaOrigem instanceof ContaPoupanca cp) {
-			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
-		}
-
-		Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino,
-				TipoTransferencia.TED);
-		contaOrigem.getTransferencia().add(transferindo);
-
-		contaRepository.save(contaOrigem);
-
-		contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.getValor()));
-		contasTransferidas.add(contaDestino);
-
-		TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
-
-		List<TaxaManutencao> novaTaxa2 = new ArrayList<TaxaManutencao>();
-		novaTaxa2.add(taxaContaDestino);
-
-		contaDestino.setTaxas(novaTaxa2);
-		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
-
-		if (contaDestino instanceof ContaCorrente cc) {
-			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
-		}
-
-		if (contaDestino instanceof ContaPoupanca cp) {
-			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
-		}
-
-		contaRepository.save(contaDestino);
-
-		return true;
-	}
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public boolean transferirTED(Long idContaReceber, ContaCreateTedDTO dto) {
+//
+//		Conta contaOrigem = contaRepository.findById(dto.getIdContaOrigem())
+//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
+//
+//		Conta contaDestino = contaRepository.findById(idContaReceber)
+//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
+//
+//		// Verificar se o saldo da conta origem é suficiente para a transferência
+//		if (contaOrigem.getSaldoConta().compareTo(dto.getValor()) < 0) {
+//			throw new ContaExibirSaldoErroException("Saldo insuficiente na conta origem.");
+//		}
+//
+//		List<Conta> contasTransferidas = new ArrayList<Conta>();
+//
+//		contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.getValor()));
+//		contasTransferidas.add(contaOrigem);
+//
+//		TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
+//
+//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+//		novaTaxa.add(taxaContaOrigem);
+//
+//		contaOrigem.setTaxas(novaTaxa);
+//		contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
+//
+//		if (contaOrigem instanceof ContaCorrente cc) {
+//			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+//		}
+//
+//		if (contaOrigem instanceof ContaPoupanca cp) {
+//			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
+//			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
+//		}
+//
+//		Transferencia transferindo = new Transferencia(contaOrigem, dto.getValor(), contaDestino,
+//				TipoTransferencia.TED);
+//		contaOrigem.getTransferencia().add(transferindo);
+//
+//		contaRepository.save(contaOrigem);
+//
+//		contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.getValor()));
+//		contasTransferidas.add(contaDestino);
+//
+//		TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+//
+//		List<TaxaManutencao> novaTaxa2 = new ArrayList<TaxaManutencao>();
+//		novaTaxa2.add(taxaContaDestino);
+//
+//		contaDestino.setTaxas(novaTaxa2);
+//		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
+//
+//		if (contaDestino instanceof ContaCorrente cc) {
+//			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+//		}
+//
+//		if (contaDestino instanceof ContaPoupanca cp) {
+//			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
+//			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
+//		}
+//
+//		contaRepository.save(contaDestino);
+//
+//		return true;
+//	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirPIX(Long idContaReceber, ContaCreatePixDTO dto) {

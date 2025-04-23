@@ -16,10 +16,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserClienteResponseDTO;
+import br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO;
+import br.com.marcielli.BancoM.dto.security.UserContaPixDTO;
+import br.com.marcielli.BancoM.dto.security.UserContaRendimentoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaResponseDTO;
+import br.com.marcielli.BancoM.dto.security.UserContaSaqueDTO;
+import br.com.marcielli.BancoM.dto.security.UserContaTaxaManutencaoDTO;
+import br.com.marcielli.BancoM.dto.security.UserContaTedDTO;
 import br.com.marcielli.BancoM.dto.security.UserCreateDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
@@ -158,4 +165,150 @@ public class UserContaController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
 	    }
 	}
+	
+	
+	//Transferências
+	@PostMapping("/contas/{idContaReceber}/transferencia")
+	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,  @RequestBody UserContaTedDTO dto) {
+		
+		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto);
+		
+		if(tedRealizada) {
+			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}	
+	
+	@GetMapping("/contas/{contaId}/saldo") 
+	public ResponseEntity<String> exibirSaldo(@PathVariable("contaId") Long contaId) {
+		
+	    BigDecimal saldoAtual = contaService.exibirSaldo(contaId);
+	
+	    if (saldoAtual.compareTo(BigDecimal.ZERO) >= 0) {
+	        return ResponseEntity.ok("Saldo Total: " + saldoAtual);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Dados da conta são inválidos.");
+	    }
+	}
+	
+	@PostMapping("/{idContaReceber}/pix") 
+	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaPixDTO dto) {
+		
+		boolean pixRealizado = contaService.transferirPIX(idContaReceber, dto);
+		
+		if(pixRealizado) {
+			return new ResponseEntity<String>("Pix realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do pix são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	
+	@PostMapping("/{idContaReceber}/deposito") 
+	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaDepositoDTO dto) {
+		
+		boolean depositoRealizado = contaService.transferirDEPOSITO(idContaReceber, dto);
+		
+		if(depositoRealizado) {
+			return new ResponseEntity<String>("Depósito realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do depósito são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	@PostMapping("/{idContaReceber}/saque") 
+	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaSaqueDTO dto) {
+		
+		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, dto);
+		
+		if(saqueRealizado) {
+			return new ResponseEntity<String>("Saque realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do saque são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	@PutMapping("/{idConta}/manutencao") 
+	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, @RequestBody UserContaTaxaManutencaoDTO dto) {
+	
+		Conta manutencaoCCRealizada = contaService.manutencaoTaxaCC(idConta, dto);
+		
+		if(manutencaoCCRealizada != null) {
+			return new ResponseEntity<String>("Taxas aplicadas com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Taxas inválidas.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	@PutMapping("/{idConta}/rendimentos") 
+	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta, @RequestBody UserContaRendimentoDTO dto) {
+		
+		Conta manutencaoCPRealizada = contaService.rendimentoTaxaCP(idConta, dto);
+		
+		if(manutencaoCPRealizada != null) {
+			return new ResponseEntity<String>("Taxas aplicadas com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Taxas inválidas.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	    
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
