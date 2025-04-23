@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -142,9 +143,20 @@ public class UserContaController {
 	}
 	
 	
-	
-	
-	
+	@DeleteMapping("/contas/{id}")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@Transactional
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
+
+	    boolean conta = contaService.delete(id);
+
+	    if (conta) {
+	        return ResponseEntity.status(HttpStatus.OK).body("Conta deletado com sucesso!");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
+	    }
+	}
+
 	
 	
 	

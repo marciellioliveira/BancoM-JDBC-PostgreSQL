@@ -105,7 +105,8 @@ public class UserContaService {
 			 return null;
 		}
 		
-		contaExistente.setPixAleatorio(dto.pixAleatorio());		
+		String novoPix = dto.pixAleatorio().concat("-PIX");
+		contaExistente.setPixAleatorio(novoPix);		
 		
 		contaRepository.save(contaExistente);
 		
@@ -114,7 +115,22 @@ public class UserContaService {
 	}
 	
 	
+	@Transactional
+	public boolean delete(Long id) {
+		
+		Conta contaExistente = contaRepository.findById(id).orElse(null);
+		
+		boolean isAdmin = contaExistente.getCliente().getUser().getRoles().stream()
+			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
 	
+		if(isAdmin) {
+			throw new ClienteNaoEncontradoException("Não é possível deletar a conta administradora do sistema.");
+		}
+		
+		contaExistente.setStatus(false);
+		
+	    return true;
+	}
 	
 	
 	
