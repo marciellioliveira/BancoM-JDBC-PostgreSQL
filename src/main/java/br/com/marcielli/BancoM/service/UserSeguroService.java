@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroCreateDTO;
+import br.com.marcielli.BancoM.dto.security.SeguroUpdateDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
@@ -17,6 +19,7 @@ import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoSeguro;
+import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.repository.SeguroRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
 
@@ -82,44 +85,66 @@ public class UserSeguroService {
 		} catch (NumberFormatException e) {			
 			System.out.println("ID inválido no token: " + token.getName());
 		}
-		
-//		var user = userRepository.findById(userId);	
-//		
-//		Optional<Cartao> cartaoDaConta = user
-//			    .map(User::getCliente)
-//			    .map(Cliente::getContas)
-//			    .flatMap(contas -> contas.stream()
-//			        .flatMap(conta -> conta.getCartoes().stream())
-//			        .filter(cartao -> cartao.getId().equals(dto.idCartao()))
-//			        .findFirst());
-//		
-//		Seguro seguro = new Seguro();
-//		seguro.setTipo(dto.tipoSeguro());
-//		seguro.setAtivo(true);
-//		
-//		if(cartaoDaConta.isPresent()) {
-//			
-//			Cartao cartaodaContaDoUser = cartaoDaConta.get();
-//			
-//			if(dto.tipoSeguro() == TipoSeguro.SEGURO_VIAGEM && cartaodaContaDoUser.getCategoriaConta() == CategoriaConta.PREMIUM) {
-//				 valorMensal = BigDecimal.ZERO;
-//			} else {
-//				 valorMensal = new BigDecimal("50.00");
-//			}
-//			
-//			if(dto.tipoSeguro() == TipoSeguro.SEGURO_FRAUDE) {
-//				valorApolice = new BigDecimal("5000.00");
-//			}
-//			
-//			seguro.setCartao(cartaodaContaDoUser);
-//			
-//		} else {
-//			throw new RuntimeException("Cartão não está vinculado a uma conta.");
-//		}
-
         seguroRepository.save(seguro);
 		
 		return seguro;
 	}
+	
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Seguro getSegurosById(Long id) {
+		return seguroRepository.findById(id).orElse(null);
+	}
+	
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Seguro update(Long id, SeguroUpdateDTO dto) {
+		
+		Seguro seguroExiste = seguroRepository.findById(id).orElse(null);
+		
+		if (seguroExiste == null) {
+			 return null;
+		}
+		
+		seguroExiste.setTipo(dto.tipo());
+		seguroRepository.save(seguroExiste);
+		return seguroExiste;
+	
+	}
+	
+	
+	@Transactional
+	public boolean delete(Long id) {
+		
+		Seguro seguroExiste = seguroRepository.findById(id).orElse(null);
+		
+		boolean isAdmin = seguroExiste.getCartao().getConta().getCliente().getUser().getRoles().stream()
+			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+	
+		if(isAdmin) {
+			throw new ClienteNaoEncontradoException("Não é possível deletar dados do administrador do sistema.");
+		}
+		
+		seguroExiste.setAtivo(false);
+		
+	    return true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 

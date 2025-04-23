@@ -40,97 +40,97 @@ public class ContaService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Conta save(Conta dto) {
-
-		Cliente cliente = clienteRepository.findById(dto.getId())
-				.orElseThrow(() -> new ContaExisteNoBancoException("A conta já existe no banco."));
-
-		dto.setCliente(cliente);
-
-		TaxaManutencao taxa = new TaxaManutencao(dto.getSaldoConta(), dto.getTipoConta());
-
-		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-		novaTaxa.add(taxa);
-
-		String numeroConta = gerarNumeroDaConta();
-		String numeroPix = gerarPixAleatorio();
-		String novoPix = numeroPix.concat("-PIX");
-
-		Conta novaConta = null;
-
-		if (dto.getTipoConta() == TipoConta.CORRENTE) {
-			novaConta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
-			novaConta.setTaxas(novaTaxa);
-
-			String numContaCorrente = numeroConta.concat("-CC");
-			novaConta.setNumeroConta(numContaCorrente);
-		} else if (dto.getTipoConta() == TipoConta.POUPANCA) {
-			novaConta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
-			novaConta.setTaxas(novaTaxa);
-
-			String numContaPoupanca = numeroConta.concat("-PP");
-			novaConta.setNumeroConta(numContaPoupanca);
-
-		}
-
-		novaConta.setCliente(cliente);
-		novaConta.setSaldoConta(dto.getSaldoConta());
-		novaConta.setCategoriaConta(taxa.getCategoria());
-		novaConta.setTipoConta(dto.getTipoConta());
-		novaConta.setPixAleatorio(novoPix);
-		novaConta.setStatus(true);
-
-		return contaRepository.save(novaConta);
-	}
-
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Conta update(Long idContaParaAtualizar, ContaUpdatePixDTO dto) {
-
-		Conta conta = contaRepository.findById(idContaParaAtualizar).orElseThrow(
-				() -> new ContaNaoEncontradaException("A conta não pode ser atualizada porque não existe no banco."));
-
-		conta.setPixAleatorio(dto.getPix());
-
-		return contaRepository.save(conta);
-
-	}
-
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<Conta> getAll() {
-
-		List<Conta> contasH2 = contaRepository.findAll();
-
-		if (contasH2.size() <= 0) {
-			throw new ContaNaoEncontradaException("Não existem contas cadastradas no banco.");
-		}
-
-		return contasH2;
-	}
-
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Optional<Conta> getContaById(Long id) {
-
-		Optional<Conta> contaH2 = contaRepository.findById(id);
-
-		if (!contaH2.isPresent()) {
-			throw new ContaNaoEncontradaException("Conta não encontrada.");
-		}
-
-		return contaH2;
-	}
-
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean deleteConta(Long contaId) {
-
-		Conta conta = contaRepository.findById(contaId)
-				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
-
-		contaRepository.deleteById(conta.getId());
-
-		return true;
-
-	}
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Conta save(Conta dto) {
+//
+//		Cliente cliente = clienteRepository.findById(dto.getId())
+//				.orElseThrow(() -> new ContaExisteNoBancoException("A conta já existe no banco."));
+//
+//		dto.setCliente(cliente);
+//
+//		TaxaManutencao taxa = new TaxaManutencao(dto.getSaldoConta(), dto.getTipoConta());
+//
+//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+//		novaTaxa.add(taxa);
+//
+//		String numeroConta = gerarNumeroDaConta();
+//		String numeroPix = gerarPixAleatorio();
+//		String novoPix = numeroPix.concat("-PIX");
+//
+//		Conta novaConta = null;
+//
+//		if (dto.getTipoConta() == TipoConta.CORRENTE) {
+//			novaConta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+//			novaConta.setTaxas(novaTaxa);
+//
+//			String numContaCorrente = numeroConta.concat("-CC");
+//			novaConta.setNumeroConta(numContaCorrente);
+//		} else if (dto.getTipoConta() == TipoConta.POUPANCA) {
+//			novaConta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
+//			novaConta.setTaxas(novaTaxa);
+//
+//			String numContaPoupanca = numeroConta.concat("-PP");
+//			novaConta.setNumeroConta(numContaPoupanca);
+//
+//		}
+//
+//		novaConta.setCliente(cliente);
+//		novaConta.setSaldoConta(dto.getSaldoConta());
+//		novaConta.setCategoriaConta(taxa.getCategoria());
+//		novaConta.setTipoConta(dto.getTipoConta());
+//		novaConta.setPixAleatorio(novoPix);
+//		novaConta.setStatus(true);
+//
+//		return contaRepository.save(novaConta);
+//	}
+//
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Conta update(Long idContaParaAtualizar, ContaUpdatePixDTO dto) {
+//
+//		Conta conta = contaRepository.findById(idContaParaAtualizar).orElseThrow(
+//				() -> new ContaNaoEncontradaException("A conta não pode ser atualizada porque não existe no banco."));
+//
+//		conta.setPixAleatorio(dto.getPix());
+//
+//		return contaRepository.save(conta);
+//
+//	}
+//
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public List<Conta> getAll() {
+//
+//		List<Conta> contasH2 = contaRepository.findAll();
+//
+//		if (contasH2.size() <= 0) {
+//			throw new ContaNaoEncontradaException("Não existem contas cadastradas no banco.");
+//		}
+//
+//		return contasH2;
+//	}
+//
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Optional<Conta> getContaById(Long id) {
+//
+//		Optional<Conta> contaH2 = contaRepository.findById(id);
+//
+//		if (!contaH2.isPresent()) {
+//			throw new ContaNaoEncontradaException("Conta não encontrada.");
+//		}
+//
+//		return contaH2;
+//	}
+//
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public boolean deleteConta(Long contaId) {
+//
+//		Conta conta = contaRepository.findById(contaId)
+//				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+//
+//		contaRepository.deleteById(conta.getId());
+//
+//		return true;
+//
+//	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirTED(Long idContaReceber, ContaCreateTedDTO dto) {

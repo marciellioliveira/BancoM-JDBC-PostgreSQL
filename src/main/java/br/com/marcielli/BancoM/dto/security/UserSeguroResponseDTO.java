@@ -1,5 +1,10 @@
 package br.com.marcielli.BancoM.dto.security;
 
+import java.math.BigDecimal;
+
+import br.com.marcielli.BancoM.enuns.TipoSeguro;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,16 +18,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class UserClienteResponseDTO {
+public class UserSeguroResponseDTO {
 	
 	private Long id;
-	private String nome;		
-	private Long cpf;	
-	private String cep;	
-	private String cidade;	
-	private String estado;	
-	private String rua;	
-	private String numero;	
-	private String bairro;	
-	private String complemento;
+    private TipoSeguro tipo;
+    private BigDecimal valorMensal;
+    private BigDecimal valorApolice;
+    private Boolean ativo;
+
 }

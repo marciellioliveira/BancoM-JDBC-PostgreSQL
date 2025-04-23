@@ -51,19 +51,19 @@ public class CartaoController {
 //	private BigDecimal limiteDiarioTransacao = new BigDecimal("600");
 	
 
-	@PostMapping("")
-	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token){
-		
-		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
-		Cartao cartaoAdicionado = cartaoService.save(dto, token);
-		
-		if(cartaoAdicionado != null) {
-			return new ResponseEntity<String>("Cartão adicionado com sucesso", HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-		}	
-		
-	}
+//	@PostMapping("")
+//	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token){
+//		
+//		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
+//		Cartao cartaoAdicionado = cartaoService.save(dto, token);
+//		
+//		if(cartaoAdicionado != null) {
+//			return new ResponseEntity<String>("Cartão adicionado com sucesso", HttpStatus.CREATED);
+//		} else {
+//			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+//		}	
+//		
+//	}
 	
 //	@PostMapping("")
 //	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token){

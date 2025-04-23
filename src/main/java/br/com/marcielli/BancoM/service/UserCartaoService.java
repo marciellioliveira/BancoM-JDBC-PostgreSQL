@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
+import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
+import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.CartaoDebito;
@@ -20,6 +22,7 @@ import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
+import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
 
@@ -118,80 +121,60 @@ public class UserCartaoService {
 			System.out.println("ID inválido no token: " + token.getName());
 		}
 		
-		
-		
-		
-		
-//		var user = userRepository.findById(userId);		
-//		
-//		Optional<Conta> contaDoUser = user
-//			    .map(User::getCliente)
-//			    .map(Cliente::getContas)
-//			    .flatMap(contas -> contas.stream()
-//			        .filter(conta -> conta.getId().equals(dto.idConta()))
-//			        .findFirst());
-//		
-//		if(dto.tipoCartao() == TipoCartao.CREDITO) {
-//			
-//			String numeroCartao = numCartao.concat("-CC");
-//			
-//			cartao = new CartaoCredito();
-//			
-//			cartao.setTipoCartao(dto.tipoCartao());
-//			cartao.setSenha(dto.senha());
-//			cartao.setNumeroCartao(numeroCartao);
-//			cartao.setStatus(true);	
-//			
-//			if(cartao instanceof CartaoCredito cartaoCredito) {
-//				cartaoCredito.setLimiteCreditoPreAprovado(limiteCredito);
-//			}
-//			
-//			cartoes.add(cartao);	
-//			
-//			if(contaDoUser.isPresent()) {
-//				Conta contaDoCartao = contaDoUser.get();
-//				cartao.setConta(contaDoCartao);
-//				cartao.setTipoConta(contaDoCartao.getTipoConta());
-//				cartao.setCategoriaConta(contaDoCartao.getCategoriaConta());
-//				contaDoCartao.setCartoes(cartoes);
-//			} else {
-//				throw new RuntimeException("Conta não está vinculada ao usuário.");
-//			}
-//		}
-//		
-//		if(dto.tipoCartao() == TipoCartao.DEBITO) {
-//			
-//			String numeroCartao = numCartao.concat("-CD");
-//			
-//			cartao = new CartaoDebito();	
-//			
-//			cartao.setTipoCartao(dto.tipoCartao());
-//			cartao.setSenha(dto.senha());
-//			cartao.setNumeroCartao(numeroCartao);
-//			cartao.setStatus(true);
-//			
-//			if(cartao instanceof CartaoDebito cartaoDebito) {
-//				cartaoDebito.setLimiteDiarioTransacao(limiteDiarioTransacao);
-//			}
-//			
-//			cartoes.add(cartao);	
-//			
-//			if(contaDoUser.isPresent()) {
-//				Conta contaDoCartao = contaDoUser.get();
-//				cartao.setConta(contaDoCartao);
-//				cartao.setTipoConta(contaDoCartao.getTipoConta());
-//				cartao.setCategoriaConta(contaDoCartao.getCategoriaConta());
-//				contaDoCartao.setCartoes(cartoes);
-//			} else {
-//				throw new RuntimeException("Conta não está vinculada ao usuário.");
-//			}
-//		}
-//		
 		cartaoRepository.save(cartao);
 		
 		return cartao;
 		
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao getCartoesById(Long id) {
+		return cartaoRepository.findById(id).orElse(null);
+	}
+	
+	
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao update(Long id, CartaoUpdateDTO dto) {
+		
+		Cartao cartaoExiste = cartaoRepository.findById(id).orElse(null);
+		
+		if (cartaoExiste == null) {
+			 return null;
+		}
+		
+		cartaoExiste.setSenha(dto.senha());
+		
+		cartaoRepository.save(cartaoExiste);
+		return cartaoExiste;
+	
+	}
+	
+	
+	@Transactional
+	public boolean delete(Long id) {
+		
+		Cartao cartaoExistente = cartaoRepository.findById(id).orElse(null);
+		
+		boolean isAdmin = cartaoExistente.getConta().getCliente().getUser().getRoles().stream()
+			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+	
+		if(isAdmin) {
+			throw new ClienteNaoEncontradoException("Não é possível deletar dados do administrador do sistema.");
+		}
+		
+		cartaoExistente.setStatus(false);
+		
+	    return true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	public String gerarNumCartao() {

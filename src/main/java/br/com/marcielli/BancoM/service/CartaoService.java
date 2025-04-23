@@ -54,117 +54,117 @@ public class CartaoService {
 	
 	private BigDecimal limiteCredito = new BigDecimal("600");
 	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao save(CartaoCreateDTO cartao) {		
-		
-		
-		
-		Cliente cliente = clienteRepository.findById(cartao.getIdCliente())
-				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
-		
-		Conta conta = contaRepository.findById(cartao.getIdConta())
-				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
-		
-		Cartao novoCartao = null;
-		List<Cartao> cartoes = new ArrayList<Cartao>();
-		
-		String numCartao = gerarNumeroDoCartao();
-		
-		
-		
-		if(cartao.getTipoCartao() == TipoCartao.CREDITO) {
-			
-			String numeroCartao = numCartao.concat("-CC");
-			
-			novoCartao = new CartaoCredito();
-			
-			novoCartao.setConta(conta);
-			novoCartao.setTipoCartao(cartao.getTipoCartao());
-			novoCartao.setSenha(cartao.getSenha());
-			novoCartao.setNumeroCartao(numeroCartao);
-			novoCartao.setStatus(true);	
-			novoCartao.setTipoConta(conta.getTipoConta());
-			conta.setCategoriaConta(conta.getCategoriaConta());
-			
-			if(novoCartao instanceof CartaoCredito cartaoCredito) {
-				//((CartaoCredito) novoCartao).setLimiteCreditoPreAprovado(new BigDecimal("600"));
-				cartaoCredito.setLimiteCreditoPreAprovado(limiteCredito);
-			
-			}
-			
-			cartoes.add(novoCartao);	
-			conta.setCartoes(cartoes);
-			
-		}
-		
-		if(cartao.getTipoCartao() == TipoCartao.DEBITO) {
-			
-			String numeroCartao = numCartao.concat("-CD");
-			
-			novoCartao = new CartaoDebito();		
-			
-			novoCartao.setConta(conta);
-			novoCartao.setTipoCartao(cartao.getTipoCartao());
-			novoCartao.setSenha(cartao.getSenha());
-			novoCartao.setNumeroCartao(numeroCartao);
-			novoCartao.setStatus(true);
-			novoCartao.setTipoConta(conta.getTipoConta());
-			conta.setCategoriaConta(conta.getCategoriaConta());
-			
-			if(novoCartao instanceof CartaoDebito cartaoDebito) {
-				cartaoDebito.setLimiteDiarioTransacao(new BigDecimal("600"));
-			}
-			
-			cartoes.add(novoCartao);
-			conta.setCartoes(cartoes);			
-			
-		}
-		
-		return cartaoRepository.save(novoCartao);
-
-	}
-		
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao update(Long cartaoId, CartaoUpdateDTO dto) {	
-		
-		Cliente cliente = clienteRepository.findById(dto.getIdCliente())
-				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
-		
-		Conta conta = contaRepository.findById(dto.getIdConta())
-				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
-		
-		Cartao cartao = cartaoRepository.findById(cartaoId)
-				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
-		
-		for(Conta temConta : cliente.getContas()) {
-			
-			if(temConta.getId() == conta.getId()) {
-				for(Cartao temCartao : conta.getCartoes()) {
-					if(temCartao.getId() == cartaoId) {
-						cartao.setSenha(dto.getSenha());
-					}
-				}
-				
-				
-			}			
-		}
-		return cartaoRepository.save(cartao);
-	}
-	
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean deleteCartao(Long cartaoId, CartaoDeleteDTO dto) {	
-	
-		Cartao cartao = cartaoRepository.findById(cartaoId)
-				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
-		
-		cartaoRepository.deleteById(cartao.getId());
-		
-		return true;
-
-	}
-	
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Cartao save(CartaoCreateDTO cartao) {		
+//		
+//		
+//		
+//		Cliente cliente = clienteRepository.findById(cartao.getIdCliente())
+//				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
+//		
+//		Conta conta = contaRepository.findById(cartao.getIdConta())
+//				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
+//		
+//		Cartao novoCartao = null;
+//		List<Cartao> cartoes = new ArrayList<Cartao>();
+//		
+//		String numCartao = gerarNumeroDoCartao();
+//		
+//		
+//		
+//		if(cartao.getTipoCartao() == TipoCartao.CREDITO) {
+//			
+//			String numeroCartao = numCartao.concat("-CC");
+//			
+//			novoCartao = new CartaoCredito();
+//			
+//			novoCartao.setConta(conta);
+//			novoCartao.setTipoCartao(cartao.getTipoCartao());
+//			novoCartao.setSenha(cartao.getSenha());
+//			novoCartao.setNumeroCartao(numeroCartao);
+//			novoCartao.setStatus(true);	
+//			novoCartao.setTipoConta(conta.getTipoConta());
+//			conta.setCategoriaConta(conta.getCategoriaConta());
+//			
+//			if(novoCartao instanceof CartaoCredito cartaoCredito) {
+//				//((CartaoCredito) novoCartao).setLimiteCreditoPreAprovado(new BigDecimal("600"));
+//				cartaoCredito.setLimiteCreditoPreAprovado(limiteCredito);
+//			
+//			}
+//			
+//			cartoes.add(novoCartao);	
+//			conta.setCartoes(cartoes);
+//			
+//		}
+//		
+//		if(cartao.getTipoCartao() == TipoCartao.DEBITO) {
+//			
+//			String numeroCartao = numCartao.concat("-CD");
+//			
+//			novoCartao = new CartaoDebito();		
+//			
+//			novoCartao.setConta(conta);
+//			novoCartao.setTipoCartao(cartao.getTipoCartao());
+//			novoCartao.setSenha(cartao.getSenha());
+//			novoCartao.setNumeroCartao(numeroCartao);
+//			novoCartao.setStatus(true);
+//			novoCartao.setTipoConta(conta.getTipoConta());
+//			conta.setCategoriaConta(conta.getCategoriaConta());
+//			
+//			if(novoCartao instanceof CartaoDebito cartaoDebito) {
+//				cartaoDebito.setLimiteDiarioTransacao(new BigDecimal("600"));
+//			}
+//			
+//			cartoes.add(novoCartao);
+//			conta.setCartoes(cartoes);			
+//			
+//		}
+//		
+//		return cartaoRepository.save(novoCartao);
+//
+//	}
+//		
+//	
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Cartao update(Long cartaoId, CartaoUpdateDTO dto) {	
+//		
+//		Cliente cliente = clienteRepository.findById(dto.getIdCliente())
+//				.orElseThrow(() -> new ContaExisteNoBancoException("O cliente não existe no banco."));
+//		
+//		Conta conta = contaRepository.findById(dto.getIdConta())
+//				.orElseThrow(() -> new ContaExisteNoBancoException("A conta não existe no banco."));
+//		
+//		Cartao cartao = cartaoRepository.findById(cartaoId)
+//				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+//		
+//		for(Conta temConta : cliente.getContas()) {
+//			
+//			if(temConta.getId() == conta.getId()) {
+//				for(Cartao temCartao : conta.getCartoes()) {
+//					if(temCartao.getId() == cartaoId) {
+//						cartao.setSenha(dto.getSenha());
+//					}
+//				}
+//				
+//				
+//			}			
+//		}
+//		return cartaoRepository.save(cartao);
+//	}
+//	
+//	
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public boolean deleteCartao(Long cartaoId, CartaoDeleteDTO dto) {	
+//	
+//		Cartao cartao = cartaoRepository.findById(cartaoId)
+//				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+//		
+//		cartaoRepository.deleteById(cartao.getId());
+//		
+//		return true;
+//
+//	}
+//	
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean pagCartao(Long idContaReceber, CartaoCreateTedDTO dto) {

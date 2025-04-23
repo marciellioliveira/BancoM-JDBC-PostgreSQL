@@ -40,18 +40,18 @@ public class Seguro {
 	@Version
 	private Long version;
 	
-	 @Enumerated(EnumType.STRING)
-	    private TipoSeguro tipo;
+	@Enumerated(EnumType.STRING)
+    private TipoSeguro tipo;
 
-	    private BigDecimal valorMensal;
+    private BigDecimal valorMensal;
 
-	    private BigDecimal valorApolice;
+    private BigDecimal valorApolice;
 
-	    private Boolean ativo = true;
+    private Boolean ativo = true;
 
-	    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-	    @JoinColumn(name = "cartaoId")
-		@JsonBackReference
-	    private Cartao cartao;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "cartaoId")
+	@JsonBackReference
+    private Cartao cartao;
 
 }

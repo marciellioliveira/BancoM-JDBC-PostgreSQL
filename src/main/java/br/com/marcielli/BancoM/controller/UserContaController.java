@@ -80,6 +80,7 @@ public class UserContaController {
 		if(!isAdmin) {
 			UserContaResponseDTO response = new UserContaResponseDTO();
 			
+			response.setId(id);
 			response.setTipoConta(conta.getTipoConta());
 			response.setCategoriaConta(conta.getCategoriaConta());
 			
@@ -130,6 +131,7 @@ public class UserContaController {
 				
 			}
 			
+			response.setId(id);
 			response.setTipoConta(conta.getTipoConta());
 			response.setCategoriaConta(conta.getCategoriaConta());
 			response.setSaldoConta(conta.getSaldoConta());
@@ -156,35 +158,4 @@ public class UserContaController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
 	    }
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 }

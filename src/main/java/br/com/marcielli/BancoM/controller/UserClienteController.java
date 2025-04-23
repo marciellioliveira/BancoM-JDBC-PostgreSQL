@@ -78,6 +78,7 @@ public class UserClienteController {
 		
 		if(!isAdmin) {
 			UserClienteResponseDTO response = new UserClienteResponseDTO();
+			response.setId(id);
 			response.setNome(clienteUnico.getNome());
 			response.setCpf(clienteUnico.getCpf());
 			
@@ -113,6 +114,7 @@ public class UserClienteController {
 		
 		if(!isAdmin) {
 			UserClienteResponseDTO response = new UserClienteResponseDTO();
+			response.setId(id);
 			response.setNome(clienteUnico.getNome());
 			response.setCpf(clienteUnico.getCpf());
 			

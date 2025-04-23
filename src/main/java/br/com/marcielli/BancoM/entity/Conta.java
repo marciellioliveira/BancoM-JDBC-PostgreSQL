@@ -89,7 +89,7 @@ public class Conta implements Serializable {
 	@JsonManagedReference
 	private List<Cartao> cartoes;
 	
-	private boolean status;
+	private boolean status = true;
 	
 	
 	public void pagarFatura(BigDecimal valor) {
