@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
+import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarLimiteCartaoCreditoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaResponseDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
+import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
@@ -90,6 +93,9 @@ public class UserCartaoController {
 			response.setNumeroCartao(cartao.getNumeroCartao());
 			response.setStatus(cartao.isStatus());
 			response.setSenha(cartao.getSenha());
+			if(cartao instanceof CartaoCredito cc) {				
+				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
+			}
 			
 			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} else {			
@@ -122,6 +128,10 @@ public class UserCartaoController {
 			response.setNumeroCartao(cartao.getNumeroCartao());
 			response.setStatus(cartao.isStatus());
 			response.setSenha(cartao.getSenha());
+			
+			if(cartao instanceof CartaoCredito cc) {				
+				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
+			}
 			
 			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} else {			
@@ -159,6 +169,39 @@ public class UserCartaoController {
 		}
 	}
 	
+	
+	@PutMapping("/cartoes/{cartaoId}/limite") 
+	public ResponseEntity<?> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId, @RequestBody UserCartaoAlterarLimiteCartaoCreditoDTO dto) {		
+
+		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, dto);		
+		
+		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
+			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+		
+		if(!isAdmin) {
+			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
+			
+			response.setId(cartaoId);
+			
+			if(limiteAtualizado instanceof CartaoCredito cc) {				
+				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
+			}
+			
+			response.setTipoCartao(limiteAtualizado.getTipoCartao());
+			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
+			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
+			response.setStatus(limiteAtualizado.isStatus());
+			response.setSenha(limiteAtualizado.getSenha());
+			response.setTipoConta(limiteAtualizado.getTipoConta());
+			
+			
+			
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} else {			
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
+		}
+
+	}
 	
 	
 	

@@ -1,5 +1,7 @@
 package br.com.marcielli.BancoM.dto.security;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
@@ -22,11 +24,12 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class UserCartaoResponseDTO {
 
-	private Long id;
-	private TipoConta tipoConta;
-	private CategoriaConta categoriaConta;
+	private Long id;	
 	private TipoCartao tipoCartao;
 	private String numeroCartao;
 	private boolean status;
 	public String senha;
+	private TipoConta tipoConta;
+	private CategoriaConta categoriaConta;
+	private BigDecimal limiteCreditoPreAprovado;
 }
