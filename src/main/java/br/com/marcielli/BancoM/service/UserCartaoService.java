@@ -11,33 +11,46 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
+import br.com.marcielli.BancoM.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.CartaoDebito;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
+import br.com.marcielli.BancoM.entity.ContaCorrente;
+import br.com.marcielli.BancoM.entity.ContaPoupanca;
+import br.com.marcielli.BancoM.entity.Fatura;
+import br.com.marcielli.BancoM.entity.TaxaManutencao;
+import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
+import br.com.marcielli.BancoM.enuns.TipoTransferencia;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
+import br.com.marcielli.BancoM.repository.ContaRepositoy;
 import br.com.marcielli.BancoM.repository.UserRepository;
 
 @Service
 public class UserCartaoService {
 	
 	private final CartaoRepository cartaoRepository;
+	private final ContaRepositoy contaRepository;
 	private final UserRepository userRepository;
 	
 	private BigDecimal limiteCredito = new BigDecimal("600");
 	private BigDecimal limiteDiarioTransacao = new BigDecimal("600");
 	
-	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository) {
+	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository, ContaRepositoy contaRepository) {
 		this.cartaoRepository = cartaoRepository;
 		this.userRepository = userRepository;
+		this.contaRepository = contaRepository;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -167,6 +180,158 @@ public class UserCartaoService {
 		
 	    return true;
 	}
+	
+	
+	
+	//Pagamentos
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean pagCartao(Long idContaReceber, UserCartaoPagCartaoDTO dto) {
+		
+		Cartao cartaoOrigem = cartaoRepository.findById(dto.idCartao()).orElseThrow(
+				() -> new ContaNaoEncontradaException("O cartão origem não existe."));
+		
+		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId()).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta destino não existe."));	
+		
+		Conta contaDestino = contaRepository.findById(idContaReceber).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta destino não existe."));	
+		
+		if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+		    throw new TransferenciaNaoRealizadaException("Saldo insuficiente na conta para realizar a transação.");
+		}
+
+		
+		if(cartaoOrigem instanceof CartaoCredito cartaoC) {
+			
+			if(dto.valor().compareTo(cartaoC.getLimiteCreditoPreAprovado()) > 0) {
+				throw new TransferenciaNaoRealizadaException("Você já utilizou o seu limite de crédito pré aprovado para envio.");
+			}	
+			
+			if(cartaoC.getLimiteCreditoPreAprovado().compareTo(BigDecimal.ZERO) <= 0) {
+				throw new TransferenciaNaoRealizadaException("O cartão não tem limite de crédito.");
+			}
+			
+			cartaoC.atualizarTotalGastoMes(dto.valor());
+			cartaoC.atualizarLimiteCreditoPreAprovado(dto.valor());
+			
+			//Já tem uma fatura associada?			
+			Fatura faturaExistente = cartaoOrigem.getFatura();
+			
+			if(faturaExistente == null) {
+				
+				faturaExistente = new Fatura();
+			
+				faturaExistente.setCartao(cartaoOrigem);										
+				cartaoOrigem.setFatura(faturaExistente);
+			}
+			
+			Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
+			contaOrigem.getTransferencia().add(transferindo);
+			
+			transferindo.setFatura(faturaExistente);
+			faturaExistente.getTransferenciasCredito().add(transferindo);
+				
+				cartaoRepository.save(cartaoC);
+		}
+		
+		if(cartaoOrigem instanceof CartaoDebito cartaoD) {
+			
+			
+			if(dto.valor().compareTo(cartaoD.getLimiteDiarioTransacao()) > 0) {
+				throw new TransferenciaNaoRealizadaException("Você já utilizou o seu limite de crédito pré aprovado para envio.");
+			}		
+			
+			if(cartaoD.getLimiteDiarioTransacao().compareTo(BigDecimal.ZERO) <= 0) {
+				throw new TransferenciaNaoRealizadaException("O cartão não tem limite de transação.");
+			}
+			
+			contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
+			
+			cartaoD.atualizarLimiteDiarioTransacao(dto.valor());
+			cartaoD.atualizarTotalGastoMes(dto.valor());
+		
+			TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
+
+			List<TaxaManutencao> novaTaxa = new ArrayList<>();
+			novaTaxa.add(taxaContaOrigem);
+
+			contaOrigem.setTaxas(novaTaxa);
+			contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
+
+			if (contaOrigem instanceof ContaCorrente cc) {
+				cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+			}
+
+			if (contaOrigem instanceof ContaPoupanca cp) {
+				cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
+				cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
+			}
+			
+			Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
+			contaOrigem.getTransferencia().add(transferindo);
+			
+			contaRepository.save(contaOrigem);
+		}
+				
+		contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+		TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+		novaTaxa.add(taxaContaDestino);
+		
+		contaDestino.setTaxas(novaTaxa);
+		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
+		
+		contaRepository.save(contaDestino);
+
+		return true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

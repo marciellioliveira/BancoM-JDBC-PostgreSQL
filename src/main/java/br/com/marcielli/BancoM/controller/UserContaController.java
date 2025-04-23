@@ -192,7 +192,7 @@ public class UserContaController {
 	    }
 	}
 	
-	@PostMapping("/{idContaReceber}/pix") 
+	@PostMapping("/contas/{idContaReceber}/pix") 
 	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaPixDTO dto) {
 		
 		boolean pixRealizado = contaService.transferirPIX(idContaReceber, dto);
@@ -205,7 +205,7 @@ public class UserContaController {
 	}
 	
 	
-	@PostMapping("/{idContaReceber}/deposito") 
+	@PostMapping("/contas/{idContaReceber}/deposito") 
 	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaDepositoDTO dto) {
 		
 		boolean depositoRealizado = contaService.transferirDEPOSITO(idContaReceber, dto);
@@ -217,7 +217,7 @@ public class UserContaController {
 		}
 	}
 	
-	@PostMapping("/{idContaReceber}/saque") 
+	@PostMapping("/contas/{idContaReceber}/saque") 
 	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaSaqueDTO dto) {
 		
 		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, dto);
@@ -229,7 +229,7 @@ public class UserContaController {
 		}
 	}
 	
-	@PutMapping("/{idConta}/manutencao") 
+	@PutMapping("/contas/{idConta}/manutencao") 
 	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, @RequestBody UserContaTaxaManutencaoDTO dto) {
 	
 		Conta manutencaoCCRealizada = contaService.manutencaoTaxaCC(idConta, dto);
@@ -241,7 +241,7 @@ public class UserContaController {
 		}
 	}
 	
-	@PutMapping("/{idConta}/rendimentos") 
+	@PutMapping("/contas/{idConta}/rendimentos") 
 	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta, @RequestBody UserContaRendimentoDTO dto) {
 		
 		Conta manutencaoCPRealizada = contaService.rendimentoTaxaCP(idConta, dto);

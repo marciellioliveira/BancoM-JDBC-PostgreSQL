@@ -122,7 +122,8 @@ public class UserContaService {
 		}
 		
 		String novoPix = dto.pixAleatorio().concat("-PIX");
-		contaExistente.setPixAleatorio(novoPix);		
+		contaExistente.setPixAleatorio(novoPix);	
+		contaExistente.setStatus(true);
 		
 		contaRepository.save(contaExistente);
 		
@@ -205,12 +206,12 @@ public class UserContaService {
 		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
 
 		if (contaDestino instanceof ContaCorrente cc) {
-			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+			cc.setTaxaManutencaoMensal(taxaContaDestino.getTaxaManutencaoMensal());
 		}
 
 		if (contaDestino instanceof ContaPoupanca cp) {
-			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
+			cp.setTaxaAcrescRend(taxaContaDestino.getTaxaAcrescRend());
+			cp.setTaxaMensal(taxaContaDestino.getTaxaMensal());
 		}
 
 		contaRepository.save(contaDestino);
@@ -273,12 +274,12 @@ public class UserContaService {
 		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
 
 		if (contaDestino instanceof ContaCorrente cc) {
-			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+			cc.setTaxaManutencaoMensal(taxaContaDestino.getTaxaManutencaoMensal());
 		}
 
 		if (contaDestino instanceof ContaPoupanca cp) {
-			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
+			cp.setTaxaAcrescRend(taxaContaDestino.getTaxaAcrescRend());
+			cp.setTaxaMensal(taxaContaDestino.getTaxaMensal());
 		}
 
 		contaRepository.save(contaDestino);
@@ -326,6 +327,10 @@ public class UserContaService {
 
 		Conta conta = contaRepository.findById(idContaReceber)
 				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
+		
+		if(conta.getSaldoConta().compareTo(dto.valor()) < 0 || conta.getSaldoConta().compareTo(BigDecimal.ZERO) == 0) {
+			throw new ContaExibirSaldoErroException("Saldo insuficiente.");
+		}
 
 		conta.setSaldoConta(conta.getSaldoConta().subtract(dto.valor()));
 

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
+import br.com.marcielli.BancoM.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaResponseDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
@@ -144,6 +145,19 @@ public class UserCartaoController {
 	}
 	
 	
+	
+	//Pagamentos	
+	@PostMapping("/cartoes/{idContaReceber}/pagamento")
+	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserCartaoPagCartaoDTO dto) {
+	
+		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, dto);
+
+		if (pagamentoRealizado) {
+			return new ResponseEntity<>("Pagamento realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
 	
 	
 	
