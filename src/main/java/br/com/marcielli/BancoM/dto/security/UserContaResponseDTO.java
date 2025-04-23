@@ -37,5 +37,5 @@ public class UserContaResponseDTO {
 	private String numeroConta;	
 	private String pixAleatorio;
 	
-	private boolean status;
+	private Boolean status;
 }

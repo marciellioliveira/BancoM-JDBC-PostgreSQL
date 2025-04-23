@@ -11,13 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
-import br.com.marcielli.BancoM.dto.CartaoPagarFaturaDTO;
-import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteDTO;
-import br.com.marcielli.BancoM.dto.CartaoUpdateStatusDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
-import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarLimiteCartaoCreditoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarLimiteCartaoDebitoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarSenhaCartaoDTO;
@@ -52,9 +47,6 @@ public class UserCartaoService {
 	private final CartaoRepository cartaoRepository;
 	private final ContaRepositoy contaRepository;
 	private final UserRepository userRepository;
-//	
-//	private BigDecimal limiteCredito = new BigDecimal("600");
-//	private BigDecimal limiteDiarioTransacao = new BigDecimal("600");
 	
 	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository, ContaRepositoy contaRepository) {
 		this.cartaoRepository = cartaoRepository;
@@ -99,14 +91,7 @@ public class UserCartaoService {
 				cartao.setSenha(dto.senha());
 				cartao.setNumeroCartao(numeroCartao);
 				cartao.setStatus(true);	
-				
-//				if(cartao instanceof CartaoCredito cartaoCredito) {
-//					cartaoCredito.setLimiteCreditoPreAprovado(new BigDecimal("600"));
-//					
-//				}
-				
 				cartoes.add(cartao);
-				
 				
 				cartao.setConta(contaDoUser);
 				cartao.setTipoConta(contaDoUser.getTipoConta());
@@ -126,10 +111,6 @@ public class UserCartaoService {
 				cartao.setNumeroCartao(numeroCartao);
 				cartao.setStatus(true);
 				
-//				if(cartao instanceof CartaoDebito cartaoDebito) {
-//					cartaoDebito.setLimiteDiarioTransacao(new BigDecimal("600"));
-//					
-//				}
 				cartoes.add(cartao);
 				cartao.setConta(contaDoUser);
 				cartao.setTipoConta(contaDoUser.getTipoConta());
@@ -413,43 +394,6 @@ public class UserCartaoService {
 		return true;
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

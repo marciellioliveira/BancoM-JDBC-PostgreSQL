@@ -1,19 +1,16 @@
 package br.com.marcielli.BancoM.service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroCreateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroUpdateDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.Cliente;
-import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Seguro;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;

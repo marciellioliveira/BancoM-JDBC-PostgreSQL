@@ -5,18 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.marcielli.BancoM.dto.ContaCorrenteTaxaManutencaoDTO;
-import br.com.marcielli.BancoM.dto.ContaCreateDepositoDTO;
-import br.com.marcielli.BancoM.dto.ContaCreatePixDTO;
-import br.com.marcielli.BancoM.dto.ContaCreateSaqueDTO;
-import br.com.marcielli.BancoM.dto.ContaCreateTedDTO;
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO;
@@ -25,8 +18,6 @@ import br.com.marcielli.BancoM.dto.security.UserContaRendimentoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaSaqueDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaTaxaManutencaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaTedDTO;
-import br.com.marcielli.BancoM.dto.security.UserCreateDTO;
-import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
@@ -36,7 +27,6 @@ import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
-import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
@@ -97,14 +87,14 @@ public class UserContaService {
 			conta.setTipoConta(dto.tipoConta());
 			conta.setSaldoConta(dto.saldoConta());
 			conta.setStatus(true);
+			contaRepository.save(conta);
 			
 		} catch (NumberFormatException e) {			
 			System.out.println("ID inválido no token: " + token.getName());
 		}
 		
-		contaRepository.save(conta);
-		
 		return conta;
+		
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -22,10 +22,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
@@ -43,66 +40,60 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Conta implements Serializable { 
-	
+public class Conta implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Version
 	private Long version;
-	
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinColumn(name = "clienteId")
 	@JsonBackReference
 	private Cliente cliente;
-	
+
 	@Enumerated(EnumType.STRING)
 	private TipoConta tipoConta;
-	
+
 	@Enumerated(EnumType.STRING)
 	private CategoriaConta categoriaConta;
-	
+
 	@JsonIgnore
-	@OneToMany(cascade = {CascadeType.ALL})
+	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "taxasId")
 	private List<TaxaManutencao> taxas;
-	
-	private BigDecimal saldoConta;	
-	
+
+	private BigDecimal saldoConta;
+
 	@JsonIgnore
 	@Transient
 	private BigDecimal valorTransferencia;
-	
-	private String numeroConta;	
-	
+
+	private String numeroConta;
+
 	@Column(name = "chave_pix")
 	private String pixAleatorio;
-	
-	@OneToMany(cascade = {CascadeType.ALL})
+
+	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "transferenciaId")
-	private List<Transferencia> transferencia;	
-	
-	@OneToMany(mappedBy = "conta", cascade = {CascadeType.ALL})
+	private List<Transferencia> transferencia;
+
+	@OneToMany(mappedBy = "conta", cascade = { CascadeType.ALL })
 	@JsonManagedReference
 	private List<Cartao> cartoes;
-	
-	private boolean status = true;
-	
-	
+
+	private Boolean status = true;
+
 	public void pagarFatura(BigDecimal valor) {
-		if(saldoConta == null) {
+		if (saldoConta == null) {
 			this.saldoConta = BigDecimal.ZERO;
 		}
-		
+
 		this.saldoConta = this.saldoConta.subtract(valor);
 	}
-	
 
-	
-	
 }
-
-

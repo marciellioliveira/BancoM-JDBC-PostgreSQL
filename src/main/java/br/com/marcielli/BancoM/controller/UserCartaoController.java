@@ -1,13 +1,11 @@
 package br.com.marcielli.BancoM.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,32 +17,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
-import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarLimiteCartaoCreditoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarLimiteCartaoDebitoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarSenhaCartaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarStatusCartaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoResponseDTO;
-import br.com.marcielli.BancoM.dto.security.UserContaResponseDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.CartaoDebito;
-import br.com.marcielli.BancoM.entity.Conta;
-import br.com.marcielli.BancoM.entity.ContaCorrente;
-import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.entity.Fatura;
 import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.enuns.CategoriaConta;
-import br.com.marcielli.BancoM.enuns.TipoCartao;
-import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.UserCartaoService;
 
 @RestController
 public class UserCartaoController {
-	
+
 	private final UserCartaoService cartaoService;
 	private final UserRepository userRepository;
 
@@ -52,46 +42,46 @@ public class UserCartaoController {
 		this.cartaoService = cartaoService;
 		this.userRepository = userRepository;
 	}
-	
+
 	@PostMapping("/cartoes")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token){
-		
+	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token) {
+
 		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
 		Cartao cartaoAdicionado = cartaoService.save(dto, token);
-		
-		if(cartaoAdicionado != null) {
+
+		if (cartaoAdicionado != null) {
 			return new ResponseEntity<String>("Cartão adicionado com sucesso", HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-		}	
-		
+		}
+
 	}
-	
+
 	@GetMapping("/cartoes")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<List<User>> listUsers() {		
+	public ResponseEntity<List<User>> listUsers() {
 		var users = userRepository.findAll();
 		return ResponseEntity.ok(users);
 	}
-	
+
 	@GetMapping("/cartoes/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
 	public ResponseEntity<?> getCartoesById(@PathVariable("id") Long id) {
-		
+
 		Cartao cartao = cartaoService.getCartoesById(id);
-		
+
 		if (cartao == null) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-	    }
-		
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
+		}
+
 		boolean isAdmin = cartao.getConta().getCliente().getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-		
-		if(!isAdmin) {
+				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+
+		if (!isAdmin) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-			
+
 			response.setId(id);
 			response.setTipoConta(cartao.getConta().getTipoConta());
 			response.setCategoriaConta(cartao.getCategoriaConta());
@@ -99,39 +89,38 @@ public class UserCartaoController {
 			response.setNumeroCartao(cartao.getNumeroCartao());
 			response.setStatus(cartao.isStatus());
 			response.setSenha(cartao.getSenha());
-			
-			if(cartao instanceof CartaoCredito cc) {				
+
+			if (cartao instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
-			if(cartao instanceof CartaoDebito cd) {
+
+			if (cartao instanceof CartaoDebito cd) {
 				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
 			}
-			
+
 			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {			
+		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
 		}
 	}
-	
-	
-	@PutMapping("/cartoes/{id}") 
+
+	@PutMapping("/cartoes/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
 	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto) {
-		
+
 		Cartao cartao = cartaoService.update(id, dto);
-		
+
 		if (cartao == null) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
-	    }
-		
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
+		}
+
 		boolean isAdmin = cartao.getConta().getCliente().getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-		
-		if(!isAdmin) {
+				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+
+		if (!isAdmin) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-			
+
 			response.setId(id);
 			response.setTipoConta(cartao.getConta().getTipoConta());
 			response.setCategoriaConta(cartao.getCategoriaConta());
@@ -139,43 +128,41 @@ public class UserCartaoController {
 			response.setNumeroCartao(cartao.getNumeroCartao());
 			response.setStatus(cartao.isStatus());
 			response.setSenha(cartao.getSenha());
-			
-			if(cartao instanceof CartaoCredito cc) {				
+
+			if (cartao instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
-			if(cartao instanceof CartaoDebito cd) {
+
+			if (cartao instanceof CartaoDebito cd) {
 				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
 			}
-			
+
 			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {			
+		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
 	}
-	
-	
+
 	@DeleteMapping("/cartoes/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
 
-	    boolean conta = cartaoService.delete(id);
+		boolean conta = cartaoService.delete(id);
 
-	    if (conta) {
-	        return ResponseEntity.status(HttpStatus.OK).body("Cartão deletado com sucesso!");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
-	    }
+		if (conta) {
+			return ResponseEntity.status(HttpStatus.OK).body("Cartão deletado com sucesso!");
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
+		}
 	}
-	
-	
-	
-	//Pagamentos	
+
+	// Pagamentos
 	@PostMapping("/cartoes/{idContaReceber}/pagamento")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserCartaoPagCartaoDTO dto) {
-	
+	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber,
+			@RequestBody UserCartaoPagCartaoDTO dto) {
+
 		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, dto);
 
 		if (pagamentoRealizado) {
@@ -184,170 +171,168 @@ public class UserCartaoController {
 			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
-	
-	@PutMapping("/cartoes/{cartaoId}/limite") 
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId, @RequestBody UserCartaoAlterarLimiteCartaoCreditoDTO dto) {		
 
-		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, dto);		
-		
+	@PutMapping("/cartoes/{cartaoId}/limite")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	public ResponseEntity<?> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId,
+			@RequestBody UserCartaoAlterarLimiteCartaoCreditoDTO dto) {
+
+		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, dto);
+
 		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-		
-		if(!isAdmin) {
+				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+
+		if (!isAdmin) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-			
+
 			response.setId(cartaoId);
-			
-			if(limiteAtualizado instanceof CartaoCredito cc) {				
+
+			if (limiteAtualizado instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
+
 			response.setTipoCartao(limiteAtualizado.getTipoCartao());
 			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
 			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
 			response.setStatus(limiteAtualizado.isStatus());
 			response.setSenha(limiteAtualizado.getSenha());
 			response.setTipoConta(limiteAtualizado.getTipoConta());
-			
-			if(limiteAtualizado instanceof CartaoCredito cc) {				
+
+			if (limiteAtualizado instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
-			if(limiteAtualizado instanceof CartaoDebito cd) {
+
+			if (limiteAtualizado instanceof CartaoDebito cd) {
 				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
 			}
-			
-			
+
 			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {			
+		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
 
 	}
-	
-	@PutMapping("/cartoes/{cartaoId}/status") 
+
+	@PutMapping("/cartoes/{cartaoId}/status")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> alterarStatusCartao(@PathVariable("cartaoId") Long cartaoId, @RequestBody UserCartaoAlterarStatusCartaoDTO dto) {
-	
-		Cartao limiteAtualizado = cartaoService.alterarStatusC(cartaoId, dto);		
-		
+	public ResponseEntity<?> alterarStatusCartao(@PathVariable("cartaoId") Long cartaoId,
+			@RequestBody UserCartaoAlterarStatusCartaoDTO dto) {
+
+		Cartao limiteAtualizado = cartaoService.alterarStatusC(cartaoId, dto);
+
 		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-		
-		if(!isAdmin) {
+				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+
+		if (!isAdmin) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-			
+
 			response.setId(cartaoId);
-			
-			if(limiteAtualizado instanceof CartaoCredito cc) {				
+
+			if (limiteAtualizado instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
+
 			response.setTipoCartao(limiteAtualizado.getTipoCartao());
 			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
 			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
 			response.setStatus(limiteAtualizado.isStatus());
 			response.setSenha(limiteAtualizado.getSenha());
 			response.setTipoConta(limiteAtualizado.getTipoConta());
-			
-			if(limiteAtualizado instanceof CartaoCredito cc) {				
+
+			if (limiteAtualizado instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
-			if(limiteAtualizado instanceof CartaoDebito cd) {
+
+			if (limiteAtualizado instanceof CartaoDebito cd) {
 				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
 			}
-			
+
 			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {			
+		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
 
 	}
-	
-	
-	@PutMapping("/cartoes/{cartaoId}/senha") 
+
+	@PutMapping("/cartoes/{cartaoId}/senha")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> alterarSenhaCartao(@PathVariable("cartaoId") Long cartaoId, @RequestBody UserCartaoAlterarSenhaCartaoDTO dto) {
-		
-		Cartao limiteAtualizado = cartaoService.alterarSenhaC(cartaoId, dto);		
-		
+	public ResponseEntity<?> alterarSenhaCartao(@PathVariable("cartaoId") Long cartaoId,
+			@RequestBody UserCartaoAlterarSenhaCartaoDTO dto) {
+
+		Cartao limiteAtualizado = cartaoService.alterarSenhaC(cartaoId, dto);
+
 		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-		
-		if(!isAdmin) {
+				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+
+		if (!isAdmin) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-			
+
 			response.setId(cartaoId);
-			
-			if(limiteAtualizado instanceof CartaoCredito cc) {				
+
+			if (limiteAtualizado instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
+
 			response.setTipoCartao(limiteAtualizado.getTipoCartao());
 			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
 			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
 			response.setStatus(limiteAtualizado.isStatus());
 			response.setSenha(limiteAtualizado.getSenha());
 			response.setTipoConta(limiteAtualizado.getTipoConta());
-			
-			if(limiteAtualizado instanceof CartaoCredito cc) {				
+
+			if (limiteAtualizado instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
-			if(limiteAtualizado instanceof CartaoDebito cd) {
+
+			if (limiteAtualizado instanceof CartaoDebito cd) {
 				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
 			}
-			
+
 			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {			
+		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
 
 	}
-	
-	@PutMapping("/cartoes/{cartaoId}/limite-diario") 
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId, @RequestBody UserCartaoAlterarLimiteCartaoDebitoDTO dto) {		
 
-		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoDebito(cartaoId, dto);		
-		
+	@PutMapping("/cartoes/{cartaoId}/limite-diario")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	public ResponseEntity<?> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId,
+			@RequestBody UserCartaoAlterarLimiteCartaoDebitoDTO dto) {
+
+		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoDebito(cartaoId, dto);
+
 		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-		
-		if(!isAdmin) {
+				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+
+		if (!isAdmin) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-			
+
 			response.setId(cartaoId);
-			
-			if(limiteAtualizado instanceof CartaoCredito cc) {				
+
+			if (limiteAtualizado instanceof CartaoCredito cc) {
 				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
 			}
-			
-			if(limiteAtualizado instanceof CartaoDebito cd) {
+
+			if (limiteAtualizado instanceof CartaoDebito cd) {
 				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
 			}
-			
+
 			response.setTipoCartao(limiteAtualizado.getTipoCartao());
 			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
 			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
 			response.setStatus(limiteAtualizado.isStatus());
 			response.setSenha(limiteAtualizado.getSenha());
 			response.setTipoConta(limiteAtualizado.getTipoConta());
-			
-			
-			
+
 			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {			
+		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
 
 	}
-	
-	
-	@GetMapping("/cartoes/{cartaoId}/fatura") 
+
+	@GetMapping("/cartoes/{cartaoId}/fatura")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<?> getFaturaCartaoDeCredito(@PathVariable("cartaoId") Long cartaoId) {
 		// Obtém a fatura do cartão
@@ -356,12 +341,11 @@ public class UserCartaoController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(fatura);
 	}
-	
-	
-	@PostMapping("/cartoes/{idCartao}/fatura/pagamento") 
+
+	@PostMapping("/cartoes/{idCartao}/fatura/pagamento")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao) {
-		
+
 		// Realiza o pagamento da fatura
 		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao);
 
@@ -371,79 +355,5 @@ public class UserCartaoController {
 			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

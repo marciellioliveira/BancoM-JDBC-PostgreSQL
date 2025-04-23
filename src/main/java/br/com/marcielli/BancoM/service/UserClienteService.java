@@ -1,8 +1,8 @@
 package br.com.marcielli.BancoM.service;
 
-import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -13,6 +13,7 @@ import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Endereco;
 import br.com.marcielli.BancoM.entity.Role;
 import br.com.marcielli.BancoM.entity.User;
+import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.RoleRepository;
@@ -35,7 +36,21 @@ public class UserClienteService {
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public User save(UserCreateDTO cliente) {
-		
+//		
+//		//Vejo o usuário logado para deixar apenas o admin criar vários clientes
+//		 String usernameLogado = SecurityContextHolder.getContext().getAuthentication().getName();
+//		 User usuarioLogado = userRepository.findByUsername(usernameLogado)
+//			        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
+//		 
+//		 boolean isAdmin = usuarioLogado.getRoles().stream()
+//			        .anyMatch(role -> role.getName().equals(Role.Values.ADMIN.name()));
+//		 
+//		 if (!isAdmin) {
+//		        if (usuarioLogado.getCliente() != null) {
+//		            throw new ClienteEncontradoException("Usuário comum só pode criar um cliente.");
+//		        }
+//		    }
+		 
 		var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
 		var userFromDb = userRepository.findByUsername(cliente.username());
 		

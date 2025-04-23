@@ -17,13 +17,13 @@ import jakarta.transaction.Transactional;
 
 @Configuration
 public class AdminUserConfig implements CommandLineRunner {
-	
+
 	private RoleRepository roleRepository;
-	
+
 	private UserRepository userRepository;
-	
+
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	private final ClienteRepository clienteRepository;
 
 	public AdminUserConfig(RoleRepository roleRepository, UserRepository userRepository,
@@ -35,44 +35,39 @@ public class AdminUserConfig implements CommandLineRunner {
 		this.clienteRepository = clienteRepository;
 	}
 
-
-
 	@Override
 	@Transactional
 	public void run(String... args) throws Exception {
-		
-		//Como ele é um admin, preciso criar o seu usuario e vincular a Role de admin
-		
+
+		// Como ele é um admin, preciso criar o seu usuario e vincular a Role de admin
+
 		createRoleIfNotExists("ADMIN");
-	    createRoleIfNotExists("BASIC");
-	    
-	    Cliente clienteAdmin = new Cliente();
-		
+		createRoleIfNotExists("BASIC");
+
+		Cliente clienteAdmin = new Cliente();
+
 		var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
-		
+
 		var userAdmin = userRepository.findByUsername("admin");
-		
-		userAdmin.ifPresentOrElse(
-				user -> {
-					System.err.println("Admin já existe.");
-				}, 
-				() -> {
-					var user = new User();
-					user.setUsername("admin");
-					user.setPassword(passwordEncoder.encode("123"));
-					user.setRoles(Set.of(roleAdmin));
-					clienteAdmin.setUser(user);					
-					user.setCliente(clienteAdmin);					
-					clienteRepository.save(clienteAdmin);
-					userRepository.save(user);
-				}
-			);
+
+		userAdmin.ifPresentOrElse(user -> {
+			System.err.println("Admin já existe.");
+		}, () -> {
+			var user = new User();
+			user.setUsername("admin");
+			user.setPassword(passwordEncoder.encode("123"));
+			user.setRoles(Set.of(roleAdmin));
+			clienteAdmin.setUser(user);
+			user.setCliente(clienteAdmin);
+			clienteRepository.save(clienteAdmin);
+			userRepository.save(user);
+		});
 	}
-	
+
 	private void createRoleIfNotExists(String name) {
-	    if (roleRepository.findByName(name) == null) {
-	        roleRepository.save(new Role(null, name));
-	    }
+		if (roleRepository.findByName(name) == null) {
+			roleRepository.save(new Role(null, name));
+		}
 	}
 
 }
