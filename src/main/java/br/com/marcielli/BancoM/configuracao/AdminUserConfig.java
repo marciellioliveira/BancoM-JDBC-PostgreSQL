@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.configuracao;
 
+import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Role;
 import br.com.marcielli.BancoM.entity.User;
 
@@ -9,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.RoleRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -21,13 +23,16 @@ public class AdminUserConfig implements CommandLineRunner {
 	private UserRepository userRepository;
 	
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	private final ClienteRepository clienteRepository;
 
 	public AdminUserConfig(RoleRepository roleRepository, UserRepository userRepository,
-			BCryptPasswordEncoder passwordEncoder) {
+			BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository) {
 		super();
 		this.roleRepository = roleRepository;
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.clienteRepository = clienteRepository;
 	}
 
 
@@ -40,6 +45,8 @@ public class AdminUserConfig implements CommandLineRunner {
 		
 		createRoleIfNotExists("ADMIN");
 	    createRoleIfNotExists("BASIC");
+	    
+	    Cliente clienteAdmin = new Cliente();
 		
 		var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
 		
@@ -54,6 +61,9 @@ public class AdminUserConfig implements CommandLineRunner {
 					user.setUsername("admin");
 					user.setPassword(passwordEncoder.encode("123"));
 					user.setRoles(Set.of(roleAdmin));
+					clienteAdmin.setUser(user);					
+					user.setCliente(clienteAdmin);					
+					clienteRepository.save(clienteAdmin);
 					userRepository.save(user);
 				}
 			);

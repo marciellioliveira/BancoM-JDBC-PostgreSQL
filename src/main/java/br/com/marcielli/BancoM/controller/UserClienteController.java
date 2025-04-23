@@ -7,12 +7,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.com.marcielli.BancoM.dto.ClienteMapper;
+import br.com.marcielli.BancoM.dto.ClienteResponseDTO;
+import br.com.marcielli.BancoM.dto.security.UserClienteResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserCreateDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Endereco;
@@ -22,68 +28,31 @@ import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.RoleRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.UserClienteService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @RestController
 public class UserClienteController {
 
 	private final UserRepository userRepository;
-	private final ClienteRepository clienteRepository;
-	private final RoleRepository roleRepository;
-	private final BCryptPasswordEncoder passwordEncoder;
-	
 	private final UserClienteService clienteService;
-
-	public UserClienteController(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository, UserClienteService clienteService) {
-		this.userRepository = userRepository;
-		this.roleRepository = roleRepository;
-		this.passwordEncoder = passwordEncoder;
-		this.clienteRepository = clienteRepository;
-		this.clienteService = clienteService;
-	}
 	
+	public UserClienteController(UserClienteService clienteService, UserRepository userRepository) {
+		this.clienteService = clienteService;
+		this.userRepository = userRepository;
+	}
+
 	@PostMapping("/users")
 	@Transactional
-	public ResponseEntity<Void> newUser(@RequestBody UserCreateDTO dto){
+	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto){
+			
+		User clienteAdicionado = clienteService.save(dto);
 		
-		var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
-		var userFromDb = userRepository.findByUsername(dto.username());
-		
-		if(userFromDb.isPresent()) { //É uma entidade com erro de negócio da requisição da API
-			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+		if(clienteAdicionado != null) {
+			return new ResponseEntity<String>("Cliente adicionado com sucesso", HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
-		
-		//Se não existe, cria um novo usuário
-		var user = new User();
-		user.setUsername(dto.username());
-		user.setPassword(passwordEncoder.encode(dto.password()));
-		user.setRoles(Set.of(basicRole));
-				
-		//Marcielli inseriu
-		Cliente client = new Cliente();
-		client.setNome(dto.nome());
-		client.setCpf(dto.cpf());
-	
-		Endereco address = new Endereco();
-		address.setCep(dto.cep());
-		address.setCidade(dto.cidade());
-		address.setEstado(dto.estado());
-		address.setRua(dto.rua());
-		address.setNumero(dto.numero());
-		address.setBairro(dto.bairro());
-		address.setComplemento(dto.complemento());
-		
-		client.setEndereco(address);
-		client.setUser(user);
-		user.setCliente(client);
-		
-		clienteRepository.save(client);
-		//Fecha Marcielli Inseriu
-		
-		userRepository.save(user);
-		
-		return ResponseEntity.ok().build();
-		
 	}
 	
 	@GetMapping("/users")
@@ -93,11 +62,91 @@ public class UserClienteController {
 		return ResponseEntity.ok(users);
 	}
 	
+	@GetMapping("/users/{id}")
+	@Transactional
+	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id) {
+		
+		Cliente clienteUnico = clienteService.getClienteById(id);
+		
+		if (clienteUnico == null || clienteUnico.getUser() == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+	    }
+		
+		boolean isAdmin = clienteUnico.getUser().getRoles().stream()
+			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+		
+		if(!isAdmin) {
+			UserClienteResponseDTO response = new UserClienteResponseDTO();
+			response.setNome(clienteUnico.getNome());
+			response.setCpf(clienteUnico.getCpf());
+			
+			Endereco endereco = clienteUnico.getEndereco();
+	        if (endereco != null) {
+	            response.setCep(endereco.getCep());
+	            response.setCidade(endereco.getCidade());
+	            response.setEstado(endereco.getEstado());
+	            response.setRua(endereco.getRua());
+	            response.setNumero(endereco.getNumero());
+	            response.setBairro(endereco.getBairro());
+	            response.setComplemento(endereco.getComplemento());
+	        }
+			
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} else {			
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+		}
+	}
 	
+	@PutMapping("/users/{id}") 
+	@Transactional
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
+
+		Cliente clienteUnico = clienteService.update(id, dto);
+		
+		if (clienteUnico == null || clienteUnico.getUser() == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+	    }
+		
+		
+		
+		boolean isAdmin = clienteUnico.getUser().getRoles().stream()
+			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+		
+		if(!isAdmin) {
+			UserClienteResponseDTO response = new UserClienteResponseDTO();
+			response.setNome(clienteUnico.getNome());
+			response.setCpf(clienteUnico.getCpf());
+			
+			Endereco endereco = clienteUnico.getEndereco();
+	        if (endereco != null) {
+	            response.setCep(endereco.getCep());
+	            response.setCidade(endereco.getCidade());
+	            response.setEstado(endereco.getEstado());
+	            response.setRua(endereco.getRua());
+	            response.setNumero(endereco.getNumero());
+	            response.setBairro(endereco.getBairro());
+	            response.setComplemento(endereco.getComplemento());
+	        }
+			
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} else {			
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+		}
+		
+	}
 	
-	
-	
-	
-	
+	@DeleteMapping("/users/{id}")
+	@Transactional
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
+
+	    boolean clienteUnico = clienteService.delete(id);
+
+	    if (clienteUnico) {
+	        return ResponseEntity.status(HttpStatus.OK).body("Cliente deletado com sucesso!");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
+	    }
+	}
+
 	
 }

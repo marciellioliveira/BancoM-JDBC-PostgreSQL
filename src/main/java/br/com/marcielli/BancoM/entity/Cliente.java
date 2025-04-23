@@ -27,7 +27,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"contas", "user"}) 
+@ToString(exclude = {"contas", "user", "endereco"}) 
 @EqualsAndHashCode
 @Entity
 public class Cliente implements Serializable {
@@ -45,7 +45,8 @@ public class Cliente implements Serializable {
 	private String nome;
 	
 	private Long cpf;
-	@OneToOne(cascade = {CascadeType.ALL})
+	
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "enderecoId", referencedColumnName = "id")
 	@JsonManagedReference
 	private Endereco endereco;

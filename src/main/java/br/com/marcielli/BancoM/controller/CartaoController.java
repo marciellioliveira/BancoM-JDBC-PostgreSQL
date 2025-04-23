@@ -25,108 +25,132 @@ import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
+import br.com.marcielli.BancoM.service.UserCartaoService;
+import br.com.marcielli.BancoM.service.UserContaService;
 
 @RestController
 @RequestMapping("/cartoes")
 public class CartaoController {
 	
-	private final CartaoRepository cartaoRepository;
-	private final UserRepository userRepository;
+//	private final CartaoRepository cartaoRepository;
+//	private final UserRepository userRepository;
+	private final UserCartaoService cartaoService;
+	
 
-	public CartaoController(CartaoRepository cartaoRepository, UserRepository userRepository) {
-		this.userRepository = userRepository;
-		this.cartaoRepository = cartaoRepository;
+	public CartaoController(UserCartaoService cartaoService) {
+		this.cartaoService = cartaoService;
 	}
+
+//	public CartaoController(CartaoRepository cartaoRepository, UserRepository userRepository, UserCartaoService cartaoService) {
+//		this.userRepository = userRepository;
+//		this.cartaoRepository = cartaoRepository;
+//		this.cartaoService = cartaoService;
+//	}
 	
-	private BigDecimal limiteCredito = new BigDecimal("600");
-	private BigDecimal limiteDiarioTransacao = new BigDecimal("600");
+//	private BigDecimal limiteCredito = new BigDecimal("600");
+//	private BigDecimal limiteDiarioTransacao = new BigDecimal("600");
 	
+
 	@PostMapping("")
 	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token){
 		
-		//Receber o usuário que está logado e criar a conta desse usuário.
-		Integer userId = null;
+		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
+		Cartao cartaoAdicionado = cartaoService.save(dto, token);
 		
-		Cartao cartao = null;
-		List<Cartao> cartoes = new ArrayList<Cartao>();
-		String numCartao = gerarNumCartao();
+		if(cartaoAdicionado != null) {
+			return new ResponseEntity<String>("Cartão adicionado com sucesso", HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+		}	
 		
-		try {
-			userId = Integer.parseInt(token.getName());
-			
-		} catch (NumberFormatException e) {			
-			System.out.println("ID inválido no token: " + token.getName());
-		}
-		
-		var user = userRepository.findById(userId);		
-		
-		Optional<Conta> contaDoUser = user
-			    .map(User::getCliente)
-			    .map(Cliente::getContas)
-			    .flatMap(contas -> contas.stream()
-			        .filter(conta -> conta.getId().equals(dto.idConta()))
-			        .findFirst());
-		
-		if(dto.tipoCartao() == TipoCartao.CREDITO) {
-			
-			String numeroCartao = numCartao.concat("-CC");
-			
-			cartao = new CartaoCredito();
-			
-			cartao.setTipoCartao(dto.tipoCartao());
-			cartao.setSenha(dto.senha());
-			cartao.setNumeroCartao(numeroCartao);
-			cartao.setStatus(true);	
-			
-			if(cartao instanceof CartaoCredito cartaoCredito) {
-				cartaoCredito.setLimiteCreditoPreAprovado(limiteCredito);
-			}
-			
-			cartoes.add(cartao);	
-			
-			if(contaDoUser.isPresent()) {
-				Conta contaDoCartao = contaDoUser.get();
-				cartao.setConta(contaDoCartao);
-				cartao.setTipoConta(contaDoCartao.getTipoConta());
-				cartao.setCategoriaConta(contaDoCartao.getCategoriaConta());
-				contaDoCartao.setCartoes(cartoes);
-			} else {
-				throw new RuntimeException("Conta não está vinculada ao usuário.");
-			}
-		}
-		
-		if(dto.tipoCartao() == TipoCartao.DEBITO) {
-			
-			String numeroCartao = numCartao.concat("-CD");
-			
-			cartao = new CartaoDebito();	
-			
-			cartao.setTipoCartao(dto.tipoCartao());
-			cartao.setSenha(dto.senha());
-			cartao.setNumeroCartao(numeroCartao);
-			cartao.setStatus(true);
-			
-			if(cartao instanceof CartaoDebito cartaoDebito) {
-				cartaoDebito.setLimiteDiarioTransacao(limiteDiarioTransacao);
-			}
-			
-			cartoes.add(cartao);	
-			
-			if(contaDoUser.isPresent()) {
-				Conta contaDoCartao = contaDoUser.get();
-				cartao.setConta(contaDoCartao);
-				cartao.setTipoConta(contaDoCartao.getTipoConta());
-				cartao.setCategoriaConta(contaDoCartao.getCategoriaConta());
-				contaDoCartao.setCartoes(cartoes);
-			} else {
-				throw new RuntimeException("Conta não está vinculada ao usuário.");
-			}
-		}
-		
-		cartaoRepository.save(cartao);
-		
-		return new ResponseEntity<>("Cartão criado com sucesso", HttpStatus.OK);
 	}
+	
+//	@PostMapping("")
+//	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token){
+//		
+//		//Receber o usuário que está logado e criar a conta desse usuário.
+//		Integer userId = null;
+//		
+//		Cartao cartao = null;
+//		List<Cartao> cartoes = new ArrayList<Cartao>();
+//		String numCartao = gerarNumCartao();
+//		
+//		try {
+//			userId = Integer.parseInt(token.getName());
+//			
+//		} catch (NumberFormatException e) {			
+//			System.out.println("ID inválido no token: " + token.getName());
+//		}
+//		
+//		var user = userRepository.findById(userId);		
+//		
+//		Optional<Conta> contaDoUser = user
+//			    .map(User::getCliente)
+//			    .map(Cliente::getContas)
+//			    .flatMap(contas -> contas.stream()
+//			        .filter(conta -> conta.getId().equals(dto.idConta()))
+//			        .findFirst());
+//		
+//		if(dto.tipoCartao() == TipoCartao.CREDITO) {
+//			
+//			String numeroCartao = numCartao.concat("-CC");
+//			
+//			cartao = new CartaoCredito();
+//			
+//			cartao.setTipoCartao(dto.tipoCartao());
+//			cartao.setSenha(dto.senha());
+//			cartao.setNumeroCartao(numeroCartao);
+//			cartao.setStatus(true);	
+//			
+//			if(cartao instanceof CartaoCredito cartaoCredito) {
+//				cartaoCredito.setLimiteCreditoPreAprovado(limiteCredito);
+//			}
+//			
+//			cartoes.add(cartao);	
+//			
+//			if(contaDoUser.isPresent()) {
+//				Conta contaDoCartao = contaDoUser.get();
+//				cartao.setConta(contaDoCartao);
+//				cartao.setTipoConta(contaDoCartao.getTipoConta());
+//				cartao.setCategoriaConta(contaDoCartao.getCategoriaConta());
+//				contaDoCartao.setCartoes(cartoes);
+//			} else {
+//				throw new RuntimeException("Conta não está vinculada ao usuário.");
+//			}
+//		}
+//		
+//		if(dto.tipoCartao() == TipoCartao.DEBITO) {
+//			
+//			String numeroCartao = numCartao.concat("-CD");
+//			
+//			cartao = new CartaoDebito();	
+//			
+//			cartao.setTipoCartao(dto.tipoCartao());
+//			cartao.setSenha(dto.senha());
+//			cartao.setNumeroCartao(numeroCartao);
+//			cartao.setStatus(true);
+//			
+//			if(cartao instanceof CartaoDebito cartaoDebito) {
+//				cartaoDebito.setLimiteDiarioTransacao(limiteDiarioTransacao);
+//			}
+//			
+//			cartoes.add(cartao);	
+//			
+//			if(contaDoUser.isPresent()) {
+//				Conta contaDoCartao = contaDoUser.get();
+//				cartao.setConta(contaDoCartao);
+//				cartao.setTipoConta(contaDoCartao.getTipoConta());
+//				cartao.setCategoriaConta(contaDoCartao.getCategoriaConta());
+//				contaDoCartao.setCartoes(cartoes);
+//			} else {
+//				throw new RuntimeException("Conta não está vinculada ao usuário.");
+//			}
+//		}
+//		
+//		cartaoRepository.save(cartao);
+//		
+//		return new ResponseEntity<>("Cartão criado com sucesso", HttpStatus.OK);
+//	}
 	
 	
 	public String gerarNumCartao() {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
+import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
@@ -19,6 +20,8 @@ import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
 import br.com.marcielli.BancoM.repository.UserRepository;
+import br.com.marcielli.BancoM.service.ContaService;
+import br.com.marcielli.BancoM.service.UserContaService;
 
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
@@ -26,123 +29,129 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 @RequestMapping("/contas")
 public class ContaController {
 	
-	private final ContaRepositoy contaRepository;
-	private final UserRepository userRepository;
-
-	public ContaController(ContaRepositoy contaRepository, UserRepository userRepository) {
-		this.contaRepository = contaRepository;
-		this.userRepository = userRepository;
+	private final UserContaService contaService;
+	
+	
+	
+//	private final ContaRepositoy contaRepository;
+//	private final UserRepository userRepository;
+//	
+//
+//	public ContaController(ContaRepositoy contaRepository, UserRepository userRepository, UserContaService contaService) {
+//		this.contaRepository = contaRepository;
+//		this.userRepository = userRepository;
+//		this.contaService = contaService;
+//	}
+	
+	public ContaController(UserContaService contaService) {
+		super();
+		this.contaService = contaService;
 	}
-	
-	
+
+
 	@PostMapping("")
 	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto, JwtAuthenticationToken token){
 		
-		//Receber o usuário que está logado e criar a conta desse usuário.
-		Integer userId = null;
-		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
-		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-		novaTaxa.add(taxa);
+		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
+		Conta contaAdicionada = contaService.save(dto, token);
 		
-		String numeroConta =  gerarNumeroDaConta();
-		String numeroPix = gerarPixAleatorio();
-		String novoPix = numeroPix.concat("-PIX");
-		
-		Conta conta = null;
-		
-		try {
-			userId = Integer.parseInt(token.getName());
-			
-			
-		} catch (NumberFormatException e) {			
-			System.out.println("ID inválido no token: " + token.getName());
-		}
-		
-		var user = userRepository.findById(userId);
-		
-		if (dto.tipoConta() == TipoConta.CORRENTE) {
-			
-			conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
-			conta.setTaxas(novaTaxa);
-			String numContaCorrente = numeroConta.concat("-CC");
-			conta.setNumeroConta(numContaCorrente);
-			
-		} else if (dto.tipoConta() == TipoConta.POUPANCA) {
-			
-			conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
-			conta.setTaxas(novaTaxa);
-			String numContaPoupanca = numeroConta.concat("-PP");
-			conta.setNumeroConta(numContaPoupanca);
-		}
-		
-		conta.setPixAleatorio(novoPix);
-		conta.setCategoriaConta(taxa.getCategoria());
-		conta.setCliente(user.get().getCliente());
-		conta.setTipoConta(dto.tipoConta());
-		conta.setSaldoConta(dto.saldoConta());
-		conta.setStatus(true);
-		
-		contaRepository.save(conta);
+		if(contaAdicionada != null) {
+			return new ResponseEntity<String>("Conta adicionada com sucesso", HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+		}	
+	}
 	
-		return new ResponseEntity<>("Conta criada com sucesso", HttpStatus.OK);
-		
+	
+//	@PostMapping("")
+//	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto, JwtAuthenticationToken token){
+//		
 //		//Receber o usuário que está logado e criar a conta desse usuário.
 //		Integer userId = null;
+//		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
+//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+//		novaTaxa.add(taxa);
+//		
+//		String numeroConta =  gerarNumeroDaConta();
+//		String numeroPix = gerarPixAleatorio();
+//		String novoPix = numeroPix.concat("-PIX");
+//		
+//		Conta conta = null;
+//		
 //		try {
 //			userId = Integer.parseInt(token.getName());
+//			
+//			
 //		} catch (NumberFormatException e) {			
 //			System.out.println("ID inválido no token: " + token.getName());
 //		}
 //		
 //		var user = userRepository.findById(userId);
 //		
-//		var conta = new Conta();
+//		if (dto.tipoConta() == TipoConta.CORRENTE) {
+//			
+//			conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+//			conta.setTaxas(novaTaxa);
+//			String numContaCorrente = numeroConta.concat("-CC");
+//			conta.setNumeroConta(numContaCorrente);
+//			
+//		} else if (dto.tipoConta() == TipoConta.POUPANCA) {
+//			
+//			conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
+//			conta.setTaxas(novaTaxa);
+//			String numContaPoupanca = numeroConta.concat("-PP");
+//			conta.setNumeroConta(numContaPoupanca);
+//		}
+//		
+//		conta.setPixAleatorio(novoPix);
+//		conta.setCategoriaConta(taxa.getCategoria());
 //		conta.setCliente(user.get().getCliente());
-//		conta.setTipoConta(dto.getTipoConta());
-//		conta.setSaldoConta(dto.getSaldoConta());
+//		conta.setTipoConta(dto.tipoConta());
+//		conta.setSaldoConta(dto.saldoConta());
+//		conta.setStatus(true);
 //		
 //		contaRepository.save(conta);
 //	
 //		return new ResponseEntity<>("Conta criada com sucesso", HttpStatus.OK);
-		
-	}
+//		
+//	}
 	
 	
 	
-	// Outros métodos
-	public String gerarNumeroDaConta() {
-
-		int[] sequencia = new int[8];
-		Random random = new Random();
-		String minhaConta = "";
-
-		for (int i = 0; i < sequencia.length; i++) {
-			sequencia[i] = 1 + random.nextInt(8);
-		}
-
-		for (int i = 0; i < sequencia.length; i++) {
-			minhaConta += Integer.toString(sequencia[i]);
-		}
-
-		return minhaConta;
-	}
-
-	public String gerarPixAleatorio() {
-
-		int[] sequencia = new int[8];
-		Random random = new Random();
-		String meuPix = "";
-
-		for (int i = 0; i < sequencia.length; i++) {
-			sequencia[i] = 1 + random.nextInt(8);
-		}
-
-		for (int i = 0; i < sequencia.length; i++) {
-			meuPix += Integer.toString(sequencia[i]);
-		}
-
-		return meuPix;
-	}
+//	// Outros métodos
+//	public String gerarNumeroDaConta() {
+//
+//		int[] sequencia = new int[8];
+//		Random random = new Random();
+//		String minhaConta = "";
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			sequencia[i] = 1 + random.nextInt(8);
+//		}
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			minhaConta += Integer.toString(sequencia[i]);
+//		}
+//
+//		return minhaConta;
+//	}
+//
+//	public String gerarPixAleatorio() {
+//
+//		int[] sequencia = new int[8];
+//		Random random = new Random();
+//		String meuPix = "";
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			sequencia[i] = 1 + random.nextInt(8);
+//		}
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			meuPix += Integer.toString(sequencia[i]);
+//		}
+//
+//		return meuPix;
+//	}
 
 	
 

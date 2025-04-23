@@ -51,7 +51,7 @@ public class User{
 	@JoinTable(name = "tb_users_roles", joinColumns = @JoinColumn(referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(referencedColumnName = "role_id"))
 	private Set<Role> roles;
 	
-	@OneToOne(cascade = {CascadeType.ALL}) 
+	@OneToOne(cascade = CascadeType.ALL) 
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
 	

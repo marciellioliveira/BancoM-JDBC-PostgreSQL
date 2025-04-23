@@ -21,72 +21,95 @@ import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoSeguro;
 import br.com.marcielli.BancoM.repository.SeguroRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
+import br.com.marcielli.BancoM.service.UserSeguroService;
 
 @RestController
 @RequestMapping("/seguros")
 public class SeguroController {
 	
-	private final SeguroRepository seguroRepository;
-	private final UserRepository userRepository;
 	
-	public SeguroController(SeguroRepository seguroRepository, UserRepository userRepository) {
-		this.seguroRepository = seguroRepository;
-		this.userRepository = userRepository;
+	
+	
+//	private final SeguroRepository seguroRepository;
+//	private final UserRepository userRepository;
+//	
+//	public SeguroController(SeguroRepository seguroRepository, UserRepository userRepository) {
+//		this.seguroRepository = seguroRepository;
+//		this.userRepository = userRepository;
+//	}
+//	
+//	@PostMapping("")
+//	public ResponseEntity<String> createSeguro(@RequestBody SeguroCreateDTO dto, JwtAuthenticationToken token){
+//		
+//		//Receber o usuário que está logado e criar a conta desse usuário.
+//		Integer userId = null;
+//		 BigDecimal valorMensal = BigDecimal.ZERO;
+//	     BigDecimal valorApolice = BigDecimal.ZERO;
+//		
+//		try {
+//			userId = Integer.parseInt(token.getName());
+//			
+//			
+//		} catch (NumberFormatException e) {			
+//			System.out.println("ID inválido no token: " + token.getName());
+//		}
+//		
+//		var user = userRepository.findById(userId);	
+//		
+//		Optional<Cartao> cartaoDaConta = user
+//			    .map(User::getCliente)
+//			    .map(Cliente::getContas)
+//			    .flatMap(contas -> contas.stream()
+//			        .flatMap(conta -> conta.getCartoes().stream())
+//			        .filter(cartao -> cartao.getId().equals(dto.idCartao()))
+//			        .findFirst());
+//		
+//		Seguro seguro = new Seguro();
+//		seguro.setTipo(dto.tipoSeguro());
+//		seguro.setAtivo(true);
+//		
+//		if(cartaoDaConta.isPresent()) {
+//			
+//			Cartao cartaodaContaDoUser = cartaoDaConta.get();
+//			
+//			if(dto.tipoSeguro() == TipoSeguro.SEGURO_VIAGEM && cartaodaContaDoUser.getCategoriaConta() == CategoriaConta.PREMIUM) {
+//				 valorMensal = BigDecimal.ZERO;
+//			} else {
+//				 valorMensal = new BigDecimal("50.00");
+//			}
+//			
+//			if(dto.tipoSeguro() == TipoSeguro.SEGURO_FRAUDE) {
+//				valorApolice = new BigDecimal("5000.00");
+//			}
+//			
+//			seguro.setCartao(cartaodaContaDoUser);
+//			
+//		} else {
+//			throw new RuntimeException("Cartão não está vinculado a uma conta.");
+//		}
+//
+//        seguroRepository.save(seguro);
+//		
+//		return new ResponseEntity<>("Seguro criado com sucesso", HttpStatus.OK);
+//	}
+	
+	
+	private final UserSeguroService seguroService;
+	
+	public SeguroController(UserSeguroService seguroService) {
+		this.seguroService = seguroService;
 	}
 	
 	@PostMapping("")
 	public ResponseEntity<String> createSeguro(@RequestBody SeguroCreateDTO dto, JwtAuthenticationToken token){
+		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
+		Seguro seguroAdicionado = seguroService.save(dto, token);
 		
-		//Receber o usuário que está logado e criar a conta desse usuário.
-		Integer userId = null;
-		 BigDecimal valorMensal = BigDecimal.ZERO;
-	     BigDecimal valorApolice = BigDecimal.ZERO;
-		
-		try {
-			userId = Integer.parseInt(token.getName());
-			
-			
-		} catch (NumberFormatException e) {			
-			System.out.println("ID inválido no token: " + token.getName());
-		}
-		
-		var user = userRepository.findById(userId);	
-		
-		Optional<Cartao> cartaoDaConta = user
-			    .map(User::getCliente)
-			    .map(Cliente::getContas)
-			    .flatMap(contas -> contas.stream()
-			        .flatMap(conta -> conta.getCartoes().stream())
-			        .filter(cartao -> cartao.getId().equals(dto.idCartao()))
-			        .findFirst());
-		
-		Seguro seguro = new Seguro();
-		seguro.setTipo(dto.tipoSeguro());
-		seguro.setAtivo(true);
-		
-		if(cartaoDaConta.isPresent()) {
-			
-			Cartao cartaodaContaDoUser = cartaoDaConta.get();
-			
-			if(dto.tipoSeguro() == TipoSeguro.SEGURO_VIAGEM && cartaodaContaDoUser.getCategoriaConta() == CategoriaConta.PREMIUM) {
-				 valorMensal = BigDecimal.ZERO;
-			} else {
-				 valorMensal = new BigDecimal("50.00");
-			}
-			
-			if(dto.tipoSeguro() == TipoSeguro.SEGURO_FRAUDE) {
-				valorApolice = new BigDecimal("5000.00");
-			}
-			
-			seguro.setCartao(cartaodaContaDoUser);
-			
+		if(seguroAdicionado != null) {
+			return new ResponseEntity<String>("Seguro adicionado com sucesso", HttpStatus.CREATED);
 		} else {
-			throw new RuntimeException("Cartão não está vinculado a uma conta.");
-		}
-
-        seguroRepository.save(seguro);
-		
-		return new ResponseEntity<>("Seguro criado com sucesso", HttpStatus.OK);
+			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+		}			
 	}
 	
 	
