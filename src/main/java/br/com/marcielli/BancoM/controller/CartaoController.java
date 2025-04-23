@@ -1,45 +1,45 @@
 package br.com.marcielli.BancoM.controller;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
-import br.com.marcielli.BancoM.entity.Cartao;
-import br.com.marcielli.BancoM.entity.CartaoCredito;
-import br.com.marcielli.BancoM.entity.CartaoDebito;
-import br.com.marcielli.BancoM.entity.Cliente;
-import br.com.marcielli.BancoM.entity.Conta;
-import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.enuns.TipoCartao;
-import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
-import br.com.marcielli.BancoM.repository.CartaoRepository;
-import br.com.marcielli.BancoM.repository.UserRepository;
-import br.com.marcielli.BancoM.service.UserCartaoService;
-import br.com.marcielli.BancoM.service.UserContaService;
-
-@RestController
-@RequestMapping("/cartoes")
-public class CartaoController {
-	
-//	private final CartaoRepository cartaoRepository;
-//	private final UserRepository userRepository;
-	private final UserCartaoService cartaoService;
-	
-
-	public CartaoController(UserCartaoService cartaoService) {
-		this.cartaoService = cartaoService;
-	}
+//
+//import java.math.BigDecimal;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Optional;
+//import java.util.Random;
+//
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.RequestBody;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RestController;
+//
+//import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
+//import br.com.marcielli.BancoM.entity.Cartao;
+//import br.com.marcielli.BancoM.entity.CartaoCredito;
+//import br.com.marcielli.BancoM.entity.CartaoDebito;
+//import br.com.marcielli.BancoM.entity.Cliente;
+//import br.com.marcielli.BancoM.entity.Conta;
+//import br.com.marcielli.BancoM.entity.User;
+//import br.com.marcielli.BancoM.enuns.TipoCartao;
+//import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
+//import br.com.marcielli.BancoM.repository.CartaoRepository;
+//import br.com.marcielli.BancoM.repository.UserRepository;
+//import br.com.marcielli.BancoM.service.UserCartaoService;
+//import br.com.marcielli.BancoM.service.UserContaService;
+//
+//@RestController
+//@RequestMapping("/cartoes")
+//public class CartaoController {
+//	
+////	private final CartaoRepository cartaoRepository;
+////	private final UserRepository userRepository;
+//	private final UserCartaoService cartaoService;
+//	
+//
+//	public CartaoController(UserCartaoService cartaoService) {
+//		this.cartaoService = cartaoService;
+//	}
 
 //	public CartaoController(CartaoRepository cartaoRepository, UserRepository userRepository, UserCartaoService cartaoService) {
 //		this.userRepository = userRepository;
@@ -152,24 +152,24 @@ public class CartaoController {
 //		return new ResponseEntity<>("Cartão criado com sucesso", HttpStatus.OK);
 //	}
 	
-	
-	public String gerarNumCartao() {
-
-		int[] sequencia = new int[8];
-		Random random = new Random();
-		String meucartao = "";
-
-		for (int i = 0; i < sequencia.length; i++) {
-			sequencia[i] = 1 + random.nextInt(8);
-		}
-
-		for (int i = 0; i < sequencia.length; i++) {
-			meucartao += Integer.toString(sequencia[i]);
-		}
-
-		return meucartao;
-	}
-	
+//	
+//	public String gerarNumCartao() {
+//
+//		int[] sequencia = new int[8];
+//		Random random = new Random();
+//		String meucartao = "";
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			sequencia[i] = 1 + random.nextInt(8);
+//		}
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			meucartao += Integer.toString(sequencia[i]);
+//		}
+//
+//		return meucartao;
+//	}
+//	
 	
 //
 //	@Autowired
@@ -462,4 +462,4 @@ public class CartaoController {
 //	    return auth.getAuthorities().stream()
 //	        .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || clienteIdDoCartao.equals(clienteIdToken));
 //	}
-}
+//}

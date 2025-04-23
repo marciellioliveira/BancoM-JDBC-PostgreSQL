@@ -12,11 +12,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.dto.CartaoCreateTedDTO;
+import br.com.marcielli.BancoM.dto.CartaoPagarFaturaDTO;
 import br.com.marcielli.BancoM.dto.CartaoUpdateLimiteDTO;
+import br.com.marcielli.BancoM.dto.CartaoUpdateStatusDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarLimiteCartaoCreditoDTO;
+import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarLimiteCartaoDebitoDTO;
+import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarSenhaCartaoDTO;
+import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarStatusCartaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
@@ -313,19 +318,101 @@ public class UserCartaoService {
 	}
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarStatusC(Long cartaoId, UserCartaoAlterarStatusCartaoDTO dto) {	
+		
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		String statusNovo = dto.novoStatus();
+		
+		if(statusNovo.equalsIgnoreCase("true")) {
+			cartao.setStatus(true);							
+		} 
+
+		if(statusNovo.equalsIgnoreCase("false")){
+			cartao.setStatus(false);
+		}
+		
+		return cartaoRepository.save(cartao);
+	}
+	
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarSenhaC(Long cartaoId, UserCartaoAlterarSenhaCartaoDTO dto) {	
+		
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		String senhaNova = dto.novaSenha();
+		
+		cartao.setSenha(senhaNova);
+		
+		return cartaoRepository.save(cartao);
+	}
+	
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarLimiteCartaoDebito(Long cartaoId, UserCartaoAlterarLimiteCartaoDebitoDTO dto) {	
+		
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		BigDecimal novoLimite = dto.novoLimite();
+		
+		if(dto.novoLimite() == null) {
+			throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão");
+		}
+		
+		if(cartao instanceof CartaoDebito cartaoDebito) {
+			cartaoDebito.alterarLimiteDiarioTransacao(novoLimite);				
+		}
+		
+		cartaoRepository.save(cartao);
+		return cartao;
+	}
 	
 	
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Optional<Fatura> getFaturaCartaoDeCreditoService(Long cartaoId) {
+
+		return cartaoRepository.findById(cartaoId)
+		        .filter(c -> c instanceof CartaoCredito)
+		        .map(c -> {
+		            Fatura fatura = ((CartaoCredito) c).getFatura();
+		            if (fatura.isStatus()) {
+		                throw new CartaoNaoEncontradoException("A fatura já foi paga.");
+		            }
+		            return fatura;
+		        });
+	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public boolean pagFaturaCartaoC(Long idCartao) {
+		
+		Cartao cartaoOrigem = cartaoRepository.findById(idCartao).orElseThrow(
+				() -> new CartaoNaoEncontradoException("O cartão origem não existe."));
+		
+		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId()).orElseThrow(
+				() -> new ContaNaoEncontradaException("A conta origem não existe."));
+		
+		if(cartaoOrigem instanceof CartaoCredito cc) {
+			
+			if(cc.getTotalGastoMesCredito().compareTo(contaOrigem.getSaldoConta()) > 0 ) {
+				throw new CartaoNaoEncontradoException("Você não tem saldo suficiente para realizar o pagamento.");
+			}
+			
+			cc.getTotalGastoMesCredito();
+			contaOrigem.pagarFatura(cc.getTotalGastoMesCredito());
+			cc.getFatura().setStatus(true);
+			
+		}
+		
+		return true;
+		
+	}
 	
 	
 	

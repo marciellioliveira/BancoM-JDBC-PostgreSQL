@@ -32,4 +32,5 @@ public class UserCartaoResponseDTO {
 	private TipoConta tipoConta;
 	private CategoriaConta categoriaConta;
 	private BigDecimal limiteCreditoPreAprovado;
+	private BigDecimal limiteDiarioTransacao;
 }

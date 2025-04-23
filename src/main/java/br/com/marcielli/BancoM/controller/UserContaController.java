@@ -169,6 +169,7 @@ public class UserContaController {
 	
 	//Transferências
 	@PostMapping("/contas/{idContaReceber}/transferencia")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,  @RequestBody UserContaTedDTO dto) {
 		
 		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto);
@@ -181,6 +182,7 @@ public class UserContaController {
 	}	
 	
 	@GetMapping("/contas/{contaId}/saldo") 
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> exibirSaldo(@PathVariable("contaId") Long contaId) {
 		
 	    BigDecimal saldoAtual = contaService.exibirSaldo(contaId);
@@ -193,6 +195,7 @@ public class UserContaController {
 	}
 	
 	@PostMapping("/contas/{idContaReceber}/pix") 
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaPixDTO dto) {
 		
 		boolean pixRealizado = contaService.transferirPIX(idContaReceber, dto);
@@ -206,6 +209,7 @@ public class UserContaController {
 	
 	
 	@PostMapping("/contas/{idContaReceber}/deposito") 
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaDepositoDTO dto) {
 		
 		boolean depositoRealizado = contaService.transferirDEPOSITO(idContaReceber, dto);
@@ -218,6 +222,7 @@ public class UserContaController {
 	}
 	
 	@PostMapping("/contas/{idContaReceber}/saque") 
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserContaSaqueDTO dto) {
 		
 		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, dto);
@@ -230,6 +235,7 @@ public class UserContaController {
 	}
 	
 	@PutMapping("/contas/{idConta}/manutencao") 
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, @RequestBody UserContaTaxaManutencaoDTO dto) {
 	
 		Conta manutencaoCCRealizada = contaService.manutencaoTaxaCC(idConta, dto);
@@ -242,6 +248,7 @@ public class UserContaController {
 	}
 	
 	@PutMapping("/contas/{idConta}/rendimentos") 
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta, @RequestBody UserContaRendimentoDTO dto) {
 		
 		Conta manutencaoCPRealizada = contaService.rendimentoTaxaCP(idConta, dto);
