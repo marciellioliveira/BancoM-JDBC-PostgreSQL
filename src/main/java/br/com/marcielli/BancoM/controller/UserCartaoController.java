@@ -144,7 +144,8 @@ public class UserCartaoController {
 	}
 
 	@DeleteMapping("/cartoes/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	@Transactional
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
 
@@ -173,7 +174,8 @@ public class UserCartaoController {
 	}
 
 	@PutMapping("/cartoes/{cartaoId}/limite")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	public ResponseEntity<?> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId,
 			@RequestBody UserCartaoAlterarLimiteCartaoCreditoDTO dto) {
 
@@ -214,7 +216,8 @@ public class UserCartaoController {
 	}
 
 	@PutMapping("/cartoes/{cartaoId}/status")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	public ResponseEntity<?> alterarStatusCartao(@PathVariable("cartaoId") Long cartaoId,
 			@RequestBody UserCartaoAlterarStatusCartaoDTO dto) {
 
@@ -296,7 +299,8 @@ public class UserCartaoController {
 	}
 
 	@PutMapping("/cartoes/{cartaoId}/limite-diario")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<?> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId,
 			@RequestBody UserCartaoAlterarLimiteCartaoDebitoDTO dto) {
 

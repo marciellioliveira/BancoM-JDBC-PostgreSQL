@@ -163,7 +163,8 @@ public class UserContaController {
 	}
 
 	@DeleteMapping("/contas/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	@Transactional
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
 
@@ -247,7 +248,8 @@ public class UserContaController {
 	}
 
 	@PutMapping("/contas/{idConta}/manutencao")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta,
 			@RequestBody UserContaTaxaManutencaoDTO dto) {
 
@@ -261,7 +263,8 @@ public class UserContaController {
 	}
 
 	@PutMapping("/contas/{idConta}/rendimentos")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta,
 			@RequestBody UserContaRendimentoDTO dto) {
 

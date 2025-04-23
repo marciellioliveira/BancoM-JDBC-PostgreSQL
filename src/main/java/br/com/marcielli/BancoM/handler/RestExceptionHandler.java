@@ -1,6 +1,8 @@
 package br.com.marcielli.BancoM.handler;
 
 
+import java.nio.file.AccessDeniedException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +27,13 @@ import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	 // Acesso negado (Ainda não funcionou)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AccessDeniedException exception) {
+        RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.FORBIDDEN, "Você não tem permissão para acessar este recurso.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respostaTratada);
+    }
 
 	//Cliente
 

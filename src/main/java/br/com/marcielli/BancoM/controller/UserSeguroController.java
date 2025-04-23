@@ -111,7 +111,8 @@ public class UserSeguroController {
 	}
 
 	@DeleteMapping("/seguros/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	@Transactional
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
 
