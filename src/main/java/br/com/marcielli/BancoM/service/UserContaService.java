@@ -32,6 +32,7 @@ import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
+import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
@@ -67,10 +68,21 @@ public class UserContaService {
 	    Cliente clienteAlvo;
 	    
 	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) { //Como Admin pode criar conta para qualquer cliente, ele usa o dto aqui
+	    	
+	    	if (ValidacaoUsuarioAtivo.isAdmin(currentUser) && dto.idUsuario() == null) {
+	    	    throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
+	    	}
+	    	
 	        clienteAlvo = clienteRepository.findById(dto.idUsuario())
 	                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-	    } else { //Como só pode criar conta para ele mesmo, ele ignora o DTO aqui	      
-	        clienteAlvo = currentUser.getCliente();
+	    } else { //Como só pode criar conta para ele mesmo, ele ignora o DTO aqui
+	    	
+	    	Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
+	    	
+	    	if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) { //Basic só pode cadastrar no id de usuario dele
+	            throw new ClienteEncontradoException("Usuário não tem permissão para criar conta para outro ID.");
+	        }
+	        clienteAlvo = currentUser.getCliente(); 
 	    }
 
 	    // Restante da lógica de criação da conta
@@ -119,39 +131,59 @@ public class UserContaService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Conta update(Long id, ContaUpdateDTO dto) {
+	public Conta update(Long id, ContaUpdateDTO dto, JwtAuthenticationToken token) {
+	    // Valida usuário logado
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-		Conta contaExistente = contaRepository.findById(id).orElse(null);
+	    // Busca a conta a ser atualizada
+	    Conta contaExistente = contaRepository.findById(id)
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
 
-		if (contaExistente == null) {
-			return null;
-		}
+	    // Valida se é ADMIN ou dono da conta
+	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
+	        !contaExistente.getCliente().getUser().getId().equals(currentUser.getId())) {
+	        throw new ClienteEncontradoException("Apenas administradores podem editar contas de outros usuários.");
+	    }
 
-		String novoPix = dto.pixAleatorio().concat("-PIX");
-		contaExistente.setPixAleatorio(novoPix);
-		contaExistente.setStatus(true);
+	    // Impede edição de contas de ADMIN (opcional)
+	    if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser())) {
+	        throw new ClienteEncontradoException("Não é possível editar uma conta de administrador.");
+	    }
 
-		contaRepository.save(contaExistente);
+	    // Atualiza os dados
+	    String novoPix = dto.pixAleatorio().concat("-PIX");
+	    contaExistente.setPixAleatorio(novoPix);
+	    contaExistente.setStatus(true);
 
-		return contaExistente;
-
+	    return contaRepository.save(contaExistente);
 	}
 
 	@Transactional
-	public boolean delete(Long id) {
+	public boolean delete(Long id, JwtAuthenticationToken token) {
+	    // Valida usuário logado
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-		Conta contaExistente = contaRepository.findById(id).orElse(null);
+	    // Busca a conta a ser desativada
+	    Conta contaExistente = contaRepository.findById(id)
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
 
-		boolean isAdmin = contaExistente.getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+	    // Impede exclusão de contas de ADMIN
+	    if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser())) {
+	        throw new ClienteNaoEncontradoException("Não é possível desativar uma conta de administrador.");
+	    }
 
-		if (isAdmin) {
-			throw new ClienteNaoEncontradoException("Não é possível deletar a conta administradora do sistema.");
-		}
+	    // Valida se é ADMIN ou dono da conta
+	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
+	        !contaExistente.getCliente().getUser().getId().equals(currentUser.getId())) {
+	        throw new ClienteEncontradoException("Apenas administradores podem desativar contas de outros usuários.");
+	    }
 
-		contaExistente.setStatus(false);
-
-		return true;
+	    // Soft delete (desativação)
+	    contaExistente.setStatus(false);
+	    contaRepository.save(contaExistente);
+	    return true;
 	}
 
 	// Transferências

@@ -94,16 +94,29 @@ public class UserClienteService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cliente update(Long id, UserCreateDTO cliente) {
+	public Cliente update(Long id, UserCreateDTO cliente, JwtAuthenticationToken token) {
 		
-		Cliente clienteExistente = clienteRepository.findById(id).orElse(null);
+		//Usuário está logado?
+		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 		
-		if (clienteExistente == null) {
-			 return null;
-		}
+	    //Cliente que será atualizado
+	    Cliente clienteExistente = clienteRepository.findById(id)
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
+	    
+	    //É admin ou está apenas tentando editar seus próprios dados?
+	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
+            !clienteExistente.getUser().getId().equals(currentUser.getId())) {
+            throw new ClienteEncontradoException("Apenas administradores podem editar outros usuários.");
+        }
+	    
+	    //Cliente não pode editar dados do adminstrador
+	    if (ValidacaoUsuarioAtivo.isAdmin(clienteExistente.getUser())) {
+	        throw new ClienteEncontradoException("Não é possível editar um administrador.");
+	    }
 		
 		clienteExistente.setNome(cliente.nome());
-		 clienteExistente.setCpf(cliente.cpf());
+		clienteExistente.setCpf(cliente.cpf());
 	    
 	    Endereco endereco = clienteExistente.getEndereco();
 	    if (endereco != null) {
@@ -139,23 +152,29 @@ public class UserClienteService {
 	}
 	
 	@Transactional
-	public boolean delete(Long id) {
+	public boolean delete(Long id, JwtAuthenticationToken token) {
 		
-		Cliente clienteExistente = clienteRepository.findById(id).orElse(null);
+		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 		
-		boolean isAdmin = clienteExistente.getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-		
-		if(isAdmin) {
-			throw new ClienteNaoEncontradoException("Não é possível deletar o admin do sistema.");
-		}
-		
-		
-		clienteExistente.setClienteAtivo(false);
-		clienteExistente.getUser().setUserAtivo(false);
-		
-		//userRepository.deleteById(clienteExistente.getUser().getId());
-		
+	    Cliente clienteExistente = clienteRepository.findById(id)
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
+	    
+	    if (ValidacaoUsuarioAtivo.isAdmin(clienteExistente.getUser())) { //Não deixa desativar se for admin
+	        throw new ClienteNaoEncontradoException("Não é possível desativar um administrador.");
+	    }
+	    
+	    //É admin ou apenas está tentando desativar sua conta basic?
+	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
+            !clienteExistente.getUser().getId().equals(currentUser.getId())) {
+            throw new ClienteEncontradoException("Apenas administradores podem desativar outros usuários.");
+        }
+	    
+	    clienteExistente.setClienteAtivo(false);
+	    clienteExistente.getUser().setUserAtivo(false);
+	    
+	    clienteRepository.save(clienteExistente);
+	    
 	    return true;
 	}
 

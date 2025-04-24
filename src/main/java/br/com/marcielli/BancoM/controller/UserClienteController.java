@@ -39,13 +39,11 @@ public class UserClienteController {
 
 		// É admin?
 		boolean isAdmin = false;
-	    if (token != null) {
-	        isAdmin = token.getAuthorities().stream()
-	                .anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"));
-	    }
-	    
-	    User clienteAdicionado = clienteService.save(dto, isAdmin, token);
+		if (token != null) {
+			isAdmin = token.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"));
+		}
 
+		User clienteAdicionado = clienteService.save(dto, isAdmin, token);
 
 		if (clienteAdicionado != null) {
 			return new ResponseEntity<String>("Cliente adicionado com sucesso", HttpStatus.CREATED);
@@ -101,9 +99,10 @@ public class UserClienteController {
 	@PutMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto,
+			JwtAuthenticationToken token) {
 
-		Cliente clienteUnico = clienteService.update(id, dto);
+		Cliente clienteUnico = clienteService.update(id, dto, token);
 
 		if (clienteUnico == null || clienteUnico.getUser() == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
@@ -136,16 +135,15 @@ public class UserClienteController {
 	}
 
 	@DeleteMapping("/users/{id}")
-	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	@Transactional
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
-		
-		if(id == null) {
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, JwtAuthenticationToken token) {
+
+		if (id == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
 		}
 
-		boolean clienteUnico = clienteService.delete(id);
+		boolean clienteUnico = clienteService.delete(id, token);
 
 		if (clienteUnico) {
 			return ResponseEntity.status(HttpStatus.OK).body("Cliente deletado com sucesso!");
