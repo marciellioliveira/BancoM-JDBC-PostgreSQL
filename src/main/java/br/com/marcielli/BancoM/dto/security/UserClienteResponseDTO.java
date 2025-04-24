@@ -28,4 +28,5 @@ public class UserClienteResponseDTO {
 	private String numero;	
 	private String bairro;	
 	private String complemento;
+	private boolean clienteAtivo;
 }

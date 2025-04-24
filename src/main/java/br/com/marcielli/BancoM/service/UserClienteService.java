@@ -41,7 +41,7 @@ public class UserClienteService {
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public User save(UserCreateDTO cliente, boolean isAdminFromController, JwtAuthenticationToken token) {
-	    // Validação de CPF
+	  
 	    if(cliente.cpf() != null) {            
 	        String cpfClient = Long.toString(cliente.cpf());
 	        if (!ValidadorCPF.validar(cpfClient)) {
@@ -49,17 +49,14 @@ public class UserClienteService {
 	        }
 	    }
 	    
-	    // Verifica se usuário já existe
 	    var userFromDb = userRepository.findByUsername(cliente.username());
 	    if(userFromDb.isPresent()) {
 	        throw new ClienteEncontradoException("Usuário já existe.");
 	    }
 	    
-	    // Validação de usuário e permissões
 	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
 	    ValidacaoUsuarioAtivo.validarPermissoesCriacao(currentUser, isAdminFromController, cliente.username());
 	    
-	    // Criação do novo usuário
 	    var user = new User();
 	    user.setUsername(cliente.username());
 	    user.setPassword(passwordEncoder.encode(cliente.password()));
@@ -67,7 +64,6 @@ public class UserClienteService {
 	    var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
 	    user.setRoles(Set.of(basicRole));     
 	  
-	    // Criação do cliente associado
 	    Cliente client = new Cliente();
 	    client.setNome(cliente.nome());
 	    client.setCpf(cliente.cpf());
@@ -95,28 +91,28 @@ public class UserClienteService {
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente update(Long id, UserCreateDTO cliente, JwtAuthenticationToken token) {
-		
-		//Usuário está logado?
-		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	   
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
 	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
-		
-	    //Cliente que será atualizado
+
 	    Cliente clienteExistente = clienteRepository.findById(id)
 	            .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 	    
-	    //É admin ou está apenas tentando editar seus próprios dados?
+	    if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
+	        throw new ClienteNaoEncontradoException("Não é possível atualizar um usuário/cliente desativado");
+	    }
+
 	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
-            !clienteExistente.getUser().getId().equals(currentUser.getId())) {
-            throw new ClienteEncontradoException("Apenas administradores podem editar outros usuários.");
-        }
+	        !clienteExistente.getUser().getId().equals(currentUser.getId())) {
+	        throw new ClienteEncontradoException("Apenas administradores podem editar outros usuários.");
+	    }
 	    
-	    //Cliente não pode editar dados do adminstrador
 	    if (ValidacaoUsuarioAtivo.isAdmin(clienteExistente.getUser())) {
 	        throw new ClienteEncontradoException("Não é possível editar um administrador.");
 	    }
-		
-		clienteExistente.setNome(cliente.nome());
-		clienteExistente.setCpf(cliente.cpf());
+
+	    clienteExistente.setNome(cliente.nome());
+	    clienteExistente.setCpf(cliente.cpf());
 	    
 	    Endereco endereco = clienteExistente.getEndereco();
 	    if (endereco != null) {
@@ -133,42 +129,40 @@ public class UserClienteService {
 	    if (user != null) {
 	        user.setUsername(cliente.username());
 	        user.setPassword(passwordEncoder.encode(cliente.password()));
-	      
 	    } else {
-	      
 	        user = new User();
 	        user.setUsername(cliente.username());
 	        user.setPassword(passwordEncoder.encode(cliente.password()));
-	  
 	        user.setCliente(clienteExistente);
 	        clienteExistente.setUser(user);
 	    }
 	    
 	    userRepository.save(user);
 	    clienteRepository.save(clienteExistente);
-		
-		return clienteExistente;
-		
+	    
+	    return clienteExistente;
 	}
 	
 	@Transactional
 	public boolean delete(Long id, JwtAuthenticationToken token) {
-		
-		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
 	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
-		
+
 	    Cliente clienteExistente = clienteRepository.findById(id)
 	            .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 	    
+	    if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
+	        throw new ClienteNaoEncontradoException("O usuário/cliente já está desativado");
+	    }
+
 	    if (ValidacaoUsuarioAtivo.isAdmin(clienteExistente.getUser())) { //Não deixa desativar se for admin
 	        throw new ClienteNaoEncontradoException("Não é possível desativar um administrador.");
 	    }
 	    
-	    //É admin ou apenas está tentando desativar sua conta basic?
 	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
-            !clienteExistente.getUser().getId().equals(currentUser.getId())) {
-            throw new ClienteEncontradoException("Apenas administradores podem desativar outros usuários.");
-        }
+	        !clienteExistente.getUser().getId().equals(currentUser.getId())) {
+	        throw new ClienteEncontradoException("Apenas administradores podem desativar outros usuários.");
+	    }
 	    
 	    clienteExistente.setClienteAtivo(false);
 	    clienteExistente.getUser().setUserAtivo(false);

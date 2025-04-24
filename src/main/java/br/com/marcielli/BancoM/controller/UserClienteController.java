@@ -88,6 +88,7 @@ public class UserClienteController {
 				response.setNumero(endereco.getNumero());
 				response.setBairro(endereco.getBairro());
 				response.setComplemento(endereco.getComplemento());
+				response.setClienteAtivo(clienteUnico.isClienteAtivo());
 			}
 
 			return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -125,6 +126,7 @@ public class UserClienteController {
 				response.setNumero(endereco.getNumero());
 				response.setBairro(endereco.getBairro());
 				response.setComplemento(endereco.getComplemento());
+				
 			}
 
 			return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -135,7 +137,7 @@ public class UserClienteController {
 	}
 
 	@DeleteMapping("/users/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	@Transactional
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id, JwtAuthenticationToken token) {
 

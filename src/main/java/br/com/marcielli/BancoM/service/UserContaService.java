@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
@@ -60,127 +62,151 @@ public class UserContaService {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta save(ContaCreateDTO dto, JwtAuthenticationToken token) {
-	  
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    // Definindo direito para qual cliente a conta será criada
-	    Cliente clienteAlvo;
-	    
-	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) { //Como Admin pode criar conta para qualquer cliente, ele usa o dto aqui
-	    	
-	    	if (ValidacaoUsuarioAtivo.isAdmin(currentUser) && dto.idUsuario() == null) {
-	    	    throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
-	    	}
-	    	
-	        clienteAlvo = clienteRepository.findById(dto.idUsuario())
-	                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-	    } else { //Como só pode criar conta para ele mesmo, ele ignora o DTO aqui
-	    	
-	    	Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
-	    	
-	    	if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) { //Basic só pode cadastrar no id de usuario dele
-	            throw new ClienteEncontradoException("Usuário não tem permissão para criar conta para outro ID.");
-	        }
-	        clienteAlvo = currentUser.getCliente(); 
-	    }
+		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+		ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    // Restante da lógica de criação da conta
-	    TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
-	    List<TaxaManutencao> novaTaxa = new ArrayList<>();
-	    novaTaxa.add(taxa);
-	    
-	    String numeroConta = gerarNumeroDaConta();
-	    String numeroPix = gerarPixAleatorio();
-	    String novoPix = numeroPix.concat("-PIX");
-	    
-	    Conta conta = null;
-	    
-	    try {
-	        if (dto.tipoConta() == TipoConta.CORRENTE) {
-	            conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
-	            String numContaCorrente = numeroConta.concat("-CC");
-	            conta.setNumeroConta(numContaCorrente);
-	        } else if (dto.tipoConta() == TipoConta.POUPANCA) {
-	            conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
-	            String numContaPoupanca = numeroConta.concat("-PP");
-	            conta.setNumeroConta(numContaPoupanca);
-	        }
-	        
-	        conta.setTaxas(novaTaxa);
-	        conta.setPixAleatorio(novoPix);
-	        conta.setCategoriaConta(taxa.getCategoria());
-	        conta.setCliente(clienteAlvo); //Como fiz a validação em cima, então sei ao certo aqui que vai criar exatamente para o cliente validado
-	        conta.setTipoConta(dto.tipoConta());
-	        conta.setSaldoConta(dto.saldoConta());
-	        conta.setStatus(true);
-	        
-	        contaRepository.save(conta);
-	        
-	    } catch (NumberFormatException e) {            
-	        System.out.println("ID inválido no token: " + token.getName());
-	    }
-	    
-	    return conta;
+		// Definindo para qual cliente a conta será criada
+		Cliente clienteAlvo;
+
+		if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) { // Como Admin pode criar conta para qualquer cliente, ele usa
+															// o dto aqui
+
+			if (ValidacaoUsuarioAtivo.isAdmin(currentUser) && dto.idUsuario() == null) {
+				throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
+			}
+
+			clienteAlvo = clienteRepository.findById(dto.idUsuario())
+					.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
+		} else { // Como só pode criar conta para ele mesmo, ele ignora o DTO aqui
+
+			Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
+
+			if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) { // Basic só pode cadastrar no
+																							// id de usuario dele
+				throw new ClienteEncontradoException("Usuário não tem permissão para criar conta para outro ID.");
+			}
+			clienteAlvo = currentUser.getCliente();
+		}
+
+		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
+		List<TaxaManutencao> novaTaxa = new ArrayList<>();
+		novaTaxa.add(taxa);
+
+		String numeroConta = gerarNumeroDaConta();
+		String numeroPix = gerarPixAleatorio();
+		String novoPix = numeroPix.concat("-PIX");
+
+		Conta conta = null;
+
+		try {
+			if (dto.tipoConta() == TipoConta.CORRENTE) {
+				conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+				String numContaCorrente = numeroConta.concat("-CC");
+				conta.setNumeroConta(numContaCorrente);
+			} else if (dto.tipoConta() == TipoConta.POUPANCA) {
+				conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
+				String numContaPoupanca = numeroConta.concat("-PP");
+				conta.setNumeroConta(numContaPoupanca);
+			}
+
+			conta.setTaxas(novaTaxa);
+			conta.setPixAleatorio(novoPix);
+			conta.setCategoriaConta(taxa.getCategoria());
+			conta.setCliente(clienteAlvo); // Como fiz a validação em cima, então sei ao certo aqui que vai criar
+											// exatamente para o cliente validado
+			conta.setTipoConta(dto.tipoConta());
+			conta.setSaldoConta(dto.saldoConta());
+			conta.setStatus(true);
+
+			contaRepository.save(conta);
+
+		} catch (NumberFormatException e) {
+			System.out.println("ID inválido no token: " + token.getName());
+		}
+
+		return conta;
 	}
-
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta getContasById(Long id) {
-		return contaRepository.findById(id)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
+		return contaRepository.findById(id).orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Conta update(Long id, ContaUpdateDTO dto, JwtAuthenticationToken token) {
-	    // Valida usuário logado
+	public Conta update(Long idConta, ContaUpdateDTO dto, JwtAuthenticationToken token) {
+	   
 	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
 	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    // Busca a conta a ser atualizada
-	    Conta contaExistente = contaRepository.findById(id)
+	    Conta contaExistente = contaRepository.findById(idConta)
 	            .orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
 
-	    // Valida se é ADMIN ou dono da conta
-	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
-	        !contaExistente.getCliente().getUser().getId().equals(currentUser.getId())) {
-	        throw new ClienteEncontradoException("Apenas administradores podem editar contas de outros usuários.");
+	    if (!contaExistente.getStatus()) { //A conta está ativa? Porque no banco eu prefiro não deletar e somente desativar
+	        throw new ClienteNaoEncontradoException("Não é possível atualizar uma conta desativada");
 	    }
 
-	    // Impede edição de contas de ADMIN (opcional)
-	    if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser())) {
-	        throw new ClienteEncontradoException("Não é possível editar uma conta de administrador.");
+	    boolean isDonoDaConta = contaExistente.getCliente().getUser().getId().equals(currentUser.getId());
+	    Long idDonoConta = contaExistente.getCliente().getId();
+
+	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
+	        if (dto.idUsuario() != null && !dto.idUsuario().equals(idDonoConta)) {
+	            throw new ClienteEncontradoException("A conta não pode ser deltada");
+	        }
+	        
+	        if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser()) && !isDonoDaConta) {
+	            throw new ClienteEncontradoException("Admin não pode editar contas de outros admins");
+	        }
+	    } else {
+	        if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUser.getCliente().getId())) {
+	            throw new ClienteEncontradoException("Você só pode editar contas com seu próprio ID");
+	        }
+	        
+	        if (!isDonoDaConta) {
+	            throw new ClienteEncontradoException("A conta não pertence ao usuário logado");
+	        }
 	    }
 
-	    // Atualiza os dados
 	    String novoPix = dto.pixAleatorio().concat("-PIX");
 	    contaExistente.setPixAleatorio(novoPix);
-	    contaExistente.setStatus(true);
 
 	    return contaRepository.save(contaExistente);
 	}
 
 	@Transactional
-	public boolean delete(Long id, JwtAuthenticationToken token) {
-	    // Valida usuário logado
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	public boolean delete(Long idConta, ContaUpdateDTO dto, JwtAuthenticationToken token) {
+
+		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
 	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    // Busca a conta a ser desativada
-	    Conta contaExistente = contaRepository.findById(id)
+
+	    Conta contaExistente = contaRepository.findById(idConta)
 	            .orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
 
-	    // Impede exclusão de contas de ADMIN
-	    if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser())) {
-	        throw new ClienteNaoEncontradoException("Não é possível desativar uma conta de administrador.");
+	    boolean isDonoDaConta = contaExistente.getCliente().getUser().getId().equals(currentUser.getId());
+	    
+	    
+	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
+	        
+	        if (dto.idUsuario() != null && !dto.idUsuario().equals(contaExistente.getCliente().getId())) {
+	            throw new ClienteEncontradoException("ID do cliente no DTO não corresponde à conta informada");
+	        }
+	        
+	       
+	        if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser()) && !isDonoDaConta) {
+	            throw new ClienteNaoEncontradoException("Admin não pode desativar contas de outros admins");
+	        }
+	    } else {
+	      
+	        if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUser.getCliente().getId())) {
+	            throw new ClienteEncontradoException("Você só pode desativar contas com seu próprio ID");
+	        }
+	        
+	        if (!isDonoDaConta) {
+	            throw new ClienteEncontradoException("Você só pode desativar suas próprias contas");
+	        }
 	    }
-
-	    // Valida se é ADMIN ou dono da conta
-	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
-	        !contaExistente.getCliente().getUser().getId().equals(currentUser.getId())) {
-	        throw new ClienteEncontradoException("Apenas administradores podem desativar contas de outros usuários.");
-	    }
-
-	    // Soft delete (desativação)
+	    
 	    contaExistente.setStatus(false);
 	    contaRepository.save(contaExistente);
 	    return true;
@@ -262,32 +288,32 @@ public class UserContaService {
 		return contaSaldo.getSaldoConta();
 
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId) {
-	    Conta contaSaldo = contaRepository.findById(contaId)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
+		Conta contaSaldo = contaRepository.findById(contaId)
+				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
 
-	    BigDecimal saldo = contaSaldo.getSaldoConta();
+		BigDecimal saldo = contaSaldo.getSaldoConta();
 
-	    Map<String, BigDecimal> saldosConvertidos = new LinkedHashMap<>();
-	    saldosConvertidos.put("Saldo em Real", saldo);
+		Map<String, BigDecimal> saldosConvertidos = new LinkedHashMap<>();
+		saldosConvertidos.put("Saldo em Real", saldo);
 
-	    try {
-	        ConversionResponseDTO saldoUSD = exchangeRateService.convertAmount(saldo, "BRL", "USD");
-	        saldosConvertidos.put("Dólar", saldoUSD.getValorConvertido());
-	    } catch (TaxaDeCambioException e) {
-	        saldosConvertidos.put("Dólar", BigDecimal.ZERO); // Valor zero em caso de erro
-	    }
+		try {
+			ConversionResponseDTO saldoUSD = exchangeRateService.convertAmount(saldo, "BRL", "USD");
+			saldosConvertidos.put("Dólar", saldoUSD.getValorConvertido());
+		} catch (TaxaDeCambioException e) {
+			saldosConvertidos.put("Dólar", BigDecimal.ZERO); // Valor zero em caso de erro
+		}
 
-	    try {
-	        ConversionResponseDTO saldoEUR = exchangeRateService.convertAmount(saldo, "BRL", "EUR");
-	        saldosConvertidos.put("Euro", saldoEUR.getValorConvertido());
-	    } catch (TaxaDeCambioException e) {
-	        saldosConvertidos.put("Euro", BigDecimal.ZERO); // Valor zero em caso de erro
-	    }
+		try {
+			ConversionResponseDTO saldoEUR = exchangeRateService.convertAmount(saldo, "BRL", "EUR");
+			saldosConvertidos.put("Euro", saldoEUR.getValorConvertido());
+		} catch (TaxaDeCambioException e) {
+			saldosConvertidos.put("Euro", BigDecimal.ZERO); // Valor zero em caso de erro
+		}
 
-	    return saldosConvertidos;
+		return saldosConvertidos;
 	}
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -435,68 +461,68 @@ public class UserContaService {
 
 		return true;
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta manutencaoTaxaCC(Long idConta) {
-	    Conta conta = contaRepository.findById(idConta)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
+		Conta conta = contaRepository.findById(idConta)
+				.orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
 
-	    // Validações
-	    if (conta.getSaldoConta() == null) {
-	        throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
-	    }
+		// Validações
+		if (conta.getSaldoConta() == null) {
+			throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
+		}
 
-	    if (!(conta instanceof ContaCorrente)) {
-	        throw new ContaNaoEncontradaException("Taxa de manutenção só pode ser aplicada a contas correntes.");
-	    }
+		if (!(conta instanceof ContaCorrente)) {
+			throw new ContaNaoEncontradaException("Taxa de manutenção só pode ser aplicada a contas correntes.");
+		}
 
-	    ContaCorrente cc = (ContaCorrente) conta;
-	    BigDecimal taxa = cc.getTaxaManutencaoMensal();
+		ContaCorrente cc = (ContaCorrente) conta;
+		BigDecimal taxa = cc.getTaxaManutencaoMensal();
 
-	    // Verifica saldo suficiente
-	    if (conta.getSaldoConta().compareTo(taxa) < 0) {
-	        throw new ContaExibirSaldoErroException("Saldo insuficiente para cobrança da taxa de manutenção");
-	    }
+		// Verifica saldo suficiente
+		if (conta.getSaldoConta().compareTo(taxa) < 0) {
+			throw new ContaExibirSaldoErroException("Saldo insuficiente para cobrança da taxa de manutenção");
+		}
 
-	    // Aplica taxa
-	    conta.setSaldoConta(conta.getSaldoConta().subtract(taxa));
-	    
-	    // Atualiza categoria e registra taxa
-	    TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
-	    conta.setCategoriaConta(novaTaxa.getCategoria());
-	    conta.getTaxas().add(novaTaxa);
+		// Aplica taxa
+		conta.setSaldoConta(conta.getSaldoConta().subtract(taxa));
 
-	    return contaRepository.save(conta);
+		// Atualiza categoria e registra taxa
+		TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+		conta.setCategoriaConta(novaTaxa.getCategoria());
+		conta.getTaxas().add(novaTaxa);
+
+		return contaRepository.save(conta);
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta rendimentoTaxaCP(Long idConta) {
-	    Conta conta = contaRepository.findById(idConta)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
+		Conta conta = contaRepository.findById(idConta)
+				.orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
 
-	    // Validações
-	    if (conta.getSaldoConta() == null) {
-	        throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
-	    }
+		// Validações
+		if (conta.getSaldoConta() == null) {
+			throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
+		}
 
-	    if (!(conta instanceof ContaPoupanca)) {
-	        throw new ContaNaoEncontradaException("Rendimentos só podem ser aplicados a contas poupança.");
-	    }
+		if (!(conta instanceof ContaPoupanca)) {
+			throw new ContaNaoEncontradaException("Rendimentos só podem ser aplicados a contas poupança.");
+		}
 
-	    ContaPoupanca cp = (ContaPoupanca) conta;
-	    
-	    // Calcula rendimento (agora sem subtrair taxa mensal)
-	    BigDecimal rendimento = conta.getSaldoConta().multiply(cp.getTaxaAcrescRend());
-	    
-	    // Aplica rendimento
-	    conta.setSaldoConta(conta.getSaldoConta().add(rendimento));
-	    
-	    // Atualiza categoria e registra taxa
-	    TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
-	    conta.setCategoriaConta(novaTaxa.getCategoria());
-	    conta.getTaxas().add(novaTaxa);
+		ContaPoupanca cp = (ContaPoupanca) conta;
 
-	    return contaRepository.save(conta);
+		// Calcula rendimento (agora sem subtrair taxa mensal)
+		BigDecimal rendimento = conta.getSaldoConta().multiply(cp.getTaxaAcrescRend());
+
+		// Aplica rendimento
+		conta.setSaldoConta(conta.getSaldoConta().add(rendimento));
+
+		// Atualiza categoria e registra taxa
+		TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+		conta.setCategoriaConta(novaTaxa.getCategoria());
+		conta.getTaxas().add(novaTaxa);
+
+		return contaRepository.save(conta);
 	}
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
