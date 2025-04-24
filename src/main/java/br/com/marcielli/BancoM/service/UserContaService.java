@@ -22,19 +22,21 @@ import br.com.marcielli.BancoM.dto.security.UserContaRendimentoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaSaqueDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaTaxaManutencaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaTedDTO;
+import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
 import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;
+import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.TaxaDeCambioException;
+import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
 import br.com.marcielli.BancoM.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,65 +47,69 @@ public class UserContaService {
 	private final ContaRepositoy contaRepository;
 	private final UserRepository userRepository;
 	private final ExchangeRateService exchangeRateService;
+	private final ClienteRepository clienteRepository;
 
 	public UserContaService(ContaRepositoy contaRepository, UserRepository userRepository,
-			ExchangeRateService exchangeRateService) {
+			ExchangeRateService exchangeRateService, ClienteRepository clienteRepository) {
 		this.contaRepository = contaRepository;
 		this.userRepository = userRepository;
 		this.exchangeRateService = exchangeRateService;
+		this.clienteRepository = clienteRepository;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta save(ContaCreateDTO dto, JwtAuthenticationToken token) {
+	  
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-		//Receber o usuário que está logado e criar a conta desse usuário.
-		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
-		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-		novaTaxa.add(taxa);
-		
-		String numeroConta =  gerarNumeroDaConta();
-		String numeroPix = gerarPixAleatorio();
-		String novoPix = numeroPix.concat("-PIX");
-		
-		Conta conta = null;
-		
-		try {
-			Integer userId = Integer.parseInt(token.getName());
-			
-			User user = userRepository.findById(userId)
-				    .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado com o ID: " + userId));
-			
-			ValidacaoUsuarioUtil.verificarUsuarioAtivo(user);			
-			
-			if (dto.tipoConta() == TipoConta.CORRENTE) {
-				
-				conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
-				conta.setTaxas(novaTaxa);
-				String numContaCorrente = numeroConta.concat("-CC");
-				conta.setNumeroConta(numContaCorrente);
-				
-			} else if (dto.tipoConta() == TipoConta.POUPANCA) {
-				
-				conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
-				conta.setTaxas(novaTaxa);
-				String numContaPoupanca = numeroConta.concat("-PP");
-				conta.setNumeroConta(numContaPoupanca);
-			}
-			
-			conta.setPixAleatorio(novoPix);
-			conta.setCategoriaConta(taxa.getCategoria());
-			conta.setCliente(user.getCliente());
-			conta.setTipoConta(dto.tipoConta());
-			conta.setSaldoConta(dto.saldoConta());
-			conta.setStatus(true);
-			contaRepository.save(conta);
-			
-		} catch (NumberFormatException e) {			
-			System.out.println("ID inválido no token: " + token.getName());
-		}
-		
-		return conta;
+	    // Definindo direito para qual cliente a conta será criada
+	    Cliente clienteAlvo;
+	    
+	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) { //Como Admin pode criar conta para qualquer cliente, ele usa o dto aqui
+	        clienteAlvo = clienteRepository.findById(dto.idUsuario())
+	                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
+	    } else { //Como só pode criar conta para ele mesmo, ele ignora o DTO aqui	      
+	        clienteAlvo = currentUser.getCliente();
+	    }
 
+	    // Restante da lógica de criação da conta
+	    TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
+	    List<TaxaManutencao> novaTaxa = new ArrayList<>();
+	    novaTaxa.add(taxa);
+	    
+	    String numeroConta = gerarNumeroDaConta();
+	    String numeroPix = gerarPixAleatorio();
+	    String novoPix = numeroPix.concat("-PIX");
+	    
+	    Conta conta = null;
+	    
+	    try {
+	        if (dto.tipoConta() == TipoConta.CORRENTE) {
+	            conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+	            String numContaCorrente = numeroConta.concat("-CC");
+	            conta.setNumeroConta(numContaCorrente);
+	        } else if (dto.tipoConta() == TipoConta.POUPANCA) {
+	            conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
+	            String numContaPoupanca = numeroConta.concat("-PP");
+	            conta.setNumeroConta(numContaPoupanca);
+	        }
+	        
+	        conta.setTaxas(novaTaxa);
+	        conta.setPixAleatorio(novoPix);
+	        conta.setCategoriaConta(taxa.getCategoria());
+	        conta.setCliente(clienteAlvo); //Como fiz a validação em cima, então sei ao certo aqui que vai criar exatamente para o cliente validado
+	        conta.setTipoConta(dto.tipoConta());
+	        conta.setSaldoConta(dto.saldoConta());
+	        conta.setStatus(true);
+	        
+	        contaRepository.save(conta);
+	        
+	    } catch (NumberFormatException e) {            
+	        System.out.println("ID inválido no token: " + token.getName());
+	    }
+	    
+	    return conta;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -111,11 +117,6 @@ public class UserContaService {
 		return contaRepository.findById(id)
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
 	}
-	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Conta getContasById(Long id) {
-//		return contaRepository.findById(id).orElse(null);
-//	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta update(Long id, ContaUpdateDTO dto) {

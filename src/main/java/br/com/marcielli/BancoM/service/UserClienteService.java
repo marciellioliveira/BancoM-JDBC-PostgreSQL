@@ -5,6 +5,7 @@ import java.util.Set;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Endereco;
 import br.com.marcielli.BancoM.entity.Role;
 import br.com.marcielli.BancoM.entity.User;
+import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
@@ -38,99 +40,54 @@ public class UserClienteService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public User save(UserCreateDTO cliente) {
-		
-		if(cliente.cpf() != null) {			
-			String cpfClient = Long.toString(cliente.cpf());
-			
-			if (!ValidadorCPF.validar(cpfClient)) {
+	public User save(UserCreateDTO cliente, boolean isAdminFromController, JwtAuthenticationToken token) {
+	    // Validação de CPF
+	    if(cliente.cpf() != null) {            
+	        String cpfClient = Long.toString(cliente.cpf());
+	        if (!ValidadorCPF.validar(cpfClient)) {
 	            throw new ClienteCpfInvalidoException("CPF inválido");
 	        }
-		}
-		 
-		var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
-		var userFromDb = userRepository.findByUsername(cliente.username());
-		
-		//Usuário já existe?
-		if(userFromDb.isPresent()) { //É uma entidade com erro de negócio da requisição da API
-			throw new ClienteEncontradoException("Usuário já existe.");
-		}
-		
-		//Se não existe, cria um novo usuário
-		var user = new User();
-		user.setUsername(cliente.username());
-		user.setPassword(passwordEncoder.encode(cliente.password()));
-		user.setRoles(Set.of(basicRole)); 
-		
-		if (basicRole.equals(user.getRoles())) {
-	        if (user.getCliente() != null) { // Usuário já tem um cliente?
-	            throw new ClienteEncontradoException("Usuário já possui um cliente associado. Não é possível cadastrar outro.");
-	        }
 	    }
-				
-		Cliente client = new Cliente();
-		client.setNome(cliente.nome());
-		client.setCpf(cliente.cpf());
-	
-		Endereco address = new Endereco();
-		address.setCep(cliente.cep());
-		address.setCidade(cliente.cidade());
-		address.setEstado(cliente.estado());
-		address.setRua(cliente.rua());
-		address.setNumero(cliente.numero());
-		address.setBairro(cliente.bairro());
-		address.setComplemento(cliente.complemento());
-		
-		client.setEndereco(address);
-		client.setUser(user);
-		user.setCliente(client);
-		
-		userRepository.save(user);
-		
-		return user;
-		
+	    
+	    // Verifica se usuário já existe
+	    var userFromDb = userRepository.findByUsername(cliente.username());
+	    if(userFromDb.isPresent()) {
+	        throw new ClienteEncontradoException("Usuário já existe.");
+	    }
+	    
+	    // Validação de usuário e permissões
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.validarPermissoesCriacao(currentUser, isAdminFromController, cliente.username());
+	    
+	    // Criação do novo usuário
+	    var user = new User();
+	    user.setUsername(cliente.username());
+	    user.setPassword(passwordEncoder.encode(cliente.password()));
+	    
+	    var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
+	    user.setRoles(Set.of(basicRole));     
+	  
+	    // Criação do cliente associado
+	    Cliente client = new Cliente();
+	    client.setNome(cliente.nome());
+	    client.setCpf(cliente.cpf());
+	    
+	    Endereco address = new Endereco();
+	    address.setCep(cliente.cep());
+	    address.setCidade(cliente.cidade());
+	    address.setEstado(cliente.estado());
+	    address.setRua(cliente.rua());
+	    address.setNumero(cliente.numero());
+	    address.setBairro(cliente.bairro());
+	    address.setComplemento(cliente.complemento());       
+	    
+	    client.setEndereco(address);
+	    client.setUser(user);
+	    user.setCliente(client);
+	    
+	    return userRepository.save(user);
 	}
-	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public User save(UserCreateDTO cliente) {
-//		 
-//		var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
-//		var userFromDb = userRepository.findByUsername(cliente.username());
-//		
-//		if(userFromDb.isPresent()) { //É uma entidade com erro de negócio da requisição da API
-//			throw new ClienteNaoEncontradoException("Erro. Tente novamente mais tarde.");
-//		}
-//		
-//		//Se não existe, cria um novo usuário
-//		var user = new User();
-//		user.setUsername(cliente.username());
-//		user.setPassword(passwordEncoder.encode(cliente.password()));
-//		user.setRoles(Set.of(basicRole)); //Preciso para saber se ele é basic e poder acessar certas paginas
-//				
-//		Cliente client = new Cliente();
-//		client.setNome(cliente.nome());
-//		client.setCpf(cliente.cpf());
-//	
-//		Endereco address = new Endereco();
-//		address.setCep(cliente.cep());
-//		address.setCidade(cliente.cidade());
-//		address.setEstado(cliente.estado());
-//		address.setRua(cliente.rua());
-//		address.setNumero(cliente.numero());
-//		address.setBairro(cliente.bairro());
-//		address.setComplemento(cliente.complemento());
-//		
-//		client.setEndereco(address);
-//		client.setUser(user);
-//		user.setCliente(client);
-//		
-//		userRepository.save(user);
-//		
-//		return user;
-//		
-//	}
-
-	
+		
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente getClienteById(Long id) {
 		return clienteRepository.findById(id).orElse(null);
@@ -147,7 +104,6 @@ public class UserClienteService {
 		
 		clienteExistente.setNome(cliente.nome());
 		 clienteExistente.setCpf(cliente.cpf());
-//	    clienteExistente.setCpf(cliente.cpf());
 	    
 	    Endereco endereco = clienteExistente.getEndereco();
 	    if (endereco != null) {

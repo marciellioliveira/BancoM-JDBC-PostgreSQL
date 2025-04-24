@@ -13,7 +13,7 @@ import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Seguro;
 import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo.ValidacaoUsuarioUtil;
+import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoSeguro;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
@@ -45,7 +45,7 @@ public class UserSeguroService {
 			User user = userRepository.findById(userId)
 				    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 			
-			ValidacaoUsuarioUtil.verificarUsuarioAtivo(user);	
+			ValidacaoUsuarioAtivo.verificarUsuarioAtivo(user);	
 			
 			Cliente cliente = user.getCliente();
 			if (cliente == null) {

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,9 +35,17 @@ public class UserClienteController {
 
 	@PostMapping("/users")
 	@Transactional
-	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto) {
+	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto, JwtAuthenticationToken token) {
 
-		User clienteAdicionado = clienteService.save(dto);
+		// É admin?
+		boolean isAdmin = false;
+	    if (token != null) {
+	        isAdmin = token.getAuthorities().stream()
+	                .anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"));
+	    }
+	    
+	    User clienteAdicionado = clienteService.save(dto, isAdmin, token);
+
 
 		if (clienteAdicionado != null) {
 			return new ResponseEntity<String>("Cliente adicionado com sucesso", HttpStatus.CREATED);

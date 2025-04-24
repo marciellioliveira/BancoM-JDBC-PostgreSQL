@@ -63,19 +63,6 @@ public class TaxaManutencao implements Serializable {
     	    this.taxaAcrescRend = new BigDecimal("0.009"); // 0.9%
     	}
     	
-    	
-//        if (saldoConta == null) {
-//            throw new IllegalArgumentException("Saldo não pode ser nulo");
-//        }
-//
-//        this.tipoConta = tipoConta;
-//        MathContext mc = new MathContext(6); // Precisão de 6 dígitos
-//
-//        if (tipoConta == TipoConta.CORRENTE) {
-//            configurarTaxaContaCorrente(saldoConta);
-//        } else if (tipoConta == TipoConta.POUPANCA) {
-//            configurarTaxaContaPoupanca(saldoConta, mc);
-//        }
     }
 
     private void configurarTaxaContaCorrente(BigDecimal saldoConta) {
