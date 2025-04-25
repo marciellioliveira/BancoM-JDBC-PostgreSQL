@@ -17,12 +17,26 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.core.convert.converter.Converter;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 @Configuration
 @EnableWebSecurity
@@ -53,19 +67,52 @@ public class SecurityConfig { // Passo 1
 	// Configuração Spring Security para Token JWT
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	    http
+	        .csrf(csrf -> csrf
+	            .ignoringRequestMatchers("/login", "/users", "/h2-console/**")
+	        )
+	        .authorizeHttpRequests(auth -> auth
+	            .requestMatchers("/h2-console/**").permitAll()
+	            .requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
+	            .anyRequest().authenticated()
+	        )
+	        .headers(headers -> headers
+	            .frameOptions(frame -> frame.disable()) // Para H2
+	        )
+	        .oauth2ResourceServer(oauth2 -> oauth2
+	            .jwt(jwt -> jwt
+	                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+	            )
+	        )
+	        .sessionManagement(session -> session
+	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+	        );
+	    
+	    return http.build();
+	}
 
-		http.authorizeHttpRequests(autorize -> autorize
-				.requestMatchers("/h2-console/**").permitAll() // Permite H2
-				.requestMatchers(HttpMethod.POST, "/users").permitAll()
-				.requestMatchers(HttpMethod.POST, "/login").permitAll()
-				.anyRequest().authenticated())
-				.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**") // ignora CSRF no H2
-						.disable()) // Apenas localmente
-				.headers(headers -> headers.frameOptions(frame -> frame.disable()) // Permite Iframe do H2
-				).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+	@Bean
+	public JwtAuthenticationConverter jwtAuthenticationConverter() {
+	    JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
+	    converter.setAuthorityPrefix(""); 
+	    converter.setAuthoritiesClaimName("scope"); 
+	    
+	    JwtGrantedAuthoritiesConverter fallbackConverter = new JwtGrantedAuthoritiesConverter();
+	    fallbackConverter.setAuthorityPrefix("");
+	    fallbackConverter.setAuthoritiesClaimName("roles");
 
-		return http.build();
+	    JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+	    jwtConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
+	        Collection<GrantedAuthority> authorities = converter.convert(jwt);
+	        if (authorities == null || authorities.isEmpty()) {
+	            authorities = fallbackConverter.convert(jwt);
+	        }
+	       
+	        System.out.println("Authorities reconhecidas: " + authorities);
+	        return authorities;
+	    });
+	    
+	    return jwtConverter;
 	}
 
 	// Configurando o Encoder e Decoder do JWT
@@ -87,8 +134,8 @@ public class SecurityConfig { // Passo 1
 	@Bean // Bean de Segurança para criptografar as senhas com o algoritmo do Bcrypt
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
-
-		// Agora precisamos injetar esse bean no nosso controller (TokenController)
 	}
+	
+	
 
 }

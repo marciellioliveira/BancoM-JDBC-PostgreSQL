@@ -20,7 +20,6 @@ import br.com.marcielli.BancoM.entity.Endereco;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.UserClienteService;
-import jakarta.transaction.Transactional;
 
 @RestController
 public class UserClienteController {
@@ -34,8 +33,11 @@ public class UserClienteController {
 	}
 
 	@PostMapping("/users")
-	@Transactional
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto, JwtAuthenticationToken token) {
+		
+		  // Log para verificar o token ANTES da transação
+	    System.out.println("Token ANTES da transação - Expira em: " + token.getToken().getExpiresAt());
 
 		// É admin?
 		boolean isAdmin = false;
@@ -44,6 +46,9 @@ public class UserClienteController {
 		}
 
 		User clienteAdicionado = clienteService.save(dto, isAdmin, token);
+		
+		// Log para verificar o token DEPOIS da transação
+	    System.out.println("Token DEPOIS da transação - Expira em: " + token.getToken().getExpiresAt());
 
 		if (clienteAdicionado != null) {
 			return new ResponseEntity<String>("Cliente adicionado com sucesso", HttpStatus.CREATED);
@@ -58,48 +63,90 @@ public class UserClienteController {
 		var users = userRepository.findAll();
 		return ResponseEntity.ok(users);
 	}
-
+	
 	@GetMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	@Transactional
-	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id) {
-
-		Cliente clienteUnico = clienteService.getClienteById(id);
-
-		if (clienteUnico == null || clienteUnico.getUser() == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
-		}
-
-		boolean isAdmin = clienteUnico.getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
-			UserClienteResponseDTO response = new UserClienteResponseDTO();
-			response.setId(id);
-			response.setNome(clienteUnico.getNome());
-			response.setCpf(clienteUnico.getCpf());
-
-			Endereco endereco = clienteUnico.getEndereco();
-			if (endereco != null) {
-				response.setCep(endereco.getCep());
-				response.setCidade(endereco.getCidade());
-				response.setEstado(endereco.getEstado());
-				response.setRua(endereco.getRua());
-				response.setNumero(endereco.getNumero());
-				response.setBairro(endereco.getBairro());
-				response.setComplemento(endereco.getComplemento());
-				response.setClienteAtivo(clienteUnico.isClienteAtivo());
-			}
-
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
-		}
+	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id, JwtAuthenticationToken token) {
+	    
+	    boolean isCurrentUserAdmin = token.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"));
+	    
+	    Cliente clienteUnico = clienteService.getClienteById(id);
+	    
+	    if (clienteUnico == null || clienteUnico.getUser() == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+	    }
+	    
+	    boolean isTargetAdmin = clienteUnico.getUser().getRoles().stream()
+	            .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+	    
+	    if (isTargetAdmin && !isCurrentUserAdmin) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+	                .body("Você não pode visualizar a conta do administrador");
+	    }
+	    
+	    UserClienteResponseDTO response = new UserClienteResponseDTO();
+	    response.setId(id);
+	    response.setNome(clienteUnico.getNome());
+	    response.setCpf(clienteUnico.getCpf());
+	    response.setClienteAtivo(clienteUnico.isClienteAtivo()); 
+	    
+	   
+	    
+	    Endereco endereco = clienteUnico.getEndereco();
+	    if (endereco != null) {
+	        response.setCep(endereco.getCep());
+	        response.setCidade(endereco.getCidade());
+	        response.setEstado(endereco.getEstado());
+	        response.setRua(endereco.getRua());
+	        response.setNumero(endereco.getNumero());
+	        response.setBairro(endereco.getBairro());
+	        response.setComplemento(endereco.getComplemento());
+	        response.setClienteAtivo(clienteUnico.isClienteAtivo());
+	    }
+	    
+	    return ResponseEntity.ok(response);
 	}
+
+//	@GetMapping("/users/{id}")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+//	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id) {
+//
+//		Cliente clienteUnico = clienteService.getClienteById(id);
+//
+//		if (clienteUnico == null || clienteUnico.getUser() == null) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+//		}
+//
+//		boolean isAdmin = clienteUnico.getUser().getRoles().stream()
+//				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+//
+//		if (!isAdmin) {
+//			UserClienteResponseDTO response = new UserClienteResponseDTO();
+//			response.setId(id);
+//			response.setNome(clienteUnico.getNome());
+//			response.setCpf(clienteUnico.getCpf());
+//
+//			Endereco endereco = clienteUnico.getEndereco();
+//			if (endereco != null) {
+//				response.setCep(endereco.getCep());
+//				response.setCidade(endereco.getCidade());
+//				response.setEstado(endereco.getEstado());
+//				response.setRua(endereco.getRua());
+//				response.setNumero(endereco.getNumero());
+//				response.setBairro(endereco.getBairro());
+//				response.setComplemento(endereco.getComplemento());
+//				response.setClienteAtivo(clienteUnico.isClienteAtivo());
+//			}
+//
+//			return ResponseEntity.status(HttpStatus.OK).body(response);
+//		} else {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+//		}
+//	}
 
 	@PutMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	@Transactional
 	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto,
 			JwtAuthenticationToken token) {
 
@@ -116,6 +163,7 @@ public class UserClienteController {
 			response.setId(id);
 			response.setNome(clienteUnico.getNome());
 			response.setCpf(clienteUnico.getCpf());
+			response.setClienteAtivo(clienteUnico.isClienteAtivo()); 
 
 			Endereco endereco = clienteUnico.getEndereco();
 			if (endereco != null) {
@@ -126,7 +174,7 @@ public class UserClienteController {
 				response.setNumero(endereco.getNumero());
 				response.setBairro(endereco.getBairro());
 				response.setComplemento(endereco.getComplemento());
-				
+
 			}
 
 			return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -137,8 +185,7 @@ public class UserClienteController {
 	}
 
 	@DeleteMapping("/users/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	@Transactional
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id, JwtAuthenticationToken token) {
 
 		if (id == null) {

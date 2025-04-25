@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +44,6 @@ public class UserSeguroController {
 		try {
 			Seguro seguroAdicionado = seguroService.save(dto, token);
 
-			// Criar um DTO de resposta (similar ao UserCartaoResponseDTO)
 			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
 			response.setId(seguroAdicionado.getId());
 			response.setTipo(seguroAdicionado.getTipo());
@@ -65,18 +63,6 @@ public class UserSeguroController {
 		}
 	}
 
-//	@PostMapping("/seguros")
-//	public ResponseEntity<String> createSeguro(@RequestBody SeguroCreateDTO dto, JwtAuthenticationToken token) {
-//
-//		Seguro seguroAdicionado = seguroService.save(dto, token);
-//
-//		if (seguroAdicionado != null) {
-//			return new ResponseEntity<String>("Seguro adicionado com sucesso", HttpStatus.CREATED);
-//		} else {
-//			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-//	}
-
 	@GetMapping("/seguros")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	public ResponseEntity<List<User>> listUsers() {
@@ -86,7 +72,6 @@ public class UserSeguroController {
 
 	@GetMapping("/seguros/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	@Transactional
 	public ResponseEntity<?> getSegurosById(@PathVariable("id") Long id) {
 
 		Seguro seguro = seguroService.getSegurosById(id);
@@ -114,7 +99,6 @@ public class UserSeguroController {
 
 	@PutMapping("/seguros/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	@Transactional
 	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto,
 			JwtAuthenticationToken token) {
 		try {
@@ -138,63 +122,21 @@ public class UserSeguroController {
 		}
 	}
 
-//	@PutMapping("/seguros/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	@Transactional
-//	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto) {
-//
-//		Seguro seguro = seguroService.update(id, dto);
-//
-//		if (seguro == null) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O seguro não existe!");
-//		}
-//
-//		boolean isAdmin = seguro.getCartao().getConta().getCliente().getUser().getRoles().stream()
-//				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-//
-//		if (!isAdmin) {
-//			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
-//
-//			response.setId(id);
-//			//response.setTipo(seguro.getTipo());
-//			response.setValorMensal(seguro.getValorMensal());
-//			response.setValorApolice(seguro.getValorApolice());
-//			response.setAtivo(seguro.getAtivo());
-//
-//			return ResponseEntity.status(HttpStatus.OK).body(response);
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O seguro não existe!");
-//		}
-//	}
-
 	@DeleteMapping("/seguros/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto, JwtAuthenticationToken token) {
-	    try {
-	        boolean deletado = seguroService.delete(id, dto, token);
-	        return deletado ? ResponseEntity.ok("Seguro desativado com sucesso!")
-	                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado.");
-	    } catch (ContaNaoEncontradaException e) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-	    } catch (PermissaoNegadaException e) {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-	    } catch (IllegalArgumentException e) {
-	        return ResponseEntity.badRequest().body(e.getMessage());
-	    }
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto,
+			JwtAuthenticationToken token) {
+		try {
+			boolean deletado = seguroService.delete(id, dto, token);
+			return deletado ? ResponseEntity.ok("Seguro desativado com sucesso!")
+					: ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado.");
+		} catch (ContaNaoEncontradaException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (PermissaoNegadaException e) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
-
-//	@DeleteMapping("/seguros/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-//	@Transactional
-//	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
-//
-//		boolean seguro = seguroService.delete(id);
-//
-//		if (seguro) {
-//			return ResponseEntity.status(HttpStatus.OK).body("Seguro deletado com sucesso!");
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
-//		}
-//	}
 
 }

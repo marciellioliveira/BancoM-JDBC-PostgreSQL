@@ -1,12 +1,9 @@
 package br.com.marcielli.BancoM.controller;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,28 +17,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
-import br.com.marcielli.BancoM.dto.security.ConversionResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaPixDTO;
-import br.com.marcielli.BancoM.dto.security.UserContaRendimentoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaSaqueDTO;
-import br.com.marcielli.BancoM.dto.security.UserContaTaxaManutencaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaTedDTO;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
-import br.com.marcielli.BancoM.enuns.CategoriaConta;
-import br.com.marcielli.BancoM.enuns.TipoConta;
-import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
-import br.com.marcielli.BancoM.repository.ContaRepositoy;
+import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
 import br.com.marcielli.BancoM.repository.UserRepository;
-import br.com.marcielli.BancoM.service.ExchangeRateService;
 import br.com.marcielli.BancoM.service.UserContaService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -49,7 +39,7 @@ public class UserContaController {
 
 	private final UserContaService contaService;
 	private final UserRepository userRepository;
-	
+
 	public UserContaController(UserContaService contaService, UserRepository userRepository) {
 		this.contaService = contaService;
 		this.userRepository = userRepository;
@@ -58,12 +48,17 @@ public class UserContaController {
 	@PostMapping("/contas")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<?> createConta(@RequestBody ContaCreateDTO dto, JwtAuthenticationToken token) {
-		
-		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
+
+		  // Log para verificar o token ANTES da transação
+	    System.out.println("Token ANTES da transação - Expira em: " + token.getToken().getExpiresAt());
+	    
 		Conta contaAdicionada = contaService.save(dto, token);
+		
+		// Log para verificar o token DEPOIS da transação
+	    System.out.println("Token DEPOIS da transação - Expira em: " + token.getToken().getExpiresAt());
 
 		if (contaAdicionada != null) {
-			
+
 			UserContaResponseDTO response = new UserContaResponseDTO();
 			response.setId(contaAdicionada.getId());
 			response.setTipoConta(contaAdicionada.getTipoConta());
@@ -93,46 +88,46 @@ public class UserContaController {
 		var users = userRepository.findAll();
 		return ResponseEntity.ok(users);
 	}
-	
+
 	@GetMapping("/contas/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
 	public ResponseEntity<?> getContaById(@PathVariable("id") Long id, JwtAuthenticationToken token) {
-	    
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
-	   
-	    Conta conta = contaService.getContasById(id);
 
-	    boolean isDonoDaConta = conta.getCliente().getUser().getId().equals(currentUser.getId());
-	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && !isDonoDaConta) {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso não autorizado");
-	    }
+		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+		ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    UserContaResponseDTO response = new UserContaResponseDTO();
-	    response.setId(conta.getId());
-	    response.setTipoConta(conta.getTipoConta());
-	    response.setCategoriaConta(conta.getCategoriaConta());
-	    response.setSaldoConta(conta.getSaldoConta());
-	    response.setNumeroConta(conta.getNumeroConta());
-	    response.setPixAleatorio(conta.getPixAleatorio());
-	    response.setStatus(conta.getStatus());
+		Conta conta = contaService.getContasById(id);
 
-	    if (conta instanceof ContaCorrente) {
-	        response.setTaxaManutencaoMensal(((ContaCorrente) conta).getTaxaManutencaoMensal());
-	    } else if (conta instanceof ContaPoupanca) {
-	        response.setTaxaAcrescRend(((ContaPoupanca) conta).getTaxaAcrescRend());
-	        response.setTaxaMensal(((ContaPoupanca) conta).getTaxaMensal());
-	    }
+		boolean isDonoDaConta = conta.getCliente().getUser().getId().equals(currentUser.getId());
+		if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && !isDonoDaConta) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso não autorizado");
+		}
 
-	    return ResponseEntity.status(HttpStatus.OK).body(response);
+		UserContaResponseDTO response = new UserContaResponseDTO();
+		response.setId(conta.getId());
+		response.setTipoConta(conta.getTipoConta());
+		response.setCategoriaConta(conta.getCategoriaConta());
+		response.setSaldoConta(conta.getSaldoConta());
+		response.setNumeroConta(conta.getNumeroConta());
+		response.setPixAleatorio(conta.getPixAleatorio());
+		response.setStatus(conta.getStatus());
+
+		if (conta instanceof ContaCorrente) {
+			response.setTaxaManutencaoMensal(((ContaCorrente) conta).getTaxaManutencaoMensal());
+		} else if (conta instanceof ContaPoupanca) {
+			response.setTaxaAcrescRend(((ContaPoupanca) conta).getTaxaAcrescRend());
+			response.setTaxaMensal(((ContaPoupanca) conta).getTaxaMensal());
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
+
 	@PutMapping("/contas/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	@Transactional
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, JwtAuthenticationToken token) {
-		
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto,
+			JwtAuthenticationToken token) {
+
 		Conta conta = contaService.update(id, dto, token);
 
 		boolean isAdmin = conta.getCliente().getUser().getRoles().stream()
@@ -165,9 +160,9 @@ public class UserContaController {
 	}
 
 	@DeleteMapping("/contas/{id}")
-	//@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	@Transactional
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, JwtAuthenticationToken token) {
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto,
+			JwtAuthenticationToken token) {
 
 		boolean conta = contaService.delete(id, dto, token);
 
@@ -182,23 +177,41 @@ public class UserContaController {
 	@PostMapping("/contas/{idContaReceber}/transferencia")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,
-			@RequestBody UserContaTedDTO dto) {
-
-		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto);
-
-		if (tedRealizada) {
-			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-		}
+	        @RequestBody UserContaTedDTO dto, JwtAuthenticationToken token) {
+	    
+	    try {
+	        boolean tedRealizada = contaService.transferirTED(idContaReceber, dto, token);
+	        return ResponseEntity.ok("Transferência realizada com sucesso.");
+	    } catch (ContaNaoEncontradaException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    } catch (PermissaoNegadaException e) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+	    } catch (ContaExibirSaldoErroException e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+	    }
 	}
 	
+	
+//	@PostMapping("/contas/{idContaReceber}/transferencia")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+//	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,
+//			@RequestBody UserContaTedDTO dto) {
+//
+//		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto);
+//
+//		if (tedRealizada) {
+//			return new ResponseEntity<String>("Transferência realizada com sucesso.", HttpStatus.OK);
+//		} else {
+//			return new ResponseEntity<String>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+//		}
+//	}
+
 	@GetMapping("/contas/{contaId}/saldo")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public Map<String, BigDecimal> exibirSaldoConvertido(@PathVariable("contaId") Long contaId) {
-	    return contaService.exibirSaldoConvertido(contaId);
+		return contaService.exibirSaldoConvertido(contaId);
 	}
-	
+
 	@PostMapping("/contas/{idContaReceber}/pix")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber,
@@ -240,7 +253,7 @@ public class UserContaController {
 			return new ResponseEntity<String>("Dados do saque são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
+
 //ROTAS MANUAIS - FUNCIONAM	
 //	@PutMapping("/contas/{idConta}/manutencao")
 //	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
@@ -304,8 +317,7 @@ public class UserContaController {
 //			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
 //		}
 //	}
-	
-	
+
 //	@PutMapping("/contas/{idConta}/manutencao")
 //	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 //	public ResponseEntity<?> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta) {
@@ -318,7 +330,5 @@ public class UserContaController {
 //		return processarOperacaoConta(idConta, contaService::rendimentoTaxaCP);
 //	}
 //	
-	
-
 
 }

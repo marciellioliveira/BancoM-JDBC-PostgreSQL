@@ -41,52 +41,31 @@ public class TokenController { // Passo 2
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
-		// Ir no banco de dados ver se o usário existe e depois comparar as senhas e por
-		// isso vamos injetar o UserRepository
+	    var user = userRepository.findByUsername(loginRequest.username())
+	        .orElseThrow(() -> new BadCredentialsException("Credenciais inválidas"));
 
-		var user = userRepository.findByUsername(loginRequest.username());
+	    if (!user.isLoginCorrect(loginRequest, passwordEncoder)) {
+	        throw new BadCredentialsException("Credenciais inválidas");
+	    }
 
-		if (user.isEmpty() || !user.get().isLoginCorrect(loginRequest, passwordEncoder)) { // Se estiver vazio - Criar o
-																							// método
-																							// (isLoginCorrect(loginRequest,
-																							// bCryptPasswordEncoder))
-																							// na classe User
-			throw new BadCredentialsException("Usuário ou senha está inválido.");
+	    var now = Instant.now();
+	    var expiresIn = 3600L;
 
-			// Como estou negando (!user.get().isLoginCorrect(loginRequest,
-			// bCryptPasswordEncoder)), se o login não estiver correto ele cai ali também no
-			// throw
-		}
+	    var authorities = user.getRoles().stream()
+	            .map(role -> "SCOPE_" + role.getName().toUpperCase())
+	            .collect(Collectors.joining(" "));
 
-		// Para comparar se a senha que o usuário passou é igual a que existe no banco.
-		// Para isso precisamos fazer mecanismo de comparação de senhas com uma tecnica
-		// avançada de criptografia
-		// Então vamos criar mais um Bean na classe do Spring Security (SecurityConfig)
+	    var claims = JwtClaimsSet.builder()
+	            .issuer("mybackend")
+	            .subject(user.getId().toString())
+	            .issuedAt(now)
+	            .expiresAt(now.plusSeconds(expiresIn))
+	            .claim("scope", authorities)
+	            .claim("roles", authorities) 
+	            .build();
 
-		// Se o login estiver correto, ele cai aqui
-		// Agora preciso gerar o token JWT e retornar na requisição
-		// Para gerar o JWT, preciso configurar os atributos do JSON que são chamados de
-		// claims
-
-		var now = Instant.now();
-		var expiresIn = 300L;
-
-		var scopes = user.get().getRoles().stream().map(Role::getName).collect(Collectors.joining(" "));
-
-		// No builder vamos definir os campos
-		var claims = JwtClaimsSet.builder().issuer("mybackend").subject(user.get().getId().toString()).issuedAt(now) // data
-																														// da
-																														// emissão
-																														// do
-																														// token
-				.expiresAt(now.plusSeconds(expiresIn)) // expiração vai ser agora + 300S = daqui 5 minutos
-				.claim("scope", scopes).build();
-
-		var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(); // Pega o valor do token
-																								// JWT com o claim
-																								// através do Encoder
-
-		return ResponseEntity.ok(new LoginResponseDTO(jwtValue, expiresIn));
-
+	    var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+	    
+	    return ResponseEntity.ok(new LoginResponseDTO(jwtValue, expiresIn));
 	}
 }

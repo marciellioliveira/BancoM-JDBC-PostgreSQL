@@ -28,7 +28,9 @@ public class Role {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(unique = true, nullable = false)
 	private String name;
+	
 	public enum Values {
 		
 		ADMIN(1L),
