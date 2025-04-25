@@ -49,14 +49,8 @@ public class UserContaController {
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<?> createConta(@RequestBody ContaCreateDTO dto, JwtAuthenticationToken token) {
 
-		  // Log para verificar o token ANTES da transação
-	    System.out.println("Token ANTES da transação - Expira em: " + token.getToken().getExpiresAt());
-	    
 		Conta contaAdicionada = contaService.save(dto, token);
 		
-		// Log para verificar o token DEPOIS da transação
-	    System.out.println("Token DEPOIS da transação - Expira em: " + token.getToken().getExpiresAt());
-
 		if (contaAdicionada != null) {
 
 			UserContaResponseDTO response = new UserContaResponseDTO();

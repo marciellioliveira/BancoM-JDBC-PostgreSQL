@@ -53,7 +53,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Service
 public class UserContaService {
 
@@ -61,9 +60,8 @@ public class UserContaService {
 	private final UserRepository userRepository;
 	private final ExchangeRateService exchangeRateService;
 	private final ClienteRepository clienteRepository;
-	
-	 private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
-	
+
+	private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
 
 	public UserContaService(ContaRepositoy contaRepository, UserRepository userRepository,
 			ExchangeRateService exchangeRateService, ClienteRepository clienteRepository) {
@@ -75,72 +73,138 @@ public class UserContaService {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta save(ContaCreateDTO dto, JwtAuthenticationToken token) {
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-		ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+	    // Definindo para qual cliente a conta será criada
+	    Cliente clienteAlvo;
 
-		// Definindo para qual cliente a conta será criada
-		Cliente clienteAlvo;
+	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
+	        if (dto.idUsuario() == null) {
+	            throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
+	        }
+	        clienteAlvo = clienteRepository.findById(dto.idUsuario())
+	                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
+	    } else {
+	        Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
+	        if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) {
+	            throw new ClienteEncontradoException("Usuário não tem permissão para criar conta para outro ID.");
+	        }
+	        clienteAlvo = currentUser.getCliente();
+	    }
 
-		if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) { // Como Admin pode criar conta para qualquer cliente, ele usa
-															// o dto aqui
+	    TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
+	    List<TaxaManutencao> novaTaxa = new ArrayList<>();
+	    novaTaxa.add(taxa);
 
-			if (ValidacaoUsuarioAtivo.isAdmin(currentUser) && dto.idUsuario() == null) {
-				throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
-			}
+	    String numeroConta = gerarNumeroDaConta();
+	    String numeroPix = gerarPixAleatorio();
+	    String novoPix = numeroPix.concat("-PIX");
 
-			clienteAlvo = clienteRepository.findById(dto.idUsuario())
-					.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-		} else { // Como só pode criar conta para ele mesmo, ele ignora o DTO aqui
+	    Conta conta = null;
 
-			Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
+	    try {
+	        if (dto.tipoConta() == TipoConta.CORRENTE) {
+	            ContaCorrente contaCorrente = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+	            contaCorrente.setTaxaManutencaoMensal(taxa.getTaxaManutencaoMensal()); // Garantindo que a taxa está sendo setada
+	            String numContaCorrente = numeroConta.concat("-CC");
+	            contaCorrente.setNumeroConta(numContaCorrente);
+	            conta = contaCorrente;
+	        } else if (dto.tipoConta() == TipoConta.POUPANCA) {
+	            ContaPoupanca contaPoupanca = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
+	            contaPoupanca.setTaxaAcrescRend(taxa.getTaxaAcrescRend()); // Garantindo que as taxas estão sendo setadas
+	            contaPoupanca.setTaxaMensal(taxa.getTaxaMensal());
+	            String numContaPoupanca = numeroConta.concat("-PP");
+	            contaPoupanca.setNumeroConta(numContaPoupanca);
+	            conta = contaPoupanca;
+	        }
 
-			if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) { // Basic só pode cadastrar no
-																							// id de usuario dele
-				throw new ClienteEncontradoException("Usuário não tem permissão para criar conta para outro ID.");
-			}
-			clienteAlvo = currentUser.getCliente();
-		}
+	        conta.setTaxas(novaTaxa);
+	        conta.setPixAleatorio(novoPix);
+	        conta.setCategoriaConta(taxa.getCategoria());
+	        conta.setCliente(clienteAlvo);
+	        conta.setTipoConta(dto.tipoConta());
+	        conta.setSaldoConta(dto.saldoConta());
+	        conta.setStatus(true);
+	        conta.setCategoriaConta(taxa.getCategoria()); 
 
-		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
-		List<TaxaManutencao> novaTaxa = new ArrayList<>();
-		novaTaxa.add(taxa);
+	        contaRepository.save(conta);
 
-		String numeroConta = gerarNumeroDaConta();
-		String numeroPix = gerarPixAleatorio();
-		String novoPix = numeroPix.concat("-PIX");
+	    } catch (NumberFormatException e) {
+	        System.out.println("ID inválido no token: " + token.getName());
+	    }
 
-		Conta conta = null;
-
-		try {
-			if (dto.tipoConta() == TipoConta.CORRENTE) {
-				conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
-				String numContaCorrente = numeroConta.concat("-CC");
-				conta.setNumeroConta(numContaCorrente);
-			} else if (dto.tipoConta() == TipoConta.POUPANCA) {
-				conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
-				String numContaPoupanca = numeroConta.concat("-PP");
-				conta.setNumeroConta(numContaPoupanca);
-			}
-
-			conta.setTaxas(novaTaxa);
-			conta.setPixAleatorio(novoPix);
-			conta.setCategoriaConta(taxa.getCategoria());
-			conta.setCliente(clienteAlvo); // Como fiz a validação em cima, então sei ao certo aqui que vai criar
-											// exatamente para o cliente validado
-			conta.setTipoConta(dto.tipoConta());
-			conta.setSaldoConta(dto.saldoConta());
-			conta.setStatus(true);
-
-			contaRepository.save(conta);
-
-		} catch (NumberFormatException e) {
-			System.out.println("ID inválido no token: " + token.getName());
-		}
-
-		return conta;
+	    return conta;
 	}
-	
+
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Conta save(ContaCreateDTO dto, JwtAuthenticationToken token) {
+//
+//		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+//		ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+//
+//		// Definindo para qual cliente a conta será criada
+//		Cliente clienteAlvo;
+//
+//		if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) { // Como Admin pode criar conta para qualquer cliente, ele usa
+//															// o dto aqui
+//
+//			if (ValidacaoUsuarioAtivo.isAdmin(currentUser) && dto.idUsuario() == null) {
+//				throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
+//			}
+//
+//			clienteAlvo = clienteRepository.findById(dto.idUsuario())
+//					.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
+//		} else { // Como só pode criar conta para ele mesmo, ele ignora o DTO aqui
+//
+//			Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
+//
+//			if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) { // Basic só pode cadastrar no
+//																							// id de usuario dele
+//				throw new ClienteEncontradoException("Usuário não tem permissão para criar conta para outro ID.");
+//			}
+//			clienteAlvo = currentUser.getCliente();
+//		}
+//
+//		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
+//		List<TaxaManutencao> novaTaxa = new ArrayList<>();
+//		novaTaxa.add(taxa);
+//
+//		String numeroConta = gerarNumeroDaConta();
+//		String numeroPix = gerarPixAleatorio();
+//		String novoPix = numeroPix.concat("-PIX");
+//
+//		Conta conta = null;
+//
+//		try {
+//			if (dto.tipoConta() == TipoConta.CORRENTE) {
+//				conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+//				String numContaCorrente = numeroConta.concat("-CC");
+//				conta.setNumeroConta(numContaCorrente);
+//			} else if (dto.tipoConta() == TipoConta.POUPANCA) {
+//				conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
+//				String numContaPoupanca = numeroConta.concat("-PP");
+//				conta.setNumeroConta(numContaPoupanca);
+//			}
+//
+//			conta.setTaxas(novaTaxa);
+//			conta.setPixAleatorio(novoPix);
+//			conta.setCategoriaConta(taxa.getCategoria());
+//			conta.setCliente(clienteAlvo); // Como fiz a validação em cima, então sei ao certo aqui que vai criar
+//											// exatamente para o cliente validado
+//			conta.setTipoConta(dto.tipoConta());
+//			conta.setSaldoConta(dto.saldoConta());
+//			conta.setStatus(true);
+//
+//			contaRepository.save(conta);
+//
+//		} catch (NumberFormatException e) {
+//			System.out.println("ID inválido no token: " + token.getName());
+//		}
+//
+//		return conta;
+//	}
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta getContasById(Long id) {
 		return contaRepository.findById(id).orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
@@ -148,173 +212,169 @@ public class UserContaService {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta update(Long idConta, ContaUpdateDTO dto, JwtAuthenticationToken token) {
-	   
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    Conta contaExistente = contaRepository.findById(idConta)
-	            .orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
+		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+		ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    if (!contaExistente.getStatus()) { //A conta está ativa? Porque no banco eu prefiro não deletar e somente desativar
-	        throw new ClienteNaoEncontradoException("Não é possível atualizar uma conta desativada");
-	    }
+		Conta contaExistente = contaRepository.findById(idConta)
+				.orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
 
-	    boolean isDonoDaConta = contaExistente.getCliente().getUser().getId().equals(currentUser.getId());
-	    Long idDonoConta = contaExistente.getCliente().getId();
+		if (!contaExistente.getStatus()) { // A conta está ativa? Porque no banco eu prefiro não deletar e somente
+											// desativar
+			throw new ClienteNaoEncontradoException("Não é possível atualizar uma conta desativada");
+		}
 
-	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
-	        if (dto.idUsuario() != null && !dto.idUsuario().equals(idDonoConta)) {
-	            throw new ClienteEncontradoException("A conta não pode ser deltada");
-	        }
-	        
-	        if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser()) && !isDonoDaConta) {
-	            throw new ClienteEncontradoException("Admin não pode editar contas de outros admins");
-	        }
-	    } else {
-	        if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUser.getCliente().getId())) {
-	            throw new ClienteEncontradoException("Você só pode editar contas com seu próprio ID");
-	        }
-	        
-	        if (!isDonoDaConta) {
-	            throw new ClienteEncontradoException("A conta não pertence ao usuário logado");
-	        }
-	    }
+		boolean isDonoDaConta = contaExistente.getCliente().getUser().getId().equals(currentUser.getId());
+		Long idDonoConta = contaExistente.getCliente().getId();
 
-	    String novoPix = dto.pixAleatorio().concat("-PIX");
-	    contaExistente.setPixAleatorio(novoPix);
+		if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
+			if (dto.idUsuario() != null && !dto.idUsuario().equals(idDonoConta)) {
+				throw new ClienteEncontradoException("A conta não pode ser deltada");
+			}
 
-	    return contaRepository.save(contaExistente);
+			if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser()) && !isDonoDaConta) {
+				throw new ClienteEncontradoException("Admin não pode editar contas de outros admins");
+			}
+		} else {
+			if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUser.getCliente().getId())) {
+				throw new ClienteEncontradoException("Você só pode editar contas com seu próprio ID");
+			}
+
+			if (!isDonoDaConta) {
+				throw new ClienteEncontradoException("A conta não pertence ao usuário logado");
+			}
+		}
+
+		String novoPix = dto.pixAleatorio().concat("-PIX");
+		contaExistente.setPixAleatorio(novoPix);
+
+		return contaRepository.save(contaExistente);
 	}
 
 	@Transactional
 	public boolean delete(Long idConta, ContaUpdateDTO dto, JwtAuthenticationToken token) {
 
 		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+		ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
+		Conta contaExistente = contaRepository.findById(idConta)
+				.orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
 
-	    Conta contaExistente = contaRepository.findById(idConta)
-	            .orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
+		boolean isDonoDaConta = contaExistente.getCliente().getUser().getId().equals(currentUser.getId());
 
-	    boolean isDonoDaConta = contaExistente.getCliente().getUser().getId().equals(currentUser.getId());
-	    
-	    
-	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
-	        
-	        if (dto.idUsuario() != null && !dto.idUsuario().equals(contaExistente.getCliente().getId())) {
-	            throw new ClienteEncontradoException("ID do cliente no DTO não corresponde à conta informada");
-	        }
-	        
-	       
-	        if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser()) && !isDonoDaConta) {
-	            throw new ClienteNaoEncontradoException("Admin não pode desativar contas de outros admins");
-	        }
-	    } else {
-	      
-	        if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUser.getCliente().getId())) {
-	            throw new ClienteEncontradoException("Você só pode desativar contas com seu próprio ID");
-	        }
-	        
-	        if (!isDonoDaConta) {
-	            throw new ClienteEncontradoException("Você só pode desativar suas próprias contas");
-	        }
-	    }
-	    
-	    contaExistente.setStatus(false);
-	    contaRepository.save(contaExistente);
-	    return true;
+		if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
+
+			if (dto.idUsuario() != null && !dto.idUsuario().equals(contaExistente.getCliente().getId())) {
+				throw new ClienteEncontradoException("ID do cliente no DTO não corresponde à conta informada");
+			}
+
+			if (ValidacaoUsuarioAtivo.isAdmin(contaExistente.getCliente().getUser()) && !isDonoDaConta) {
+				throw new ClienteNaoEncontradoException("Admin não pode desativar contas de outros admins");
+			}
+		} else {
+
+			if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUser.getCliente().getId())) {
+				throw new ClienteEncontradoException("Você só pode desativar contas com seu próprio ID");
+			}
+
+			if (!isDonoDaConta) {
+				throw new ClienteEncontradoException("Você só pode desativar suas próprias contas");
+			}
+		}
+
+		contaExistente.setStatus(false);
+		contaRepository.save(contaExistente);
+		return true;
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirTED(Long idContaReceber, UserContaTedDTO dto, JwtAuthenticationToken token) {
-	   
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    Conta contaOrigem = contaRepository.findById(dto.idContaOrigem())
-	            .orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
+		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+		ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
-	    Conta contaDestino = contaRepository.findById(idContaReceber)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
+		Conta contaOrigem = contaRepository.findById(dto.idContaOrigem())
+				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
 
-	    boolean isDonoDaContaOrigem = contaOrigem.getCliente().getUser().getId().equals(currentUser.getId());
-	    
-	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
-	      
-	        if (ValidacaoUsuarioAtivo.isAdmin(contaOrigem.getCliente().getUser()) && !isDonoDaContaOrigem) {
-	            throw new PermissaoNegadaException("Admin não pode transferir de contas de outros admins");
-	        }
-	        
-	        if (dto.idUsuario() != null && !dto.idUsuario().equals(contaOrigem.getCliente().getId())) {
-	            throw new PermissaoNegadaException("ID do cliente no DTO não corresponde à conta origem");
-	        }
-	    } else {
-	        if (!isDonoDaContaOrigem) {
-	            throw new PermissaoNegadaException("Você só pode transferir de suas próprias contas");
-	        }
-	        
-	        if (!dto.idUsuario().equals(currentUser.getCliente().getId())) {
-	            throw new PermissaoNegadaException("Você só pode realizar transferências com seu próprio ID");
-	        }
-	    }
+		Conta contaDestino = contaRepository.findById(idContaReceber)
+				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
 
-	    if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
-	        throw new ContaExibirSaldoErroException("Saldo insuficiente na conta origem.");
-	    }
+		boolean isDonoDaContaOrigem = contaOrigem.getCliente().getUser().getId().equals(currentUser.getId());
 
-	    List<Conta> contasTransferidas = new ArrayList<Conta>();
+		if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
 
-	    contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
-	    contasTransferidas.add(contaOrigem);
+			if (ValidacaoUsuarioAtivo.isAdmin(contaOrigem.getCliente().getUser()) && !isDonoDaContaOrigem) {
+				throw new PermissaoNegadaException("Admin não pode transferir de contas de outros admins");
+			}
 
-	    TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
+			if (dto.idUsuario() != null && !dto.idUsuario().equals(contaOrigem.getCliente().getId())) {
+				throw new PermissaoNegadaException("ID do cliente no DTO não corresponde à conta origem");
+			}
+		} else {
+			if (!isDonoDaContaOrigem) {
+				throw new PermissaoNegadaException("Você só pode transferir de suas próprias contas");
+			}
 
-	    List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-	    novaTaxa.add(taxaContaOrigem);
+			if (!dto.idUsuario().equals(currentUser.getCliente().getId())) {
+				throw new PermissaoNegadaException("Você só pode realizar transferências com seu próprio ID");
+			}
+		}
 
-	    contaOrigem.setTaxas(novaTaxa);
-	    contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
+		if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+			throw new ContaExibirSaldoErroException("Saldo insuficiente na conta origem.");
+		}
 
-	    if (contaOrigem instanceof ContaCorrente cc) {
-	        cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
-	    }
+		List<Conta> contasTransferidas = new ArrayList<Conta>();
 
-	    if (contaOrigem instanceof ContaPoupanca cp) {
-	        cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-	        cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
-	    }
+		contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
+		contasTransferidas.add(contaOrigem);
 
-	    Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
-	    contaOrigem.getTransferencia().add(transferindo);
+		TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
 
-	    contaRepository.save(contaOrigem);
+		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
+		novaTaxa.add(taxaContaOrigem);
 
-	    contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
-	    contasTransferidas.add(contaDestino);
+		contaOrigem.setTaxas(novaTaxa);
+		contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
 
-	    TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+		if (contaOrigem instanceof ContaCorrente cc) {
+			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
+		}
 
-	    List<TaxaManutencao> novaTaxa2 = new ArrayList<TaxaManutencao>();
-	    novaTaxa2.add(taxaContaDestino);
+		if (contaOrigem instanceof ContaPoupanca cp) {
+			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
+			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
+		}
 
-	    contaDestino.setTaxas(novaTaxa2);
-	    contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
+		Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
+		contaOrigem.getTransferencia().add(transferindo);
 
-	    if (contaDestino instanceof ContaCorrente cc) {
-	        cc.setTaxaManutencaoMensal(taxaContaDestino.getTaxaManutencaoMensal());
-	    }
+		contaRepository.save(contaOrigem);
 
-	    if (contaDestino instanceof ContaPoupanca cp) {
-	        cp.setTaxaAcrescRend(taxaContaDestino.getTaxaAcrescRend());
-	        cp.setTaxaMensal(taxaContaDestino.getTaxaMensal());
-	    }
+		contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+		contasTransferidas.add(contaDestino);
 
-	    contaRepository.save(contaDestino);
+		TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
 
-	    return true;
+		List<TaxaManutencao> novaTaxa2 = new ArrayList<TaxaManutencao>();
+		novaTaxa2.add(taxaContaDestino);
+
+		contaDestino.setTaxas(novaTaxa2);
+		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
+
+		if (contaDestino instanceof ContaCorrente cc) {
+			cc.setTaxaManutencaoMensal(taxaContaDestino.getTaxaManutencaoMensal());
+		}
+
+		if (contaDestino instanceof ContaPoupanca cp) {
+			cp.setTaxaAcrescRend(taxaContaDestino.getTaxaAcrescRend());
+			cp.setTaxaMensal(taxaContaDestino.getTaxaMensal());
+		}
+
+		contaRepository.save(contaDestino);
+
+		return true;
 	}
-	
-	
 
 	// Transferências
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -419,7 +479,6 @@ public class UserContaService {
 
 		return saldosConvertidos;
 	}
-
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirPIX(Long idContaReceber, UserContaPixDTO dto) {
@@ -547,8 +606,8 @@ public class UserContaService {
 
 		return true;
 	}
-	
-	//ROTAS MANUAIS - FUNCIONAM
+
+	// ROTAS MANUAIS - FUNCIONAM
 //
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public Conta manutencaoTaxaCC(Long idConta) {
@@ -604,118 +663,104 @@ public class UserContaService {
 //
 //		return contaRepository.save(conta);
 //	}
-	
 
-	
-	//Agendamento de Taxas de Conta Corrente utilizando o @Scheduled(cron = "0 0 2 1 * ?") do Spring
+	// Agendamento de Taxas de Conta Corrente utilizando o @Scheduled(cron = "0 0 2
+	// 1 * ?") do Spring
 	public List<ContaCorrente> buscarTodasContasCorrentesAtivas() {
-	    return contaRepository.findAll()
-	            .stream()
-	            .filter(conta -> conta instanceof ContaCorrente && conta.getStatus())
-	            .map(conta -> (ContaCorrente) conta)
-	            .collect(Collectors.toList());
-	    
+		return contaRepository.findAll().stream().filter(conta -> conta instanceof ContaCorrente && conta.getStatus())
+				.map(conta -> (ContaCorrente) conta).collect(Collectors.toList());
+
 	}
-	
-	//Agendamento de Taxas de Conta Poupança utilizando o @Scheduled(cron = "0 0 23 * *") do Spring
+
+	// Agendamento de Taxas de Conta Poupança utilizando o @Scheduled(cron = "0 0 23
+	// * *") do Spring
 	public List<ContaPoupanca> buscarTodasContasPoupancaAtivas() {
-	    return contaRepository.findAll()
-	            .stream()
-	            .filter(conta -> conta instanceof ContaPoupanca && conta.getStatus())
-	            .map(conta -> (ContaPoupanca) conta)
-	            .collect(Collectors.toList());
-	    
+		return contaRepository.findAll().stream().filter(conta -> conta instanceof ContaPoupanca && conta.getStatus())
+				.map(conta -> (ContaPoupanca) conta).collect(Collectors.toList());
+
 	}
-	
+
 	public Conta rendimentoTaxaCP(Long idConta) {
-        log.debug("Iniciando aplicação de rendimento para conta {}", idConta);
-        
-        ContaPoupanca conta = (ContaPoupanca) contaRepository.findById(idConta)
-            .orElseThrow(() -> {
-                log.error("Conta poupança {} não encontrada", idConta);
-                return new ClienteNaoEncontradoException("Conta não encontrada");
-            });
-        
-        if (!conta.getStatus()) {
-            log.warn("Tentativa de aplicar rendimento em conta poupança inativa - ID: {}", idConta);
-           
-        }
-        
-        BigDecimal rendimento = calcularRendimentoCP(conta);
-        conta.creditar(rendimento);
-        
-        log.info("Rendimento de {} aplicado na conta poupança {}", rendimento, idConta);
-        return contaRepository.save(conta);
-    }
+		log.debug("Iniciando aplicação de rendimento para conta {}", idConta);
+
+		ContaPoupanca conta = (ContaPoupanca) contaRepository.findById(idConta).orElseThrow(() -> {
+			log.error("Conta poupança {} não encontrada", idConta);
+			return new ClienteNaoEncontradoException("Conta não encontrada");
+		});
+
+		if (!conta.getStatus()) {
+			log.warn("Tentativa de aplicar rendimento em conta poupança inativa - ID: {}", idConta);
+
+		}
+
+		BigDecimal rendimento = calcularRendimentoCP(conta);
+		conta.creditar(rendimento);
+
+		log.info("Rendimento de {} aplicado na conta poupança {}", rendimento, idConta);
+		return contaRepository.save(conta);
+	}
 
 	private BigDecimal calcularRendimentoCP(ContaPoupanca conta) {
-	       
-        log.trace("Calculando rendimento para conta {}", conta.getId());
-        return conta.getSaldoConta().multiply(conta.getTaxaAcrescRend());
-    }
-	
-    public Conta manutencaoTaxaCC(Long idConta) {
-        log.debug("Iniciando cobrança de manutenção para conta {}", idConta);
-        
-        ContaCorrente conta = (ContaCorrente) contaRepository.findById(idConta)
-            .orElseThrow(() -> {
-                log.error("Conta corrente {} não encontrada", idConta);
-                return new ClienteNaoEncontradoException("Conta não encontrada");
-            });
-        
-        if (!conta.getStatus()) {
-            log.warn("Tentativa de cobrar taxa em conta corrente inativa - ID: {}", idConta);
-           
-        }
-        
-        BigDecimal taxa = calcularAcrescimoTaxaCC(conta);
-        conta.debitar(taxa);
-        
-        log.info("Taxa de manutenção de {} debitada da conta {}", taxa, idConta);
-        return contaRepository.save(conta);
-    }
 
-    
+		log.trace("Calculando rendimento para conta {}", conta.getId());
+		return conta.getSaldoConta().multiply(conta.getTaxaAcrescRend());
+	}
 
-    private BigDecimal calcularAcrescimoTaxaCC(ContaCorrente conta) {
-        // Lógica de cálculo da taxa
-        log.trace("Calculando taxa para conta {}", conta.getId());
-        return conta.getTaxaManutencaoMensal();
-    }
+	public Conta manutencaoTaxaCC(Long idConta) {
+		log.debug("Iniciando cobrança de manutenção para conta {}", idConta);
 
-	
+		ContaCorrente conta = (ContaCorrente) contaRepository.findById(idConta).orElseThrow(() -> {
+			log.error("Conta corrente {} não encontrada", idConta);
+			return new ClienteNaoEncontradoException("Conta não encontrada");
+		});
+
+		if (!conta.getStatus()) {
+			log.warn("Tentativa de cobrar taxa em conta corrente inativa - ID: {}", idConta);
+
+		}
+
+		BigDecimal taxa = calcularAcrescimoTaxaCC(conta);
+		conta.debitar(taxa);
+
+		log.info("Taxa de manutenção de {} debitada da conta {}", taxa, idConta);
+		return contaRepository.save(conta);
+	}
+
+	private BigDecimal calcularAcrescimoTaxaCC(ContaCorrente conta) {
+		// Lógica de cálculo da taxa
+		log.trace("Calculando taxa para conta {}", conta.getId());
+		return conta.getTaxaManutencaoMensal();
+	}
+
 	public ResponseEntity<?> processarOperacaoConta(Long idConta, Function<Long, Conta> operacao) {
-	    try {
-	        Conta contaAtualizada = operacao.apply(idConta);
-	        return ResponseEntity.ok(converterParaDTO(contaAtualizada));
-	    } catch (ClienteNaoEncontradoException e) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-	    }
+		try {
+			Conta contaAtualizada = operacao.apply(idConta);
+			return ResponseEntity.ok(converterParaDTO(contaAtualizada));
+		} catch (ClienteNaoEncontradoException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
 	}
-	
+
 	public UserContaResponseDTO converterParaDTO(Conta conta) {
-	    UserContaResponseDTO response = new UserContaResponseDTO();
-	    response.setId(conta.getId());
-		 response.setTipoConta(conta.getTipoConta());
-		 response.setCategoriaConta(conta.getCategoriaConta());
-		 if (conta instanceof ContaCorrente contaCorrente) {
-				response.setTaxaManutencaoMensal(contaCorrente.getTaxaManutencaoMensal());
-			}
+		UserContaResponseDTO response = new UserContaResponseDTO();
+		response.setId(conta.getId());
+		response.setTipoConta(conta.getTipoConta());
+		response.setCategoriaConta(conta.getCategoriaConta());
+		if (conta instanceof ContaCorrente contaCorrente) {
+			response.setTaxaManutencaoMensal(contaCorrente.getTaxaManutencaoMensal());
+		}
 
-			if (conta instanceof ContaPoupanca contaPoupanca) {
-				response.setTaxaAcrescRend(contaPoupanca.getTaxaAcrescRend());
-				response.setTaxaMensal(contaPoupanca.getTaxaMensal());
-			}
-			
-			response.setSaldoConta(conta.getSaldoConta());
-			response.setNumeroConta(conta.getNumeroConta());
-			response.setPixAleatorio(conta.getPixAleatorio());
-			response.setStatus(conta.getStatus());
-	    return response;
+		if (conta instanceof ContaPoupanca contaPoupanca) {
+			response.setTaxaAcrescRend(contaPoupanca.getTaxaAcrescRend());
+			response.setTaxaMensal(contaPoupanca.getTaxaMensal());
+		}
+
+		response.setSaldoConta(conta.getSaldoConta());
+		response.setNumeroConta(conta.getNumeroConta());
+		response.setPixAleatorio(conta.getPixAleatorio());
+		response.setStatus(conta.getStatus());
+		return response;
 	}
-	
-
-
 
 	// Outros métodos
 	public String gerarNumeroDaConta() {

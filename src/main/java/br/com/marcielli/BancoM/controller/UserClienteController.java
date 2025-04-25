@@ -108,42 +108,6 @@ public class UserClienteController {
 	    return ResponseEntity.ok(response);
 	}
 
-//	@GetMapping("/users/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id) {
-//
-//		Cliente clienteUnico = clienteService.getClienteById(id);
-//
-//		if (clienteUnico == null || clienteUnico.getUser() == null) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
-//		}
-//
-//		boolean isAdmin = clienteUnico.getUser().getRoles().stream()
-//				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-//
-//		if (!isAdmin) {
-//			UserClienteResponseDTO response = new UserClienteResponseDTO();
-//			response.setId(id);
-//			response.setNome(clienteUnico.getNome());
-//			response.setCpf(clienteUnico.getCpf());
-//
-//			Endereco endereco = clienteUnico.getEndereco();
-//			if (endereco != null) {
-//				response.setCep(endereco.getCep());
-//				response.setCidade(endereco.getCidade());
-//				response.setEstado(endereco.getEstado());
-//				response.setRua(endereco.getRua());
-//				response.setNumero(endereco.getNumero());
-//				response.setBairro(endereco.getBairro());
-//				response.setComplemento(endereco.getComplemento());
-//				response.setClienteAtivo(clienteUnico.isClienteAtivo());
-//			}
-//
-//			return ResponseEntity.status(HttpStatus.OK).body(response);
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
-//		}
-//	}
 
 	@PutMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
