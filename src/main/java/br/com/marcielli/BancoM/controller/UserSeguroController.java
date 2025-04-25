@@ -15,11 +15,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroCreateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserSeguroResponseDTO;
 import br.com.marcielli.BancoM.entity.Seguro;
 import br.com.marcielli.BancoM.entity.User;
+import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
+import br.com.marcielli.BancoM.exception.SeguroNaoEncontradoException;
 import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.UserSeguroService;
 
@@ -35,16 +40,42 @@ public class UserSeguroController {
 	}
 
 	@PostMapping("/seguros")
-	public ResponseEntity<String> createSeguro(@RequestBody SeguroCreateDTO dto, JwtAuthenticationToken token) {
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	public ResponseEntity<?> createSeguro(@RequestBody SeguroCreateDTO dto, JwtAuthenticationToken token) {
+		try {
+			Seguro seguroAdicionado = seguroService.save(dto, token);
 
-		Seguro seguroAdicionado = seguroService.save(dto, token);
+			// Criar um DTO de resposta (similar ao UserCartaoResponseDTO)
+			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
+			response.setId(seguroAdicionado.getId());
+			response.setTipo(seguroAdicionado.getTipo());
+			response.setAtivo(seguroAdicionado.getAtivo());
+			response.setValorMensal(seguroAdicionado.getValorMensal());
+			response.setValorApolice(seguroAdicionado.getValorApolice());
+			response.setIdCartao(seguroAdicionado.getCartao().getId());
 
-		if (seguroAdicionado != null) {
-			return new ResponseEntity<String>("Seguro adicionado com sucesso", HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+		} catch (CartaoNaoEncontradoException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (PermissaoNegadaException e) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
+//	@PostMapping("/seguros")
+//	public ResponseEntity<String> createSeguro(@RequestBody SeguroCreateDTO dto, JwtAuthenticationToken token) {
+//
+//		Seguro seguroAdicionado = seguroService.save(dto, token);
+//
+//		if (seguroAdicionado != null) {
+//			return new ResponseEntity<String>("Seguro adicionado com sucesso", HttpStatus.CREATED);
+//		} else {
+//			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+//		}
+//	}
 
 	@GetMapping("/seguros")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
@@ -84,45 +115,86 @@ public class UserSeguroController {
 	@PutMapping("/seguros/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto) {
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto,
+			JwtAuthenticationToken token) {
+		try {
+			Seguro seguroAtualizado = seguroService.update(id, dto, token);
 
-		Seguro seguro = seguroService.update(id, dto);
-
-		if (seguro == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O seguro não existe!");
-		}
-
-		boolean isAdmin = seguro.getCartao().getConta().getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
 			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
+			response.setId(seguroAtualizado.getId());
+			response.setTipo(seguroAtualizado.getTipo());
+			response.setValorMensal(seguroAtualizado.getValorMensal());
+			response.setValorApolice(seguroAtualizado.getValorApolice());
+			response.setAtivo(seguroAtualizado.getAtivo());
 
-			response.setId(id);
-			response.setTipo(seguro.getTipo());
-			response.setValorMensal(seguro.getValorMensal());
-			response.setValorApolice(seguro.getValorApolice());
-			response.setAtivo(seguro.getAtivo());
+			return ResponseEntity.ok(response);
 
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O seguro não existe!");
+		} catch (SeguroNaoEncontradoException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (PermissaoNegadaException e) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+
+//	@PutMapping("/seguros/{id}")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+//	@Transactional
+//	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto) {
+//
+//		Seguro seguro = seguroService.update(id, dto);
+//
+//		if (seguro == null) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O seguro não existe!");
+//		}
+//
+//		boolean isAdmin = seguro.getCartao().getConta().getCliente().getUser().getRoles().stream()
+//				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+//
+//		if (!isAdmin) {
+//			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
+//
+//			response.setId(id);
+//			//response.setTipo(seguro.getTipo());
+//			response.setValorMensal(seguro.getValorMensal());
+//			response.setValorApolice(seguro.getValorApolice());
+//			response.setAtivo(seguro.getAtivo());
+//
+//			return ResponseEntity.status(HttpStatus.OK).body(response);
+//		} else {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O seguro não existe!");
+//		}
+//	}
 
 	@DeleteMapping("/seguros/{id}")
-	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	@Transactional
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
-
-		boolean seguro = seguroService.delete(id);
-
-		if (seguro) {
-			return ResponseEntity.status(HttpStatus.OK).body("Seguro deletado com sucesso!");
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
-		}
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto, JwtAuthenticationToken token) {
+	    try {
+	        boolean deletado = seguroService.delete(id, dto, token);
+	        return deletado ? ResponseEntity.ok("Seguro desativado com sucesso!")
+	                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado.");
+	    } catch (ContaNaoEncontradaException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    } catch (PermissaoNegadaException e) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.badRequest().body(e.getMessage());
+	    }
 	}
+
+//	@DeleteMapping("/seguros/{id}")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+//	@Transactional
+//	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
+//
+//		boolean seguro = seguroService.delete(id);
+//
+//		if (seguro) {
+//			return ResponseEntity.status(HttpStatus.OK).body("Seguro deletado com sucesso!");
+//		} else {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
+//		}
+//	}
 
 }

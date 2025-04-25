@@ -132,12 +132,8 @@ public class UserContaController {
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
 	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, JwtAuthenticationToken token) {
-
+		
 		Conta conta = contaService.update(id, dto, token);
-
-		if (conta == null || conta.getCliente().getUser() == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-		}
 
 		boolean isAdmin = conta.getCliente().getUser().getRoles().stream()
 				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));

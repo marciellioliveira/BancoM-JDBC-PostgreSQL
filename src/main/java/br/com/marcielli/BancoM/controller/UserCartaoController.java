@@ -142,9 +142,7 @@ public class UserCartaoController {
 	@PutMapping("/cartoes/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
-	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, 
-	                                      @RequestBody CartaoUpdateDTO dto,
-	                                      JwtAuthenticationToken token) {
+	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id,@RequestBody CartaoUpdateDTO dto,JwtAuthenticationToken token) {
 	    try {
 	        Cartao cartaoAtualizado = cartaoService.updateSenha(id, dto, token);
 	        
@@ -163,10 +161,10 @@ public class UserCartaoController {
 	@DeleteMapping("/cartoes/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id,JwtAuthenticationToken token) { 
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto, JwtAuthenticationToken token) { 
 	
 	    try {
-	        boolean deletado = cartaoService.delete(id, token);
+	        boolean deletado = cartaoService.delete(id, dto, token);
 	        return deletado 
 	            ? ResponseEntity.ok("Cartão desativado com sucesso!")
 	            : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado.");

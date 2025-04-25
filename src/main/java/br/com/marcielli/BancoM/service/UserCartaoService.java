@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
@@ -265,27 +266,35 @@ public class UserCartaoService {
 	}
 	
 	@Transactional
-	public boolean delete(Long cartaoId, JwtAuthenticationToken token) {
-	   
+	public boolean delete(Long cartaoId, @RequestBody CartaoUpdateDTO dto, JwtAuthenticationToken token) {
+	  
 	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
 	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
 
 	    Cartao cartao = cartaoRepository.findById(cartaoId)
-	        .orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
 
 	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
-	        
+	       
 	        if (cartao.getConta().getCliente().getUser().getRoles().stream()
-	            .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()))) {
+	                .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()))) {
 	            throw new PermissaoNegadaException("Não é possível desativar cartões de administradores.");
 	        }
-	    } else {
-	     
-	        Long currentUserId = currentUser.getId().longValue();
-	        Long idDonoCartao = cartao.getConta().getCliente().getUser().getId().longValue();
 
-	        if (!currentUserId.equals(idDonoCartao)) {
+	        if (!cartao.getConta().getCliente().getId().equals(dto.idUsuario())) {
+	            throw new PermissaoNegadaException("Este cartão não pertence ao usuário informado.");
+	        }
+	    } 
+	    else {
+	       
+	        Long currentUserId = currentUser.getId().longValue();
+	        if (!currentUserId.equals(dto.idUsuario())) {
 	            throw new PermissaoNegadaException("Você só pode desativar seus próprios cartões.");
+	        }
+
+	        Long idDonoCartao = cartao.getConta().getCliente().getUser().getId().longValue();
+	        if (!currentUserId.equals(idDonoCartao)) {
+	            throw new PermissaoNegadaException("Este cartão não pertence ao seu usuário.");
 	        }
 	    }
 
@@ -293,7 +302,6 @@ public class UserCartaoService {
 	    cartaoRepository.save(cartao);
 	    return true;
 	}
-	
 	
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public Cartao update(Long id, CartaoUpdateDTO dto) {

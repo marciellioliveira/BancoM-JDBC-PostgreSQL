@@ -25,16 +25,24 @@ import lombok.ToString;
 public class UserSeguroResponseDTO {
 	
 	private Long id;
-	
-	@Enumerated(EnumType.STRING)
     private TipoSeguro tipo;
-    
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private boolean ativo;
     private BigDecimal valorMensal;
-    
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal valorApolice;
+    private Long idCartao;
     
-    private Boolean ativo;
+	
+//	private Long id;
+//	
+//	@Enumerated(EnumType.STRING)
+//    private TipoSeguro tipo;
+//    
+//    @JsonFormat(shape = JsonFormat.Shape.STRING)
+//    private BigDecimal valorMensal;
+//    
+//    @JsonFormat(shape = JsonFormat.Shape.STRING)
+//    private BigDecimal valorApolice;
+//    
+//    private Boolean ativo;
 
 }
