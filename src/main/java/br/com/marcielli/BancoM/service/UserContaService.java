@@ -137,73 +137,6 @@ public class UserContaService {
 	    return conta;
 	}
 
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Conta save(ContaCreateDTO dto, JwtAuthenticationToken token) {
-//
-//		User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-//		ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
-//
-//		// Definindo para qual cliente a conta será criada
-//		Cliente clienteAlvo;
-//
-//		if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) { // Como Admin pode criar conta para qualquer cliente, ele usa
-//															// o dto aqui
-//
-//			if (ValidacaoUsuarioAtivo.isAdmin(currentUser) && dto.idUsuario() == null) {
-//				throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
-//			}
-//
-//			clienteAlvo = clienteRepository.findById(dto.idUsuario())
-//					.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-//		} else { // Como só pode criar conta para ele mesmo, ele ignora o DTO aqui
-//
-//			Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
-//
-//			if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) { // Basic só pode cadastrar no
-//																							// id de usuario dele
-//				throw new ClienteEncontradoException("Usuário não tem permissão para criar conta para outro ID.");
-//			}
-//			clienteAlvo = currentUser.getCliente();
-//		}
-//
-//		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
-//		List<TaxaManutencao> novaTaxa = new ArrayList<>();
-//		novaTaxa.add(taxa);
-//
-//		String numeroConta = gerarNumeroDaConta();
-//		String numeroPix = gerarPixAleatorio();
-//		String novoPix = numeroPix.concat("-PIX");
-//
-//		Conta conta = null;
-//
-//		try {
-//			if (dto.tipoConta() == TipoConta.CORRENTE) {
-//				conta = new ContaCorrente(taxa.getTaxaManutencaoMensal());
-//				String numContaCorrente = numeroConta.concat("-CC");
-//				conta.setNumeroConta(numContaCorrente);
-//			} else if (dto.tipoConta() == TipoConta.POUPANCA) {
-//				conta = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
-//				String numContaPoupanca = numeroConta.concat("-PP");
-//				conta.setNumeroConta(numContaPoupanca);
-//			}
-//
-//			conta.setTaxas(novaTaxa);
-//			conta.setPixAleatorio(novoPix);
-//			conta.setCategoriaConta(taxa.getCategoria());
-//			conta.setCliente(clienteAlvo); // Como fiz a validação em cima, então sei ao certo aqui que vai criar
-//											// exatamente para o cliente validado
-//			conta.setTipoConta(dto.tipoConta());
-//			conta.setSaldoConta(dto.saldoConta());
-//			conta.setStatus(true);
-//
-//			contaRepository.save(conta);
-//
-//		} catch (NumberFormatException e) {
-//			System.out.println("ID inválido no token: " + token.getName());
-//		}
-//
-//		return conta;
-//	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta getContasById(Long id) {
@@ -247,8 +180,11 @@ public class UserContaService {
 
 		String novoPix = dto.pixAleatorio().concat("-PIX");
 		contaExistente.setPixAleatorio(novoPix);
+		
+		//Aqui tive que forçar o flush imediat porque ele estava salvando corretamente no banco mas não estava imprimindo corretamente no json
+		Conta contaAtualizada = contaRepository.saveAndFlush(contaExistente); 
 
-		return contaRepository.save(contaExistente);
+		return contaRepository.save(contaAtualizada);
 	}
 
 	@Transactional
