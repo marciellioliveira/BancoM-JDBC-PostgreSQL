@@ -32,6 +32,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
@@ -43,7 +46,9 @@ import lombok.ToString;
 public class Conta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	private static final Logger log = LoggerFactory.getLogger(Conta.class);
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -95,6 +100,47 @@ public class Conta implements Serializable {
 		}
 
 		this.saldoConta = this.saldoConta.subtract(valor);
+	}
+
+	public void creditar(BigDecimal valor) {
+        if (valor == null) {
+            log.warn("Tentativa de crédito com valor nulo");
+            return;
+        }
+        
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            log.warn("Tentativa de crédito com valor não positivo: {}", valor);
+            return;
+        }
+        
+        if (this.saldoConta == null) {
+            this.saldoConta = BigDecimal.ZERO;
+        }
+        
+        this.saldoConta = this.saldoConta.add(valor);
+        log.info("Crédito de {} realizado. Novo saldo: {}", valor, this.saldoConta);
+    }
+	
+	public void debitar(BigDecimal valor) {
+        if (valor == null) {
+            log.warn("Tentativa de débito com valor nulo");
+            return;
+        }
+        
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            log.warn("Tentativa de débito com valor não positivo: {}", valor);
+            return;
+        }
+        
+        if (this.saldoConta == null) {
+            this.saldoConta = BigDecimal.ZERO;
+        }
+        
+        if (this.saldoConta.compareTo(valor) < 0) {
+            log.warn("Saldo insuficiente para débito. Saldo: {}, Tentativa: {}", this.saldoConta, valor);
+            return;
+        }
+        
 	}
 
 }

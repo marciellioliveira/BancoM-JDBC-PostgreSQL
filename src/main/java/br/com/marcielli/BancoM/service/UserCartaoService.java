@@ -34,11 +34,14 @@ import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
+import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepositoy;
 import br.com.marcielli.BancoM.repository.UserRepository;
 
@@ -48,134 +51,283 @@ public class UserCartaoService {
 	private final CartaoRepository cartaoRepository;
 	private final ContaRepositoy contaRepository;
 	private final UserRepository userRepository;
+	private final ClienteRepository clienteRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	
-	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository, ContaRepositoy contaRepository, BCryptPasswordEncoder passwordEncoder) {
+	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository, ContaRepositoy contaRepository, BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository) {
 		this.cartaoRepository = cartaoRepository;
 		this.userRepository = userRepository;
 		this.contaRepository = contaRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.clienteRepository = clienteRepository;
 	}
-
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cartao save(CartaoCreateDTO dto, JwtAuthenticationToken token) {
-		
-		//Receber o usuário que está logado e criar a conta desse usuário.
-		Integer userId = null;
-		
-		Cartao cartao = null;
-		List<Cartao> cartoes = new ArrayList<Cartao>();
-		String numCartao = gerarNumCartao();
-		
-		try {
-			userId = Integer.parseInt(token.getName());
-			User user = userRepository.findById(userId)
-				    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
-			
-			ValidacaoUsuarioAtivo.verificarUsuarioAtivo(user);	
-			
-			Cliente cliente = user.getCliente();
-			if (cliente == null) {
-			    throw new RuntimeException("Cliente não associado ao usuário");
-			}
-			
-			Conta contaDoUser = cliente.getContas().stream()
-				    .filter(c -> c.getId().equals(dto.idConta()))
-				    .findFirst()
-				    .orElseThrow(() -> new RuntimeException("Conta não pertence a este cliente"));
-			
-			if(dto.tipoCartao() == TipoCartao.CREDITO) {
-				
-				String numeroCartao = numCartao.concat("-CC");
-				
-				cartao = new CartaoCredito();
-				
-				cartao.setTipoCartao(dto.tipoCartao());
-				
-				//user.setPassword(passwordEncoder.encode(cliente.password()));
-				//cartao.setSenha(dto.senha());
-				cartao.setSenha(passwordEncoder.encode(dto.senha()));
-				cartao.setNumeroCartao(numeroCartao);
-				cartao.setStatus(true);	
-				cartoes.add(cartao);
-				
-				cartao.setConta(contaDoUser);
-				cartao.setTipoConta(contaDoUser.getTipoConta());
-				cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
-				contaDoUser.setCartoes(cartoes);
-				
-			}
-			
-			if(dto.tipoCartao() == TipoCartao.DEBITO) {
-				
-				String numeroCartao = numCartao.concat("-CD");
-				
-				cartao = new CartaoDebito();	
-				
-				cartao.setTipoCartao(dto.tipoCartao());
-				cartao.setSenha(dto.senha());
-				cartao.setNumeroCartao(numeroCartao);
-				cartao.setStatus(true);
-				
-				cartoes.add(cartao);
-				cartao.setConta(contaDoUser);
-				cartao.setTipoConta(contaDoUser.getTipoConta());
-				cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
-				contaDoUser.setCartoes(cartoes);
-			
-			}
-			
-			
-		} catch (NumberFormatException e) {			
-			System.out.println("ID inválido no token: " + token.getName());
-		}
-		
-		cartaoRepository.save(cartao);
-		
-		return cartao;
-		
+	    try {
+	        User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	        ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+
+	        Cliente clienteAlvo;
+	        
+	        if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
+	           
+	            if (dto.idUsuario() == null) {
+	                throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
+	            }
+	            
+	            clienteAlvo = clienteRepository.findById(dto.idUsuario())
+	                    .orElseThrow(() -> new ContaNaoEncontradaException("Usuário não encontrado"));
+	        } else {
+	          
+	            Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
+	            
+	            if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) {
+	                throw new ContaNaoEncontradaException("Usuário não tem permissão para criar cartão para outro ID.");
+	            }
+	            clienteAlvo = currentUser.getCliente();
+	        }
+
+	      
+	        Conta contaDoUser = clienteAlvo.getContas().stream()
+	                .filter(c -> c.getId().equals(dto.idConta()))
+	                .findFirst()
+	                .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou não pertence ao usuário"));
+
+	        String numCartao = gerarNumCartao();
+	        Cartao cartao = null;
+	        List<Cartao> cartoes = new ArrayList<>();
+
+	        if (dto.tipoCartao() == TipoCartao.CREDITO) {
+	            String numeroCartao = numCartao.concat("-CC");
+	            cartao = new CartaoCredito();
+	            
+	            cartao.setTipoCartao(dto.tipoCartao());
+	            cartao.setSenha(passwordEncoder.encode(dto.senha()));
+	            cartao.setNumeroCartao(numeroCartao);
+	            cartao.setStatus(true);
+	            cartoes.add(cartao);
+	            
+	            cartao.setConta(contaDoUser);
+	            cartao.setTipoConta(contaDoUser.getTipoConta());
+	            cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
+	            contaDoUser.setCartoes(cartoes);
+	        } 
+	        else if (dto.tipoCartao() == TipoCartao.DEBITO) {
+	            String numeroCartao = numCartao.concat("-CD");
+	            cartao = new CartaoDebito();
+	            
+	            cartao.setTipoCartao(dto.tipoCartao());
+	            cartao.setSenha(passwordEncoder.encode(dto.senha()));
+	            cartao.setNumeroCartao(numeroCartao);
+	            cartao.setStatus(true);
+	            cartoes.add(cartao);
+	            
+	            cartao.setConta(contaDoUser);
+	            cartao.setTipoConta(contaDoUser.getTipoConta());
+	            cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
+	            contaDoUser.setCartoes(cartoes);
+	        }
+	        
+	        return cartaoRepository.save(cartao);
+	        
+	    } catch (NumberFormatException e) {
+	        throw new RuntimeException("ID inválido no token: " + token.getName());
+	    }
 	}
+
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Cartao save(CartaoCreateDTO dto, JwtAuthenticationToken token) {
+//		
+//		Integer userId = null;
+//		
+//		Cartao cartao = null;
+//		List<Cartao> cartoes = new ArrayList<Cartao>();
+//		String numCartao = gerarNumCartao();
+//		
+//		try {
+//			userId = Integer.parseInt(token.getName());
+//			User user = userRepository.findById(userId)
+//				    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+//			
+//			ValidacaoUsuarioAtivo.verificarUsuarioAtivo(user);	
+//			
+//			Cliente cliente = user.getCliente();
+//			if (cliente == null) {
+//			    throw new RuntimeException("Cliente não associado ao usuário");
+//			}
+//			
+//			Conta contaDoUser = cliente.getContas().stream()
+//				    .filter(c -> c.getId().equals(dto.idConta()))
+//				    .findFirst()
+//				    .orElseThrow(() -> new RuntimeException("Conta não pertence a este cliente"));
+//			
+//			if(dto.tipoCartao() == TipoCartao.CREDITO) {
+//				
+//				String numeroCartao = numCartao.concat("-CC");
+//				
+//				cartao = new CartaoCredito();
+//				
+//				cartao.setTipoCartao(dto.tipoCartao());
+//				
+//				//user.setPassword(passwordEncoder.encode(cliente.password()));
+//				//cartao.setSenha(dto.senha());
+//				cartao.setSenha(passwordEncoder.encode(dto.senha()));
+//				cartao.setNumeroCartao(numeroCartao);
+//				cartao.setStatus(true);	
+//				cartoes.add(cartao);
+//				
+//				cartao.setConta(contaDoUser);
+//				cartao.setTipoConta(contaDoUser.getTipoConta());
+//				cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
+//				contaDoUser.setCartoes(cartoes);
+//				
+//			}
+//			
+//			if(dto.tipoCartao() == TipoCartao.DEBITO) {
+//				
+//				String numeroCartao = numCartao.concat("-CD");
+//				
+//				cartao = new CartaoDebito();	
+//				
+//				cartao.setTipoCartao(dto.tipoCartao());
+//				cartao.setSenha(dto.senha());
+//				cartao.setNumeroCartao(numeroCartao);
+//				cartao.setStatus(true);
+//				
+//				cartoes.add(cartao);
+//				cartao.setConta(contaDoUser);
+//				cartao.setTipoConta(contaDoUser.getTipoConta());
+//				cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
+//				contaDoUser.setCartoes(cartoes);
+//			
+//			}
+//			
+//			
+//		} catch (NumberFormatException e) {			
+//			System.out.println("ID inválido no token: " + token.getName());
+//		}
+//		
+//		cartaoRepository.save(cartao);
+//		
+//		return cartao;
+//		
+//	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cartao getCartoesById(Long id) {
 		return cartaoRepository.findById(id).orElse(null);
 	}
 	
-	
-	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao update(Long id, CartaoUpdateDTO dto) {
-		
-		Cartao cartaoExiste = cartaoRepository.findById(id).orElse(null);
-		
-		if (cartaoExiste == null) {
-			 return null;
-		}
-		
-		cartaoExiste.setSenha(dto.senha());
-		
-		cartaoRepository.save(cartaoExiste);
-		return cartaoExiste;
-	
+	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, JwtAuthenticationToken token) {
+	 
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+	    
+	    Cartao cartao = cartaoRepository.findById(cartaoId)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
+	    
+	    if (!cartao.isStatus()) { //Só pode atualizar se o cartão estiver com status true
+	        throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
+	    }
+
+	    if (!cartao.getConta().getCliente().getId().equals(dto.idUsuario())) {
+	        throw new PermissaoNegadaException("Este cartão não pertence ao usuário informado");
+	    }
+
+	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
+	        
+	        if (dto.idUsuario() == null) {
+	            throw new IllegalArgumentException("Admin deve informar o ID do usuário");
+	        }
+	        
+	        clienteRepository.findById(dto.idUsuario())
+	                .orElseThrow(() -> new ContaNaoEncontradaException("Usuário não encontrado"));
+	    } else {
+	       
+	        Long currentUserId = Long.valueOf(currentUser.getId());
+	        if (!currentUserId.equals(dto.idUsuario())) {
+	            throw new PermissaoNegadaException("Você só pode atualizar seus próprios cartões");
+	        }
+	        
+	        //Tive que fazer essa conversão porque se eu fizesse assim "cartao.getConta().getCliente().getUser().getId()" 
+	        //ele devolveria um integer e a comparação com long não seria válida
+	        Long idContaClienteUserCartao = cartao.getConta().getCliente().getUser().getId().longValue();
+	        
+	        if (!currentUserId.equals(idContaClienteUserCartao)) {
+	            throw new PermissaoNegadaException("Este cartão não pertence ao seu usuário");
+	        }
+	    }
+
+	    cartao.setSenha(passwordEncoder.encode(dto.senha()));
+	    return cartaoRepository.save(cartao);
 	}
-	
 	
 	@Transactional
-	public boolean delete(Long id) {
-		
-		Cartao cartaoExistente = cartaoRepository.findById(id).orElse(null);
-		
-		boolean isAdmin = cartaoExistente.getConta().getCliente().getUser().getRoles().stream()
-			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-	
-		if(isAdmin) {
-			throw new ClienteNaoEncontradoException("Não é possível deletar dados do administrador do sistema.");
-		}
-		
-		cartaoExistente.setStatus(false);
-		
+	public boolean delete(Long cartaoId, JwtAuthenticationToken token) {
+	   
+	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+
+	    Cartao cartao = cartaoRepository.findById(cartaoId)
+	        .orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
+
+	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
+	        
+	        if (cartao.getConta().getCliente().getUser().getRoles().stream()
+	            .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()))) {
+	            throw new PermissaoNegadaException("Não é possível desativar cartões de administradores.");
+	        }
+	    } else {
+	     
+	        Long currentUserId = currentUser.getId().longValue();
+	        Long idDonoCartao = cartao.getConta().getCliente().getUser().getId().longValue();
+
+	        if (!currentUserId.equals(idDonoCartao)) {
+	            throw new PermissaoNegadaException("Você só pode desativar seus próprios cartões.");
+	        }
+	    }
+
+	    cartao.setStatus(false);
+	    cartaoRepository.save(cartao);
 	    return true;
 	}
+	
+	
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public Cartao update(Long id, CartaoUpdateDTO dto) {
+//		
+//		Cartao cartaoExiste = cartaoRepository.findById(id).orElse(null);
+//		
+//		if (cartaoExiste == null) {
+//			 return null;
+//		}
+//		
+//		cartaoExiste.setSenha(dto.senha());
+//		
+//		cartaoRepository.save(cartaoExiste);
+//		return cartaoExiste;
+//	
+//	}
+	
+	
+//	@Transactional
+//	public boolean delete(Long id) {
+//		
+//		Cartao cartaoExistente = cartaoRepository.findById(id).orElse(null);
+//		
+//		boolean isAdmin = cartaoExistente.getConta().getCliente().getUser().getRoles().stream()
+//			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+//	
+//		if(isAdmin) {
+//			throw new ClienteNaoEncontradoException("Não é possível deletar dados do administrador do sistema.");
+//		}
+//		
+//		cartaoExistente.setStatus(false);
+//		
+//	    return true;
+//	}
 	
 	
 	

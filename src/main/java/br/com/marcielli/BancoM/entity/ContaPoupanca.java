@@ -26,5 +26,6 @@ public class ContaPoupanca extends Conta {
 	private BigDecimal taxaAcrescRend;
 	
 	private BigDecimal taxaMensal;
+
 	
 }

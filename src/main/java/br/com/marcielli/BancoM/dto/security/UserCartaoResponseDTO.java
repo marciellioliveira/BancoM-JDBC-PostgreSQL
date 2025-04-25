@@ -28,6 +28,8 @@ public class UserCartaoResponseDTO {
 
 	private Long id;	
 	
+	private Long idConta;
+	
 	@Enumerated(EnumType.STRING)
 	private TipoCartao tipoCartao;
 	

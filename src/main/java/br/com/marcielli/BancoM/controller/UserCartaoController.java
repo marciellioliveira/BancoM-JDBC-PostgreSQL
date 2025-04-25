@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.marcielli.BancoM.dto.CartaoResponseDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoCreateDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserCartaoAlterarLimiteCartaoCreditoDTO;
@@ -29,6 +30,8 @@ import br.com.marcielli.BancoM.entity.CartaoDebito;
 import br.com.marcielli.BancoM.entity.Fatura;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
+import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
 import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.UserCartaoService;
 
@@ -43,19 +46,51 @@ public class UserCartaoController {
 		this.userRepository = userRepository;
 	}
 
+//	@PostMapping("/cartoes")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+//	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token) {
+//
+//		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
+//		Cartao cartaoAdicionado = cartaoService.save(dto, token);
+//
+//		if (cartaoAdicionado != null) {
+//			return new ResponseEntity<String>("Cartão adicionado com sucesso", HttpStatus.CREATED);
+//		} else {
+//			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+//		}
+//
+//	}
+	
 	@PostMapping("/cartoes")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<String> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token) {
+	public ResponseEntity<?> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token) {
+	    
+	    Cartao cartaoAdicionado = cartaoService.save(dto, token);
 
-		// Pegar o clienteCreateDTO e transformá-lo em uma entidade
-		Cartao cartaoAdicionado = cartaoService.save(dto, token);
+	    if (cartaoAdicionado != null) {
+	    	UserCartaoResponseDTO response = new UserCartaoResponseDTO();
 
-		if (cartaoAdicionado != null) {
-			return new ResponseEntity<String>("Cartão adicionado com sucesso", HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-		}
+			response.setId(cartaoAdicionado.getId());
+			response.setIdConta(cartaoAdicionado.getConta().getId());
+			response.setTipoConta(cartaoAdicionado.getConta().getTipoConta());
+			response.setCategoriaConta(cartaoAdicionado.getCategoriaConta());
+			response.setTipoCartao(cartaoAdicionado.getTipoCartao());
+			response.setNumeroCartao(cartaoAdicionado.getNumeroCartao());
+			response.setStatus(cartaoAdicionado.isStatus());
+			response.setSenha(cartaoAdicionado.getSenha());
 
+			if (cartaoAdicionado instanceof CartaoCredito cc) {
+				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
+			}
+
+			if (cartaoAdicionado instanceof CartaoDebito cd) {
+				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
+			}
+	        
+	        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	    } else {
+	        return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+	    }
 	}
 
 	@GetMapping("/cartoes")
@@ -103,60 +138,108 @@ public class UserCartaoController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
 		}
 	}
-
+	
 	@PutMapping("/cartoes/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto) {
-
-		Cartao cartao = cartaoService.update(id, dto);
-
-		if (cartao == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
-		}
-
-		boolean isAdmin = cartao.getConta().getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
-			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-
-			response.setId(id);
-			response.setTipoConta(cartao.getConta().getTipoConta());
-			response.setCategoriaConta(cartao.getCategoriaConta());
-			response.setTipoCartao(cartao.getTipoCartao());
-			response.setNumeroCartao(cartao.getNumeroCartao());
-			response.setStatus(cartao.isStatus());
-			response.setSenha(cartao.getSenha());
-
-			if (cartao instanceof CartaoCredito cc) {
-				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-			}
-
-			if (cartao instanceof CartaoDebito cd) {
-				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
-			}
-
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
-		}
+	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, 
+	                                      @RequestBody CartaoUpdateDTO dto,
+	                                      JwtAuthenticationToken token) {
+	    try {
+	        Cartao cartaoAtualizado = cartaoService.updateSenha(id, dto, token);
+	        
+	        return ResponseEntity.ok("Senha do cartão atualizada com sucesso");
+	        
+	    } catch (ContaNaoEncontradaException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    } catch (PermissaoNegadaException e) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.badRequest().body(e.getMessage());
+	    }
 	}
 
+	
 	@DeleteMapping("/cartoes/{id}")
-	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	@Transactional
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
-
-		boolean conta = cartaoService.delete(id);
-
-		if (conta) {
-			return ResponseEntity.status(HttpStatus.OK).body("Cartão deletado com sucesso!");
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
-		}
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id,JwtAuthenticationToken token) { 
+	
+	    try {
+	        boolean deletado = cartaoService.delete(id, token);
+	        return deletado 
+	            ? ResponseEntity.ok("Cartão desativado com sucesso!")
+	            : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado.");
+	    } catch (ContaNaoEncontradaException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    } catch (PermissaoNegadaException e) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.badRequest().body(e.getMessage());
+	    }
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	@PutMapping("/cartoes/{id}")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+//	@Transactional
+//	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto) {
+//
+//		Cartao cartao = cartaoService.update(id, dto);
+//
+//		if (cartao == null) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
+//		}
+//
+//		boolean isAdmin = cartao.getConta().getCliente().getUser().getRoles().stream()
+//				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+//
+//		if (!isAdmin) {
+//			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
+//
+//			response.setId(id);
+//			response.setTipoConta(cartao.getConta().getTipoConta());
+//			response.setCategoriaConta(cartao.getCategoriaConta());
+//			response.setTipoCartao(cartao.getTipoCartao());
+//			response.setNumeroCartao(cartao.getNumeroCartao());
+//			response.setStatus(cartao.isStatus());
+//			response.setSenha(cartao.getSenha());
+//
+//			if (cartao instanceof CartaoCredito cc) {
+//				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
+//			}
+//
+//			if (cartao instanceof CartaoDebito cd) {
+//				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
+//			}
+//
+//			return ResponseEntity.status(HttpStatus.OK).body(response);
+//		} else {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
+//		}
+//	}
+
+//	@DeleteMapping("/cartoes/{id}")
+//	//@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+//	@Transactional
+//	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
+//
+//		boolean conta = cartaoService.delete(id);
+//
+//		if (conta) {
+//			return ResponseEntity.status(HttpStatus.OK).body("Cartão deletado com sucesso!");
+//		} else {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
+//		}
+//	}
 
 	// Pagamentos
 	@PostMapping("/cartoes/{idContaReceber}/pagamento")
