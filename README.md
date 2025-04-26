@@ -131,9 +131,10 @@ os dados:</br>
     <scope>runtime</scope>
 </dependency>
 ```
+
+→ Em BancoM\src\main\resources você encontra arquivos para configuração.</br>
+→ Abra o application.properties e digite:</br>
 ```xml
-- Em BancoM\src\main\resources você encontra arquivos para configuração.</br>
-- Abra o application.properties e digite:</br>
 spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE;</br>
 spring.datasource.driverClassName=org.h2.Driver</br>
 spring.datasource.username=sa</br>
