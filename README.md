@@ -1,4 +1,4 @@
-💳 Banco Digital - API REST com Java SE 21 e Spring Boot
+💳 <h1> Banco Digital - API REST com Java SE 21 e Spring Boot </h1>
 
 Este é um projeto desenvolvido como parte do bootcamp Código de Base da Educ360º, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros.
 A API foi completamente em regras reais de negócio para bancos digitais.
