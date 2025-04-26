@@ -1,6 +1,6 @@
 # 💳 Banco Digital - API REST com Java SE 21 e Spring Boot 
 
-## Este é um projeto desenvolvido como parte do <b>bootcamp Código de Base da Educ360º</b>, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros. A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
+### Este é um projeto desenvolvido como parte do <b>bootcamp Código de Base da Educ360º</b>, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros. A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 
 ## ✅ A aplicação permite operações bancárias como:
 - Cadastro de clientes;
@@ -103,46 +103,47 @@
 -  Acesse a pasta cd nome-do-repo
 -  Rode com sua IDE favorita (IntelliJ, Eclipse, VSCode)...
 
-## 🔗 Para fazer cadastro/login nas rotas da API como forma de autenticação, 
+## 🔗 Autenticação no Postman
+### Para fazer cadastro/login nas rotas da API como forma de autenticação, 
 é necessário configurar o postman para que ele tenha uma variável de ambiente
 e receba o accessToken.
 - Crie uma variável de ambiente com qualquer nome. A minha chama "autenticacao";
 - No menu lateral esquerdo do Postman, em environments adicione a variável com
-os dados:
--- Variable: accessToken
--- Type: Default
--- Current Value: Token
-- Na rota de cadastro, clique em authorization e:
--- Em Auth Type, insira: Bearer Token
--- Em Token: {{accessToken}} (a variável de ambiente).
-- Na rota de login, clique em authorization e:
--- Em Auth Type, deixe: Inherit from parent;
--- Em script, insira:
-  const json = pm.response.json();
-  pm.environment.set("accessToken", json.accessToken);
+os dados:</br>
+-- Variable: accessToken</br>
+-- Type: Default</br>
+-- Current Value: Token</br>
+- Na rota de cadastro, clique em authorization e:</br>
+-- Em Auth Type, insira: Bearer Token</br>
+-- Em Token: {{accessToken}} (a variável de ambiente).</br>
+- Na rota de login, clique em authorization e:</br>
+-- Em Auth Type, deixe: Inherit from parent;</br>
+-- Em script, insira:</br>
+  const json = pm.response.json();</br>
+  pm.environment.set("accessToken", json.accessToken);</br>
 
 ## 🔗 Configuração do Banco H2:
 - No Maven já existe a dependência, mas caso precise adicionar novamente,
 abra o pom.xml e cole esse código dentro de dependências:
-    <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <scope>runtime</scope>
-    </dependency>
+    <dependency></br>
+        <groupId>com.h2database</groupId></br>
+        <artifactId>h2</artifactId></br>
+        <scope>runtime</scope></br>
+    </dependency></br>
 
-- Em BancoM\src\main\resources você encontra arquivos para configuração.
-- Abra o application.properties e digite:
-spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE;
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
-spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
-spring.jackson.time-zone=America/Sao_Paulo
-server.port=8086
-spring.jpa.hibernate.ddl-auto = update
-spring.jpa.defer-datasource-initialization=true
+- Em BancoM\src\main\resources você encontra arquivos para configuração.</br>
+- Abra o application.properties e digite:</br>
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE;</br>
+spring.datasource.driverClassName=org.h2.Driver</br>
+spring.datasource.username=sa</br>
+spring.datasource.password=</br>
+spring.h2.console.enabled=true</br>
+spring.h2.console.path=/h2-console</br>
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss</br>
+spring.jackson.time-zone=America/Sao_Paulo</br>
+server.port=8086</br>
+spring.jpa.hibernate.ddl-auto = update</br>
+spring.jpa.defer-datasource-initialization=true</br>
 
 Nesse mesmo arquivo existem outras configurações para o projeto.
 Ao fazer o clone, ele já será baixado automaticamente.   
