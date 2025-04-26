@@ -1,6 +1,6 @@
 # 💳 Banco Digital - API REST com Java SE 21 e Spring Boot 
 
-### Este é um projeto desenvolvido como parte do <b>bootcamp Código de Base da Educ360º</b>, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros. A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
+#### Este é um projeto desenvolvido como parte do <b>bootcamp Código de Base da Educ360º</b>, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros. A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 
 ## ✅ A aplicação permite operações bancárias como:
 - Cadastro de clientes;
@@ -104,7 +104,7 @@
 -  Rode com sua IDE favorita (IntelliJ, Eclipse, VSCode)...
 
 ## 🔗 Autenticação no Postman
-### Para fazer cadastro/login nas rotas da API como forma de autenticação, 
+Para fazer cadastro/login nas rotas da API como forma de autenticação, 
 é necessário configurar o postman para que ele tenha uma variável de ambiente
 e receba o accessToken.
 - Crie uma variável de ambiente com qualquer nome. A minha chama "autenticacao";
