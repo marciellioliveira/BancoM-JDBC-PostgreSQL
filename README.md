@@ -93,8 +93,61 @@ A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 📈 Futuras Implementações
 - Interface Web (Frontend).
 
+
+
 ▶️ Como Executar
 🔍Clone o repositório (Utilize a Branch newBank)
 - git clone https://github.com/marciellioliveira/BancoM.git
 -  Acesse a pasta cd nome-do-repo
 -  Rode com sua IDE favorita (IntelliJ, Eclipse, VSCode)...
+
+🔗 Para fazer cadastro/login nas rotas da API como forma de autenticação, 
+é necessário configurar o postman para que ele tenha uma variável de ambiente
+e receba o accessToken.
+- Crie uma variável de ambiente com qualquer nome. A minha chama "autenticacao";
+- No menu lateral esquerdo do Postman, em environments adicione a variável com
+os dados:
+-- Variable: accessToken
+-- Type: Default
+-- Current Value: Token
+- Na rota de cadastro, clique em authorization e:
+-- Em Auth Type, insira: Bearer Token
+-- Em Token: {{accessToken}} (a variável de ambiente).
+- Na rota de login, clique em authorization e:
+-- Em Auth Type, deixe: Inherit from parent;
+-- Em script, insira:
+  const json = pm.response.json();
+  pm.environment.set("accessToken", json.accessToken);
+
+🔗 Configuração do Banco H2:
+- No Maven já existe a dependência, mas caso precise adicionar novamente,
+abra o pom.xml e cole esse código dentro de dependências:
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+
+- Em BancoM\src\main\resources você encontra arquivos para configuração.
+- Abra o application.properties e digite:
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE;
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=America/Sao_Paulo
+server.port=8086
+spring.jpa.hibernate.ddl-auto = update
+spring.jpa.defer-datasource-initialization=true
+
+Nesse mesmo arquivo existem outras configurações para o projeto.
+Ao fazer o clone, ele já será baixado automaticamente.   
+
+
+
+
+
+
+  
