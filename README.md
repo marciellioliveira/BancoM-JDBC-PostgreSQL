@@ -1,9 +1,9 @@
-💳  Banco Digital - API REST com Java SE 21 e Spring Boot 
+# 💳 Banco Digital - API REST com Java SE 21 e Spring Boot 
 
-Este é um projeto desenvolvido como parte do <b>bootcamp Código de Base da Educ360º</b>, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros.
+## Este é um projeto desenvolvido como parte do <b>bootcamp Código de Base da Educ360º</b>, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros.
 A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 
-✅ A aplicação permite operações bancárias como:
+## ✅ A aplicação permite operações bancárias como:
 - Cadastro de clientes;
 - Abertura de contas (Corrente/Poupança);
 - Emissão de cartões (Crédito/Débito);
@@ -15,7 +15,7 @@ A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 - Ver fatura, pagar fatura, alterar limite e etc;
 - Validações e aplicação de regras de negócio.
 
-🚀 Tecnologias Utilizadas
+## 🚀 Tecnologias Utilizadas
 - Java 21 – Linguagem principal;
 - Spring Boot – Framework backend;
 - Spring Data JPA - Persistencia de Dados;
@@ -30,21 +30,19 @@ A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 - API – Integração com API externa para dados e validações;
 - RestExceptionHandler com anotação como @ControllerAdvice para excessões personalizadas.
 
-💱 Suporte a Múltiplas Moedas (Multiwallet)
+## 💱 Suporte a Múltiplas Moedas (Multiwallet)
 - Com a integração da API de câmbio em tempo real, como a  ExchangeRate-API foi possível simplificar a conversão do saldo do usuário em tempo real e em diversas moedas como (BRL, USD, EUR).
 
-🚧 Status do Projeto
-
-🛠️ Em Desenvolvimento
+## 🚧 Status do Projeto
+### 🛠️ Em Desenvolvimento
 - Implementando logs com a biblioteca do Spring chamada SLF4J (Simple Logging Facade for Java);
 - Implementando @EnableScheduling/@EnableAsync e CRON para API aplicar as taxas automaticamente em lote de acordo com as datas agendadas;
 - Melhoria na configuração do que o ADMIN pode ou não fazer. Implementei regra de negócio adicional onde o ADMIN não pode fazer movimentação da conta de outros clientes para conta própria;
 - Estou em processo de fazer o merge entre a branch newBank (A CERTA) e a main. Por isso, ao clonar o projeto, no momento rode a branch newBank. ;)
 
 
-🔗 Endpoints da API (usados no Postman)
-
-🧑‍💼 Clientes
+## 🔗 Endpoints da API (usados no Postman)
+### 🧑‍💼 Clientes
 - POST /users (Cadastrar novos clientes);
 - POST /login (Login no sistema);
 - GET /users (Mostrar todos os clientes - Apenas ADMIN);
@@ -52,7 +50,7 @@ A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 - PUT /users/id (Atualizar cliente por id);
 - DELETE /users/id (Deletar cliente por id - Apenas ADMIN).
   
-💼 Contas
+### 💼 Contas
 - GET /contas (Mostrar todas as contas - Apenas ADMIN);
 - GET /contas/id (Mostrar conta por id);
 - POST /contas (Criar contas - Corrente ou Poupança);
@@ -66,7 +64,7 @@ A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 - PUT /contas/id/rendimentos (Aplica taxa de rendimento da Conta Poupança);
 - GET /contas/id/saldo (Ver saldo da conta em BRL, USD, EUR).
 
-💳 Cartões
+### 💳 Cartões
 - GET /cartoes (Mostrar todos os cartões - Apenas ADMIN);
 - GET /cartoes/id (Mostrar cartão por id);
 - POST /cartoes (Criar cartão Débito/Crédito);
@@ -80,28 +78,27 @@ A API foi desenvolvida baseada em regras reais de negócio para bancos digitais.
 - GET /cartoes/id/fatura (Mostrar fatura);
 - POST /cartoes/id/fatura/pagamento (Pagar fatura).
 
-🧰 Seguros
+### 🧰 Seguros
 - GET /seguros (Mostrar todos os seguros - Apenas ADMIN);
 - GET /seguros/id (Mostrar seguro por id);
 - POST /seguros (Contratar seguro);
 - PUT /seguros/id (Atualizar seguro);
 - DELETE /seguros/id (Deletar seguro - Apenas ADMIN).
 
-📂 Rota de Teste para agendador de Aplicação de Taxas
+### 📂 Rota de Teste para agendador de Aplicação de Taxas
 - PUT /teste-agendador.
+
   
-📈 Futuras Implementações
+## 📈 Futuras Implementações
 - Interface Web (Frontend).
 
-
-
-▶️ Como Executar
-🔍Clone o repositório (Utilize a Branch newBank)
+## ▶️ Como Executar
+### 🔍 Clone o repositório (Utilize a Branch newBank)
 - git clone https://github.com/marciellioliveira/BancoM.git
 -  Acesse a pasta cd nome-do-repo
 -  Rode com sua IDE favorita (IntelliJ, Eclipse, VSCode)...
 
-🔗 Para fazer cadastro/login nas rotas da API como forma de autenticação, 
+## 🔗 Para fazer cadastro/login nas rotas da API como forma de autenticação, 
 é necessário configurar o postman para que ele tenha uma variável de ambiente
 e receba o accessToken.
 - Crie uma variável de ambiente com qualquer nome. A minha chama "autenticacao";
@@ -119,7 +116,7 @@ os dados:
   const json = pm.response.json();
   pm.environment.set("accessToken", json.accessToken);
 
-🔗 Configuração do Banco H2:
+## 🔗 Configuração do Banco H2:
 - No Maven já existe a dependência, mas caso precise adicionar novamente,
 abra o pom.xml e cole esse código dentro de dependências:
     <dependency>
@@ -144,10 +141,3 @@ spring.jpa.defer-datasource-initialization=true
 
 Nesse mesmo arquivo existem outras configurações para o projeto.
 Ao fazer o clone, ele já será baixado automaticamente.   
-
-
-
-
-
-
-  
