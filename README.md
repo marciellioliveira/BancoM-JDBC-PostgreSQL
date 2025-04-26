@@ -119,8 +119,10 @@ os dados:</br>
   - Na rota de login, clique em authorization e:</br>
   - Em Auth Type, deixe: Inherit from parent;</br>
   - Em script, insira:</br>
- ```xml const json = pm.response.json();</br>
-  pm.environment.set("accessToken", json.accessToken);</br> 
+  
+ ```xml
+const json = pm.response.json();</br>
+pm.environment.set("accessToken", json.accessToken);</br> 
 ```
 
 ## 🔗 Configuração do Banco H2:
