@@ -123,13 +123,13 @@ os dados:</br>
   pm.environment.set("accessToken", json.accessToken);</br>
 
 ## 🔗 Configuração do Banco H2:
-- No Maven já existe a dependência, mas caso precise adicionar novamente,
-abra o pom.xml e cole esse código dentro de dependências:
-    <dependency></br>
-        <groupId>com.h2database</groupId></br>
-        <artifactId>h2</artifactId></br>
-        <scope>runtime</scope></br>
-    </dependency></br>
+- No Maven já existe a dependência, mas caso precise adicionar novamente, abra o pom.xml e cole esse código dentro de dependências:
+```xml
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
 
 - Em BancoM\src\main\resources você encontra arquivos para configuração.</br>
 - Abra o application.properties e digite:</br>
