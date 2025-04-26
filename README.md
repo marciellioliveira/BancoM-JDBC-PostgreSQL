@@ -25,7 +25,6 @@
 - Maven – Gerenciador de dependências e build;
 - Lombok – Geração automática de getters, setters, constructors, etc;
 - Postman - Testes das Rotas da API;
-- Maven – Gerenciador de dependências e build;
 - Bean Validation (Jakarta Validation) – Validação de dados via anotações;
 - API – Integração com API externa para dados e validações;
 - RestExceptionHandler com anotação como @ControllerAdvice para excessões personalizadas.
