@@ -130,7 +130,8 @@ os dados:</br>
     <artifactId>h2</artifactId>
     <scope>runtime</scope>
 </dependency>
-
+```
+```xml
 - Em BancoM\src\main\resources você encontra arquivos para configuração.</br>
 - Abra o application.properties e digite:</br>
 spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE;</br>
@@ -144,6 +145,6 @@ spring.jackson.time-zone=America/Sao_Paulo</br>
 server.port=8086</br>
 spring.jpa.hibernate.ddl-auto = update</br>
 spring.jpa.defer-datasource-initialization=true</br>
-
+```
 Nesse mesmo arquivo existem outras configurações para o projeto.
 Ao fazer o clone, ele já será baixado automaticamente.   
