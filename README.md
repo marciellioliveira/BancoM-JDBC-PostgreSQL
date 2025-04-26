@@ -120,7 +120,8 @@ os dados:</br>
   - Em Auth Type, deixe: Inherit from parent;</br>
   - Em script, insira:</br>
  ```xml const json = pm.response.json();</br>
-  pm.environment.set("accessToken", json.accessToken);</br> ```
+  pm.environment.set("accessToken", json.accessToken);</br> 
+```
 
 ## 🔗 Configuração do Banco H2:
 - No Maven já existe a dependência, mas caso precise adicionar novamente, abra o pom.xml e cole esse código dentro de dependências:
