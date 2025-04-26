@@ -34,6 +34,7 @@ A API foi completamente em regras reais de negócio para bancos digitais.
 - Com a integração da API de câmbio em tempo real, como a  ExchangeRate-API foi possível simplificar a conversão do saldo do usuário em tempo real e em diversas moedas como (BRL, USD, EUR).
 
 🚧 Status do Projeto
+
 🛠️ Em Desenvolvimento
 - Implementando logs com a biblioteca do Spring chamada SLF4J (Simple Logging Facade for Java);
 - Implementando @EnableScheduling/@EnableAsync e CRON para API aplicar as taxas automaticamente em lote de acordo com as datas agendadas;
@@ -42,6 +43,7 @@ A API foi completamente em regras reais de negócio para bancos digitais.
 
 
 🔗 Endpoints da API (usados no Postman)
+
 🧑‍💼 Clientes
 - POST /users (Cadastrar novos clientes);
 - POST /login (Login no sistema);
