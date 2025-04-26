@@ -1,7 +1,7 @@
 💳 <h1> Banco Digital - API REST com Java SE 21 e Spring Boot </h1>
 
-<h3>Este é um projeto desenvolvido como parte do <b>bootcamp Código de Base da Educ360º</b>, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros.
-A API foi completamente em regras reais de negócio para bancos digitais.</h3>h3>
+<h4>Este é um projeto desenvolvido como parte do <b>bootcamp Código de Base da Educ360º</b>, simulando um sistema bancário completo com funcionalidades essenciais como cadastro de clientes, gerenciamento de contas, emissão de cartões e contrato de seguros.
+A API foi completamente em regras reais de negócio para bancos digitais.</h4>
 
 ✅ <h4>A aplicação permite operações bancárias como:</h4>
 - Cadastro de clientes;
@@ -15,7 +15,7 @@ A API foi completamente em regras reais de negócio para bancos digitais.</h3>h3
 - Ver fatura, pagar fatura, alterar limite e etc;
 - Validações e aplicação de regras de negócio.
 
-🚀 <b>Tecnologias Utilizadas</b>
+🚀 <h4>Tecnologias Utilizadas</h4>
 - Java 21 – Linguagem principal;
 - Spring Boot – Framework backend;
 - Spring Data JPA - Persistencia de Dados;
@@ -30,7 +30,7 @@ A API foi completamente em regras reais de negócio para bancos digitais.</h3>h3
 - API – Integração com API externa para dados e validações;
 - RestExceptionHandler com anotação como @ControllerAdvice para excessões personalizadas.
 
-💱 Suporte a Múltiplas Moedas (Multiwallet)
+💱 <h4>Suporte a Múltiplas Moedas (Multiwallet)</h4>
 - Com a integração da API de câmbio em tempo real, como a  ExchangeRate-API foi possível simplificar a conversão do saldo do usuário em tempo real e em diversas moedas como (BRL, USD, EUR).
 
 🚧 Status do Projeto
@@ -41,7 +41,7 @@ A API foi completamente em regras reais de negócio para bancos digitais.</h3>h3
 - Estou em processo de fazer o merge entre a branch newBank (A CERTA) e a main. Por isso, ao clonar o projeto, no momento rode a branch newBank. ;)
 
 
-🔗 Endpoints da API (usados no Postman)
+🔗 <h4>Endpoints da API (usados no Postman)</h4>
 🧑‍💼 Clientes
 - POST /users (Cadastrar novos clientes);
 - POST /login (Login no sistema);
@@ -88,10 +88,10 @@ A API foi completamente em regras reais de negócio para bancos digitais.</h3>h3
   📂 Rota de Teste para agendador de Aplicação de Taxas
   - PUT /teste-agendador.
   
-📈 Futuras Implementações
+📈 <h4>Futuras Implementações</h4>
 - Interface Web (Frontend).
 
-▶️ Como Executar
+▶️ <h4>Como Executar</h4>
 🔍Clone o repositório (Utilize a Branch newBank)
 - git clone https://github.com/marciellioliveira/BancoM.git
 -  Acesse a pasta cd nome-do-repo
