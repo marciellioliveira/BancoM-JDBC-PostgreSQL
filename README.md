@@ -120,8 +120,8 @@ os dados:</br>
   - Em script, insira:</br>
   
  ```xml
-const json = pm.response.json();</br>
-pm.environment.set("accessToken", json.accessToken);</br> 
+const json = pm.response.json();
+pm.environment.set("accessToken", json.accessToken);
 ```
 
 ## 🔗 Configuração do Banco H2:
