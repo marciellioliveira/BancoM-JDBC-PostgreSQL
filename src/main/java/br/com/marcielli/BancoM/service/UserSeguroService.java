@@ -148,8 +148,5 @@ public class UserSeguroService {
 	    );
 	}
 	
-	
-	
-	
 
 }

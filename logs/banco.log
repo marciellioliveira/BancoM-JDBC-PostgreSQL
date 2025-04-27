@@ -5085,3 +5085,581 @@ java.lang.IllegalArgumentException: The given id must not be null
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /error
 2025-04-27 11:32:53 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /error
+2025-04-27 18:52:44 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-27 18:52:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 1932 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-27 18:52:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8086"]
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.jpa.internal.util.LogHelper[0;39m - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35morg.hibernate.Version[0;39m - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.c.i.RegionFactoryInitiator[0;39m - HHH000026: Second-level cache disabled
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-27 18:52:46 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.hibernate.orm.connections.pooling[0;39m - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-27 18:52:47 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-27 18:52:48 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration[0;39m - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-27 18:52:48 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-27 18:52:48 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-27 18:52:48 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8086"]
+2025-04-27 18:52:48 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Started BancoMApplication in 4.302 seconds (process running for 4.549)
+2025-04-27 18:53:00 [34mINFO [0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 18:53:00 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /users
+2025-04-27 18:53:00 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 18:53:00 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /users
+2025-04-27 18:53:06 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /login
+2025-04-27 18:53:06 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 18:53:06 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /login
+2025-04-27 18:55:25 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-27 18:55:25 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 15796 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-27 18:55:25 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 18:55:26 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8086"]
+2025-04-27 18:55:26 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-27 18:55:26 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 18:55:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-27 18:55:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.jpa.internal.util.LogHelper[0;39m - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-27 18:55:27 [34mINFO [0;39m
+				[36m[main][0;39m [35morg.hibernate.Version[0;39m - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-27 18:55:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.c.i.RegionFactoryInitiator[0;39m - HHH000026: Second-level cache disabled
+2025-04-27 18:55:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-27 18:55:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-27 18:55:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-27 18:55:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.hibernate.orm.connections.pooling[0;39m - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-27 18:55:28 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-27 18:55:29 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration[0;39m - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-27 18:55:29 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-27 18:55:29 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-27 18:55:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8086"]
+2025-04-27 18:55:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Started BancoMApplication in 4.372 seconds (process running for 4.617)
+2025-04-27 18:55:29 [34mINFO [0;39m
+				[36m[task-2][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação diária de rendimentos...
+2025-04-27 18:55:29 [34mINFO [0;39m
+				[36m[task-1][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação de taxas mensais de manutenção...
+2025-04-27 18:55:29 [34mINFO [0;39m
+				[36m[task-1][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 0 contas corrente
+2025-04-27 18:55:29 [34mINFO [0;39m
+				[36m[task-2][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 0 contas poupança
+2025-04-27 18:55:30 [34mINFO [0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 18:55:30 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /users
+2025-04-27 18:55:30 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 18:55:30 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /users
+2025-04-27 18:55:37 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /login
+2025-04-27 18:55:37 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 18:55:37 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /login
+2025-04-27 18:55:44 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas
+2025-04-27 18:55:44 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:55:44 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@9fa36c06, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:55:44 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas
+2025-04-27 18:55:44 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.listContas(); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:55:44 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Failed to authorize ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.listContas(); target is of class [br.com.marcielli.BancoM.controller.UserContaController] with authorization manager org.springframework.security.authorization.method.PreAuthorizeAuthorizationManager@63f5e480 and result ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('SCOPE_ADMIN')]
+2025-04-27 18:55:59 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /login
+2025-04-27 18:55:59 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 18:55:59 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /login
+2025-04-27 18:56:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users/2
+2025-04-27 18:56:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:56:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:56:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users/2
+2025-04-27 18:56:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+2025-04-27 18:56:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+2025-04-27 18:56:16 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-04-27 18:56:16 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:56:16 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:56:16 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-04-27 18:56:16 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+2025-04-27 18:56:16 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Failed to authorize ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController] with authorization manager org.springframework.security.authorization.method.PreAuthorizeAuthorizationManager@63f5e480 and result ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('SCOPE_ADMIN')]
+2025-04-27 18:56:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/2/saldo
+2025-04-27 18:56:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:56:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:56:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/2/saldo
+2025-04-27 18:56:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public java.util.Map br.com.marcielli.BancoM.controller.UserContaController.exibirSaldoConvertido(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:56:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public java.util.Map br.com.marcielli.BancoM.controller.UserContaController.exibirSaldoConvertido(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:56:36 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas
+2025-04-27 18:56:36 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:56:36 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:56:36 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
+2025-04-27 18:56:36 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:56:36 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:56:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas
+2025-04-27 18:56:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:56:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:56:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
+2025-04-27 18:56:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:56:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:56:56 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/1/deposito
+2025-04-27 18:56:56 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:56:56 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:56:56 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/1/deposito
+2025-04-27 18:56:56 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:56:56 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:57:01 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/2/deposito
+2025-04-27 18:57:01 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:57:01 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:57:01 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/2/deposito
+2025-04-27 18:57:01 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:57:01 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:57:13 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users/2
+2025-04-27 18:57:13 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:57:13 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:57:13 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users/2
+2025-04-27 18:57:13 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+2025-04-27 18:57:13 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+2025-04-27 18:57:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas
+2025-04-27 18:57:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:57:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:57:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas
+2025-04-27 18:57:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.listContas(); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:57:24 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Failed to authorize ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.listContas(); target is of class [br.com.marcielli.BancoM.controller.UserContaController] with authorization manager org.springframework.security.authorization.method.PreAuthorizeAuthorizationManager@63f5e480 and result ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('SCOPE_ADMIN')]
+2025-04-27 18:57:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/1
+2025-04-27 18:57:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:57:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:57:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/1
+2025-04-27 18:57:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:57:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:57:45 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/2
+2025-04-27 18:57:45 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:57:45 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:57:45 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/2
+2025-04-27 18:57:45 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:57:45 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 18:58:12 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /teste-agendador
+2025-04-27 18:58:12 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 18:58:12 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@ac212089, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 18:58:12 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /teste-agendador
+2025-04-27 18:58:12 [31mWARN [0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.web.servlet.PageNotFound[0;39m - Request method 'PUT' is not supported
+2025-04-27 18:58:29 [34mINFO [0;39m
+				[36m[task-3][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação de taxas mensais de manutenção...
+2025-04-27 18:58:29 [34mINFO [0;39m
+				[36m[task-4][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação diária de rendimentos...
+2025-04-27 18:58:29 [34mINFO [0;39m
+				[36m[task-3][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 1 contas corrente
+2025-04-27 18:58:29 [34mINFO [0;39m
+				[36m[task-4][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 1 contas poupança
+2025-04-27 18:58:29 [34mINFO [0;39m
+				[36m[task-4][0;39m [35mb.com.marcielli.BancoM.entity.Conta[0;39m - Crédito de 45.2000 realizado. Novo saldo: 4565.2000
+2025-04-27 19:01:29 [34mINFO [0;39m
+				[36m[task-6][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação diária de rendimentos...
+2025-04-27 19:01:29 [34mINFO [0;39m
+				[36m[task-5][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação de taxas mensais de manutenção...
+2025-04-27 19:01:29 [34mINFO [0;39m
+				[36m[task-5][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 1 contas corrente
+2025-04-27 19:01:29 [34mINFO [0;39m
+				[36m[task-6][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 1 contas poupança
+2025-04-27 19:01:29 [34mINFO [0;39m
+				[36m[task-6][0;39m [35mb.com.marcielli.BancoM.entity.Conta[0;39m - Crédito de 45.6520 realizado. Novo saldo: 4610.8520
+2025-04-27 19:02:27 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-27 19:02:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 7344 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-27 19:02:27 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 19:02:28 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8086"]
+2025-04-27 19:02:28 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-27 19:02:28 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 19:02:28 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-27 19:02:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.jpa.internal.util.LogHelper[0;39m - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-27 19:02:29 [34mINFO [0;39m
+				[36m[main][0;39m [35morg.hibernate.Version[0;39m - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-27 19:02:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.c.i.RegionFactoryInitiator[0;39m - HHH000026: Second-level cache disabled
+2025-04-27 19:02:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-27 19:02:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-27 19:02:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-27 19:02:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.hibernate.orm.connections.pooling[0;39m - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-27 19:02:30 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-27 19:02:31 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration[0;39m - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-27 19:02:31 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-27 19:02:31 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-27 19:02:31 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8086"]
+2025-04-27 19:02:31 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Started BancoMApplication in 4.33 seconds (process running for 4.58)
+2025-04-27 19:02:31 [34mINFO [0;39m
+				[36m[task-2][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação de taxas mensais de manutenção...
+2025-04-27 19:02:31 [34mINFO [0;39m
+				[36m[task-1][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação diária de rendimentos...
+2025-04-27 19:02:31 [34mINFO [0;39m
+				[36m[task-2][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 0 contas corrente
+2025-04-27 19:02:31 [34mINFO [0;39m
+				[36m[task-1][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 0 contas poupança
+2025-04-27 19:02:35 [34mINFO [0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 19:02:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /users
+2025-04-27 19:02:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 19:02:35 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /users
+2025-04-27 19:02:38 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /login
+2025-04-27 19:02:38 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 19:02:38 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /login
+2025-04-27 19:02:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /api/teste-agendador
+2025-04-27 19:02:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:02:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@b972bcfa, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:02:43 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /api/teste-agendador
+2025-04-27 19:02:43 [31mWARN [0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.web.servlet.PageNotFound[0;39m - Request method 'PUT' is not supported
+2025-04-27 19:03:52 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-27 19:03:52 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 19232 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-27 19:03:52 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8086"]
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.jpa.internal.util.LogHelper[0;39m - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35morg.hibernate.Version[0;39m - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.c.i.RegionFactoryInitiator[0;39m - HHH000026: Second-level cache disabled
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-27 19:03:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.hibernate.orm.connections.pooling[0;39m - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-27 19:03:55 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-27 19:03:56 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration[0;39m - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-27 19:03:56 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-27 19:03:56 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-27 19:03:56 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8086"]
+2025-04-27 19:03:56 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Started BancoMApplication in 4.318 seconds (process running for 4.566)
+2025-04-27 19:03:56 [34mINFO [0;39m
+				[36m[task-1][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação diária de rendimentos...
+2025-04-27 19:03:56 [34mINFO [0;39m
+				[36m[task-2][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação de taxas mensais de manutenção...
+2025-04-27 19:03:56 [34mINFO [0;39m
+				[36m[task-2][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 0 contas corrente
+2025-04-27 19:03:56 [34mINFO [0;39m
+				[36m[task-1][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 0 contas poupança
+2025-04-27 19:04:00 [34mINFO [0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-27 19:04:00 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /users
+2025-04-27 19:04:00 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 19:04:00 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /users
+2025-04-27 19:04:03 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /login
+2025-04-27 19:04:03 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-27 19:04:03 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /login
+2025-04-27 19:04:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas
+2025-04-27 19:04:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:04:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:04:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
+2025-04-27 19:04:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:04:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:04:21 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/2
+2025-04-27 19:04:21 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:04:21 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:04:21 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/2
+2025-04-27 19:04:21 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:04:21 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:04:26 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/1
+2025-04-27 19:04:26 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:04:26 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:04:26 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/1
+2025-04-27 19:04:26 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:04:26 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:04:48 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/1/deposito
+2025-04-27 19:04:48 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:04:48 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:04:48 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/1/deposito
+2025-04-27 19:04:48 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:04:48 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:04:55 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /api/teste-agendador
+2025-04-27 19:04:55 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:04:55 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:04:55 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /api/teste-agendador
+2025-04-27 19:04:55 [34mINFO [0;39m
+				[36m[task-3][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação de taxas mensais de manutenção...
+2025-04-27 19:04:55 [34mINFO [0;39m
+				[36m[task-3][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 1 contas corrente
+2025-04-27 19:05:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/1
+2025-04-27 19:05:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:05:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:05:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/1
+2025-04-27 19:05:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:05:04 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:05:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /api/teste-agendador
+2025-04-27 19:05:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:05:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:05:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /api/teste-agendador
+2025-04-27 19:05:14 [34mINFO [0;39m
+				[36m[task-4][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação de taxas mensais de manutenção...
+2025-04-27 19:05:14 [34mINFO [0;39m
+				[36m[task-4][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Processando 1 contas corrente
+2025-04-27 19:05:20 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/1
+2025-04-27 19:05:20 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:05:20 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:05:20 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/1
+2025-04-27 19:05:20 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:05:20 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:06:05 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/1
+2025-04-27 19:06:05 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:06:05 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:06:05 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/1
+2025-04-27 19:06:05 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:06:05 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:06:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/1
+2025-04-27 19:06:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.o.s.r.a.JwtAuthenticationProvider[0;39m - Authenticated token
+2025-04-27 19:06:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.o.s.r.w.a.BearerTokenAuthenticationFilter[0;39m - Set SecurityContextHolder to JwtAuthenticationToken [Principal=org.springframework.security.oauth2.jwt.Jwt@2bd58c1c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[SCOPE_BASIC]]
+2025-04-27 19:06:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/1
+2025-04-27 19:06:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+2025-04-27 19:06:14 [39mDEBUG[0;39m
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.getContaById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserContaController]

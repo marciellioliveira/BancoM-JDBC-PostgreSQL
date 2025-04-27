@@ -31,8 +31,8 @@ import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.TaxaDeCambioException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepository;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class UserContaService {
@@ -41,7 +41,7 @@ public class UserContaService {
 	private final ExchangeRateService exchangeRateService;
 	private final ClienteRepository clienteRepository;
 
-//	private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
+	private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
 
 	public UserContaService(ContaRepository contaRepository,
 			ExchangeRateService exchangeRateService, ClienteRepository clienteRepository) {
@@ -489,103 +489,7 @@ public class UserContaService {
 		return contaRepository.save(conta);
 	}
 
-	// Agendamento de Taxas de Conta Corrente utilizando o @Scheduled(cron = "0 0 2
-	// 1 * ?") do Spring (ROTAS DE AGENDAMENTO AUTOMATICO- ARRUMAR)
-//	public List<ContaCorrente> buscarTodasContasCorrentesAtivas() {
-//		return contaRepository.findAll().stream().filter(conta -> conta instanceof ContaCorrente && conta.getStatus())
-//				.map(conta -> (ContaCorrente) conta).collect(Collectors.toList());
-//
-//	}
-//
-//	// Agendamento de Taxas de Conta Poupança utilizando o @Scheduled(cron = "0 0 23
-//	// * *") do Spring
-//	public List<ContaPoupanca> buscarTodasContasPoupancaAtivas() {
-//		return contaRepository.findAll().stream().filter(conta -> conta instanceof ContaPoupanca && conta.getStatus())
-//				.map(conta -> (ContaPoupanca) conta).collect(Collectors.toList());
-//
-//	}
-//
-//	public Conta rendimentoTaxaCP(Long idConta) {
-//		log.debug("Iniciando aplicação de rendimento para conta {}", idConta);
-//
-//		ContaPoupanca conta = (ContaPoupanca) contaRepository.findById(idConta).orElseThrow(() -> {
-//			log.error("Conta poupança {} não encontrada", idConta);
-//			return new ClienteNaoEncontradoException("Conta não encontrada");
-//		});
-//
-//		if (!conta.getStatus()) {
-//			log.warn("Tentativa de aplicar rendimento em conta poupança inativa - ID: {}", idConta);
-//
-//		}
-//
-//		BigDecimal rendimento = calcularRendimentoCP(conta);
-//		conta.creditar(rendimento);
-//
-//		log.info("Rendimento de {} aplicado na conta poupança {}", rendimento, idConta);
-//		return contaRepository.save(conta);
-//	}
-//
-//	private BigDecimal calcularRendimentoCP(ContaPoupanca conta) {
-//
-//		log.trace("Calculando rendimento para conta {}", conta.getId());
-//		return conta.getSaldoConta().multiply(conta.getTaxaAcrescRend());
-//	}
-//
-//	public Conta manutencaoTaxaCC(Long idConta) {
-//		log.debug("Iniciando cobrança de manutenção para conta {}", idConta);
-//
-//		ContaCorrente conta = (ContaCorrente) contaRepository.findById(idConta).orElseThrow(() -> {
-//			log.error("Conta corrente {} não encontrada", idConta);
-//			return new ClienteNaoEncontradoException("Conta não encontrada");
-//		});
-//
-//		if (!conta.getStatus()) {
-//			log.warn("Tentativa de cobrar taxa em conta corrente inativa - ID: {}", idConta);
-//
-//		}
-//
-//		BigDecimal taxa = calcularAcrescimoTaxaCC(conta);
-//		conta.debitar(taxa);
-//
-//		log.info("Taxa de manutenção de {} debitada da conta {}", taxa, idConta);
-//		return contaRepository.save(conta);
-//	}
-//
-//	private BigDecimal calcularAcrescimoTaxaCC(ContaCorrente conta) {
-//		// Lógica de cálculo da taxa
-//		log.trace("Calculando taxa para conta {}", conta.getId());
-//		return conta.getTaxaManutencaoMensal();
-//	}
-//
-//	public ResponseEntity<?> processarOperacaoConta(Long idConta, Function<Long, Conta> operacao) {
-//		try {
-//			Conta contaAtualizada = operacao.apply(idConta);
-//			return ResponseEntity.ok(converterParaDTO(contaAtualizada));
-//		} catch (ClienteNaoEncontradoException e) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//		}
-//	}
-//
-//	public UserContaResponseDTO converterParaDTO(Conta conta) {
-//		UserContaResponseDTO response = new UserContaResponseDTO();
-//		response.setId(conta.getId());
-//		response.setTipoConta(conta.getTipoConta());
-//		response.setCategoriaConta(conta.getCategoriaConta());
-//		if (conta instanceof ContaCorrente contaCorrente) {
-//			response.setTaxaManutencaoMensal(contaCorrente.getTaxaManutencaoMensal());
-//		}
-//
-//		if (conta instanceof ContaPoupanca contaPoupanca) {
-//			response.setTaxaAcrescRend(contaPoupanca.getTaxaAcrescRend());
-//			response.setTaxaMensal(contaPoupanca.getTaxaMensal());
-//		}
-//
-//		response.setSaldoConta(conta.getSaldoConta());
-//		response.setNumeroConta(conta.getNumeroConta());
-//		response.setPixAleatorio(conta.getPixAleatorio());
-//		response.setStatus(conta.getStatus());
-//		return response;
-//	}
+	
 
 	// Outros métodos
 	public String gerarNumeroDaConta() {
