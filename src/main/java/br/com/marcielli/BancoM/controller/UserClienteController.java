@@ -35,20 +35,8 @@ public class UserClienteController {
 	@PostMapping("/users")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto, JwtAuthenticationToken token) {
-		
-		  // Log para verificar o token ANTES da transação
-	    System.out.println("Token ANTES da transação - Expira em: " + token.getToken().getExpiresAt());
 
-		// É admin?
-		boolean isAdmin = false;
-		if (token != null) {
-			isAdmin = token.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"));
-		}
-
-		User clienteAdicionado = clienteService.save(dto, isAdmin, token);
-		
-		// Log para verificar o token DEPOIS da transação
-	    System.out.println("Token DEPOIS da transação - Expira em: " + token.getToken().getExpiresAt());
+		User clienteAdicionado = clienteService.save(dto, token);
 
 		if (clienteAdicionado != null) {
 			return new ResponseEntity<String>("Cliente adicionado com sucesso", HttpStatus.CREATED);
@@ -63,71 +51,51 @@ public class UserClienteController {
 		var users = userRepository.findAll();
 		return ResponseEntity.ok(users);
 	}
-	
+
 	@GetMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id, JwtAuthenticationToken token) {
-	    
-	    boolean isCurrentUserAdmin = token.getAuthorities().stream()
-	            .anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"));
-	    
-	    Cliente clienteUnico = clienteService.getClienteById(id);
-	    
-	    if (clienteUnico == null || clienteUnico.getUser() == null) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
-	    }
-	    
-	    boolean isTargetAdmin = clienteUnico.getUser().getRoles().stream()
-	            .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-	    
-	    if (isTargetAdmin && !isCurrentUserAdmin) {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-	                .body("Você não pode visualizar a conta do administrador");
-	    }
-	    
-	    UserClienteResponseDTO response = new UserClienteResponseDTO();
-	    response.setId(id);
-	    response.setNome(clienteUnico.getNome());
-	    response.setCpf(clienteUnico.getCpf());
-	    response.setClienteAtivo(clienteUnico.isClienteAtivo()); 
-	    
-	   
-	    
-	    Endereco endereco = clienteUnico.getEndereco();
-	    if (endereco != null) {
-	        response.setCep(endereco.getCep());
-	        response.setCidade(endereco.getCidade());
-	        response.setEstado(endereco.getEstado());
-	        response.setRua(endereco.getRua());
-	        response.setNumero(endereco.getNumero());
-	        response.setBairro(endereco.getBairro());
-	        response.setComplemento(endereco.getComplemento());
-	        response.setClienteAtivo(clienteUnico.isClienteAtivo());
-	    }
-	    
-	    return ResponseEntity.ok(response);
-	}
+	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id) { //, JwtAuthenticationToken token
 
-
-	@PutMapping("/users/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto,
-			JwtAuthenticationToken token) {
-
-		Cliente clienteUnico = clienteService.update(id, dto, token);
+		Cliente clienteUnico = clienteService.getClienteById(id);
 
 		if (clienteUnico == null || clienteUnico.getUser() == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
 		}
-		boolean isAdmin = clienteUnico.getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
 
-		if (!isAdmin) {
+	
+		UserClienteResponseDTO response = new UserClienteResponseDTO();
+		response.setId(id);
+		response.setNome(clienteUnico.getNome());
+		response.setCpf(clienteUnico.getCpf());
+		response.setClienteAtivo(clienteUnico.isClienteAtivo());
+
+		Endereco endereco = clienteUnico.getEndereco();
+		if (endereco != null) {
+			response.setCep(endereco.getCep());
+			response.setCidade(endereco.getCidade());
+			response.setEstado(endereco.getEstado());
+			response.setRua(endereco.getRua());
+			response.setNumero(endereco.getNumero());
+			response.setBairro(endereco.getBairro());
+			response.setComplemento(endereco.getComplemento());
+			response.setClienteAtivo(clienteUnico.isClienteAtivo());
+		}
+
+		return ResponseEntity.ok(response);
+	}
+
+	@PutMapping("/users/{id}")
+	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
+
+		Cliente clienteUnico = clienteService.update(id, dto);
+
+		if (clienteUnico != null) {
 			UserClienteResponseDTO response = new UserClienteResponseDTO();
 			response.setId(id);
 			response.setNome(clienteUnico.getNome());
 			response.setCpf(clienteUnico.getCpf());
-			response.setClienteAtivo(clienteUnico.isClienteAtivo()); 
+			response.setClienteAtivo(clienteUnico.isClienteAtivo());
 
 			Endereco endereco = clienteUnico.getEndereco();
 			if (endereco != null) {
@@ -150,13 +118,13 @@ public class UserClienteController {
 
 	@DeleteMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, JwtAuthenticationToken token) {
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
 
 		if (id == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
 		}
 
-		boolean clienteUnico = clienteService.delete(id, token);
+		boolean clienteUnico = clienteService.delete(id);
 
 		if (clienteUnico) {
 			return ResponseEntity.status(HttpStatus.OK).body("Cliente deletado com sucesso!");

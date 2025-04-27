@@ -18,6 +18,7 @@ import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroCreateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserSeguroResponseDTO;
+import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Seguro;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
@@ -40,9 +41,9 @@ public class UserSeguroController {
 
 	@PostMapping("/seguros")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> createSeguro(@RequestBody SeguroCreateDTO dto, JwtAuthenticationToken token) {
+	public ResponseEntity<?> createSeguro(@RequestBody SeguroCreateDTO dto) { // , JwtAuthenticationToken token
 		try {
-			Seguro seguroAdicionado = seguroService.save(dto, token);
+			Seguro seguroAdicionado = seguroService.save(dto);
 
 			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
 			response.setId(seguroAdicionado.getId());
@@ -65,10 +66,14 @@ public class UserSeguroController {
 
 	@GetMapping("/seguros")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<List<User>> listUsers() {
-		var users = userRepository.findAll();
-		return ResponseEntity.ok(users);
+	public ResponseEntity<List<Seguro>> listSeguros() {
+		var seguros = seguroService.getSeguros();
+		return ResponseEntity.status(HttpStatus.OK).body(seguros);
 	}
+//	public ResponseEntity<List<User>> listUsers() {
+//		var users = userRepository.findAll();
+//		return ResponseEntity.ok(users);
+//	}
 
 	@GetMapping("/seguros/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
@@ -76,14 +81,7 @@ public class UserSeguroController {
 
 		Seguro seguro = seguroService.getSegurosById(id);
 
-		if (seguro == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-		}
-
-		boolean isAdmin = seguro.getCartao().getConta().getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
+		if (seguro != null) {
 			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
 			response.setId(id);
 			response.setTipo(seguro.getTipo());
@@ -99,44 +97,36 @@ public class UserSeguroController {
 
 	@PutMapping("/seguros/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto,
-			JwtAuthenticationToken token) {
-		try {
-			Seguro seguroAtualizado = seguroService.update(id, dto, token);
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto) {
 
+		Seguro seguroAtualizado = seguroService.update(id, dto);
+
+		if (seguroAtualizado != null) {
 			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
 			response.setId(seguroAtualizado.getId());
 			response.setTipo(seguroAtualizado.getTipo());
 			response.setValorMensal(seguroAtualizado.getValorMensal());
 			response.setValorApolice(seguroAtualizado.getValorApolice());
 			response.setAtivo(seguroAtualizado.getAtivo());
-
-			return ResponseEntity.ok(response);
-
-		} catch (SeguroNaoEncontradoException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		} catch (PermissaoNegadaException e) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
 		}
+
 	}
 
 	@DeleteMapping("/seguros/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto,
-			JwtAuthenticationToken token) {
-		try {
-			boolean deletado = seguroService.delete(id, dto, token);
-			return deletado ? ResponseEntity.ok("Seguro desativado com sucesso!")
-					: ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado.");
-		} catch (ContaNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		} catch (PermissaoNegadaException e) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto) {
+
+		boolean deletado = seguroService.delete(id, dto);
+
+		if (deletado) {
+			return ResponseEntity.ok("Seguro desativado com sucesso!");
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
 		}
+
 	}
 
 }

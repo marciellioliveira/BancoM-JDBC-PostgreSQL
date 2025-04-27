@@ -43,371 +43,212 @@ import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
 import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
-import br.com.marcielli.BancoM.repository.ContaRepositoy;
+import br.com.marcielli.BancoM.repository.ContaRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
 
 @Service
 public class UserCartaoService {
-	
+
 	private final CartaoRepository cartaoRepository;
-	private final ContaRepositoy contaRepository;
+	private final ContaRepository contaRepository;
 	private final UserRepository userRepository;
 	private final ClienteRepository clienteRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
-	
-	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository, ContaRepositoy contaRepository, BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository) {
+
+	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository,
+			ContaRepository contaRepository, BCryptPasswordEncoder passwordEncoder,
+			ClienteRepository clienteRepository) {
 		this.cartaoRepository = cartaoRepository;
 		this.userRepository = userRepository;
 		this.contaRepository = contaRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.clienteRepository = clienteRepository;
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao save(CartaoCreateDTO dto, JwtAuthenticationToken token) {
-	    try {
-	        User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	        ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+	public Cartao save(CartaoCreateDTO dto) {
 
-	        Cliente clienteAlvo;
-	        
-	        if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
-	           
-	            if (dto.idUsuario() == null) {
-	                throw new IllegalArgumentException("Admin deve informar o ID do cliente.");
-	            }
-	            
-	            clienteAlvo = clienteRepository.findById(dto.idUsuario())
-	                    .orElseThrow(() -> new ContaNaoEncontradaException("Usuário não encontrado"));
-	        } else {
-	          
-	            Long currentUserIdAsLong = Long.valueOf(currentUser.getId());
-	            
-	            if (dto.idUsuario() == null || !dto.idUsuario().equals(currentUserIdAsLong)) {
-	                throw new ContaNaoEncontradaException("Usuário não tem permissão para criar cartão para outro ID.");
-	            }
-	            clienteAlvo = currentUser.getCliente();
-	        }
+		Cliente clienteAlvo = clienteRepository.findById(dto.idUsuario())
+				.orElseThrow(() -> new ContaNaoEncontradaException("Cliente não encontrado"));
 
-	      
-	        Conta contaDoUser = clienteAlvo.getContas().stream()
-	                .filter(c -> c.getId().equals(dto.idConta()))
-	                .findFirst()
-	                .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou não pertence ao usuário"));
+		Conta contaDoUser = clienteAlvo.getContas().stream().filter(c -> c.getId().equals(dto.idConta())).findFirst()
+				.orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou não pertence ao usuário"));
+		
+		if(!clienteAlvo.getContas().contains(contaDoUser)) {
+			throw new ContaNaoEncontradaException("A conta informada não pertence ao cliente.");
+		}
 
-	        String numCartao = gerarNumCartao();
-	        Cartao cartao = null;
-	        List<Cartao> cartoes = new ArrayList<>();
+		String numCartao = gerarNumCartao();
+		Cartao cartao = null;
+		List<Cartao> cartoes = new ArrayList<>();
 
-	        if (dto.tipoCartao() == TipoCartao.CREDITO) {
-	            String numeroCartao = numCartao.concat("-CC");
-	            cartao = new CartaoCredito();
-	            
-	            cartao.setTipoCartao(dto.tipoCartao());
-	            cartao.setSenha(passwordEncoder.encode(dto.senha()));
-	            cartao.setNumeroCartao(numeroCartao);
-	            cartao.setStatus(true);
-	            cartoes.add(cartao);
-	            
-	            cartao.setConta(contaDoUser);
-	            cartao.setTipoConta(contaDoUser.getTipoConta());
-	            cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
-	            contaDoUser.setCartoes(cartoes);
-	        } 
-	        else if (dto.tipoCartao() == TipoCartao.DEBITO) {
-	            String numeroCartao = numCartao.concat("-CD");
-	            cartao = new CartaoDebito();
-	            
-	            cartao.setTipoCartao(dto.tipoCartao());
-	            cartao.setSenha(passwordEncoder.encode(dto.senha()));
-	            cartao.setNumeroCartao(numeroCartao);
-	            cartao.setStatus(true);
-	            cartoes.add(cartao);
-	            
-	            cartao.setConta(contaDoUser);
-	            cartao.setTipoConta(contaDoUser.getTipoConta());
-	            cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
-	            contaDoUser.setCartoes(cartoes);
-	        }
-	        
-	        return cartaoRepository.save(cartao);
-	        
-	    } catch (NumberFormatException e) {
-	        throw new RuntimeException("ID inválido no token: " + token.getName());
-	    }
+		if (dto.tipoCartao() == TipoCartao.CREDITO) {
+			String numeroCartao = numCartao.concat("-CC");
+			cartao = new CartaoCredito();
+
+			cartao.setTipoCartao(dto.tipoCartao());
+			cartao.setSenha(passwordEncoder.encode(dto.senha()));
+			cartao.setNumeroCartao(numeroCartao);
+			cartao.setStatus(true);
+			cartoes.add(cartao);
+
+			cartao.setConta(contaDoUser);
+			cartao.setTipoConta(contaDoUser.getTipoConta());
+			cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
+			contaDoUser.setCartoes(cartoes);
+		} else if (dto.tipoCartao() == TipoCartao.DEBITO) {
+			String numeroCartao = numCartao.concat("-CD");
+			cartao = new CartaoDebito();
+
+			cartao.setTipoCartao(dto.tipoCartao());
+			cartao.setSenha(passwordEncoder.encode(dto.senha()));
+			cartao.setNumeroCartao(numeroCartao);
+			cartao.setStatus(true);
+			cartoes.add(cartao);
+
+			cartao.setConta(contaDoUser);
+			cartao.setTipoConta(contaDoUser.getTipoConta());
+			cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
+			contaDoUser.setCartoes(cartoes);
+		}
+
+		return cartaoRepository.save(cartao);
+
 	}
 
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Cartao save(CartaoCreateDTO dto, JwtAuthenticationToken token) {
-//		
-//		Integer userId = null;
-//		
-//		Cartao cartao = null;
-//		List<Cartao> cartoes = new ArrayList<Cartao>();
-//		String numCartao = gerarNumCartao();
-//		
-//		try {
-//			userId = Integer.parseInt(token.getName());
-//			User user = userRepository.findById(userId)
-//				    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
-//			
-//			ValidacaoUsuarioAtivo.verificarUsuarioAtivo(user);	
-//			
-//			Cliente cliente = user.getCliente();
-//			if (cliente == null) {
-//			    throw new RuntimeException("Cliente não associado ao usuário");
-//			}
-//			
-//			Conta contaDoUser = cliente.getContas().stream()
-//				    .filter(c -> c.getId().equals(dto.idConta()))
-//				    .findFirst()
-//				    .orElseThrow(() -> new RuntimeException("Conta não pertence a este cliente"));
-//			
-//			if(dto.tipoCartao() == TipoCartao.CREDITO) {
-//				
-//				String numeroCartao = numCartao.concat("-CC");
-//				
-//				cartao = new CartaoCredito();
-//				
-//				cartao.setTipoCartao(dto.tipoCartao());
-//				
-//				//user.setPassword(passwordEncoder.encode(cliente.password()));
-//				//cartao.setSenha(dto.senha());
-//				cartao.setSenha(passwordEncoder.encode(dto.senha()));
-//				cartao.setNumeroCartao(numeroCartao);
-//				cartao.setStatus(true);	
-//				cartoes.add(cartao);
-//				
-//				cartao.setConta(contaDoUser);
-//				cartao.setTipoConta(contaDoUser.getTipoConta());
-//				cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
-//				contaDoUser.setCartoes(cartoes);
-//				
-//			}
-//			
-//			if(dto.tipoCartao() == TipoCartao.DEBITO) {
-//				
-//				String numeroCartao = numCartao.concat("-CD");
-//				
-//				cartao = new CartaoDebito();	
-//				
-//				cartao.setTipoCartao(dto.tipoCartao());
-//				cartao.setSenha(dto.senha());
-//				cartao.setNumeroCartao(numeroCartao);
-//				cartao.setStatus(true);
-//				
-//				cartoes.add(cartao);
-//				cartao.setConta(contaDoUser);
-//				cartao.setTipoConta(contaDoUser.getTipoConta());
-//				cartao.setCategoriaConta(contaDoUser.getCategoriaConta());
-//				contaDoUser.setCartoes(cartoes);
-//			
-//			}
-//			
-//			
-//		} catch (NumberFormatException e) {			
-//			System.out.println("ID inválido no token: " + token.getName());
-//		}
-//		
-//		cartaoRepository.save(cartao);
-//		
-//		return cartao;
-//		
-//	}
-	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<Cartao> getCartoes() {
+		return cartaoRepository.findAll();
+	}
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cartao getCartoesById(Long id) {
 		return cartaoRepository.findById(id).orElse(null);
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, JwtAuthenticationToken token) {
-	 
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
-	    
-	    Cartao cartao = cartaoRepository.findById(cartaoId)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
-	    
-	    if (!cartao.isStatus()) { //Só pode atualizar se o cartão estiver com status true
-	        throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
-	    }
+	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto) {
 
-	    if (!cartao.getConta().getCliente().getId().equals(dto.idUsuario())) {
-	        throw new PermissaoNegadaException("Este cartão não pertence ao usuário informado");
-	    }
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
+		
+		Long userId = cartao.getConta().getCliente().getUser().getId().longValue();
+		
+		if(userId != dto.idUsuario()) {
+			throw new ClienteNaoEncontradoException("Você não tem permissão para alterar esse cartão.");
+		}	
 
-	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
-	        
-	        if (dto.idUsuario() == null) {
-	            throw new IllegalArgumentException("Admin deve informar o ID do usuário");
-	        }
-	        
-	        clienteRepository.findById(dto.idUsuario())
-	                .orElseThrow(() -> new ContaNaoEncontradaException("Usuário não encontrado"));
-	    } else {
-	       
-	        Long currentUserId = Long.valueOf(currentUser.getId());
-	        if (!currentUserId.equals(dto.idUsuario())) {
-	            throw new PermissaoNegadaException("Você só pode atualizar seus próprios cartões");
-	        }
-	        
-	        //Tive que fazer essa conversão porque se eu fizesse assim "cartao.getConta().getCliente().getUser().getId()" 
-	        //ele devolveria um integer e a comparação com long não seria válida
-	        Long idContaClienteUserCartao = cartao.getConta().getCliente().getUser().getId().longValue();
-	        
-	        if (!currentUserId.equals(idContaClienteUserCartao)) {
-	            throw new PermissaoNegadaException("Este cartão não pertence ao seu usuário");
-	        }
-	    }
+		if (!cartao.isStatus()) { // Só pode atualizar se o cartão estiver com status true
+			throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
+		}
 
-	    cartao.setSenha(passwordEncoder.encode(dto.senha()));
-	    return cartaoRepository.save(cartao);
+//		if (!cartao.getConta().getCliente().getId().equals(dto.idUsuario())) {
+//			throw new PermissaoNegadaException("Este cartão não pertence ao usuário informado");
+//		}
+
+		clienteRepository.findById(dto.idUsuario())
+				.orElseThrow(() -> new ContaNaoEncontradaException("Usuário não encontrado"));
+
+		cartao.setSenha(passwordEncoder.encode(dto.senha()));
+		return cartaoRepository.save(cartao);
 	}
-	
+
 	@Transactional
-	public boolean delete(Long cartaoId, @RequestBody CartaoUpdateDTO dto, JwtAuthenticationToken token) {
-	  
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+	public boolean delete(Long cartaoId, @RequestBody CartaoUpdateDTO dto) {
 
-	    Cartao cartao = cartaoRepository.findById(cartaoId)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
+		
+		Long userId = cartao.getConta().getCliente().getUser().getId().longValue();
+		
+		if(userId != dto.idUsuario()) {
+			throw new ClienteNaoEncontradoException("Você não tem permissão para deletar esse cartão.");
+		}	
 
-	    if (ValidacaoUsuarioAtivo.isAdmin(currentUser)) {
-	       
-	        if (cartao.getConta().getCliente().getUser().getRoles().stream()
-	                .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()))) {
-	            throw new PermissaoNegadaException("Não é possível desativar cartões de administradores.");
-	        }
-
-	        if (!cartao.getConta().getCliente().getId().equals(dto.idUsuario())) {
-	            throw new PermissaoNegadaException("Este cartão não pertence ao usuário informado.");
-	        }
-	    } 
-	    else {
-	       
-	        Long currentUserId = currentUser.getId().longValue();
-	        if (!currentUserId.equals(dto.idUsuario())) {
-	            throw new PermissaoNegadaException("Você só pode desativar seus próprios cartões.");
-	        }
-
-	        Long idDonoCartao = cartao.getConta().getCliente().getUser().getId().longValue();
-	        if (!currentUserId.equals(idDonoCartao)) {
-	            throw new PermissaoNegadaException("Este cartão não pertence ao seu usuário.");
-	        }
-	    }
-
-	    cartao.setStatus(false);
-	    cartaoRepository.save(cartao);
-	    return true;
+		cartao.setStatus(false);
+		cartaoRepository.save(cartao);
+		return true;
 	}
-	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Cartao update(Long id, CartaoUpdateDTO dto) {
-//		
-//		Cartao cartaoExiste = cartaoRepository.findById(id).orElse(null);
-//		
-//		if (cartaoExiste == null) {
-//			 return null;
-//		}
-//		
-//		cartaoExiste.setSenha(dto.senha());
-//		
-//		cartaoRepository.save(cartaoExiste);
-//		return cartaoExiste;
-//	
-//	}
-	
-	
-//	@Transactional
-//	public boolean delete(Long id) {
-//		
-//		Cartao cartaoExistente = cartaoRepository.findById(id).orElse(null);
-//		
-//		boolean isAdmin = cartaoExistente.getConta().getCliente().getUser().getRoles().stream()
-//			    .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-//	
-//		if(isAdmin) {
-//			throw new ClienteNaoEncontradoException("Não é possível deletar dados do administrador do sistema.");
-//		}
-//		
-//		cartaoExistente.setStatus(false);
-//		
-//	    return true;
-//	}
-	
-	
-	
-	//Pagamentos
-	
+
+	// Pagamentos
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean pagCartao(Long idContaReceber, UserCartaoPagCartaoDTO dto) {
-		
-		Cartao cartaoOrigem = cartaoRepository.findById(dto.idCartao()).orElseThrow(
-				() -> new ContaNaoEncontradaException("O cartão origem não existe."));
-		
-		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId()).orElseThrow(
-				() -> new ContaNaoEncontradaException("A conta destino não existe."));	
-		
-		Conta contaDestino = contaRepository.findById(idContaReceber).orElseThrow(
-				() -> new ContaNaoEncontradaException("A conta destino não existe."));	
-		
-		if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
-		    throw new TransferenciaNaoRealizadaException("Saldo insuficiente na conta para realizar a transação.");
+
+		if (idContaReceber == null) {
+			throw new IllegalArgumentException("ID do cartão não pode ser nulo");
 		}
 
+		Cartao cartaoOrigem = cartaoRepository.findById(dto.idCartao())
+				.orElseThrow(() -> new ContaNaoEncontradaException("O cartão origem não existe."));
+
+		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId())
+				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
+
+		Conta contaDestino = contaRepository.findById(idContaReceber)
+				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
 		
-		if(cartaoOrigem instanceof CartaoCredito cartaoC) {
-			
-			if(dto.valor().compareTo(cartaoC.getLimiteCreditoPreAprovado()) > 0) {
-				throw new TransferenciaNaoRealizadaException("Você já utilizou o seu limite de crédito pré aprovado para envio.");
-			}	
-			
-			if(cartaoC.getLimiteCreditoPreAprovado().compareTo(BigDecimal.ZERO) <= 0) {
+		if(!contaOrigem.getCartoes().contains(cartaoOrigem)) {
+			throw new ContaNaoEncontradaException("O cartão informado não pertence a conta origem.");
+		}
+
+		if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+			throw new TransferenciaNaoRealizadaException("Saldo insuficiente na conta para realizar a transação.");
+		}
+
+		if (cartaoOrigem instanceof CartaoCredito cartaoC) {
+
+			if (dto.valor().compareTo(cartaoC.getLimiteCreditoPreAprovado()) > 0) {
+				throw new TransferenciaNaoRealizadaException(
+						"Você já utilizou o seu limite de crédito pré aprovado para envio.");
+			}
+
+			if (cartaoC.getLimiteCreditoPreAprovado().compareTo(BigDecimal.ZERO) <= 0) {
 				throw new TransferenciaNaoRealizadaException("O cartão não tem limite de crédito.");
 			}
-			
+
 			cartaoC.atualizarTotalGastoMes(dto.valor());
 			cartaoC.atualizarLimiteCreditoPreAprovado(dto.valor());
-			
-			//Já tem uma fatura associada?			
+
+			// Já tem uma fatura associada?
 			Fatura faturaExistente = cartaoOrigem.getFatura();
-			
-			if(faturaExistente == null) {
-				
+
+			if (faturaExistente == null) {
+
 				faturaExistente = new Fatura();
-			
-				faturaExistente.setCartao(cartaoOrigem);										
+
+				faturaExistente.setCartao(cartaoOrigem);
 				cartaoOrigem.setFatura(faturaExistente);
 			}
-			
-			Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
+
+			Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino,
+					TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
 			contaOrigem.getTransferencia().add(transferindo);
-			
+
 			transferindo.setFatura(faturaExistente);
 			faturaExistente.getTransferenciasCredito().add(transferindo);
-				
-				cartaoRepository.save(cartaoC);
+
+			cartaoRepository.save(cartaoC);
 		}
-		
-		if(cartaoOrigem instanceof CartaoDebito cartaoD) {
-			
-			
-			if(dto.valor().compareTo(cartaoD.getLimiteDiarioTransacao()) > 0) {
-				throw new TransferenciaNaoRealizadaException("Você já utilizou o seu limite de crédito pré aprovado para envio.");
-			}		
-			
-			if(cartaoD.getLimiteDiarioTransacao().compareTo(BigDecimal.ZERO) <= 0) {
+
+		if (cartaoOrigem instanceof CartaoDebito cartaoD) {
+
+			if (dto.valor().compareTo(cartaoD.getLimiteDiarioTransacao()) > 0) {
+				throw new TransferenciaNaoRealizadaException(
+						"Você já utilizou o seu limite de crédito pré aprovado para envio.");
+			}
+
+			if (cartaoD.getLimiteDiarioTransacao().compareTo(BigDecimal.ZERO) <= 0) {
 				throw new TransferenciaNaoRealizadaException("O cartão não tem limite de transação.");
 			}
-			
+
 			contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
-			
+
 			cartaoD.atualizarLimiteDiarioTransacao(dto.valor());
 			cartaoD.atualizarTotalGastoMes(dto.valor());
-		
-			TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
+
+			TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(),
+					contaOrigem.getTipoConta());
 
 			List<TaxaManutencao> novaTaxa = new ArrayList<>();
 			novaTaxa.add(taxaContaOrigem);
@@ -423,147 +264,147 @@ public class UserCartaoService {
 				cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
 				cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
 			}
-			
-			Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
+
+			Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino,
+					TipoTransferencia.TED, cartaoOrigem.getTipoCartao());
 			contaOrigem.getTransferencia().add(transferindo);
-			
+
 			contaRepository.save(contaOrigem);
 		}
-				
+
 		contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
 		TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
 		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
 		novaTaxa.add(taxaContaDestino);
-		
+
 		contaDestino.setTaxas(novaTaxa);
 		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
-		
+
 		contaRepository.save(contaDestino);
 
 		return true;
 	}
-	
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao alterarLimiteCartaoCredito(Long cartaoId, UserCartaoAlterarLimiteCartaoCreditoDTO dto) {	
-		
-		Cartao cartao = cartaoRepository.findById(cartaoId)
-				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
-		
-		BigDecimal novoLimite = dto.novoLimite();
-		
-		if(dto.novoLimite() == null) {
-			throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão");
-		}
-		
-		if(cartao instanceof CartaoCredito cartaoCredito) {
-			cartaoCredito.alterarLimiteCreditoPreAprovado(novoLimite);	
-				
-		}
-		cartaoRepository.save(cartao);
-		 return cartao;
-	}
-	
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao alterarStatusC(Long cartaoId, UserCartaoAlterarStatusCartaoDTO dto) {	
-		
-		Cartao cartao = cartaoRepository.findById(cartaoId)
-				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
-		
-		String statusNovo = dto.novoStatus();
-		
-		if(statusNovo.equalsIgnoreCase("true")) {
-			cartao.setStatus(true);							
-		} 
 
-		if(statusNovo.equalsIgnoreCase("false")){
-			cartao.setStatus(false);
-		}
-		
-		return cartaoRepository.save(cartao);
-	}
-	
-	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao alterarSenhaC(Long cartaoId, UserCartaoAlterarSenhaCartaoDTO dto) {	
-		
+	public Cartao alterarLimiteCartaoCredito(Long cartaoId, UserCartaoAlterarLimiteCartaoCreditoDTO dto) {
+
 		Cartao cartao = cartaoRepository.findById(cartaoId)
 				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
-		
-		String senhaNova = dto.novaSenha();
-		
-		cartao.setSenha(senhaNova);
-		
-		return cartaoRepository.save(cartao);
-	}
-	
-	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cartao alterarLimiteCartaoDebito(Long cartaoId, UserCartaoAlterarLimiteCartaoDebitoDTO dto) {	
-		
-		Cartao cartao = cartaoRepository.findById(cartaoId)
-				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
-		
+
 		BigDecimal novoLimite = dto.novoLimite();
-		
-		if(dto.novoLimite() == null) {
+
+		if (dto.novoLimite() == null) {
 			throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão");
 		}
-		
-		if(cartao instanceof CartaoDebito cartaoDebito) {
-			cartaoDebito.alterarLimiteDiarioTransacao(novoLimite);				
+
+		if (cartao instanceof CartaoCredito cartaoCredito) {
+			cartaoCredito.alterarLimiteCreditoPreAprovado(novoLimite);
+
 		}
-		
 		cartaoRepository.save(cartao);
 		return cartao;
 	}
-	
-	
-	
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarStatusC(Long cartaoId, UserCartaoAlterarStatusCartaoDTO dto) {
+
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+
+		String statusNovo = dto.novoStatus();
+
+		if (statusNovo.equalsIgnoreCase("true")) {
+			cartao.setStatus(true);
+		}
+
+		if (statusNovo.equalsIgnoreCase("false")) {
+			cartao.setStatus(false);
+		}
+
+		return cartaoRepository.save(cartao);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarSenhaC(Long cartaoId, UserCartaoAlterarSenhaCartaoDTO dto) {
+
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+
+		String senhaNova = dto.novaSenha();
+
+		cartao.setSenha(senhaNova);
+
+		return cartaoRepository.save(cartao);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public Cartao alterarLimiteCartaoDebito(Long cartaoId, UserCartaoAlterarLimiteCartaoDebitoDTO dto) {
+
+		Cartao cartao = cartaoRepository.findById(cartaoId)
+				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+
+		BigDecimal novoLimite = dto.novoLimite();
+
+		if (dto.novoLimite() == null) {
+			throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão");
+		}
+
+		if (cartao instanceof CartaoDebito cartaoDebito) {
+			cartaoDebito.alterarLimiteDiarioTransacao(novoLimite);
+		}
+
+		cartaoRepository.save(cartao);
+		return cartao;
+	}
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Optional<Fatura> getFaturaCartaoDeCreditoService(Long cartaoId) {
 
-		return cartaoRepository.findById(cartaoId)
-		        .filter(c -> c instanceof CartaoCredito)
-		        .map(c -> {
-		            Fatura fatura = ((CartaoCredito) c).getFatura();
-		            if (fatura.isStatus()) {
-		                throw new CartaoNaoEncontradoException("A fatura já foi paga.");
-		            }
-		            return fatura;
-		        });
+		return cartaoRepository.findById(cartaoId).filter(c -> c instanceof CartaoCredito).map(c -> {
+			Fatura fatura = ((CartaoCredito) c).getFatura();
+			if (fatura.isStatus()) {
+				throw new CartaoNaoEncontradoException("A fatura já foi paga.");
+			}
+			return fatura;
+		});
 	}
-	
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean pagFaturaCartaoC(Long idCartao) {
-		
-		Cartao cartaoOrigem = cartaoRepository.findById(idCartao).orElseThrow(
-				() -> new CartaoNaoEncontradoException("O cartão origem não existe."));
-		
-		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId()).orElseThrow(
-				() -> new ContaNaoEncontradaException("A conta origem não existe."));
-		
-		if(cartaoOrigem instanceof CartaoCredito cc) {
-			
-			if(cc.getTotalGastoMesCredito().compareTo(contaOrigem.getSaldoConta()) > 0 ) {
+	public boolean pagFaturaCartaoC(Long idCartao, JwtAuthenticationToken token) {
+
+		User usuario = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+
+		Cartao cartaoOrigem = cartaoRepository.findById(idCartao)
+				.orElseThrow(() -> new CartaoNaoEncontradoException("O cartão origem não existe."));
+
+		ValidacaoUsuarioAtivo.validarOperacaoAdmin(usuario, cartaoOrigem.getConta().getId(), null,
+				TipoTransferencia.CARTAO_CREDITO, contaRepository);
+
+		if (!ValidacaoUsuarioAtivo.isAdmin(usuario)) {
+			if (!cartaoOrigem.getConta().getCliente().getId().equals(usuario.getCliente().getId())) {
+				throw new CartaoNaoEncontradoException("Cartão não pertence ao usuário");
+			}
+		}
+
+		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId())
+				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
+
+		if (cartaoOrigem instanceof CartaoCredito cc) {
+
+			if (cc.getTotalGastoMesCredito().compareTo(contaOrigem.getSaldoConta()) > 0) {
 				throw new CartaoNaoEncontradoException("Você não tem saldo suficiente para realizar o pagamento.");
 			}
-			
+
 			cc.getTotalGastoMesCredito();
 			contaOrigem.pagarFatura(cc.getTotalGastoMesCredito());
 			cc.getFatura().setStatus(true);
-			
+
 		}
-		
+
 		return true;
-		
+
 	}
-	
-	
-	
-	
+
 	public String gerarNumCartao() {
 
 		int[] sequencia = new int[8];

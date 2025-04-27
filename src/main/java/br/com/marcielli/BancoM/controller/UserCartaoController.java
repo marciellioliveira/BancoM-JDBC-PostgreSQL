@@ -25,6 +25,7 @@ import br.com.marcielli.BancoM.dto.security.UserCartaoResponseDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.CartaoDebito;
+import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Fatura;
 import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
@@ -46,9 +47,9 @@ public class UserCartaoController {
 
 	@PostMapping("/cartoes")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> createCartao(@RequestBody CartaoCreateDTO dto, JwtAuthenticationToken token) {
+	public ResponseEntity<?> createCartao(@RequestBody CartaoCreateDTO dto) {
 
-		Cartao cartaoAdicionado = cartaoService.save(dto, token);
+		Cartao cartaoAdicionado = cartaoService.save(dto);
 
 		if (cartaoAdicionado != null) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
@@ -78,9 +79,9 @@ public class UserCartaoController {
 
 	@GetMapping("/cartoes")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<List<User>> listUsers() {
-		var users = userRepository.findAll();
-		return ResponseEntity.ok(users);
+	public ResponseEntity<List<Cartao>> listCartoes() {
+		var cartoes = cartaoService.getCartoes();
+		return ResponseEntity.status(HttpStatus.OK).body(cartoes);
 	}
 
 	@GetMapping("/cartoes/{id}")
@@ -89,14 +90,7 @@ public class UserCartaoController {
 
 		Cartao cartao = cartaoService.getCartoesById(id);
 
-		if (cartao == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-		}
-
-		boolean isAdmin = cartao.getConta().getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
+		if (cartao != null) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
 
 			response.setId(id);
@@ -123,38 +117,29 @@ public class UserCartaoController {
 
 	@PutMapping("/cartoes/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto,
-			JwtAuthenticationToken token) {
-		try {
-			Cartao cartaoAtualizado = cartaoService.updateSenha(id, dto, token);
+	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto) {
 
+		Cartao cartaoAtualizado = cartaoService.updateSenha(id, dto);
+
+		if (cartaoAtualizado != null) {
 			return ResponseEntity.ok("Senha do cartão atualizada com sucesso");
-
-		} catch (ContaNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		} catch (PermissaoNegadaException e) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+		} else {
+			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 
 	@DeleteMapping("/cartoes/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto,
-			JwtAuthenticationToken token) {
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto) {
 
-		try {
-			boolean deletado = cartaoService.delete(id, dto, token);
-			return deletado ? ResponseEntity.ok("Cartão desativado com sucesso!")
-					: ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado.");
-		} catch (ContaNaoEncontradaException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		} catch (PermissaoNegadaException e) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+		boolean deletado = cartaoService.delete(id, dto);
+
+		if (deletado) {
+			return ResponseEntity.ok("Senha do cartão atualizada com sucesso");
+		} else {
+			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
+
 	}
 
 	// Pagamentos
@@ -179,10 +164,7 @@ public class UserCartaoController {
 
 		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, dto);
 
-		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
+		if (limiteAtualizado != null) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
 
 			response.setId(cartaoId);
@@ -220,10 +202,7 @@ public class UserCartaoController {
 
 		Cartao limiteAtualizado = cartaoService.alterarStatusC(cartaoId, dto);
 
-		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
+		if (limiteAtualizado != null) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
 
 			response.setId(cartaoId);
@@ -261,10 +240,7 @@ public class UserCartaoController {
 
 		Cartao limiteAtualizado = cartaoService.alterarSenhaC(cartaoId, dto);
 
-		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
+		if (limiteAtualizado != null) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
 
 			response.setId(cartaoId);
@@ -302,10 +278,7 @@ public class UserCartaoController {
 
 		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoDebito(cartaoId, dto);
 
-		boolean isAdmin = limiteAtualizado.getConta().getCliente().getUser().getRoles().stream()
-				.anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
-
-		if (!isAdmin) {
+		if (limiteAtualizado != null) {
 			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
 
 			response.setId(cartaoId);
@@ -344,9 +317,10 @@ public class UserCartaoController {
 
 	@PostMapping("/cartoes/{idCartao}/fatura/pagamento")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao) {
+	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao,
+			JwtAuthenticationToken token) {
 
-		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao);
+		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao, token);
 
 		if (pagamentoFaturaOk) {
 			return new ResponseEntity<>("Fatura paga.", HttpStatus.OK);

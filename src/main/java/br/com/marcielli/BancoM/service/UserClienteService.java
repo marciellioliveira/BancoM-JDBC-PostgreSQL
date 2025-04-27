@@ -2,8 +2,6 @@ package br.com.marcielli.BancoM.service;
 
 import java.util.Set;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -26,150 +24,132 @@ import br.com.marcielli.BancoM.validation.ValidadorCPF;
 
 @Service
 public class UserClienteService {
-	
+
 	private final UserRepository userRepository;
 	private final ClienteRepository clienteRepository;
 	private final RoleRepository roleRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
-	public UserClienteService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository) {
+	public UserClienteService(UserRepository userRepository, RoleRepository roleRepository,
+			BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.clienteRepository = clienteRepository;
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public User save(UserCreateDTO cliente, boolean isAdminFromController, JwtAuthenticationToken token) {
-	  
-	    if(cliente.cpf() != null) {            
-	        String cpfClient = Long.toString(cliente.cpf());
-	        if (!ValidadorCPF.validar(cpfClient)) {
-	            throw new ClienteCpfInvalidoException("CPF inválido");
-	        }
-	    }
-	    
-	    var userFromDb = userRepository.findByUsername(cliente.username());
-	    if(userFromDb.isPresent()) {
-	        throw new ClienteEncontradoException("Usuário já existe.");
-	    }
-	    
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.validarPermissoesCriacao(currentUser, isAdminFromController, cliente.username());
-	    
-	    var user = new User();
-	    user.setUsername(cliente.username());
-	    user.setPassword(passwordEncoder.encode(cliente.password()));
-	    
-	    var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
-	    user.setRoles(Set.of(basicRole));     
-	  
-	    Cliente client = new Cliente();
-	    client.setNome(cliente.nome());
-	    client.setCpf(cliente.cpf());
-	    
-	    Endereco address = new Endereco();
-	    address.setCep(cliente.cep());
-	    address.setCidade(cliente.cidade());
-	    address.setEstado(cliente.estado());
-	    address.setRua(cliente.rua());
-	    address.setNumero(cliente.numero());
-	    address.setBairro(cliente.bairro());
-	    address.setComplemento(cliente.complemento());       
-	    
-	    client.setEndereco(address);
-	    client.setUser(user);
-	    user.setCliente(client);
-	    
-	    return userRepository.save(user);
+	public User save(UserCreateDTO cliente,  JwtAuthenticationToken token) {
+
+		if (cliente.cpf() != null) {
+			String cpfClient = Long.toString(cliente.cpf());
+			if (!ValidadorCPF.validar(cpfClient)) {
+				throw new ClienteCpfInvalidoException("CPF inválido");
+			}
+		}
+
+		var userFromDb = userRepository.findByUsername(cliente.username());
+		if (userFromDb.isPresent()) {
+			throw new ClienteEncontradoException("Usuário já existe.");
+		}
+
+	
+
+		var user = new User();
+		user.setUsername(cliente.username());
+		user.setPassword(passwordEncoder.encode(cliente.password()));
+
+		var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
+		user.setRoles(Set.of(basicRole));
+
+		Cliente client = new Cliente();
+		client.setNome(cliente.nome());
+		client.setCpf(cliente.cpf());
+
+		Endereco address = new Endereco();
+		address.setCep(cliente.cep());
+		address.setCidade(cliente.cidade());
+		address.setEstado(cliente.estado());
+		address.setRua(cliente.rua());
+		address.setNumero(cliente.numero());
+		address.setBairro(cliente.bairro());
+		address.setComplemento(cliente.complemento());
+
+		client.setEndereco(address);
+		client.setUser(user);
+		user.setCliente(client);
+
+		return userRepository.save(user);
 	}
-		
+
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente getClienteById(Long id) {
 		return clienteRepository.findById(id).orElse(null);
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Cliente update(Long id, UserCreateDTO cliente, JwtAuthenticationToken token) {
-	   
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+	public Cliente update(Long id, UserCreateDTO cliente) {
 
-	    Cliente clienteExistente = clienteRepository.findById(id)
-	            .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-	    
-	    if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
-	        throw new ClienteNaoEncontradoException("Não é possível atualizar um usuário/cliente desativado");
-	    }
+		Cliente clienteExistente = clienteRepository.findById(id)
+				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 
-	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
-	        !clienteExistente.getUser().getId().equals(currentUser.getId())) {
-	        throw new ClienteEncontradoException("Apenas administradores podem editar outros usuários.");
-	    }
-	    
-	    if (ValidacaoUsuarioAtivo.isAdmin(clienteExistente.getUser())) {
-	        throw new ClienteEncontradoException("Não é possível editar um administrador.");
-	    }
+		if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
+			throw new ClienteNaoEncontradoException("Não é possível atualizar um usuário/cliente desativado");
+		}
 
-	    clienteExistente.setNome(cliente.nome());
-	    clienteExistente.setCpf(cliente.cpf());
-	    
-	    Endereco endereco = clienteExistente.getEndereco();
-	    if (endereco != null) {
-	        endereco.setCep(cliente.cep());
-	        endereco.setCidade(cliente.cidade());
-	        endereco.setEstado(cliente.estado());
-	        endereco.setRua(cliente.rua());
-	        endereco.setNumero(cliente.numero());
-	        endereco.setBairro(cliente.bairro());
-	        endereco.setComplemento(cliente.complemento());
-	    }
-	    
-	    User user = clienteExistente.getUser();
-	    if (user != null) {
-	        user.setUsername(cliente.username());
-	        user.setPassword(passwordEncoder.encode(cliente.password()));
-	    } else {
-	        user = new User();
-	        user.setUsername(cliente.username());
-	        user.setPassword(passwordEncoder.encode(cliente.password()));
-	        user.setCliente(clienteExistente);
-	        clienteExistente.setUser(user);
-	    }
-	    
-	    userRepository.save(user);
-	    clienteRepository.save(clienteExistente);
-	    
-	    return clienteExistente;
+		if (ValidacaoUsuarioAtivo.isAdmin(clienteExistente.getUser())) {
+			throw new ClienteEncontradoException("Não é possível editar um administrador.");
+		}
+
+		clienteExistente.setNome(cliente.nome());
+		clienteExistente.setCpf(cliente.cpf());
+
+		Endereco endereco = clienteExistente.getEndereco();
+		if (endereco != null) {
+			endereco.setCep(cliente.cep());
+			endereco.setCidade(cliente.cidade());
+			endereco.setEstado(cliente.estado());
+			endereco.setRua(cliente.rua());
+			endereco.setNumero(cliente.numero());
+			endereco.setBairro(cliente.bairro());
+			endereco.setComplemento(cliente.complemento());
+		}
+
+		User user = clienteExistente.getUser();
+		if (user != null) {
+			user.setUsername(cliente.username());
+			user.setPassword(passwordEncoder.encode(cliente.password()));
+		} else {
+			user = new User();
+			user.setUsername(cliente.username());
+			user.setPassword(passwordEncoder.encode(cliente.password()));
+			user.setCliente(clienteExistente);
+			clienteExistente.setUser(user);
+		}
+
+		userRepository.save(user);
+		clienteRepository.save(clienteExistente);
+
+		return clienteExistente;
 	}
-	
+
 	@Transactional
-	public boolean delete(Long id, JwtAuthenticationToken token) {
-	    User currentUser = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
-	    ValidacaoUsuarioAtivo.verificarUsuarioAtivo(currentUser);
+	public boolean delete(Long id) {
+		
+		Cliente clienteExistente = clienteRepository.findById(id)
+				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 
-	    Cliente clienteExistente = clienteRepository.findById(id)
-	            .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-	    
-	    if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
-	        throw new ClienteNaoEncontradoException("O usuário/cliente já está desativado");
-	    }
+		if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
+			throw new ClienteNaoEncontradoException("O usuário/cliente já está desativado");
+		}
 
-	    if (ValidacaoUsuarioAtivo.isAdmin(clienteExistente.getUser())) { //Não deixa desativar se for admin
-	        throw new ClienteNaoEncontradoException("Não é possível desativar um administrador.");
-	    }
-	    
-	    if (!ValidacaoUsuarioAtivo.isAdmin(currentUser) && 
-	        !clienteExistente.getUser().getId().equals(currentUser.getId())) {
-	        throw new ClienteEncontradoException("Apenas administradores podem desativar outros usuários.");
-	    }
-	    
-	    clienteExistente.setClienteAtivo(false);
-	    clienteExistente.getUser().setUserAtivo(false);
-	    
-	    clienteRepository.save(clienteExistente);
-	    
-	    return true;
+		clienteExistente.setClienteAtivo(false);
+		clienteExistente.getUser().setUserAtivo(false);
+
+		clienteRepository.save(clienteExistente);
+
+		return true;
 	}
 
 }

@@ -1,0 +1,87 @@
+2025-04-26 09:00:45 [34mINFO [0;39m [36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-26 09:00:45 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Starting BancoMApplication using Java 23.0.2 with PID 996 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-26 09:00:45 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8086"]
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mo.h.jpa.internal.util.LogHelper[0;39m - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35morg.hibernate.Version[0;39m - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mo.h.c.i.RegionFactoryInitiator[0;39m - HHH000026: Second-level cache disabled
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-26 09:00:47 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-26 09:00:48 [34mINFO [0;39m [36m[main][0;39m [35mo.hibernate.orm.connections.pooling[0;39m - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-26 09:00:48 [34mINFO [0;39m [36m[main][0;39m [35mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-26 09:00:49 [31mWARN [0;39m [36m[main][0;39m [35mo.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration[0;39m - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-26 09:00:49 [39mDEBUG[0;39m [36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-26 09:00:49 [39mDEBUG[0;39m [36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-26 09:00:49 [34mINFO [0;39m [36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8086"]
+2025-04-26 09:00:49 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Started BancoMApplication in 5.161 seconds (process running for 5.911)
+2025-04-26 09:00:55 [34mINFO [0;39m [36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-26 09:00:55 [34mINFO [0;39m [36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-26 09:01:55 [34mINFO [0;39m [36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-26 09:01:55 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Starting BancoMApplication using Java 23.0.2 with PID 3580 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-26 09:01:55 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8086"]
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mo.h.jpa.internal.util.LogHelper[0;39m - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35morg.hibernate.Version[0;39m - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mo.h.c.i.RegionFactoryInitiator[0;39m - HHH000026: Second-level cache disabled
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-26 09:01:56 [34mINFO [0;39m [36m[main][0;39m [35mo.hibernate.orm.connections.pooling[0;39m - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-26 09:01:57 [34mINFO [0;39m [36m[main][0;39m [35mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-26 09:01:58 [31mWARN [0;39m [36m[main][0;39m [35mo.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration[0;39m - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-26 09:01:58 [39mDEBUG[0;39m [36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-26 09:01:58 [39mDEBUG[0;39m [36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-26 09:01:58 [34mINFO [0;39m [36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8086"]
+2025-04-26 09:01:58 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Started BancoMApplication in 3.941 seconds (process running for 4.231)
+2025-04-26 09:01:59 [34mINFO [0;39m [36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-26 09:01:59 [34mINFO [0;39m [36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-26 09:02:03 [34mINFO [0;39m [36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-26 09:02:03 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Starting BancoMApplication using Java 23.0.2 with PID 3424 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-26 09:02:03 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-26 09:02:04 [34mINFO [0;39m [36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8086"]
+2025-04-26 09:02:04 [34mINFO [0;39m [36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-26 09:02:04 [34mINFO [0;39m [36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-26 09:02:04 [34mINFO [0;39m [36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-26 09:02:04 [34mINFO [0;39m [36m[main][0;39m [35mo.h.jpa.internal.util.LogHelper[0;39m - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-26 09:02:04 [34mINFO [0;39m [36m[main][0;39m [35morg.hibernate.Version[0;39m - HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-26 09:02:04 [34mINFO [0;39m [36m[main][0;39m [35mo.h.c.i.RegionFactoryInitiator[0;39m - HHH000026: Second-level cache disabled
+2025-04-26 09:02:04 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-26 09:02:05 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-26 09:02:05 [34mINFO [0;39m [36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-26 09:02:05 [34mINFO [0;39m [36m[main][0;39m [35mo.hibernate.orm.connections.pooling[0;39m - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-26 09:02:05 [34mINFO [0;39m [36m[main][0;39m [35mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-26 09:02:06 [31mWARN [0;39m [36m[main][0;39m [35mo.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration[0;39m - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-26 09:02:06 [39mDEBUG[0;39m [36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-26 09:02:06 [39mDEBUG[0;39m [36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-26 09:02:06 [34mINFO [0;39m [36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8086"]
+2025-04-26 09:02:06 [34mINFO [0;39m [36m[main][0;39m [35mb.c.m.BancoM.BancoMApplication[0;39m - Started BancoMApplication in 3.941 seconds (process running for 4.211)
+2025-04-26 09:02:07 [34mINFO [0;39m [36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-26 09:02:07 [34mINFO [0;39m [36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
