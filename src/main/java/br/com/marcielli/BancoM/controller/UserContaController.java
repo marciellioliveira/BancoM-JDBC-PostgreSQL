@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,13 +24,6 @@ import br.com.marcielli.BancoM.dto.security.UserContaTedDTO;
 import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
-import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
-import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
-import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
-import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
-import br.com.marcielli.BancoM.repository.ContaRepository;
-import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.UserContaService;
 import jakarta.transaction.Transactional;
 
@@ -39,11 +31,9 @@ import jakarta.transaction.Transactional;
 public class UserContaController {
 
 	private final UserContaService contaService;
-	private final UserRepository userRepository;
 
-	public UserContaController(UserContaService contaService, UserRepository userRepository) {
+	public UserContaController(UserContaService contaService) {
 		this.contaService = contaService;
-		this.userRepository = userRepository;
 	}
 
 	@PostMapping("/contas")
@@ -181,8 +171,8 @@ public class UserContaController {
 		}
 	}
 
-	@PostMapping("/contas/{idContaReceber}/deposito")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PostMapping("/contas/{idContaReceber}/deposito")	
 	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber,
 			@RequestBody UserContaDepositoDTO dto) {
 

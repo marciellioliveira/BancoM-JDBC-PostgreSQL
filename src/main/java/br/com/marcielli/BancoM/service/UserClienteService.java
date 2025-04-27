@@ -1,5 +1,6 @@
 package br.com.marcielli.BancoM.service;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,13 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.BancoM.dto.security.UserCreateDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
+import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Endereco;
 import br.com.marcielli.BancoM.entity.Role;
 import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.RoleRepository;
 import br.com.marcielli.BancoM.repository.UserRepository;
@@ -52,8 +54,6 @@ public class UserClienteService {
 		if (userFromDb.isPresent()) {
 			throw new ClienteEncontradoException("Usuário já existe.");
 		}
-
-	
 
 		var user = new User();
 		user.setUsername(cliente.username());
@@ -98,10 +98,6 @@ public class UserClienteService {
 			throw new ClienteNaoEncontradoException("Não é possível atualizar um usuário/cliente desativado");
 		}
 
-		if (ValidacaoUsuarioAtivo.isAdmin(clienteExistente.getUser())) {
-			throw new ClienteEncontradoException("Não é possível editar um administrador.");
-		}
-
 		clienteExistente.setNome(cliente.nome());
 		clienteExistente.setCpf(cliente.cpf());
 
@@ -144,6 +140,12 @@ public class UserClienteService {
 			throw new ClienteNaoEncontradoException("O usuário/cliente já está desativado");
 		}
 
+		for(Conta contas : clienteExistente.getContas()) {
+			if(contas.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
+				throw new ContaExibirSaldoErroException("A conta possui um saldo de R$ "+contas.getSaldoConta()+". Faça o saque antes de remover o cliente.");
+			}
+		}
+		
 		clienteExistente.setClienteAtivo(false);
 		clienteExistente.getUser().setUserAtivo(false);
 

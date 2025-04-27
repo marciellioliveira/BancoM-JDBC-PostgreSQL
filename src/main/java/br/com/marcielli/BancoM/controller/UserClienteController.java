@@ -33,7 +33,6 @@ public class UserClienteController {
 	}
 
 	@PostMapping("/users")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto, JwtAuthenticationToken token) {
 
 		User clienteAdicionado = clienteService.save(dto, token);
@@ -61,7 +60,6 @@ public class UserClienteController {
 		if (clienteUnico == null || clienteUnico.getUser() == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
 		}
-
 	
 		UserClienteResponseDTO response = new UserClienteResponseDTO();
 		response.setId(id);
@@ -87,7 +85,16 @@ public class UserClienteController {
 	@PutMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
-
+		
+//		
+//		if(token.getAuthorities().stream()
+//				.anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"))) {
+//			System.err.println("Admin");
+//		} else {
+//			System.err.println("Basic");
+//		}
+//		
+	
 		Cliente clienteUnico = clienteService.update(id, dto);
 
 		if (clienteUnico != null) {

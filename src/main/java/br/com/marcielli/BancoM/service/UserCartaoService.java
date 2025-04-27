@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,13 +29,11 @@ import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.entity.Fatura;
 import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
-import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.enuns.TipoCartao;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
-import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaExisteNoBancoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
@@ -44,22 +41,20 @@ import br.com.marcielli.BancoM.exception.TransferenciaNaoRealizadaException;
 import br.com.marcielli.BancoM.repository.CartaoRepository;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepository;
-import br.com.marcielli.BancoM.repository.UserRepository;
 
 @Service
 public class UserCartaoService {
 
 	private final CartaoRepository cartaoRepository;
 	private final ContaRepository contaRepository;
-	private final UserRepository userRepository;
 	private final ClienteRepository clienteRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
-	public UserCartaoService(CartaoRepository cartaoRepository, UserRepository userRepository,
+	public UserCartaoService(CartaoRepository cartaoRepository,
 			ContaRepository contaRepository, BCryptPasswordEncoder passwordEncoder,
 			ClienteRepository clienteRepository) {
 		this.cartaoRepository = cartaoRepository;
-		this.userRepository = userRepository;
+		
 		this.contaRepository = contaRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.clienteRepository = clienteRepository;
@@ -123,7 +118,7 @@ public class UserCartaoService {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cartao getCartoesById(Long id) {
-		return cartaoRepository.findById(id).orElse(null);
+		return cartaoRepository.findById(id).orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -158,12 +153,20 @@ public class UserCartaoService {
 
 		Cartao cartao = cartaoRepository.findById(cartaoId)
 				.orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
+				
+		if(cartao.getConta().getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
+			throw new ContaExibirSaldoErroException("A conta possui um saldo de R$ "+cartao.getConta().getSaldoConta()+". Faça o saque antes de remover a conta.");
+		}	
 		
 		Long userId = cartao.getConta().getCliente().getUser().getId().longValue();
 		
 		if(userId != dto.idUsuario()) {
 			throw new ClienteNaoEncontradoException("Você não tem permissão para deletar esse cartão.");
 		}	
+		
+		if (!cartao.isStatus()) { // Só pode atualizar se o cartão estiver com status true
+			throw new PermissaoNegadaException("Cartão já foi desativado anteriormente.");
+		}
 
 		cartao.setStatus(false);
 		cartaoRepository.save(cartao);
@@ -187,6 +190,18 @@ public class UserCartaoService {
 
 		Conta contaDestino = contaRepository.findById(idContaReceber)
 				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
+		
+		if (cartaoOrigem.isStatus() == false) { 
+			throw new PermissaoNegadaException("Não é possível realizar operações através de cartões desativados.");
+		}
+		
+		if (contaOrigem.getStatus() == false) { 
+			throw new PermissaoNegadaException("Não é possível realizar operações através de contas desativadss.");
+		}
+		
+		if (contaDestino.getStatus() == false) { 
+			throw new PermissaoNegadaException("Não é possível realizar operações através de contas desativadss.");
+		}
 		
 		if(!contaOrigem.getCartoes().contains(cartaoOrigem)) {
 			throw new ContaNaoEncontradaException("O cartão informado não pertence a conta origem.");
@@ -292,6 +307,10 @@ public class UserCartaoService {
 				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
 
 		BigDecimal novoLimite = dto.novoLimite();
+		
+		if(cartao.isStatus() == false) {
+			throw new CartaoNaoEncontradoException("Não é possível alterar limite de cartão desativado.");
+		}
 
 		if (dto.novoLimite() == null) {
 			throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão");
@@ -310,7 +329,7 @@ public class UserCartaoService {
 
 		Cartao cartao = cartaoRepository.findById(cartaoId)
 				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
-
+		
 		String statusNovo = dto.novoStatus();
 
 		if (statusNovo.equalsIgnoreCase("true")) {
@@ -329,6 +348,10 @@ public class UserCartaoService {
 
 		Cartao cartao = cartaoRepository.findById(cartaoId)
 				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		if(cartao.isStatus() == false) {
+			throw new CartaoNaoEncontradoException("Não é possível alterar senha de cartão desativado.");
+		}
 
 		String senhaNova = dto.novaSenha();
 
@@ -342,6 +365,10 @@ public class UserCartaoService {
 
 		Cartao cartao = cartaoRepository.findById(cartaoId)
 				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+		
+		if(cartao.isStatus() == false) {
+			throw new CartaoNaoEncontradoException("Não é possível alterar limite de cartão desativado.");
+		}
 
 		BigDecimal novoLimite = dto.novoLimite();
 
@@ -370,24 +397,21 @@ public class UserCartaoService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public boolean pagFaturaCartaoC(Long idCartao, JwtAuthenticationToken token) {
-
-		User usuario = ValidacaoUsuarioAtivo.validarUsuarioAdmin(userRepository, token);
+	public boolean pagFaturaCartaoC(Long idCartao) {
 
 		Cartao cartaoOrigem = cartaoRepository.findById(idCartao)
 				.orElseThrow(() -> new CartaoNaoEncontradoException("O cartão origem não existe."));
 
-		ValidacaoUsuarioAtivo.validarOperacaoAdmin(usuario, cartaoOrigem.getConta().getId(), null,
-				TipoTransferencia.CARTAO_CREDITO, contaRepository);
-
-		if (!ValidacaoUsuarioAtivo.isAdmin(usuario)) {
-			if (!cartaoOrigem.getConta().getCliente().getId().equals(usuario.getCliente().getId())) {
-				throw new CartaoNaoEncontradoException("Cartão não pertence ao usuário");
-			}
-		}
-
 		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId())
 				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
+		
+		if(cartaoOrigem.isStatus() == false) {
+			throw new CartaoNaoEncontradoException("Não é possível pagar fatura através de um cartão desativado.");
+		}
+		
+		if(contaOrigem.getStatus() == false) {
+			throw new CartaoNaoEncontradoException("Não é possível pagar fatura através de uma conta desativada.");
+		}
 
 		if (cartaoOrigem instanceof CartaoCredito cc) {
 

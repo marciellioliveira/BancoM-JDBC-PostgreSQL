@@ -2,33 +2,20 @@ package br.com.marcielli.BancoM.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import br.com.marcielli.BancoM.dto.security.ContaCreateDTO;
 import br.com.marcielli.BancoM.dto.security.ContaUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.ConversionResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaPixDTO;
-import br.com.marcielli.BancoM.dto.security.UserContaRendimentoDTO;
-import br.com.marcielli.BancoM.dto.security.UserContaResponseDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaSaqueDTO;
-import br.com.marcielli.BancoM.dto.security.UserContaTaxaManutencaoDTO;
 import br.com.marcielli.BancoM.dto.security.UserContaTedDTO;
 import br.com.marcielli.BancoM.entity.Cliente;
 import br.com.marcielli.BancoM.entity.Conta;
@@ -36,37 +23,29 @@ import br.com.marcielli.BancoM.entity.ContaCorrente;
 import br.com.marcielli.BancoM.entity.ContaPoupanca;
 import br.com.marcielli.BancoM.entity.TaxaManutencao;
 import br.com.marcielli.BancoM.entity.Transferencia;
-import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.enuns.TipoConta;
 import br.com.marcielli.BancoM.enuns.TipoTransferencia;
-import br.com.marcielli.BancoM.exception.ClienteEncontradoException;
 import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
-import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
 import br.com.marcielli.BancoM.exception.TaxaDeCambioException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.ContaRepository;
-import br.com.marcielli.BancoM.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 @Service
 public class UserContaService {
 
 	private final ContaRepository contaRepository;
-	private final UserRepository userRepository;
 	private final ExchangeRateService exchangeRateService;
 	private final ClienteRepository clienteRepository;
 
-	private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
+//	private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
 
-	public UserContaService(ContaRepository contaRepository, UserRepository userRepository,
+	public UserContaService(ContaRepository contaRepository,
 			ExchangeRateService exchangeRateService, ClienteRepository clienteRepository) {
 		this.contaRepository = contaRepository;
-		this.userRepository = userRepository;
 		this.exchangeRateService = exchangeRateService;
 		this.clienteRepository = clienteRepository;
 	}
@@ -135,7 +114,7 @@ public class UserContaService {
 		
 		Long userId = contaExistente.getCliente().getUser().getId().longValue();
 		
-		if(!(userId != dto.idUsuario())) {
+		if(userId != dto.idUsuario()) {
 			throw new ClienteNaoEncontradoException("Você não tem permissão para alterar essa conta.");
 		}		
 
@@ -159,10 +138,18 @@ public class UserContaService {
 		Conta contaExistente = contaRepository.findById(idConta)
 				.orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
 		
+		if(contaExistente.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
+			throw new ContaExibirSaldoErroException("A conta possui um saldo de R$ "+contaExistente.getSaldoConta()+". Faça o saque antes de remover a conta.");
+		}
+		
 		Long userId = contaExistente.getCliente().getUser().getId().longValue();
 		
 		if(userId != dto.idUsuario()) {
 			throw new ClienteNaoEncontradoException("Você não tem permissão para deletar essa conta.");
+		}
+		
+		if(contaExistente.getStatus() == false) {
+			throw new ContaExibirSaldoErroException("A conta já está desativada anteriomente.");
 		}
 
 		contaExistente.setStatus(false);
@@ -256,6 +243,10 @@ public class UserContaService {
 	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId) {
 		Conta contaSaldo = contaRepository.findById(contaId)
 				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
+		
+		if(contaSaldo.getStatus() == false) {
+			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
+		}
 
 		BigDecimal saldo = contaSaldo.getSaldoConta();
 
@@ -342,16 +333,24 @@ public class UserContaService {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public boolean transferirDEPOSITO(Long idContaReceber, UserContaDepositoDTO dto) {
-				
+			
 		Conta conta = contaRepository.findById(idContaReceber)
 				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
+		
+		Cliente cliente = clienteRepository.findById(dto.idUsuario())
+				.orElseThrow(() -> new ContaNaoEncontradaException("O cliente não existe."));
 		
 		if(conta.getStatus() == false) {
 			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
 		}
 		
+		if(!cliente.getContas().contains(conta)) {
+			throw new ContaExibirSaldoErroException("A conta não é do cliente informado.");
+		}
+		
 		conta.setSaldoConta(conta.getSaldoConta().add(dto.valor()));
-
+		System.err.println(conta);
+		
 		TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
 
 		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
@@ -383,8 +382,15 @@ public class UserContaService {
 		Conta conta = contaRepository.findById(idContaReceber)
 				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
 		
+		Cliente cliente = clienteRepository.findById(dto.idUsuario())
+				.orElseThrow(() -> new ContaNaoEncontradaException("O cliente não existe."));
+		
 		if(conta.getStatus() == false) {
 			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
+		}
+		
+		if(!cliente.getContas().contains(conta)) {
+			throw new ContaExibirSaldoErroException("A conta não é do cliente informado.");
 		}
 		
 		if (conta.getSaldoConta().compareTo(dto.valor()) < 0 || conta.getSaldoConta().compareTo(BigDecimal.ZERO) == 0) {

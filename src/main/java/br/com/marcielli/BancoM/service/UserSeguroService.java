@@ -1,43 +1,37 @@
 package br.com.marcielli.BancoM.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import br.com.marcielli.BancoM.dto.security.ApoliceResponseDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroCreateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroUpdateDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.Cliente;
-import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Seguro;
-import br.com.marcielli.BancoM.entity.User;
-import br.com.marcielli.BancoM.entity.ValidacaoUsuarioAtivo;
 import br.com.marcielli.BancoM.enuns.CategoriaConta;
 import br.com.marcielli.BancoM.enuns.TipoSeguro;
-import br.com.marcielli.BancoM.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
 import br.com.marcielli.BancoM.repository.ClienteRepository;
 import br.com.marcielli.BancoM.repository.SeguroRepository;
-import br.com.marcielli.BancoM.repository.UserRepository;
 
 @Service
 public class UserSeguroService {
 
 	private final SeguroRepository seguroRepository;
-	private final UserRepository userRepository;
 	private final ClienteRepository clienteRepository;
 
-	public UserSeguroService(SeguroRepository seguroRepository, UserRepository userRepository,
+	public UserSeguroService(SeguroRepository seguroRepository,
 			ClienteRepository clienteRepository) {
 		this.seguroRepository = seguroRepository;
-		this.userRepository = userRepository;
 		this.clienteRepository = clienteRepository;
 	}
 
@@ -130,5 +124,32 @@ public class UserSeguroService {
 		seguroRepository.save(seguro);
 		return true;
 	}
+	
+	
+	public ApoliceResponseDTO gerarApoliceEletronica(Long seguroId) {
+	    Seguro seguro = seguroRepository.findById(seguroId)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Seguro não encontrado"));
+
+	    String numeroApolice = "AP-" + LocalDate.now().getYear() + "-" + 
+	                          UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+
+	    String condicoes = seguro.getTipo() == TipoSeguro.SEGURO_FRAUDE ?
+	            "Acionável em até 48h após transação não reconhecida." :
+	            "Cobre até R$ 10.000 em extravio de bagagem (comunicar em até 24h).";
+
+	    return new ApoliceResponseDTO(
+	            numeroApolice,
+	            LocalDate.now(),
+	            seguro.getCartao().getNumeroCartao(),
+	            seguro.getCartao().getConta().getCliente().getNome(),
+	            seguro.getValorApolice(),
+	            condicoes,
+	            seguro.getAtivo()
+	    );
+	}
+	
+	
+	
+	
 
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,16 +25,10 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.core.convert.converter.Converter;
+import br.com.marcielli.BancoM.service.RedisTokenBlacklistService;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
 @Configuration
@@ -66,11 +59,9 @@ public class SecurityConfig { // Passo 1
 
 	// Configuração Spring Security para Token JWT
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http, RedisTokenBlacklistService tokenBlacklistService) throws Exception {
 	    http
-	        .csrf(csrf -> csrf
-	            .ignoringRequestMatchers("/login", "/users", "/h2-console/**")
-	        )
+	    	.csrf(csrf -> csrf.disable())
 	        .authorizeHttpRequests(auth -> auth
 	            .requestMatchers("/h2-console/**").permitAll()
 	            .requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
@@ -82,8 +73,14 @@ public class SecurityConfig { // Passo 1
 	        .oauth2ResourceServer(oauth2 -> oauth2
 	            .jwt(jwt -> jwt
 	                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+	                .decoder(jwtDecoder()) //Para o redis token logout
 	            )
 	        )
+	        .logout(logout -> logout
+	                .logoutUrl("/logout")
+	                .logoutSuccessUrl("/login?logout") 
+	                .permitAll()
+	            )
 	        .sessionManagement(session -> session
 	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	        );

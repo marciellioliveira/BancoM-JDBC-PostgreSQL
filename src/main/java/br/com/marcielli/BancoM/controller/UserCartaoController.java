@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,24 +24,17 @@ import br.com.marcielli.BancoM.dto.security.UserCartaoResponseDTO;
 import br.com.marcielli.BancoM.entity.Cartao;
 import br.com.marcielli.BancoM.entity.CartaoCredito;
 import br.com.marcielli.BancoM.entity.CartaoDebito;
-import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Fatura;
-import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
-import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
-import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
-import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.UserCartaoService;
 
 @RestController
 public class UserCartaoController {
 
 	private final UserCartaoService cartaoService;
-	private final UserRepository userRepository;
 
-	public UserCartaoController(UserCartaoService cartaoService, UserRepository userRepository) {
+	public UserCartaoController(UserCartaoService cartaoService) {
 		this.cartaoService = cartaoService;
-		this.userRepository = userRepository;
 	}
 
 	@PostMapping("/cartoes")
@@ -317,10 +309,9 @@ public class UserCartaoController {
 
 	@PostMapping("/cartoes/{idCartao}/fatura/pagamento")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao,
-			JwtAuthenticationToken token) {
+	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao) {
 
-		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao, token);
+		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao);
 
 		if (pagamentoFaturaOk) {
 			return new ResponseEntity<>("Fatura paga.", HttpStatus.OK);

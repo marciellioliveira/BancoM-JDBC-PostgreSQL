@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,29 +13,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.marcielli.BancoM.dto.security.ApoliceResponseDTO;
 import br.com.marcielli.BancoM.dto.security.CartaoUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroCreateDTO;
 import br.com.marcielli.BancoM.dto.security.SeguroUpdateDTO;
 import br.com.marcielli.BancoM.dto.security.UserSeguroResponseDTO;
-import br.com.marcielli.BancoM.entity.Conta;
 import br.com.marcielli.BancoM.entity.Seguro;
-import br.com.marcielli.BancoM.entity.User;
 import br.com.marcielli.BancoM.exception.CartaoNaoEncontradoException;
-import br.com.marcielli.BancoM.exception.ContaNaoEncontradaException;
 import br.com.marcielli.BancoM.exception.PermissaoNegadaException;
-import br.com.marcielli.BancoM.exception.SeguroNaoEncontradoException;
-import br.com.marcielli.BancoM.repository.UserRepository;
 import br.com.marcielli.BancoM.service.UserSeguroService;
 
 @RestController
 public class UserSeguroController {
 
 	private final UserSeguroService seguroService;
-	private final UserRepository userRepository;
 
-	public UserSeguroController(UserSeguroService seguroService, UserRepository userRepository) {
+	public UserSeguroController(UserSeguroService seguroService) {
 		this.seguroService = seguroService;
-		this.userRepository = userRepository;
 	}
 
 	@PostMapping("/seguros")
@@ -127,6 +120,11 @@ public class UserSeguroController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
 		}
 
+	}
+	
+	@GetMapping("/seguros/{id}/apolice")
+	public ResponseEntity<ApoliceResponseDTO> getApolice(@PathVariable Long id) {
+	    return ResponseEntity.ok(seguroService.gerarApoliceEletronica(id));
 	}
 
 }

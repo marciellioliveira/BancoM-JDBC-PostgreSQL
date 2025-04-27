@@ -39,8 +39,7 @@ public class AdminUserConfig implements CommandLineRunner {
 	@Transactional
 	public void run(String... args) throws Exception {
 
-		// Como ele é um admin, preciso criar o seu usuario e vincular a Role de admin
-		
+		// Como ele é um admin, preciso criar o seu usuario e vincular a Role de admin		
 
 		createRoleIfNotExists("ADMIN");
 		createRoleIfNotExists("BASIC");
@@ -48,6 +47,7 @@ public class AdminUserConfig implements CommandLineRunner {
 		Cliente clienteAdmin = new Cliente();
 		clienteAdmin.setClienteAtivo(true);
 		clienteAdmin.setNome("Admin");
+		
 		
 
 		var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());

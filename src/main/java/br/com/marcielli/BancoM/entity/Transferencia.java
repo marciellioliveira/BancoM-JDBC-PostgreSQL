@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -57,6 +58,7 @@ public class Transferencia implements Serializable {
 	
 	private BigDecimal valor;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime data;
 
 	private String codigoOperacao;
