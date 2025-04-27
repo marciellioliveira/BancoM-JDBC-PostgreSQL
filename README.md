@@ -47,6 +47,7 @@
 ### 🧑‍💼 Clientes
 - POST /users (Cadastrar novos clientes);
 - POST /login (Login no sistema);
+- POST /logout (Sair do sistema);
 - GET /users (Mostrar todos os clientes - Apenas ADMIN);
 - GET /users/id (Mostrar cliente por id);
 - PUT /users/id (Atualizar cliente por id);
@@ -88,7 +89,7 @@
 - DELETE /seguros/id (Deletar seguro - Apenas ADMIN).
 
 ### 📂 Rota de Teste para agendador de Aplicação de Taxas
-- PUT /teste-agendador.
+- PUT /api/teste-agendador.
   
 ## 📈 Futuras Implementações
 - Interface Web (Frontend);
@@ -110,18 +111,22 @@ e receba o accessToken.
 os dados:</br>
   - Variable: accessToken</br>
   - Type: Default</br>
-  - Current Value: Token</br>
+  - Current Value: Deixe vazio</br>
 - Na rota de cadastro, clique em authorization e:</br>
-  - Em Auth Type, insira: Bearer Token</br>
-  - Em Token: {{accessToken}} (a variável de ambiente).</br>
-  - Na rota de login, clique em authorization e:</br>
+  - Em Auth Type, insira: No Auth</br>
+- Na rota de login, clique em authorization e:</br>
   - Em Auth Type, deixe: Inherit from parent;</br>
-  - Em script, insira:</br>
-  
+  - Em script, insira:</br>  
  ```xml
-const json = pm.response.json();
-pm.environment.set("accessToken", json.accessToken);
+if (pm.response.code === 200) {
+    const jsonData = pm.response.json();
+    pm.environment.set("accessToken", jsonData.accessToken);
+    console.log("Token salvo:", jsonData.accessToken);
+}
 ```
+- Na rota de logout, clique em authorization e:</br>
+  - Em Auth Type, deixe:Bearer Token;</br>
+  - Em token, insira: {{accessToken}}</br>  
 
 ## 🔗 Configuração do Banco H2:
 - No Maven já existe a dependência, mas caso precise adicionar novamente, abra o pom.xml e cole esse código dentro de dependências:
