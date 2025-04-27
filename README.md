@@ -88,12 +88,10 @@
 
 ### 📂 Rota de Teste para agendador de Aplicação de Taxas
 - PUT /teste-agendador.
-
-
   
 ## 📈 Futuras Implementações
-- Interface Web (Frontend).
-
+- Interface Web (Frontend);
+- Para o DELETE de Cliente, Conta, Cartão e Seguros: Utilizei a metodologia Soft Delete. A intenção é deixar apenas como cliente/conta/cartão/seguro desativado para segurança do cliente. Mailchimp, Google e Facebook fazem isso. Nesse caso vou implementar a funcionalidade de @EnableScheduling/@EnableAsync e CRON para API deletar de fato um cliente/conta/cartão/seguro após 1 ano de desativado.
 
 
 ## ▶️ Como Executar
