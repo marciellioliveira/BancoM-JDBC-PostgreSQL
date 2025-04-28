@@ -72,6 +72,10 @@ public class UserCartaoService {
 		if(!clienteAlvo.getContas().contains(contaDoUser)) {
 			throw new ContaNaoEncontradaException("A conta informada não pertence ao cliente.");
 		}
+		
+		if(clienteAlvo.isClienteAtivo() == false) {
+	    	throw new ClienteNaoEncontradoException("O cliente está desativado. Não é possível criar uma conta para ele nesse momento.");
+	    }
 
 		String numCartao = gerarNumCartao();
 		Cartao cartao = null;

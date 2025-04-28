@@ -56,6 +56,10 @@ public class UserContaService {
 	    // Definindo para qual cliente a conta será criada
 	    Cliente clienteAlvo = clienteRepository.findById(dto.idUsuario())
 	    		.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrada"));
+	    
+	    if(clienteAlvo.isClienteAtivo() == false) {
+	    	throw new ClienteNaoEncontradoException("O cliente está desativado. Não é possível criar uma conta para ele nesse momento.");
+	    }
 
 	    TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
 	    List<TaxaManutencao> novaTaxa = new ArrayList<>();

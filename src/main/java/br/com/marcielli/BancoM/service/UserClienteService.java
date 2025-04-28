@@ -1,6 +1,7 @@
 package br.com.marcielli.BancoM.service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -90,6 +91,11 @@ public class UserClienteService {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Cliente update(Long id, UserCreateDTO cliente) {
+		
+		Optional<User> existingUser = userRepository.findByUsername(cliente.username());
+	    if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+	    	throw new ClienteNaoEncontradoException("Esse username já existe.");
+	    }
 
 		Cliente clienteExistente = clienteRepository.findById(id)
 				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
