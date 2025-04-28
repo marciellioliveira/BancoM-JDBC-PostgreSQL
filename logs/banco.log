@@ -76,9 +76,9 @@
 2025-04-28 10:26:49 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:26:49 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:26:49 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:01 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users/1
 2025-04-28 10:27:01 [39mDEBUG[0;39m
@@ -88,9 +88,9 @@
 2025-04-28 10:27:01 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users/1
 2025-04-28 10:27:01 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:01 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:03 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users/2
 2025-04-28 10:27:03 [39mDEBUG[0;39m
@@ -100,9 +100,9 @@
 2025-04-28 10:27:03 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users/2
 2025-04-28 10:27:03 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:03 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:14 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/1
 2025-04-28 10:27:14 [39mDEBUG[0;39m
@@ -112,9 +112,9 @@
 2025-04-28 10:27:14 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/1
 2025-04-28 10:27:14 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:14 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:18 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/2
 2025-04-28 10:27:18 [39mDEBUG[0;39m
@@ -124,9 +124,9 @@
 2025-04-28 10:27:18 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/2
 2025-04-28 10:27:18 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:18 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:27:18 [31mWARN [0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.h.e.jdbc.spi.SqlExceptionHelper[0;39m - SQL Error: 23505, SQLState: 23505
 2025-04-28 10:27:18 [1;31mERROR[0;39m
@@ -185,8 +185,8 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.BancoM.service.UserClienteService$$SpringCGLIB$$0.update(<generated>)
-	at br.com.marcielli.BancoM.controller.UserClienteController.atualizar(UserClienteController.java:98)
+	at br.com.marcielli.bancom.service.UserClienteService$$SpringCGLIB$$0.update(<generated>)
+	at br.com.marcielli.bancom.controller.UserClienteController.atualizar(UserClienteController.java:98)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -198,7 +198,7 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 	at org.springframework.security.config.annotation.method.configuration.DeferringMethodInterceptor.invoke(DeferringMethodInterceptor.java:44)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.BancoM.controller.UserClienteController$$SpringCGLIB$$0.atualizar(<generated>)
+	at br.com.marcielli.bancom.controller.UserClienteController$$SpringCGLIB$$0.atualizar(<generated>)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
@@ -608,9 +608,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:33:14 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:33:14 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:33:14 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:33:20 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/1
 2025-04-28 10:33:20 [39mDEBUG[0;39m
@@ -620,9 +620,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:33:20 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/1
 2025-04-28 10:33:20 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:33:20 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:33:23 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/2
 2025-04-28 10:33:23 [39mDEBUG[0;39m
@@ -632,9 +632,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:33:23 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/2
 2025-04-28 10:33:23 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:33:23 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:33:41 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
 2025-04-28 10:33:41 [39mDEBUG[0;39m
@@ -644,9 +644,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:33:41 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:33:41 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:33:41 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:33:58 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas
 2025-04-28 10:33:58 [39mDEBUG[0;39m
@@ -656,9 +656,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:33:58 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
 2025-04-28 10:33:58 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:33:58 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:34:06 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas
 2025-04-28 10:34:06 [39mDEBUG[0;39m
@@ -668,9 +668,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:34:06 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
 2025-04-28 10:34:06 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:34:06 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:34:11 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
 2025-04-28 10:34:11 [39mDEBUG[0;39m
@@ -680,9 +680,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:34:11 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:34:11 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:34:11 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:34:26 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/2/transferencia
 2025-04-28 10:34:26 [39mDEBUG[0;39m
@@ -692,9 +692,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:34:26 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/2/transferencia
 2025-04-28 10:34:26 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirTED(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaTedDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirTED(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaTedDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:34:26 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirTED(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaTedDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirTED(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaTedDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:34:37 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/1/deposito
 2025-04-28 10:34:37 [39mDEBUG[0;39m
@@ -704,9 +704,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:34:37 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/1/deposito
 2025-04-28 10:34:37 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:34:37 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:34:51 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
 2025-04-28 10:34:51 [39mDEBUG[0;39m
@@ -716,9 +716,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:34:51 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:34:51 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:34:51 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:35:23 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/2/transferencia
 2025-04-28 10:35:23 [39mDEBUG[0;39m
@@ -728,9 +728,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:35:23 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/2/transferencia
 2025-04-28 10:35:23 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirTED(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaTedDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirTED(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaTedDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:35:23 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirTED(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaTedDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirTED(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaTedDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:35:30 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/2/pix
 2025-04-28 10:35:30 [39mDEBUG[0;39m
@@ -740,9 +740,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:35:30 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/2/pix
 2025-04-28 10:35:30 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirPIX(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaPixDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirPIX(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaPixDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:35:30 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirPIX(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaPixDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirPIX(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaPixDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:35:39 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/2/saque
 2025-04-28 10:35:39 [39mDEBUG[0;39m
@@ -752,9 +752,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:35:39 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/2/saque
 2025-04-28 10:35:39 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirSAQUE(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaSaqueDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirSAQUE(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaSaqueDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:35:39 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirSAQUE(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaSaqueDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirSAQUE(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaSaqueDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:36:01 [34mINFO [0;39m
 				[36m[task-4][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação diária de rendimentos...
 2025-04-28 10:36:01 [34mINFO [0;39m
@@ -895,9 +895,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:56:59 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:56:59 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:56:59 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:18 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users/1
 2025-04-28 10:57:18 [39mDEBUG[0;39m
@@ -907,9 +907,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:57:18 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users/1
 2025-04-28 10:57:18 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:18 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:20 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users/2
 2025-04-28 10:57:20 [39mDEBUG[0;39m
@@ -919,9 +919,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:57:20 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users/2
 2025-04-28 10:57:20 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:20 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.getClienteById(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:31 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/1
 2025-04-28 10:57:31 [39mDEBUG[0;39m
@@ -931,9 +931,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:57:31 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/1
 2025-04-28 10:57:31 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:31 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:35 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/2
 2025-04-28 10:57:35 [39mDEBUG[0;39m
@@ -943,9 +943,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:57:35 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/2
 2025-04-28 10:57:35 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:35 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:42 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/2
 2025-04-28 10:57:42 [39mDEBUG[0;39m
@@ -955,9 +955,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:57:42 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/2
 2025-04-28 10:57:42 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:42 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.atualizar(java.lang.Long,br.com.marcielli.bancom.dto.security.UserCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:49 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
 2025-04-28 10:57:49 [39mDEBUG[0;39m
@@ -967,9 +967,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:57:49 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:57:49 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:57:49 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-9][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:58:06 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /users/2
 2025-04-28 10:58:06 [39mDEBUG[0;39m
@@ -979,9 +979,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:58:06 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /users/2
 2025-04-28 10:58:06 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.deletar(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.deletar(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:58:06 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.deletar(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-10][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.deletar(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:58:08 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
 2025-04-28 10:58:08 [39mDEBUG[0;39m
@@ -991,9 +991,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:58:08 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:58:08 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:58:08 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-1][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:58:37 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/1/deposito
 2025-04-28 10:58:37 [39mDEBUG[0;39m
@@ -1003,9 +1003,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:58:37 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/1/deposito
 2025-04-28 10:58:37 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:58:37 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-2][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:58:45 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
 2025-04-28 10:58:45 [39mDEBUG[0;39m
@@ -1015,9 +1015,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:58:45 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:58:45 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:58:45 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-3][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:58:52 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas
 2025-04-28 10:58:52 [39mDEBUG[0;39m
@@ -1027,9 +1027,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:58:52 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
 2025-04-28 10:58:52 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:58:52 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:58:59 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas
 2025-04-28 10:58:59 [39mDEBUG[0;39m
@@ -1039,9 +1039,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:58:59 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
 2025-04-28 10:58:59 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:58:59 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:59:05 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/1/deposito
 2025-04-28 10:59:05 [39mDEBUG[0;39m
@@ -1051,9 +1051,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:59:05 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/1/deposito
 2025-04-28 10:59:05 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:59:05 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:59:12 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas/2/deposito
 2025-04-28 10:59:12 [39mDEBUG[0;39m
@@ -1063,9 +1063,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:59:12 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas/2/deposito
 2025-04-28 10:59:12 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:59:13 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.BancoM.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.transferirDEPOSITO(java.lang.Long,br.com.marcielli.bancom.dto.security.UserContaDepositoDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 10:59:15 [34mINFO [0;39m
 				[36m[task-4][0;39m [35mb.c.m.B.s.AgendarAplicacaoTaxasContasService[0;39m - Iniciando aplicação diária de rendimentos...
 2025-04-28 10:59:15 [34mINFO [0;39m
@@ -1085,9 +1085,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 10:59:19 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 10:59:19 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 10:59:19 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 11:11:55 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
 2025-04-28 11:11:55 [34mINFO [0;39m
@@ -1166,9 +1166,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 11:12:15 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
 2025-04-28 11:12:15 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 11:12:15 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-4][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 11:12:18 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /contas
 2025-04-28 11:12:18 [39mDEBUG[0;39m
@@ -1178,9 +1178,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 11:12:18 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /contas
 2025-04-28 11:12:18 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 11:12:18 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserContaController.createConta(br.com.marcielli.BancoM.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserContaController]
+				[36m[http-nio-8086-exec-5][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserContaController.createConta(br.com.marcielli.bancom.dto.security.ContaCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserContaController]
 2025-04-28 11:12:23 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /users/2
 2025-04-28 11:12:23 [39mDEBUG[0;39m
@@ -1190,9 +1190,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 11:12:23 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /users/2
 2025-04-28 11:12:23 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.deletar(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.deletar(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 11:12:23 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.deletar(java.lang.Long); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-6][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.deletar(java.lang.Long); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 11:12:30 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
 2025-04-28 11:12:30 [39mDEBUG[0;39m
@@ -1202,9 +1202,9 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 11:12:30 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
 2025-04-28 11:12:30 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 11:12:30 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.BancoM.controller.UserClienteController]
+				[36m[http-nio-8086-exec-7][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserClienteController.listUsers(); target is of class [br.com.marcielli.bancom.controller.UserClienteController]
 2025-04-28 11:12:58 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /cartoes
 2025-04-28 11:12:58 [39mDEBUG[0;39m
@@ -1214,6 +1214,6 @@ update tb_users set cliente_id=?,password=?,user_ativo=?,username=? where id=? [
 2025-04-28 11:12:58 [39mDEBUG[0;39m
 				[36m[http-nio-8086-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /cartoes
 2025-04-28 11:12:58 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserCartaoController.createCartao(br.com.marcielli.BancoM.dto.security.CartaoCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserCartaoController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorizing method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserCartaoController.createCartao(br.com.marcielli.bancom.dto.security.CartaoCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserCartaoController]
 2025-04-28 11:12:58 [39mDEBUG[0;39m
-				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.BancoM.controller.UserCartaoController.createCartao(br.com.marcielli.BancoM.dto.security.CartaoCreateDTO); target is of class [br.com.marcielli.BancoM.controller.UserCartaoController]
+				[36m[http-nio-8086-exec-8][0;39m [35mo.s.s.a.m.AuthorizationManagerBeforeMethodInterceptor[0;39m - Authorized method invocation ReflectiveMethodInvocation: public org.springframework.http.ResponseEntity br.com.marcielli.bancom.controller.UserCartaoController.createCartao(br.com.marcielli.bancom.dto.security.CartaoCreateDTO); target is of class [br.com.marcielli.bancom.controller.UserCartaoController]
