@@ -1,0 +1,31 @@
+2025-04-24T18:39:29.106-03:00  INFO 17120 --- [main] b.c.marcielli.BancoM.BancoMApplication   : Starting BancoMApplication using Java 21.0.6 with PID 17120 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-24T18:39:29.108-03:00  INFO 17120 --- [main] b.c.marcielli.BancoM.BancoMApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-04-24T18:39:30.241-03:00  INFO 17120 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-04-24T18:39:30.242-03:00  INFO 17120 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-24T18:39:30.284-03:00  INFO 17120 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-04-24T18:39:30.409-03:00  INFO 17120 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-24T18:39:30.448-03:00  INFO 17120 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-24T18:39:30.472-03:00  INFO 17120 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-04-24T18:39:30.696-03:00  INFO 17120 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-04-24T18:39:30.822-03:00  INFO 17120 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-24T18:39:30.824-03:00  INFO 17120 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-04-24T18:39:30.863-03:00  INFO 17120 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-24T18:39:31.704-03:00  INFO 17120 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-24T18:39:32.281-03:00  WARN 17120 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-24T18:39:32.454-03:00 DEBUG 17120 --- [main] swordEncoderAuthenticationManagerBuilder : No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-24T18:39:32.557-03:00 DEBUG 17120 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-24T18:39:32.748-03:00  INFO 17120 --- [main] b.c.marcielli.BancoM.BancoMApplication   : Started BancoMApplication in 3.986 seconds (process running for 4.23)
+2025-04-24T18:41:54.713-03:00  INFO 17120 --- [http-nio-8086-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-24T18:41:54.726-03:00 DEBUG 17120 --- [http-nio-8086-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /users
+2025-04-24T18:41:54.731-03:00 DEBUG 17120 --- [http-nio-8086-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-04-24T18:41:54.733-03:00 DEBUG 17120 --- [http-nio-8086-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /users
+2025-04-24T18:42:06.882-03:00 DEBUG 17120 --- [http-nio-8086-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /login
+2025-04-24T18:42:06.882-03:00 DEBUG 17120 --- [http-nio-8086-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-04-24T18:42:06.883-03:00 DEBUG 17120 --- [http-nio-8086-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /login

@@ -5,7 +5,9 @@ public enum TipoTransferencia {
 	TED(1, "TED"),
 	PIX(2, "PIX"),
 	DEPOSITO(3, "DEPOSITO"),
-	SAQUE(4, "SAQUE");
+	SAQUE(4, "SAQUE"),
+	CARTAO_DEBITO(1, "DEBITO"),
+	CARTAO_CREDITO(1, "CREDITO");
 		
 	private final int cod;
 	private final String descricao;

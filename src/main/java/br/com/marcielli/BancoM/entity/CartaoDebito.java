@@ -1,55 +1,50 @@
 package br.com.marcielli.BancoM.entity;
 
-import br.com.marcielli.BancoM.enuns.CategoriaConta;
-import br.com.marcielli.BancoM.enuns.TipoCartao;
-import br.com.marcielli.BancoM.enuns.TipoConta;
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "idCartao")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class CartaoDebito extends Cartao {	
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
-	private float limiteDiarioTransacao;
-	private float totalGastoMes;
+	private BigDecimal limiteDiarioTransacao = new BigDecimal("600");
+	private BigDecimal totalGastoMes = BigDecimal.ZERO;
 	
-	public CartaoDebito() {}
-
-	public CartaoDebito(String numeroCartao, TipoConta tipoConta, CategoriaConta categoriaConta, TipoCartao tipoCartao,
-			boolean status, String senha, Conta conta) {
-		super(numeroCartao, tipoConta, categoriaConta, tipoCartao, status, senha, conta);
-
-		if(categoriaConta.equals(CategoriaConta.COMUM)) {
-			this.limiteDiarioTransacao = 1000f;			
-		}
+	public void atualizarTotalGastoMes(BigDecimal valor) {
+		if (this.totalGastoMes == null) {
+	        this.totalGastoMes = BigDecimal.ZERO; 
+	    }
+		this.totalGastoMes = this.totalGastoMes.add(valor);
 		
-		if(categoriaConta.equals(CategoriaConta.SUPER)) {
-			this.limiteDiarioTransacao = 5000f;
-		}
+	}
+
+	public void atualizarLimiteDiarioTransacao(BigDecimal valor) {	
+		if (this.limiteDiarioTransacao == null) {
+	        this.limiteDiarioTransacao = BigDecimal.ZERO; 
+	    }
 		
-		if(categoriaConta.equals(CategoriaConta.PREMIUM)) {
-			this.limiteDiarioTransacao = 10000f;	
-		}
+		this.limiteDiarioTransacao = this.limiteDiarioTransacao.subtract(valor);		
 	}
-
-	public float getLimiteDiarioTransacao() {
-		return limiteDiarioTransacao;
+	
+	public void alterarLimiteDiarioTransacao(BigDecimal valor) {
+		if (this.limiteDiarioTransacao == null) {
+	        this.limiteDiarioTransacao = BigDecimal.ZERO; 
+	    }
+		
+		this.limiteDiarioTransacao = valor;
 	}
-
-	public void setLimiteDiarioTransacao(float limiteDiarioTransacao) {
-		this.limiteDiarioTransacao = limiteDiarioTransacao;
-	}
-
-	public float getTotalGastoMes() {
-		return totalGastoMes;
-	}
-
-	public void setTotalGastoMes(float totalGastoMes) {
-		this.totalGastoMes = totalGastoMes;
-	}	
 }

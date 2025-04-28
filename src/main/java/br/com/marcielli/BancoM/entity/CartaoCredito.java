@@ -1,96 +1,48 @@
 package br.com.marcielli.BancoM.entity;
 
-import br.com.marcielli.BancoM.enuns.CategoriaConta;
-import br.com.marcielli.BancoM.enuns.TipoCartao;
-import br.com.marcielli.BancoM.enuns.TipoConta;
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "idCartao")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class CartaoCredito extends Cartao {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	private float limiteCreditoPreAprovado;
+	private BigDecimal limiteCreditoPreAprovado = new BigDecimal("600");
 	
-	private float taxaUtilizacao;
+	private BigDecimal taxaUtilizacao;
 
-	private float taxaSeguroViagem;
+	private BigDecimal taxaSeguroViagem;
 
-	private float totalGastoMesCredito;
-	
-	public CartaoCredito() {}	
+	private BigDecimal totalGastoMesCredito = BigDecimal.ZERO;
 	
 	
-	public CartaoCredito(String numeroCartao, TipoConta tipoConta, CategoriaConta categoriaConta, TipoCartao tipoCartao,
-			boolean status, String senha, Conta conta) {
-		super(numeroCartao, tipoConta, categoriaConta, tipoCartao, status, senha, conta);	
-	
-		if(categoriaConta.equals(CategoriaConta.COMUM)) {
-			this.limiteCreditoPreAprovado = 1000f;		
-		}
+	public void atualizarTotalGastoMes(BigDecimal valor) {		
 		
-		if(categoriaConta.equals(CategoriaConta.SUPER)) {
-			this.limiteCreditoPreAprovado = 5000f;
-		}
+		this.totalGastoMesCredito = totalGastoMesCredito.add(valor);		
 		
-		if(categoriaConta.equals(CategoriaConta.PREMIUM)) {
-			this.limiteCreditoPreAprovado = 10000f;		
-		}		
 	}
 	
-	public CartaoCredito(String numeroCartao, TipoCartao tipoCartao, String senha, Conta conta) {
-		super(numeroCartao,tipoCartao,senha, conta);	
-	
-		if(conta.getCategoriaConta().equals(CategoriaConta.COMUM)) {
-			this.limiteCreditoPreAprovado = 1000f;		
-		}
+	public void atualizarLimiteCreditoPreAprovado(BigDecimal valor) {
 		
-		if(conta.getCategoriaConta().equals(CategoriaConta.SUPER)) {
-			this.limiteCreditoPreAprovado = 5000f;
-		}
-		
-		if(conta.getCategoriaConta().equals(CategoriaConta.PREMIUM)) {
-			this.limiteCreditoPreAprovado = 10000f;		
-		}		
+		this.limiteCreditoPreAprovado = limiteCreditoPreAprovado.subtract(valor);		
 	}
 	
-	
-
-	public float getLimiteCreditoPreAprovado() {
-		return limiteCreditoPreAprovado;
-	}
-
-	public void setLimiteCreditoPreAprovado(float limiteCreditoPreAprovado) {
-		this.limiteCreditoPreAprovado = limiteCreditoPreAprovado;
-	}
-
-	public float getTaxaUtilizacao() {
-		return taxaUtilizacao;
-	}
-
-	public void setTaxaUtilizacao(float taxaUtilizacao) {
-		this.taxaUtilizacao = taxaUtilizacao;
-	}
-
-	public float getTaxaSeguroViagem() {
-		return taxaSeguroViagem;
-	}
-
-	public void setTaxaSeguroViagem(float taxaSeguroViagem) {
-		this.taxaSeguroViagem = taxaSeguroViagem;
-	}
-
-	public float getTotalGastoMesCredito() {
-		return totalGastoMesCredito;
-	}
-
-	public void setTotalGastoMesCredito(float totalGastoMesCredito) {
-		this.totalGastoMesCredito = totalGastoMesCredito;
+	public void alterarLimiteCreditoPreAprovado(BigDecimal valor) {
+		this.limiteCreditoPreAprovado = valor;
 	}
 
 }
