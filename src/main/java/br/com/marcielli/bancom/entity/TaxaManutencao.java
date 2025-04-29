@@ -9,11 +9,6 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import ch.obermuhlner.math.big.BigDecimalMath;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,7 +16,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,13 +26,7 @@ public class TaxaManutencao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Version
-	private Long version;
-
 	private TipoConta tipoConta;
 	private CategoriaConta categoria;
 

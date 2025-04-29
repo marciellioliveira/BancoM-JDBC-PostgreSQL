@@ -15,7 +15,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@JsonInclude(JsonInclude.Include.NON_NULL) 
 public class UserClienteResponseDTO {
 	
 	private Long id;

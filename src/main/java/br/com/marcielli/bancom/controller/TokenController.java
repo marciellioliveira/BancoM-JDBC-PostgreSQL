@@ -3,6 +3,7 @@ package br.com.marcielli.bancom.controller;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+import br.com.marcielli.bancom.repository.UserRepositoryJDBC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.bancom.dto.LoginRequestDTO;
 import br.com.marcielli.bancom.dto.LoginResponseDTO;
-import br.com.marcielli.bancom.repository.UserRepository;
 import br.com.marcielli.bancom.service.RedisTokenBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -25,14 +25,14 @@ import jakarta.servlet.http.HttpServletRequest;
 public class TokenController { // Passo 2
 
 	private final JwtEncoder jwtEncoder;
-	private final UserRepository userRepository;
+	private final UserRepositoryJDBC userRepositoryJDBC;
 	private BCryptPasswordEncoder passwordEncoder;
 	private final RedisTokenBlacklistService tokenBlacklistService;
 
-	public TokenController(JwtEncoder jwtEncoder, UserRepository userRepository,
+	public TokenController(JwtEncoder jwtEncoder, UserRepositoryJDBC userRepositoryJDBC,
 			BCryptPasswordEncoder bCryptPasswordEncoder, RedisTokenBlacklistService tokenBlacklistService) {
 		this.jwtEncoder = jwtEncoder;
-		this.userRepository = userRepository;
+		this.userRepositoryJDBC = userRepositoryJDBC;
 		this.passwordEncoder = bCryptPasswordEncoder;
 		this.tokenBlacklistService = tokenBlacklistService;
 	}
@@ -46,7 +46,7 @@ public class TokenController { // Passo 2
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
 
-		var user = userRepository.findByUsername(loginRequest.username())
+		var user = userRepositoryJDBC.findByUsername(loginRequest.username())
 				.orElseThrow(() -> new BadCredentialsException("Credenciais inválidas"));
 
 		if (!user.isLoginCorrect(loginRequest, passwordEncoder)) {

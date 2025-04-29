@@ -16,11 +16,8 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-//@ToString(exclude = {"tokens", "clientes"})
 @EqualsAndHashCode
 public class User {
-	private static final long serialVersionUID = 1L;
 
 	private Integer id;
 	private String username;

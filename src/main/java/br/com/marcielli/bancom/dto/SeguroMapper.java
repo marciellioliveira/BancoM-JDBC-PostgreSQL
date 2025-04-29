@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.Seguro;
 
 @Component

@@ -3,16 +3,15 @@ package br.com.marcielli.bancom.entity;
 import java.io.Serializable;
 import java.util.List;
 
-import br.com.marcielli.bancom.annotation.VersionControl;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.Transient;
 
 
 @Setter
@@ -20,19 +19,23 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-//@ToString(exclude = {"contas", "user", "endereco"})
 @EqualsAndHashCode
 public class Cliente implements Serializable {
 
 	private Long id;
-
-	//private Long version;
-
+	@JsonIgnore
 	private String nome;
 	private Long cpf;
 	private boolean clienteAtivo = true;
-	private Endereco endereco;
-	private List<Conta> contas;
-    private User user;
 
+	@JsonManagedReference
+	private Endereco endereco;
+
+//	@Transient //Retirar depois (Ta aqui apenas para ver se o user está funcionando)
+	@JsonManagedReference
+	private List<Conta> contas;
+
+//	@Transient //Retirar depois (Ta aqui apenas para ver se o user está funcionando)
+	@JsonIgnore
+    private User user;
 }

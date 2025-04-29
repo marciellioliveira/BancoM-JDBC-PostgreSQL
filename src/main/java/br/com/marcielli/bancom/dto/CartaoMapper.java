@@ -12,8 +12,11 @@ import br.com.marcielli.bancom.entity.Cartao;
 @Component
 public class CartaoMapper {
 
-	@Autowired
 	private ModelMapper mapper;
+
+	public CartaoMapper(ModelMapper mapper) {
+		this.mapper = mapper;
+	}
 
 	public Cartao toEntity(CartaoCreateDTO dto) {
 		Cartao entity = mapper.map(dto, Cartao.class);

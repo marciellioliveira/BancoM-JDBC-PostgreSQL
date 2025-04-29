@@ -12,15 +12,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoTransferencia;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,7 +19,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,14 +28,8 @@ import lombok.ToString;
 public class Transferencia implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Version
-	private Long version; //Caso precise implementar devolução de transferência porque transferiu errado.
-	
 	@JsonInclude
 	private Long idClienteOrigem;	
 	private Long idClienteDestino;
@@ -64,14 +48,10 @@ public class Transferencia implements Serializable {
 	private String codigoOperacao;
 	
 	private TipoCartao tipoCartao;
-	
-	@ManyToOne(cascade = {CascadeType.ALL})
+
 	@JsonIgnore
-	@Transient //Remover informação do BD
 	private Conta conta;
-	
-	@ManyToOne
-	@JoinColumn(name = "faturaId")
+
 	@JsonBackReference
 	@ToString.Exclude
 	private Fatura fatura;

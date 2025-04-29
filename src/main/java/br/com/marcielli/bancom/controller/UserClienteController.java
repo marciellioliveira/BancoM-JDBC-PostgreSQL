@@ -2,6 +2,7 @@ package br.com.marcielli.bancom.controller;
 
 import java.util.List;
 
+import br.com.marcielli.bancom.repository.UserRepositoryJDBC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,23 +19,22 @@ import br.com.marcielli.bancom.dto.security.UserCreateDTO;
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.User;
-import br.com.marcielli.bancom.repository.UserRepository;
 import br.com.marcielli.bancom.service.UserClienteService;
 
 @RestController
 public class UserClienteController {
 
-	private final UserRepository userRepository;
+	private final UserRepositoryJDBC userRepositoryJDBC;
 	private final UserClienteService clienteService;
 
-	public UserClienteController(UserClienteService clienteService, UserRepository userRepository) {
+	public UserClienteController(UserClienteService clienteService, UserRepositoryJDBC userRepositoryJDBC) {
 		this.clienteService = clienteService;
-		this.userRepository = userRepository;
+		this.userRepositoryJDBC = userRepositoryJDBC;
 	}
 
 	@PostMapping("/users")
 	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto, JwtAuthenticationToken token) {
-
+		System.out.println("teste");
 		User clienteAdicionado = clienteService.save(dto, token);
 
 		if (clienteAdicionado != null) {
@@ -47,7 +47,7 @@ public class UserClienteController {
 	@GetMapping("/users")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	public ResponseEntity<List<User>> listUsers() {
-		var users = userRepository.findAll();
+		var users = userRepositoryJDBC.findAll();
 		return ResponseEntity.ok(users);
 	}
 

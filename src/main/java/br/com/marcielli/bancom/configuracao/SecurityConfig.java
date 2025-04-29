@@ -63,7 +63,6 @@ public class SecurityConfig { // Passo 1
 	    http
 	    	.csrf(csrf -> csrf.disable())
 	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/h2-console/**").permitAll()
 	            .requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
 	            .anyRequest().authenticated()
 	        )

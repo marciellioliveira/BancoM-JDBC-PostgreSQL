@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
+import br.com.marcielli.bancom.repository.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.UserCreateDTO;
@@ -20,28 +20,25 @@ import br.com.marcielli.bancom.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
-import br.com.marcielli.bancom.repository.ClienteRepository;
-import br.com.marcielli.bancom.repository.RoleRepository;
-import br.com.marcielli.bancom.repository.UserRepository;
 import br.com.marcielli.bancom.validation.ValidadorCPF;
 
 @Service
 public class UserClienteService {
 
-	private final UserRepository userRepository;
-	private final ClienteRepository clienteRepository;
-	private final RoleRepository roleRepository;
+	private final UserRepositoryJDBC userRepositoryJDBC;
+	private final ClienteRepositoryJDBC clienteRepositoryJDBC;
+	private final RoleRepositoryJDBC roleRepositoryJDBC;
 	private final BCryptPasswordEncoder passwordEncoder;
 
-	public UserClienteService(UserRepository userRepository, RoleRepository roleRepository,
-			BCryptPasswordEncoder passwordEncoder, ClienteRepository clienteRepository) {
-		this.userRepository = userRepository;
-		this.roleRepository = roleRepository;
+	public UserClienteService(UserRepositoryJDBC userRepositoryJDBC, RoleRepositoryJDBC roleRepositoryJDBC,
+			BCryptPasswordEncoder passwordEncoder, ClienteRepositoryJDBC clienteRepositoryJDBC) {
+		this.userRepositoryJDBC = userRepositoryJDBC;
+		this.roleRepositoryJDBC = roleRepositoryJDBC;
 		this.passwordEncoder = passwordEncoder;
-		this.clienteRepository = clienteRepository;
+		this.clienteRepositoryJDBC = clienteRepositoryJDBC;
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public User save(UserCreateDTO cliente,  JwtAuthenticationToken token) {
 
 		if (cliente.cpf() != null) {
@@ -51,7 +48,7 @@ public class UserClienteService {
 			}
 		}
 
-		var userFromDb = userRepository.findByUsername(cliente.username());
+		var userFromDb = userRepositoryJDBC.findByUsername(cliente.username());
 		if (userFromDb.isPresent()) {
 			throw new ClienteEncontradoException("Usuário já existe.");
 		}
@@ -60,7 +57,7 @@ public class UserClienteService {
 		user.setUsername(cliente.username());
 		user.setPassword(passwordEncoder.encode(cliente.password()));
 
-		var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
+		var basicRole = roleRepositoryJDBC.findByName(Role.Values.BASIC.name());
 		user.setRoles(Set.of(basicRole));
 
 		Cliente client = new Cliente();
@@ -80,24 +77,24 @@ public class UserClienteService {
 		client.setUser(user);
 		user.setCliente(client);
 
-		return userRepository.save(user);
+		return userRepositoryJDBC.save(user);
 	}
 
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public Cliente getClienteById(Long id) {
-		return clienteRepository.findById(id).orElse(null);
+		return clienteRepositoryJDBC.findById(id).orElse(null);
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public Cliente update(Long id, UserCreateDTO cliente) {
 		
-		Optional<User> existingUser = userRepository.findByUsername(cliente.username());
+		Optional<User> existingUser = userRepositoryJDBC.findByUsername(cliente.username());
 	    if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
 	    	throw new ClienteNaoEncontradoException("Esse username já existe.");
 	    }
 
-		Cliente clienteExistente = clienteRepository.findById(id)
+		Cliente clienteExistente = clienteRepositoryJDBC.findById(id)
 				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 
 		if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
@@ -130,8 +127,8 @@ public class UserClienteService {
 			clienteExistente.setUser(user);
 		}
 
-		userRepository.save(user);
-		clienteRepository.save(clienteExistente);
+		userRepositoryJDBC.save(user);
+		clienteRepositoryJDBC.save(clienteExistente);
 
 		return clienteExistente;
 	}
@@ -139,7 +136,7 @@ public class UserClienteService {
 	@Transactional
 	public boolean delete(Long id) {
 		
-		Cliente clienteExistente = clienteRepository.findById(id)
+		Cliente clienteExistente = clienteRepositoryJDBC.findById(id)
 				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 
 		if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
@@ -155,9 +152,8 @@ public class UserClienteService {
 		clienteExistente.setClienteAtivo(false);
 		clienteExistente.getUser().setUserAtivo(false);
 
-		clienteRepository.save(clienteExistente);
+		clienteRepositoryJDBC.save(clienteExistente);
 
 		return true;
 	}
-
 }

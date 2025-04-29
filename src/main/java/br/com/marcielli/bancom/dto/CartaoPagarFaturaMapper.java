@@ -1,8 +1,10 @@
-package br.com.marcielli.bancom.dto;
+package br.com.marcielli.BancoM.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.com.marcielli.bancom.dto.CartaoPagarFaturaDTO;
+import br.com.marcielli.bancom.dto.CartaoPagarFaturaResponseDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,9 +13,12 @@ import br.com.marcielli.bancom.entity.Cartao;
 
 @Component
 public class CartaoPagarFaturaMapper {
-	
-	@Autowired
+
 	private ModelMapper mapper;
+
+	public CartaoPagarFaturaMapper(ModelMapper mapper) {
+		this.mapper = mapper;
+	}
 
 	public Cartao toEntity(CartaoPagarFaturaDTO dto) {
 		Cartao entity = mapper.map(dto, Cartao.class);
