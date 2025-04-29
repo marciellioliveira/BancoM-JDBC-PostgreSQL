@@ -1,5 +1,8 @@
 package br.com.marcielli.bancom.validation;
 
+import org.springframework.context.annotation.Profile;
+
+@Profile("cliente")
 public class ValidadorCPF {
 
 	public static boolean validar(String cpf) {

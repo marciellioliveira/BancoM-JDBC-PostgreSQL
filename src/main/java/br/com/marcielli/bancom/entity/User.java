@@ -2,6 +2,7 @@ package br.com.marcielli.bancom.entity;
 
 import java.util.Set;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import br.com.marcielli.bancom.dto.LoginRequestDTO;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Profile("cliente")
 @Getter
 @Setter
 @NoArgsConstructor

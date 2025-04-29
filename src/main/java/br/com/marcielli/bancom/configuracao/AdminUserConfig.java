@@ -11,6 +11,7 @@ import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.transaction.annotation.Transactional;

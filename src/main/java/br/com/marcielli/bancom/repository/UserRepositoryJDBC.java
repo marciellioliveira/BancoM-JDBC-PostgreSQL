@@ -5,12 +5,14 @@ import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.repository.mappers.UserRowMapper;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Profile("cliente")
 @Repository
 public class UserRepositoryJDBC {
 

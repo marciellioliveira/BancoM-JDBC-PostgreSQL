@@ -3,6 +3,7 @@ package br.com.marcielli.bancom.controller;
 import java.util.List;
 
 import br.com.marcielli.bancom.repository.UserRepositoryJDBC;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +35,7 @@ public class UserClienteController {
 
 	@PostMapping("/users")
 	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto, JwtAuthenticationToken token) {
-		System.out.println("teste");
+
 		User clienteAdicionado = clienteService.save(dto, token);
 
 		if (clienteAdicionado != null) {
@@ -53,9 +54,11 @@ public class UserClienteController {
 
 	@GetMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> getClienteById(@PathVariable("id") Long id) { //, JwtAuthenticationToken token
+	public ResponseEntity<Object> getClienteById(@PathVariable("id") Long id) { //, JwtAuthenticationToken token
 
 		Cliente clienteUnico = clienteService.getClienteById(id);
+
+		System.out.println("teste "+clienteUnico);
 
 		if (clienteUnico == null || clienteUnico.getUser() == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
@@ -84,7 +87,7 @@ public class UserClienteController {
 
 	@PutMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
+	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
 		
 //		
 //		if(token.getAuthorities().stream()
@@ -125,7 +128,7 @@ public class UserClienteController {
 
 	@DeleteMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
+	public ResponseEntity<Object> deletar(@PathVariable("id") Long id) {
 
 		if (id == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");

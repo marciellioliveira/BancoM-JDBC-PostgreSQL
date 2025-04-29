@@ -1,8 +1,10 @@
 package br.com.marcielli.bancom.service;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
+@Profile("cliente")
 public class JwtService {
 	
 	private final JwtDecoder jwtDecoder;

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import br.com.marcielli.bancom.repository.*;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.bancom.validation.ValidadorCPF;
 
+@Profile("cliente")
 @Service
 public class UserClienteService {
 

@@ -2,6 +2,7 @@ package br.com.marcielli.bancom.filter;
 
 import java.io.IOException;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.marcielli.bancom.service.RedisTokenBlacklistService;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
+
 
     private final RedisTokenBlacklistService tokenBlacklistService;
 

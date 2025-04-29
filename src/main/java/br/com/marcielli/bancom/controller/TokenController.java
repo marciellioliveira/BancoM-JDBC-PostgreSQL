@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.stream.Collectors;
 
 import br.com.marcielli.bancom.repository.UserRepositoryJDBC;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

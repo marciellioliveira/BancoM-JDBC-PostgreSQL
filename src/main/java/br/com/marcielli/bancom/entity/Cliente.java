@@ -11,9 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Transient;
+import org.springframework.context.annotation.Profile;
 
-
+@Profile("cliente")
 @Setter
 @Getter
 @NoArgsConstructor

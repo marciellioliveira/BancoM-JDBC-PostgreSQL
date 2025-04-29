@@ -2,11 +2,12 @@ package br.com.marcielli.bancom.repository;
 
 import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.repository.mappers.RoleRowMapper;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Profile("cliente")
 @Repository
 public class RoleRepositoryJDBC {
 
