@@ -18,11 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 public class AdminUserConfig implements CommandLineRunner {
 
-	private RoleRepositoryJDBC roleRepositoryJDBC;
+	private final RoleRepositoryJDBC roleRepositoryJDBC;
 
-	private UserRepositoryJDBC userRepositoryJDBC;
+	private final UserRepositoryJDBC userRepositoryJDBC;
 
-	private BCryptPasswordEncoder passwordEncoder;
+	private final BCryptPasswordEncoder passwordEncoder;
 
 	private final ClienteRepositoryJDBC clienteRepositoryJDBC;
 

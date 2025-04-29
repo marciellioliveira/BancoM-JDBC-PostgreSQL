@@ -10439,3 +10439,897 @@ Caused by: org.postgresql.util.PSQLException: ERRO: coluna "user_ativo" da rela√
 				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
 2025-04-29 09:48:39 [34mINFO [0;39m
 				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 09:48:42 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 09:48:42 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 21000 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 09:48:42 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 09:48:42 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 09:48:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8080"]
+2025-04-29 09:48:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 09:48:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 09:48:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 09:48:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 09:48:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7a04f730
+2025-04-29 09:48:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 09:48:44 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 09:48:44 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 09:48:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8080"]
+2025-04-29 09:48:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.759 seconds (process running for 3.014)
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [12345678901], value class [java.lang.Long], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 2, parameter value [$2a$10$TrCtd5GZt1QNDQ/viuc33uUaYxhM/r0ZRVqTgQQssj8C0ngtjacTy], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 3, parameter value [true], value class [java.lang.Boolean], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [1], value class [java.lang.Long], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 2, parameter value [1], value class [java.lang.Long], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [Admin], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 2, parameter value [12345678901], value class [java.lang.Long], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 3, parameter value [true], value class [java.lang.Boolean], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 4, parameter value [1], value class [java.lang.Long], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [Rua dos Devs], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 2, parameter value [42], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 3, parameter value [Jardim Spring Boot], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 4, parameter value [S√£o Paulo], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 5, parameter value [SP], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 6, parameter value [Apto 101], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 7, parameter value [12345-678], value class [java.lang.String], SQL type unknown
+2025-04-29 09:48:44 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 8, parameter value [1], value class [java.lang.Long], SQL type unknown
+2025-04-29 09:56:14 [34mINFO [0;39m
+				[36m[http-nio-8080-exec-1][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-29 09:56:14 [39mDEBUG[0;39m
+				[36m[http-nio-8080-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /
+2025-04-29 09:56:14 [39mDEBUG[0;39m
+				[36m[http-nio-8080-exec-1][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-29 09:57:25 [39mDEBUG[0;39m
+				[36m[http-nio-8080-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /
+2025-04-29 09:57:25 [39mDEBUG[0;39m
+				[36m[http-nio-8080-exec-4][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-29 09:57:35 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 09:57:35 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 09:57:42 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 09:57:42 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 9192 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 09:57:42 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 09:57:42 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 09:57:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8081"]
+2025-04-29 09:57:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 09:57:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 09:57:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 09:57:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 09:57:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@11c88cca
+2025-04-29 09:57:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 09:57:44 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 09:57:44 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 09:57:45 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8081"]
+2025-04-29 09:57:45 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 3.038 seconds (process running for 3.302)
+2025-04-29 09:57:45 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 09:57:45 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 09:57:45 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 09:57:49 [34mINFO [0;39m
+				[36m[http-nio-8081-exec-1][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-29 09:57:49 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /
+2025-04-29 09:57:49 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-1][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-29 10:02:40 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:02:40 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:03:35 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:03:35 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 2308 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:03:35 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 10:03:35 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:03:36 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:03:36 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 10:03:36 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 10:03:36 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 10:03:36 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:03:37 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@11c88cca
+2025-04-29 10:03:37 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:03:37 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:03:37 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:03:37 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:03:38 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.7 seconds (process running for 2.96)
+2025-04-29 10:03:38 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 10:03:38 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 10:03:38 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 10:04:50 [34mINFO [0;39m
+				[36m[http-nio-8081-exec-1][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-29 10:04:50 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /
+2025-04-29 10:04:50 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-1][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-29 10:04:52 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /
+2025-04-29 10:04:52 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-2][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-29 10:05:03 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /
+2025-04-29 10:05:03 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-3][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-29 10:05:17 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /
+2025-04-29 10:05:17 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-4][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-29 10:05:21 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /
+2025-04-29 10:05:21 [39mDEBUG[0;39m
+				[36m[http-nio-8081-exec-5][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-04-29 10:07:20 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:07:20 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:07:28 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:07:28 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 14756 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:07:28 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 10:07:28 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - The following 1 profile is active: "develop"
+2025-04-29 10:07:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:07:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 10:07:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 10:07:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 10:07:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:07:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@582e9152
+2025-04-29 10:07:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:07:30 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:07:30 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:07:30 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:07:30 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.611 seconds (process running for 2.885)
+2025-04-29 10:07:30 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 10:07:30 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 10:07:30 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 10:18:04 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:18:04 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:18:11 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:18:11 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 22040 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:18:11 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 10:18:11 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:18:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:18:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 10:18:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 10:18:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 10:18:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:18:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@11c88cca
+2025-04-29 10:18:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:18:13 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:18:13 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:18:13 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:18:13 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.828 seconds (process running for 3.088)
+2025-04-29 10:18:13 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 10:18:13 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 10:18:13 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 10:19:24 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:19:24 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 21836 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:19:24 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 10:19:24 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:19:24 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:19:24 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 10:19:24 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 10:19:25 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 10:19:25 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:19:25 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4a216eb4
+2025-04-29 10:19:25 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:19:25 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:19:25 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:19:25 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:19:25 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2025-04-29 10:19:25 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:19:26 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:19:26 [1;31mERROR[0;39m
+				[36m[main][0;39m [35mo.s.b.d.LoggingFailureAnalysisReporter[0;39m - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8081 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8081 or configure this application to listen on another port.
+
+2025-04-29 10:20:55 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:20:55 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 7728 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:20:55 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 10:20:55 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:20:56 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:20:56 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 10:20:56 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 10:20:56 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 10:20:56 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:20:57 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7a04f730
+2025-04-29 10:20:57 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:20:57 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:20:57 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:20:57 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:20:57 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2025-04-29 10:20:57 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:20:57 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:20:57 [1;31mERROR[0;39m
+				[36m[main][0;39m [35mo.s.b.d.LoggingFailureAnalysisReporter[0;39m - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8081 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8081 or configure this application to listen on another port.
+
+2025-04-29 10:22:02 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:22:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 15628 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:22:02 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 10:22:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - The following 1 profile is active: "develop"
+2025-04-29 10:22:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:22:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 10:22:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 10:22:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 10:22:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:22:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@582e9152
+2025-04-29 10:22:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:22:04 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:22:04 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:22:04 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:22:04 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2025-04-29 10:22:04 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:22:04 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:22:04 [1;31mERROR[0;39m
+				[36m[main][0;39m [35mo.s.b.d.LoggingFailureAnalysisReporter[0;39m - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8081 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8081 or configure this application to listen on another port.
+
+2025-04-29 10:28:55 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:28:55 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:29:01 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:29:01 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 22308 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:29:01 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 10:29:01 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:29:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:29:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-04-29 10:29:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-29 10:29:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-04-29 10:29:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:29:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@11c88cca
+2025-04-29 10:29:02 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:29:03 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:29:03 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:29:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8081"]
+2025-04-29 10:29:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.629 seconds (process running for 2.888)
+2025-04-29 10:29:03 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 10:29:03 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 10:29:03 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 10:29:38 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:29:38 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Starting BancoMApplicationTests using Java 21.0.6 with PID 22336 (started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:29:38 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Running with Spring Boot v3.4.5, Spring v6.2.6
+2025-04-29 10:29:38 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:29:39 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:29:39 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2d206a71
+2025-04-29 10:29:39 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:29:39 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:29:40 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:29:40 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Started BancoMApplicationTests in 2.553 seconds (process running for 3.313)
+2025-04-29 10:29:40 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 10:29:40 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 10:29:40 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 10:29:41 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:29:41 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:30:54 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:30:54 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:31:03 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:31:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Starting BancoMApplicationTests using Java 21.0.6 with PID 21104 (started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:31:03 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-29 10:31:03 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:31:04 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 10:31:04 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1c62c3fd
+2025-04-29 10:31:04 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 10:31:05 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 10:31:05 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 10:31:05 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Started BancoMApplicationTests in 2.462 seconds (process running for 3.346)
+2025-04-29 10:31:05 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 10:31:05 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 10:31:05 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 10:31:06 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 10:31:06 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
+2025-04-29 10:34:16 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:34:16 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Starting BancoMApplicationTests using Java 21.0.6 with PID 20868 (started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:34:16 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Running with Spring Boot v3.4.5, Spring v6.2.6
+2025-04-29 10:34:16 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:34:16 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.w.c.s.GenericWebApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: java.lang.IllegalStateException: Error processing condition on org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration.propertySourcesPlaceholderConfigurer
+2025-04-29 10:34:16 [1;31mERROR[0;39m
+				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
+java.lang.IllegalStateException: Error processing condition on org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration.propertySourcesPlaceholderConfigurer
+	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:60)
+	at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:99)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitionsForBeanMethod(ConfigurationClassBeanDefinitionReader.java:184)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitionsForConfigurationClass(ConfigurationClassBeanDefinitionReader.java:145)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitions(ConfigurationClassBeanDefinitionReader.java:121)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:430)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:290)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:791)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:609)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:144)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1462)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:563)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:144)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:110)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:200)
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:139)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:159)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$12(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$7(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$6(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$1(TestMethodTestDescriptor.java:105)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:104)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:68)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:128)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:128)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:63)
+	at com.intellij.junit5.JUnit5IdeaTestRunner.startRunnerWithArgs(JUnit5IdeaTestRunner.java:57)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater$1.execute(IdeaTestRunner.java:38)
+	at com.intellij.rt.execution.junit.TestsRepeater.repeat(TestsRepeater.java:11)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)
+	at com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:232)
+	at com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:55)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [br.com.marcielli.bancom.configuracao.SecurityConfig] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@76ed5528]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithMethods(ReflectionUtils.java:360)
+	at org.springframework.util.ReflectionUtils.getUniqueDeclaredMethods(ReflectionUtils.java:417)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.lambda$getTypeForFactoryMethod$1(AbstractAutowireCapableBeanFactory.java:757)
+	at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1708)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getTypeForFactoryMethod(AbstractAutowireCapableBeanFactory.java:756)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineTargetType(AbstractAutowireCapableBeanFactory.java:689)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.predictBeanType(AbstractAutowireCapableBeanFactory.java:660)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.isFactoryBean(AbstractBeanFactory.java:1716)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doGetBeanNamesForType(DefaultListableBeanFactory.java:639)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanNamesForType(DefaultListableBeanFactory.java:611)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.collectBeanDefinitionsForType(OnBeanCondition.java:332)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getBeanDefinitionsForType(OnBeanCondition.java:324)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getBeanDefinitionsForType(OnBeanCondition.java:314)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getMatchingBeans(OnBeanCondition.java:213)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.evaluateConditionalOnMissingBean(OnBeanCondition.java:196)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getMatchOutcome(OnBeanCondition.java:143)
+	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:47)
+	... 96 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: org/springframework/security/oauth2/jwt/JwtDecoder
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 113 common frames omitted
+Caused by: java.lang.ClassNotFoundException: org.springframework.security.oauth2.jwt.JwtDecoder
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+	... 117 common frames omitted
+2025-04-29 10:34:16 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.test.context.TestContextManager[0;39m - Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [br.com.marcielli.bancom.BancoMApplicationTests@17947e6d]
+java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@28f9fedd testClass = br.com.marcielli.bancom.BancoMApplicationTests, locations = [], classes = [br.com.marcielli.bancom.BancoMApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@7d446ed1, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@1b75c2e3, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@2421cc4, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@31ff43be, org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@67d18ed7, org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@7a362b6b, org.springframework.test.context.support.DynamicPropertiesContextCustomizer@0, org.springframework.boot.test.context.SpringBootTestAnnotation@9902db2f], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:180)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:200)
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:139)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:159)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$12(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$7(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$6(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$1(TestMethodTestDescriptor.java:105)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:104)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:68)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:128)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:128)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:63)
+	at com.intellij.junit5.JUnit5IdeaTestRunner.startRunnerWithArgs(JUnit5IdeaTestRunner.java:57)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater$1.execute(IdeaTestRunner.java:38)
+	at com.intellij.rt.execution.junit.TestsRepeater.repeat(TestsRepeater.java:11)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)
+	at com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:232)
+	at com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:55)
+Caused by: java.lang.IllegalStateException: Error processing condition on org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration.propertySourcesPlaceholderConfigurer
+	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:60)
+	at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:99)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitionsForBeanMethod(ConfigurationClassBeanDefinitionReader.java:184)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitionsForConfigurationClass(ConfigurationClassBeanDefinitionReader.java:145)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitions(ConfigurationClassBeanDefinitionReader.java:121)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:430)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:290)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:791)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:609)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:144)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1462)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:563)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:144)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:110)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	... 74 common frames omitted
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [br.com.marcielli.bancom.configuracao.SecurityConfig] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@76ed5528]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithMethods(ReflectionUtils.java:360)
+	at org.springframework.util.ReflectionUtils.getUniqueDeclaredMethods(ReflectionUtils.java:417)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.lambda$getTypeForFactoryMethod$1(AbstractAutowireCapableBeanFactory.java:757)
+	at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1708)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getTypeForFactoryMethod(AbstractAutowireCapableBeanFactory.java:756)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineTargetType(AbstractAutowireCapableBeanFactory.java:689)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.predictBeanType(AbstractAutowireCapableBeanFactory.java:660)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.isFactoryBean(AbstractBeanFactory.java:1716)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doGetBeanNamesForType(DefaultListableBeanFactory.java:639)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanNamesForType(DefaultListableBeanFactory.java:611)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.collectBeanDefinitionsForType(OnBeanCondition.java:332)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getBeanDefinitionsForType(OnBeanCondition.java:324)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getBeanDefinitionsForType(OnBeanCondition.java:314)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getMatchingBeans(OnBeanCondition.java:213)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.evaluateConditionalOnMissingBean(OnBeanCondition.java:196)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getMatchOutcome(OnBeanCondition.java:143)
+	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:47)
+	... 96 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: org/springframework/security/oauth2/jwt/JwtDecoder
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 113 common frames omitted
+Caused by: java.lang.ClassNotFoundException: org.springframework.security.oauth2.jwt.JwtDecoder
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+	... 117 common frames omitted
+2025-04-29 10:36:29 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 10:36:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 21076 (C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 10:36:29 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Running with Spring Boot v3.4.5, Spring v6.2.6
+2025-04-29 10:36:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 10:36:29 [31mWARN [0;39m
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: java.lang.IllegalStateException: Error processing condition on org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration.propertySourcesPlaceholderConfigurer
+2025-04-29 10:36:29 [1;31mERROR[0;39m
+				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
+java.lang.IllegalStateException: Error processing condition on org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration.propertySourcesPlaceholderConfigurer
+	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:60)
+	at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:99)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitionsForBeanMethod(ConfigurationClassBeanDefinitionReader.java:184)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitionsForConfigurationClass(ConfigurationClassBeanDefinitionReader.java:145)
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.loadBeanDefinitions(ConfigurationClassBeanDefinitionReader.java:121)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:430)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:290)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:791)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:609)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1362)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1351)
+	at br.com.marcielli.bancom.BancoMApplication.main(BancoMApplication.java:23)
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [br.com.marcielli.bancom.configuracao.SecurityConfig] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@76ed5528]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:483)
+	at org.springframework.util.ReflectionUtils.doWithMethods(ReflectionUtils.java:360)
+	at org.springframework.util.ReflectionUtils.getUniqueDeclaredMethods(ReflectionUtils.java:417)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.lambda$getTypeForFactoryMethod$1(AbstractAutowireCapableBeanFactory.java:757)
+	at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1708)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getTypeForFactoryMethod(AbstractAutowireCapableBeanFactory.java:756)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineTargetType(AbstractAutowireCapableBeanFactory.java:689)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.predictBeanType(AbstractAutowireCapableBeanFactory.java:660)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.isFactoryBean(AbstractBeanFactory.java:1716)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doGetBeanNamesForType(DefaultListableBeanFactory.java:639)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanNamesForType(DefaultListableBeanFactory.java:611)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.collectBeanDefinitionsForType(OnBeanCondition.java:332)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getBeanDefinitionsForType(OnBeanCondition.java:324)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getBeanDefinitionsForType(OnBeanCondition.java:314)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getMatchingBeans(OnBeanCondition.java:213)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.evaluateConditionalOnMissingBean(OnBeanCondition.java:196)
+	at org.springframework.boot.autoconfigure.condition.OnBeanCondition.getMatchOutcome(OnBeanCondition.java:143)
+	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:47)
+	... 17 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: org/springframework/security/oauth2/jwt/JwtDecoder
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3578)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2676)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:465)
+	... 34 common frames omitted
+Caused by: java.lang.ClassNotFoundException: org.springframework.security.oauth2.jwt.JwtDecoder
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+	... 38 common frames omitted
+2025-04-29 12:09:54 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-29 12:09:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Starting BancoMApplicationTests using Java 21.0.6 with PID 21236 (started by Marcielli in C:\Users\Marcielli\eclipse-workspace\BancoM)
+2025-04-29 12:09:54 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Running with Spring Boot v3.4.5, Spring v6.2.6
+2025-04-29 12:09:54 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-04-29 12:09:55 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-04-29 12:09:55 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@124eb83d
+2025-04-29 12:09:55 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-04-29 12:09:56 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.AuthenticationConfiguration$DefaultPasswordEncoderAuthenticationManagerBuilder[0;39m - No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2025-04-29 12:09:56 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, BearerTokenAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-29 12:09:56 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - Started BancoMApplicationTests in 2.755 seconds (process running for 3.523)
+2025-04-29 12:09:56 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [ADMIN], value class [java.lang.String], SQL type unknown
+2025-04-29 12:09:56 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [BASIC], value class [java.lang.String], SQL type unknown
+2025-04-29 12:09:56 [39mTRACE[0;39m
+				[36m[main][0;39m [35mo.s.jdbc.core.StatementCreatorUtils[0;39m - Setting SQL statement parameter value: column index 1, parameter value [admin], value class [java.lang.String], SQL type unknown
+2025-04-29 12:09:57 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
+2025-04-29 12:09:57 [34mINFO [0;39m
+				[36m[SpringApplicationShutdownHook][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown completed.
