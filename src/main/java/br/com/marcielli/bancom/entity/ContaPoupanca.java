@@ -15,13 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class ContaPoupanca extends Conta {
-	
-	private static final long serialVersionUID = 1L;
-	
 
 	private BigDecimal taxaAcrescRend;
-	
 	private BigDecimal taxaMensal;
-
-	
 }

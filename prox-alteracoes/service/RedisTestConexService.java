@@ -6,18 +6,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RedisTestConexService {
-
     private final StringRedisTemplate redisTemplate;
 
     public RedisTestConexService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
-    @PostConstruct //Executa antes de uma aplicação do Spring ser parada
+    @PostConstruct
     public void testRedisConnection() {
-        redisTemplate.opsForValue().set("redsKey", "Conectado!");
-        String value = redisTemplate.opsForValue().get("redsKey");
-        System.out.println("Conexão Redis: " + value);
+        try {
+            String pingResponse = redisTemplate.getConnectionFactory().getConnection().ping();
+            System.out.println("Redis conectado com sucesso: " + pingResponse);
+        } catch (Exception e) {
+            System.err.println("AVISO: Redis não está disponível. Aplicação continuará em modo sem Redis.");
+            // Você pode adicionar uma flag para operar em modo fallback
+        }
     }
-
 }

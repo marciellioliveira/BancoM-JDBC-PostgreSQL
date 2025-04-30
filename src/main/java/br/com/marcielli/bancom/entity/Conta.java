@@ -1,5 +1,6 @@
 package br.com.marcielli.bancom.entity;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,7 +20,6 @@ import lombok.ToString;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Transient;
 
 @Getter
 @Setter
@@ -29,8 +29,6 @@ import org.springframework.data.annotation.Transient;
 @EqualsAndHashCode
 public class Conta implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
 	private static final Logger log = LoggerFactory.getLogger(Conta.class);
 
 	private Long id;
@@ -48,7 +46,7 @@ public class Conta implements Serializable {
 	private BigDecimal saldoConta;
 
 	@JsonIgnore
-	@Transient
+
 	private BigDecimal valorTransferencia;
 
 	private String numeroConta;

@@ -1,15 +1,16 @@
 package br.com.marcielli.bancom.repository;
 
 import br.com.marcielli.bancom.entity.Cliente;
+import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.repository.mappers.ClienteRowMapper;
-import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Profile("cliente")
 @Repository
 public class ClienteRepositoryJDBC {
 
@@ -34,6 +35,19 @@ public class ClienteRepositoryJDBC {
     }
 
 
+    public boolean cpfExists(Long cpf) {
+        String sql = "SELECT 1 FROM clientes WHERE cpf = ? LIMIT 1";
+
+        List<Integer> result = jdbcTemplate.query(
+                sql,
+                new Object[]{cpf},
+                (rs, rowNum) -> rs.getInt(1)
+        );
+
+        return !result.isEmpty();
+    }
+
+
 
 
 
@@ -43,9 +57,33 @@ public class ClienteRepositoryJDBC {
     }
 
     public void save(Cliente cliente) {
+
+        if(cpfExists(cliente.getCpf())) {
+            throw new ClienteEncontradoException("Já existe um cliente com esse CPF: " + cliente.getCpf());
+        }
+
         String sql = "INSERT INTO clientes (nome, cpf, cliente_ativo, user_id) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, cliente.getNome(), cliente.getCpf(), cliente.isClienteAtivo(), cliente.getUser().getId());
+
+        try {
+            jdbcTemplate.update(sql,
+                    cliente.getNome(),
+                    cliente.getCpf(),
+                    cliente.isClienteAtivo(),
+                    cliente.getUser().getId()
+            );
+        } catch (DuplicateKeyException e) {
+            // CPF já existente
+            throw new ClienteEncontradoException("Já existe um cliente com esse CPF: " + cliente.getCpf()+" - Exception:"+ e);
+        } catch (DataAccessException e) {
+            throw new ClienteEncontradoException("Erro ao salvar cliente no banco de dados"+" - Exception:"+e);
+        }
     }
+
+
+//    public void save(Cliente cliente) {
+//        String sql = "INSERT INTO clientes (nome, cpf, cliente_ativo, user_id) VALUES (?, ?, ?, ?)";
+//        jdbcTemplate.update(sql, cliente.getNome(), cliente.getCpf(), cliente.isClienteAtivo(), cliente.getUser().getId());
+//    }
 
     public Optional<Cliente> findById(Long id) {
         String sql = "SELECT c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +

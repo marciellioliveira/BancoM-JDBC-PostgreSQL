@@ -41,22 +41,26 @@ public class RedisTokenBlacklistService {
 
         return Boolean.TRUE.equals(redisTemplate.hasKey(token));
     }
-//
-//    @PreDestroy
-//    public void cleanupRedis() {
-//        System.out.println("Aplicação está sendo parada. Realizando limpeza do Redis...");
-//
-//        // Limpando os dados armazenados no redis
-//        try {
-//            // Verifica se a conexão do Redis está ativa antes de tentar limpar
-//            if (redisTemplate.getConnectionFactory().getConnection().isOpen()) {
-//                redisTemplate.getConnectionFactory().getConnection().flushAll();
-//                System.out.println("Todos os dados do Redis foram removidos.");
-//            } else {
-//                System.out.println("Conexão Redis já está fechada. Não foi possível limpar os dados.");
-//            }
-//        } catch (Exception e) {
-//            System.out.println("Erro ao limpar dados do Redis: " + e.getMessage());
-//        }
-//    }
+
+    @PreDestroy
+    public void cleanupRedis() {
+        System.out.println("Aplicação está sendo parada. Realizando limpeza do Redis...");
+
+        try {
+            // Tentando um comando simples de ping para verificar se a conexão está ativa
+            String pingResponse = redisTemplate.getConnectionFactory().getConnection().ping();
+
+            if ("PONG".equals(pingResponse)) {
+                // Se a resposta for "PONG", significa que a conexão está funcionando
+                redisTemplate.getConnectionFactory().getConnection().flushAll();
+                System.out.println("Todos os dados do Redis foram removidos.");
+            } else {
+                System.out.println("Erro ao verificar a conexão com o Redis.");
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao conectar ao Redis: " + e.getMessage());
+        }
+    }
+
+
 }

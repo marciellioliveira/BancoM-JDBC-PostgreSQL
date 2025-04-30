@@ -1,7 +1,6 @@
 package br.com.marcielli.bancom.configuracao;
 
 
-import br.com.marcielli.bancom.service.RedisTokenBlacklistService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -9,11 +8,13 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -55,81 +56,165 @@ public class SecurityConfig { // Passo 1
 	@Value("${jwt.private.key}") // Injetando valores na propriedade (que apontam para application.properties)
 	private RSAPrivateKey privateKey;
 
-	// Configuração Spring Security para Token JWT
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http, RedisTokenBlacklistService tokenBlacklistService) throws Exception {
-	    http
-	    	.csrf(csrf -> csrf.disable())
-	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
-	            .anyRequest().authenticated()
-	        )
-	        .headers(headers -> headers
-	            .frameOptions(frame -> frame.disable()) // Para H2
-	        )
-	        .oauth2ResourceServer(oauth2 -> oauth2
-	            .jwt(jwt -> jwt
-	                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-	                .decoder(jwtDecoder()) //Para o redis token logout
-	            )
-	        )
-	        .logout(logout -> logout
-	                .logoutUrl("/logout")
-	                .logoutSuccessUrl("/login?logout") 
-	                .permitAll()
-	            )
-	        .sessionManagement(session -> session
-	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-	        );
-	    
-	    return http.build();
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+				.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
+						.anyRequest().authenticated()
+				)
+				.headers(headers -> headers
+						.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
+				)
+				.oauth2ResourceServer(oauth2 -> oauth2
+						.jwt(jwt -> jwt
+								.jwtAuthenticationConverter(jwtAuthenticationConverter())
+								.decoder(jwtDecoder())
+						)
+				)
+				.logout(logout -> logout
+						.logoutUrl("/logout")
+						.logoutSuccessHandler((request, response, authentication) -> {
+							response.setStatus(HttpStatus.OK.value());
+							response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+							response.getWriter().write("{\"message\": \"Logout realizado com sucesso\"}");
+						})
+						.permitAll()
+				)
+				.sessionManagement(session -> session
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				);
+
+		return http.build();
 	}
 
 	@Bean
 	public JwtAuthenticationConverter jwtAuthenticationConverter() {
-	    JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
-	    converter.setAuthorityPrefix(""); 
-	    converter.setAuthoritiesClaimName("scope"); 
-	    
-	    JwtGrantedAuthoritiesConverter fallbackConverter = new JwtGrantedAuthoritiesConverter();
-	    fallbackConverter.setAuthorityPrefix("");
-	    fallbackConverter.setAuthoritiesClaimName("roles");
+		JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
+		converter.setAuthorityPrefix("");
+		converter.setAuthoritiesClaimName("scope");
 
-	    JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
-	    jwtConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
-	        Collection<GrantedAuthority> authorities = converter.convert(jwt);
-	        if (authorities == null || authorities.isEmpty()) {
-	            authorities = fallbackConverter.convert(jwt);
-	        }
-	       
-	        System.out.println("Authorities reconhecidas: " + authorities);
-	        return authorities;
-	    });
-	    
-	    return jwtConverter;
+		JwtGrantedAuthoritiesConverter fallbackConverter = new JwtGrantedAuthoritiesConverter();
+		fallbackConverter.setAuthorityPrefix("");
+		fallbackConverter.setAuthoritiesClaimName("roles");
+
+		JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+		jwtConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
+			Collection<GrantedAuthority> authorities = converter.convert(jwt);
+			if (authorities.isEmpty()) {
+				authorities = fallbackConverter.convert(jwt);
+			}
+
+			System.out.println("Authorities reconhecidas: " + authorities);
+			return authorities;
+		});
+
+		return jwtConverter;
 	}
 
-	// Configurando o Encoder e Decoder do JWT
-	@Bean // Descriptografa
+	@Bean
 	public JwtDecoder jwtDecoder() {
-		// Vamos usar uma dependência da apache numbus-jose-jwt para criar um decoder a
-		// partir da chave pública
 		return NimbusJwtDecoder.withPublicKey(publicKey).build();
 	}
 
-	@Bean // Encriotografa
+	@Bean
 	public JwtEncoder jwtEncoder() {
-		// Como se fosse a chave do JWT para depois fazer o encode
 		JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(privateKey).build();
 		var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 		return new NimbusJwtEncoder(jwks);
 	}
 
-	@Bean // Bean de Segurança para criptografar as senhas com o algoritmo do Bcrypt
+	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
-	
+
+
+
+
+
+
+
+
+
+	// Configuração Spring Security para Token JWT
+//	@Bean
+//	public SecurityFilterChain securityFilterChain(HttpSecurity http, RedisTokenBlacklistService tokenBlacklistService) throws Exception {
+//	    http
+//	    	.csrf(csrf -> csrf.disable())
+//	        .authorizeHttpRequests(auth -> auth
+//	            .requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
+//	            .anyRequest().authenticated()
+//	        )
+//	        .headers(headers -> headers
+//	            .frameOptions(frame -> frame.disable()) // Para H2
+//	        )
+//	        .oauth2ResourceServer(oauth2 -> oauth2
+//	            .jwt(jwt -> jwt
+//	                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+//	                .decoder(jwtDecoder()) //Para o redis token logout
+//	            )
+//	        )
+//	        .logout(logout -> logout
+//	                .logoutUrl("/logout")
+//	                .logoutSuccessUrl("/login?logout")
+//	                .permitAll()
+//	            )
+//	        .sessionManagement(session -> session
+//	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//	        );
+//
+//	    return http.build();
+//	}
+
+
+
+//	@Bean
+//	public JwtAuthenticationConverter jwtAuthenticationConverter() {
+//	    JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
+//	    converter.setAuthorityPrefix("");
+//	    converter.setAuthoritiesClaimName("scope");
+//
+//	    JwtGrantedAuthoritiesConverter fallbackConverter = new JwtGrantedAuthoritiesConverter();
+//	    fallbackConverter.setAuthorityPrefix("");
+//	    fallbackConverter.setAuthoritiesClaimName("roles");
+//
+//	    JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+//	    jwtConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
+//	        Collection<GrantedAuthority> authorities = converter.convert(jwt);
+//	        if (authorities.isEmpty()) {
+//	            authorities = fallbackConverter.convert(jwt);
+//	        }
+//
+//	        System.out.println("Authorities reconhecidas: " + authorities);
+//	        return authorities;
+//	    });
+//
+//	    return jwtConverter;
+//	}
+//
+//	// Configurando o Encoder e Decoder do JWT
+//	@Bean // Descriptografa
+//	public JwtDecoder jwtDecoder() {
+//		// Vamos usar uma dependência da apache numbus-jose-jwt para criar um decoder a
+//		// partir da chave pública
+//		return NimbusJwtDecoder.withPublicKey(publicKey).build();
+//	}
+//
+//	@Bean // Encriotografa
+//	public JwtEncoder jwtEncoder() {
+//		// Como se fosse a chave do JWT para depois fazer o encode
+//		JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(privateKey).build();
+//		var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+//		return new NimbusJwtEncoder(jwks);
+//	}
+//
+//	@Bean // Bean de Segurança para criptografar as senhas com o algoritmo do Bcrypt
+//	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
+//
+//
 
 }

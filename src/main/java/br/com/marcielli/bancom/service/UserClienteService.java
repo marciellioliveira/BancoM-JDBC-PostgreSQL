@@ -1,6 +1,5 @@
 package br.com.marcielli.bancom.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,14 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.UserCreateDTO;
 import br.com.marcielli.bancom.entity.Cliente;
-import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
-import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.bancom.validation.ValidadorCPF;
 
 @Profile("cliente")
@@ -49,6 +46,10 @@ public class UserClienteService {
 			if (!ValidadorCPF.validar(cpfClient)) {
 				throw new ClienteCpfInvalidoException("CPF inválido");
 			}
+		}
+
+		if(clienteRepositoryJDBC.cpfExists(cliente.cpf())){
+			throw new ClienteCpfInvalidoException("CPF número "+cliente.cpf()+" já é cadastrado no sistema.");
 		}
 
 		var userFromDb = userRepositoryJDBC.findByUsername(cliente.username());

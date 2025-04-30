@@ -31,7 +31,7 @@
 		</encoder>
 	</appender>
 
-	<root level="OFF"> <!-- <root level="info"> -->
+	<root level="info"> <!-- <root level="info"> -->
 
 		<appender-ref ref="ARQUIVO" />
 	</root>

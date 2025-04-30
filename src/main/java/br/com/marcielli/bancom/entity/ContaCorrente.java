@@ -14,10 +14,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class ContaCorrente extends Conta {
-	
-	private static final long serialVersionUID = 1L;	
 
 	private BigDecimal taxaManutencaoMensal;
-
-
 }

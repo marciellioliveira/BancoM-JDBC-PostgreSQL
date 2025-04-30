@@ -5,9 +5,7 @@ import java.util.stream.Collectors;
 
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.repository.UserRepositoryJDBC;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.marcielli.bancom.dto.LoginRequestDTO;
 import br.com.marcielli.bancom.dto.LoginResponseDTO;
-import br.com.marcielli.bancom.service.RedisTokenBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
@@ -29,14 +26,13 @@ public class TokenController { // Passo 2
 	private final JwtEncoder jwtEncoder;
 	private final UserRepositoryJDBC userRepositoryJDBC;
 	private BCryptPasswordEncoder passwordEncoder;
-	private final RedisTokenBlacklistService tokenBlacklistService;
+	//private final RedisTokenBlacklistService tokenBlacklistService;
 
 	public TokenController(JwtEncoder jwtEncoder, UserRepositoryJDBC userRepositoryJDBC,
-			BCryptPasswordEncoder bCryptPasswordEncoder, RedisTokenBlacklistService tokenBlacklistService) {
+			BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.jwtEncoder = jwtEncoder;
 		this.userRepositoryJDBC = userRepositoryJDBC;
 		this.passwordEncoder = bCryptPasswordEncoder;
-		this.tokenBlacklistService = tokenBlacklistService;
 	}
 
 	// Criei dois DTOS para Login
@@ -69,14 +65,14 @@ public class TokenController { // Passo 2
 		return ResponseEntity.ok(new LoginResponseDTO(jwtValue, expiresIn));
 	}
 
-	@PostMapping("/logout")
-	public ResponseEntity<Void> logout(HttpServletRequest request) {
-		String token = extractToken(request);
-		if (token != null) {
-			tokenBlacklistService.invalidateToken(token);
-		}
-		return ResponseEntity.ok().build();
-	}
+//	@PostMapping("/logout")
+//	public ResponseEntity<Void> logout(HttpServletRequest request) {
+//		String token = extractToken(request);
+//		if (token != null) {
+//			tokenBlacklistService.invalidateToken(token);
+//		}
+//		return ResponseEntity.ok().build();
+//	}
 
 	private String extractToken(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
