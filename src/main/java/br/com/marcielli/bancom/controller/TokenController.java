@@ -3,6 +3,7 @@ package br.com.marcielli.bancom.controller;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.repository.UserRepositoryJDBC;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -48,10 +49,10 @@ public class TokenController { // Passo 2
 	public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
 
 		var user = userRepositoryJDBC.findByUsername(loginRequest.username())
-				.orElseThrow(() -> new BadCredentialsException("Credenciais inválidas"));
+				.orElseThrow(() -> new ClienteEncontradoException("Username inválido."));
 
 		if (!user.isLoginCorrect(loginRequest, passwordEncoder)) {
-			throw new BadCredentialsException("Credenciais inválidas");
+			throw new ClienteEncontradoException("Senha inválida");
 		}
 
 		var now = Instant.now();

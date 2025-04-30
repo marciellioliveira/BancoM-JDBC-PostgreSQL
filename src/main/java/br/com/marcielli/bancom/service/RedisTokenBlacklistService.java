@@ -2,6 +2,7 @@ package br.com.marcielli.bancom.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,25 @@ public class RedisTokenBlacklistService {
     }
 
     public boolean isTokenInvalid(String token) {
+
         return Boolean.TRUE.equals(redisTemplate.hasKey(token));
     }
+//
+//    @PreDestroy
+//    public void cleanupRedis() {
+//        System.out.println("Aplicação está sendo parada. Realizando limpeza do Redis...");
+//
+//        // Limpando os dados armazenados no redis
+//        try {
+//            // Verifica se a conexão do Redis está ativa antes de tentar limpar
+//            if (redisTemplate.getConnectionFactory().getConnection().isOpen()) {
+//                redisTemplate.getConnectionFactory().getConnection().flushAll();
+//                System.out.println("Todos os dados do Redis foram removidos.");
+//            } else {
+//                System.out.println("Conexão Redis já está fechada. Não foi possível limpar os dados.");
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Erro ao limpar dados do Redis: " + e.getMessage());
+//        }
+//    }
 }

@@ -47,84 +47,116 @@ public class UserClienteController {
 
 	@GetMapping("/users")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<List<User>> listUsers() {
-		var users = userRepositoryJDBC.findAll();
+	public ResponseEntity<Object> listUsers() {
+		List<User> users = clienteService.getAllUsers();
+
+		if (users == null || users.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Nenhum usuário encontrado.");
+		}
+
 		return ResponseEntity.ok(users);
 	}
 
 	@GetMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-	public ResponseEntity<Object> getClienteById(@PathVariable("id") Long id) { //, JwtAuthenticationToken token
+	public ResponseEntity<Object> getUserById(@PathVariable("id") Long id) {
+		User user = clienteService.getUserById(id);
 
-		Cliente clienteUnico = clienteService.getClienteById(id);
-
-		System.out.println("teste "+clienteUnico);
-
-		if (clienteUnico == null || clienteUnico.getUser() == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
-		}
-	
-		UserClienteResponseDTO response = new UserClienteResponseDTO();
-		response.setId(id);
-		response.setNome(clienteUnico.getNome());
-		response.setCpf(clienteUnico.getCpf());
-		response.setClienteAtivo(clienteUnico.isClienteAtivo());
-
-		Endereco endereco = clienteUnico.getEndereco();
-		if (endereco != null) {
-			response.setCep(endereco.getCep());
-			response.setCidade(endereco.getCidade());
-			response.setEstado(endereco.getEstado());
-			response.setRua(endereco.getRua());
-			response.setNumero(endereco.getNumero());
-			response.setBairro(endereco.getBairro());
-			response.setComplemento(endereco.getComplemento());
-			response.setClienteAtivo(clienteUnico.isClienteAtivo());
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
 		}
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(user);
 	}
 
 	@PutMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
 	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
-		
-//		
-//		if(token.getAuthorities().stream()
-//				.anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"))) {
-//			System.err.println("Admin");
-//		} else {
-//			System.err.println("Basic");
-//		}
-//		
-	
-		Cliente clienteUnico = clienteService.update(id, dto);
 
-		if (clienteUnico != null) {
-			UserClienteResponseDTO response = new UserClienteResponseDTO();
-			response.setId(id);
-			response.setNome(clienteUnico.getNome());
-			response.setCpf(clienteUnico.getCpf());
-			response.setClienteAtivo(clienteUnico.isClienteAtivo());
+		User updatedUser = clienteService.update(id, dto);
 
-			Endereco endereco = clienteUnico.getEndereco();
-			if (endereco != null) {
-				response.setCep(endereco.getCep());
-				response.setCidade(endereco.getCidade());
-				response.setEstado(endereco.getEstado());
-				response.setRua(endereco.getRua());
-				response.setNumero(endereco.getNumero());
-				response.setBairro(endereco.getBairro());
-				response.setComplemento(endereco.getComplemento());
-
-			}
-
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+		if (updatedUser == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
 		}
 
+		return ResponseEntity.ok(updatedUser);
 	}
+
+
+//	@PutMapping("/users/{id}")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+//	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
+//		User updatedUser = clienteService.update(id, dto);
+//
+//		if (updatedUser == null) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
+//		}
+//
+//		// Prepara a resposta
+//		UserClienteResponseDTO response = new UserClienteResponseDTO();
+//		response.setId(Long.valueOf(updatedUser.getId()));
+//		response.setNome(updatedUser.getCliente().getNome());
+//
+//		response.setClienteAtivo(updatedUser.getCliente().isClienteAtivo());
+//
+//		Endereco endereco = updatedUser.getCliente().getEndereco();
+//		if (endereco != null) {
+//			response.setCep(endereco.getCep());
+//			response.setCidade(endereco.getCidade());
+//			response.setEstado(endereco.getEstado());
+//			response.setRua(endereco.getRua());
+//			response.setNumero(endereco.getNumero());
+//			response.setBairro(endereco.getBairro());
+//			response.setComplemento(endereco.getComplemento());
+//		}
+//
+//		return ResponseEntity.status(HttpStatus.OK).body(response);
+//	}
+
+
+
+
+
+//	@PutMapping("/users/{id}")
+//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+//	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
+//
+////
+////		if(token.getAuthorities().stream()
+////				.anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"))) {
+////			System.err.println("Admin");
+////		} else {
+////			System.err.println("Basic");
+////		}
+////
+//
+//		Cliente clienteUnico = clienteService.update(id, dto);
+//
+//		if (clienteUnico != null) {
+//			UserClienteResponseDTO response = new UserClienteResponseDTO();
+//			response.setId(id);
+//			response.setNome(clienteUnico.getNome());
+//			response.setCpf(clienteUnico.getCpf());
+//			response.setClienteAtivo(clienteUnico.isClienteAtivo());
+//
+//			Endereco endereco = clienteUnico.getEndereco();
+//			if (endereco != null) {
+//				response.setCep(endereco.getCep());
+//				response.setCidade(endereco.getCidade());
+//				response.setEstado(endereco.getEstado());
+//				response.setRua(endereco.getRua());
+//				response.setNumero(endereco.getNumero());
+//				response.setBairro(endereco.getBairro());
+//				response.setComplemento(endereco.getComplemento());
+//
+//			}
+//
+//			return ResponseEntity.status(HttpStatus.OK).body(response);
+//		} else {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
+//		}
+//
+//	}
 
 	@DeleteMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")

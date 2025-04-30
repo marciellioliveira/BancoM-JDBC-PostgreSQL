@@ -19,13 +19,13 @@ public class UserClienteResponseDTO {
 	
 	private Long id;
 	private String nome;
-	private Long cpf;	
-	private String cep;	
-	private String cidade;	
-	private String estado;	
-	private String rua;	
-	private String numero;	
-	private String bairro;	
+	//private Long cpf;
+	private String cep;
+	private String cidade;
+	private String estado;
+	private String rua;
+	private String numero;
+	private String bairro;
 	private String complemento;
 	private boolean clienteAtivo;
 }

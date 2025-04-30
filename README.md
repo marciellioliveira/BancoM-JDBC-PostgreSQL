@@ -16,32 +16,31 @@
 
 
 ## 🚀 Tecnologias Utilizadas
-- Java 21 – Linguagem principal;
-- Spring Boot – Framework backend;
-- Spring Data JPA - Persistencia de Dados;
-- Spring Security + JWT - Segurança do Projeto com token JWT;
-- Hibernate - Framework de mapeamento objeto-relacional (ORM) para Java simplificando a persistência de dados no banco;
-- H2 Database - Base de Dados em Memória;
-- Maven – Gerenciador de dependências e build;
-- Lombok – Geração automática de getters, setters, constructors, etc;
-- Postman - Testes das Rotas da API;
-- Bean Validation (Jakarta Validation) – Validação de dados via anotações;
-- API – Integração com API externa para dados e validações;
-- RestExceptionHandler com anotação como @ControllerAdvice para excessões personalizadas;
-- Biblioteca SLF4J (Simple Logging Facade for Java) - Logs.
+- <b>Java 21</b> – Linguagem principal;
+- <b>Spring Boot</b> – Framework backend;
+- <b>Spring Data JPA</b> - Persistencia de Dados;
+- <b>Spring Security + JWT</b> - Segurança do Projeto com token JWT;
+- <b>Hibernate</b> - Framework de mapeamento objeto-relacional (ORM) para Java simplificando a persistência de dados no banco;
+- <b>H2 Database</b> - Base de Dados em Memória;
+- <b>Maven</b> – Gerenciador de dependências e build;
+- <b>Lombok</b> – Geração automática de getters, setters, constructors, etc;
+- <b>Postman</b> - Testes das Rotas da API;
+- <b>Bean Validation (Jakarta Validation)</b> – Validação de dados via anotações;
+- <b>API</b> – Integração com API externa para dados e validações;
+- <b>RestExceptionHandler</b> com anotação como <b>@ControllerAdvice</b> para excessões personalizadas;
+- <b>Biblioteca SLF4J</b> (Simple Logging Facade for Java) - Logs.
 
 
 ## 💱 Suporte a Múltiplas Moedas (Multiwallet)
-- Com a integração da API de câmbio em tempo real, como a  ExchangeRate-API foi possível simplificar a conversão do saldo do usuário em tempo real e em diversas moedas como (BRL, USD, EUR).
+- Com a <b>integração da API de câmbio em tempo real</b>, como a  ExchangeRate-API foi possível simplificar a conversão do saldo do usuário em tempo real e em diversas moedas como (BRL, USD, EUR).
 
 
 ## 🚧 Status do Projeto
 ### 🛠️ Em Desenvolvimento
-- Implementando logs com a biblioteca do Spring chamada SLF4J (Simple Logging Facade for Java);
-- Implementando @EnableScheduling/@EnableAsync e CRON para API aplicar as taxas automaticamente em lote de acordo com as datas agendadas;
+- Implementando <b>logs com a biblioteca do Spring chamada SLF4J</b> (Simple Logging Facade for Java);
+- Implementando <b>@EnableScheduling/@EnableAsync e CRON para API aplicar as taxas automaticamente</b> em lote de acordo com as datas agendadas;
 - Melhoria na configuração do que o ADMIN pode ou não fazer. Implementei regra de negócio adicional onde o ADMIN não pode fazer movimentação da conta de outros clientes para conta própria;
-- Estou em processo de fazer o merge entre a branch newBank (A CERTA) e a main. Por isso, ao clonar o projeto, no momento rode a branch newBank. ;)
-
+- <b>Removendo JPA e H2 e migrando para PostgreSQL e JDBC.</b>
   
 ## 🔗 Endpoints da API (usados no Postman)
 ### 🧑‍💼 Clientes
@@ -155,3 +154,7 @@ spring.jpa.defer-datasource-initialization=true</br>
 ```
 Nesse mesmo arquivo existem outras configurações para o projeto.
 Ao fazer o clone, ele já será baixado automaticamente.
+
+📌 Autora: 
+👨‍💻 Marcielli Oliveira 🔗 [LinkedIn](https://www.linkedin.com/in/marciellioliveira/) | 📧 marciellileticiaol@gmail.com
+| 🔗 www.marcielli.com.br

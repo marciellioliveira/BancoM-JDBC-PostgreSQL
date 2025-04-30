@@ -1,6 +1,7 @@
 package br.com.marcielli.bancom.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -82,58 +83,68 @@ public class UserClienteService {
 		return userRepositoryJDBC.save(user);
 	}
 
-
 	@Transactional
-	public Cliente getClienteById(Long id) {
-		return clienteRepositoryJDBC.findById(id).orElse(null);
+	public User getUserById(Long id) {
+		return userRepositoryJDBC.findById(id)
+				.orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
 	}
 
+
+
+
+//	@Transactional
+//	public User getClienteById(Long id) {
+//		//Fazer ele virar cliente aqui e devolver cliente
+//		return userRepositoryJDBC.findById(id).orElse(null);
+//	}
+
 	@Transactional
-	public Cliente update(Long id, UserCreateDTO cliente) {
-		
-		Optional<User> existingUser = userRepositoryJDBC.findByUsername(cliente.username());
-	    if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
-	    	throw new ClienteNaoEncontradoException("Esse username já existe.");
-	    }
+	public List<User> getAllUsers(){
+		return userRepositoryJDBC.findAll();
+	}
 
-		Cliente clienteExistente = clienteRepositoryJDBC.findById(id)
-				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 
-		if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
-			throw new ClienteNaoEncontradoException("Não é possível atualizar um usuário/cliente desativado");
+	@Transactional
+	public User update(Long id, UserCreateDTO dto) {
+		// Verifica se o usuário existe
+		User user = userRepositoryJDBC.findById(id)
+				.orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado"));
+
+		// Verifica se o CPF já está em uso
+		Optional<User> existingUserWithCpf = userRepositoryJDBC.findByCpf(dto.cpf());
+		if (existingUserWithCpf.isPresent() && !existingUserWithCpf.get().getId().equals(user.getId())) {
+			throw new ClienteEncontradoException("CPF é único e não pode ser atualizado. " + dto.cpf());
 		}
 
-		clienteExistente.setNome(cliente.nome());
-		clienteExistente.setCpf(cliente.cpf());
+		Optional<User> existingUserWithUsername = userRepositoryJDBC.findByUsername(dto.username());
+		if(existingUserWithUsername.isPresent() && !existingUserWithUsername.get().equals(user.getId())){
+			throw new ClienteEncontradoException("Já existe um cliente com esse username. " + dto.username());
+		}
 
-		Endereco endereco = clienteExistente.getEndereco();
+		// Atualiza os dados do cliente, endereço e usuário
+		Cliente cliente = user.getCliente();
+		cliente.setNome(dto.nome());
+
+		Endereco endereco = cliente.getEndereco();
 		if (endereco != null) {
-			endereco.setCep(cliente.cep());
-			endereco.setCidade(cliente.cidade());
-			endereco.setEstado(cliente.estado());
-			endereco.setRua(cliente.rua());
-			endereco.setNumero(cliente.numero());
-			endereco.setBairro(cliente.bairro());
-			endereco.setComplemento(cliente.complemento());
+			endereco.setCep(dto.cep());
+			endereco.setCidade(dto.cidade());
+			endereco.setEstado(dto.estado());
+			endereco.setRua(dto.rua());
+			endereco.setNumero(dto.numero());
+			endereco.setBairro(dto.bairro());
+			endereco.setComplemento(dto.complemento());
 		}
 
-		User user = clienteExistente.getUser();
-		if (user != null) {
-			user.setUsername(cliente.username());
-			user.setPassword(passwordEncoder.encode(cliente.password()));
-		} else {
-			user = new User();
-			user.setUsername(cliente.username());
-			user.setPassword(passwordEncoder.encode(cliente.password()));
-			user.setCliente(clienteExistente);
-			clienteExistente.setUser(user);
-		}
+		user.setUsername(dto.username());
+		user.setPassword(passwordEncoder.encode(dto.password())); // Criptografa a senha
 
-		userRepositoryJDBC.save(user);
-		clienteRepositoryJDBC.save(clienteExistente);
+		// Chama o metodo de atualização no repositório
+		userRepositoryJDBC.update(user); // Atualiza o usuário no banco
 
-		return clienteExistente;
+		return user;
 	}
+
 
 	@Transactional
 	public boolean delete(Long id) {

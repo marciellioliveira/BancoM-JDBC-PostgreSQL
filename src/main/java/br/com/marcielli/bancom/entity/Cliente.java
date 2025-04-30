@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Profile;
 public class Cliente implements Serializable {
 
 	private Long id;
-	@JsonIgnore
 	private String nome;
 	private Long cpf;
 	private boolean clienteAtivo = true;

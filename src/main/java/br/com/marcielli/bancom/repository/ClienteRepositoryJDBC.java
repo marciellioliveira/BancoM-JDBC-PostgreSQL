@@ -20,11 +20,21 @@ public class ClienteRepositoryJDBC {
     }
 
     public Optional<Cliente> findByCpf(Long cpf) {
-        String sql = "SELECT id, nome, cpf, cliente_ativo FROM clientes WHERE cpf = ?";
+        String sql = "SELECT c.id AS cliente_id, c.nome AS cliente_nome, c.cpf AS cliente_cpf, c.cliente_ativo, c.user_id, " +
+                "u.id AS user_id, u.username AS user_username, u.password AS user_password, u.user_ativo, " +
+                "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep " +
+                "FROM clientes c " +
+                "JOIN users u ON u.id = c.user_id " +
+                "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
+                "WHERE c.cpf = ?";
 
         List<Cliente> clientes = jdbcTemplate.query(sql, new ClienteRowMapper(), cpf);
-        return clientes.stream().findFirst(); // pega o primeiro se existir, senão retorna Optional.empty()
+
+        return clientes.stream().findFirst();
     }
+
+
+
 
 
     public List<Cliente> findByNomeContainingIgnoreCase(String nome) {
@@ -38,17 +48,19 @@ public class ClienteRepositoryJDBC {
     }
 
     public Optional<Cliente> findById(Long id) {
-        String sql = "SELECT " +
-                "c.id AS cliente_id, c.nome AS cliente_nome, c.cpf AS cliente_cpf, c.cliente_ativo, " +
-                "u.id AS user_id, u.username AS user_username, u.password AS user_password, u.user_ativo AS user_ativo, " +
-                "e.id AS endereco_id, e.cep, e.cidade, e.estado, e.rua, e.numero, e.bairro, e.complemento " +
+        String sql = "SELECT c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
+                "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep " +
                 "FROM clientes c " +
-                "LEFT JOIN users u ON c.user_id = u.id " +
-                "LEFT JOIN enderecos e ON c.endereco_id = e.id " +
-                "WHERE c.user_id = ?";
+                "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
+                "WHERE c.id = ?";
 
-        List<Cliente> clientes = jdbcTemplate.query(sql, new ClienteRowMapper(), id);
-        return clientes.stream().findFirst();
+        List<Cliente> clientes = jdbcTemplate.query(sql, new Object[]{id}, new ClienteRowMapper());
+
+        // Retorna o cliente encontrado ou vazio caso não encontre
+        return clientes.isEmpty() ? Optional.empty() : Optional.of(clientes.get(0));
     }
+
+
+
 
 }
