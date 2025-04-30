@@ -6,6 +6,7 @@ import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.repository.mappers.ClienteRowMapper;
 import br.com.marcielli.bancom.repository.mappers.UserRowMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -270,31 +271,11 @@ public class UserRepositoryJDBC {
         return Optional.of(users.get(0));  // Retorna o primeiro usuário encontrado
     }
 
+    public boolean delete(Long id) {
+        String sql = "DELETE FROM users WHERE id = ?";
 
+        int rowsAffected = jdbcTemplate.update(sql, id);
 
-//    public Optional<User> findByCpf(String cpf) {
-//        String sql = "SELECT u.id AS user_id, u.username, u.password, u.user_ativo, " +
-//                "c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
-//                "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep, " +
-//                "r.id AS role_id, r.name AS role_name " +
-//                "FROM users u " +
-//                "JOIN clientes c ON c.user_id = u.id " +
-//                "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
-//                "LEFT JOIN user_roles ur ON ur.user_id = u.id " +
-//                "LEFT JOIN roles r ON r.id = ur.role_id " +
-//                "WHERE c.cpf = ?";  // Consultando pelo CPF
-//
-//        List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), cpf);
-//
-//        if (users.isEmpty()) {
-//            return Optional.empty();  // Retorna vazio
-//        }
-//
-//        return Optional.of(users.getFirst());  // Retorna o primeiro usuário encontrado.
-//    }
-
-
-
-
-
+        return rowsAffected > 0; // Retorna true se o usuário foi deletado, caso contrário retorna false
+    }
 }

@@ -83,96 +83,23 @@ public class UserClienteController {
 	}
 
 
-//	@PutMapping("/users/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
-//		User updatedUser = clienteService.update(id, dto);
-//
-//		if (updatedUser == null) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
-//		}
-//
-//		// Prepara a resposta
-//		UserClienteResponseDTO response = new UserClienteResponseDTO();
-//		response.setId(Long.valueOf(updatedUser.getId()));
-//		response.setNome(updatedUser.getCliente().getNome());
-//
-//		response.setClienteAtivo(updatedUser.getCliente().isClienteAtivo());
-//
-//		Endereco endereco = updatedUser.getCliente().getEndereco();
-//		if (endereco != null) {
-//			response.setCep(endereco.getCep());
-//			response.setCidade(endereco.getCidade());
-//			response.setEstado(endereco.getEstado());
-//			response.setRua(endereco.getRua());
-//			response.setNumero(endereco.getNumero());
-//			response.setBairro(endereco.getBairro());
-//			response.setComplemento(endereco.getComplemento());
-//		}
-//
-//		return ResponseEntity.status(HttpStatus.OK).body(response);
-//	}
-
-
-
-
-
-//	@PutMapping("/users/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
-//
-////
-////		if(token.getAuthorities().stream()
-////				.anyMatch(auth -> auth.getAuthority().equals("SCOPE_ADMIN"))) {
-////			System.err.println("Admin");
-////		} else {
-////			System.err.println("Basic");
-////		}
-////
-//
-//		Cliente clienteUnico = clienteService.update(id, dto);
-//
-//		if (clienteUnico != null) {
-//			UserClienteResponseDTO response = new UserClienteResponseDTO();
-//			response.setId(id);
-//			response.setNome(clienteUnico.getNome());
-//			response.setCpf(clienteUnico.getCpf());
-//			response.setClienteAtivo(clienteUnico.isClienteAtivo());
-//
-//			Endereco endereco = clienteUnico.getEndereco();
-//			if (endereco != null) {
-//				response.setCep(endereco.getCep());
-//				response.setCidade(endereco.getCidade());
-//				response.setEstado(endereco.getEstado());
-//				response.setRua(endereco.getRua());
-//				response.setNumero(endereco.getNumero());
-//				response.setBairro(endereco.getBairro());
-//				response.setComplemento(endereco.getComplemento());
-//
-//			}
-//
-//			return ResponseEntity.status(HttpStatus.OK).body(response);
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
-//		}
-//
-//	}
-
+	//Primeiro estou fazendo com delete normal. Ao finalizar o projeto
+	//Vou alterar para ao pedir para deletar, apenas deixar o usuario como false
+	//somente depois de um ano deletar definitivamente com o cron no automatico
 	@DeleteMapping("/users/{id}")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-	public ResponseEntity<Object> deletar(@PathVariable("id") Long id) {
-
-		if (id == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cliente não existe!");
-		}
-
-		boolean clienteUnico = clienteService.delete(id);
-
-		if (clienteUnico) {
-			return ResponseEntity.status(HttpStatus.OK).body("Cliente deletado com sucesso!");
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
+	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+		try {
+			boolean deleted = userRepositoryJDBC.delete(id);
+			if (deleted) {
+				return ResponseEntity.ok("Usuário deletado com sucesso.");
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar o usuário.");
 		}
 	}
+
 
 }

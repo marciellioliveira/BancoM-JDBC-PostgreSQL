@@ -145,28 +145,9 @@ public class UserClienteService {
 		return user;
 	}
 
-
 	@Transactional
-	public boolean delete(Long id) {
-		
-		Cliente clienteExistente = clienteRepositoryJDBC.findById(id)
-				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-
-		if (!clienteExistente.isClienteAtivo() || !clienteExistente.getUser().isUserAtivo()) {
-			throw new ClienteNaoEncontradoException("O usuário/cliente já está desativado");
-		}
-
-		for(Conta contas : clienteExistente.getContas()) {
-			if(contas.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
-				throw new ContaExibirSaldoErroException("A conta possui um saldo de R$ "+contas.getSaldoConta()+". Faça o saque antes de remover o cliente.");
-			}
-		}
-		
-		clienteExistente.setClienteAtivo(false);
-		clienteExistente.getUser().setUserAtivo(false);
-
-		clienteRepositoryJDBC.save(clienteExistente);
-
-		return true;
+	public boolean deleteUser(Long id) {
+		return userRepositoryJDBC.delete(id);
 	}
+
 }
