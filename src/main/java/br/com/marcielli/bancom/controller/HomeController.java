@@ -9,22 +9,28 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 public class HomeController {
 
-    @RequestMapping("/login")
-    public ModelAndView showLoginPage() {
-        // Altere "Login" para "login" (o nome exato do arquivo, case sensitive)
-        return new ModelAndView("login");
-    }
-
-
-
-
-
+	@GetMapping
+	public String home() {
+		return "Hello, World";
+	}
+	
+	@GetMapping("/user")
+	public String user() {
+		return "Hello, User";
+	}
+	
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
     public String admin(){
         return "Hello, Admin";
     }
 
+
+
+//  @RequestMapping("/login")
+//  public ModelAndView showLoginPage() {       
+//      return new ModelAndView("login");
+//  }
 
 
 

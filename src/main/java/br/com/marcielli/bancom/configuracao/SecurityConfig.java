@@ -26,71 +26,62 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    DataSource dataSource(){
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/bd_newbank");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("admin");
-        return dataSource;
-    }
+	@Bean
+	public DataSource dataSource() {
+		HikariDataSource dataSource = new HikariDataSource();
+		dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/bd_newbank");
+		dataSource.setUsername("postgres");
+		dataSource.setPassword("admin");
+		return dataSource;
+	}
 
-    @Bean
-    JdbcUserDetailsManager users(DataSource dataSource, PasswordEncoder encoder){
+	@Bean
+	public JdbcUserDetailsManager users(DataSource dataSource, PasswordEncoder encoder) {
 
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(encoder.encode("adminsupersecretpass"))
-                .roles("ADMIN")
-                .build();
+		UserDetails admin = User.builder().username("admin").password(encoder.encode("adminsupersecretpass"))
+				.roles("ADMIN").build();
 
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
 
-        if (jdbcUserDetailsManager.userExists(admin.getUsername())) {
-            // Atualiza o usuário existente (incluindo a senha codificada)
-            jdbcUserDetailsManager.updateUser(admin);
-            System.err.println("Usuário admin atualizado com sucesso!");
-        } else {
-            // Cria novo usuário
-            jdbcUserDetailsManager.createUser(admin);
-            System.err.println("Usuário admin criado com sucesso!");
-        }
-        return jdbcUserDetailsManager;
-    }
+		if (jdbcUserDetailsManager.userExists(admin.getUsername())) {
+			// Atualiza o usuário existente (incluindo a senha codificada)
+			jdbcUserDetailsManager.updateUser(admin);
+			System.err.println("Usuário admin atualizado com sucesso!");
+		} else {
+			// Cria novo usuário
+			jdbcUserDetailsManager.createUser(admin);
+			System.err.println("Usuário admin criado com sucesso!");
+		}
+		return jdbcUserDetailsManager;
+	}
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http
+		return http
 
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
-                        .requestMatchers("/favicon.ico", "/error").permitAll()  // Adicione esta linha
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**","/webjars/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/whitelist.txt").permitAll()
-                        .anyRequest().authenticated()
-                )
-                
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                
-                .httpBasic(withDefaults())
-                
-                
+				.csrf(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
+						.requestMatchers("/favicon.ico", "/error").permitAll() // Adicione esta linha
+						.requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()
+						.requestMatchers("/admin/**").hasRole("ADMIN").requestMatchers("/whitelist.txt").permitAll()
+						.requestMatchers("/user").hasRole("USER")
+						.requestMatchers("/admin").hasRole("ADMIN")
+						.anyRequest().authenticated())
+				.httpBasic(basic -> basic.disable())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				
+				
 
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 
-                .build();
+				.build();
 
-    }
+	}
 
-
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
 }
