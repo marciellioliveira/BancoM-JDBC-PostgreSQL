@@ -15,7 +15,7 @@
 2025-04-29 05:14:11 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:14:11 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:14:11 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:14:11 [1;31mERROR[0;39m
@@ -27,12 +27,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:24:34 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -51,7 +51,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:24:36 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:24:36 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:24:36 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:24:36 [1;31mERROR[0;39m
@@ -63,12 +63,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:29:02 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -87,7 +87,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:29:03 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:29:03 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:29:03 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:29:03 [1;31mERROR[0;39m
@@ -99,12 +99,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:31:10 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -123,7 +123,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:31:11 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:31:11 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:31:11 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:31:11 [1;31mERROR[0;39m
@@ -135,12 +135,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:32:53 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -159,7 +159,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:32:54 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:32:54 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:32:54 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:32:54 [1;31mERROR[0;39m
@@ -171,12 +171,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:41:40 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -195,7 +195,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:41:42 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:41:42 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:41:42 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:41:42 [1;31mERROR[0;39m
@@ -207,12 +207,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:43:14 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -231,7 +231,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:43:15 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:43:15 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:43:15 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:43:15 [1;31mERROR[0;39m
@@ -243,12 +243,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:43:25 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -267,7 +267,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:43:27 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:43:27 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:43:27 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:43:27 [1;31mERROR[0;39m
@@ -279,12 +279,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:44:52 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -303,7 +303,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:44:53 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:44:53 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:44:53 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:44:53 [1;31mERROR[0;39m
@@ -315,12 +315,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:54:50 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -339,7 +339,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:54:51 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:54:51 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:54:51 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:54:51 [1;31mERROR[0;39m
@@ -351,12 +351,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 05:57:01 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -375,7 +375,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 05:57:02 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 05:57:02 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 05:57:02 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 05:57:02 [1;31mERROR[0;39m
@@ -387,12 +387,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 06:00:02 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -411,7 +411,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 06:00:03 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 06:00:03 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 06:00:03 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 06:00:03 [1;31mERROR[0;39m
@@ -423,12 +423,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 06:04:51 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -447,7 +447,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 06:04:52 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 06:04:52 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 06:04:52 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 06:04:52 [1;31mERROR[0;39m
@@ -459,12 +459,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 06:05:05 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -483,7 +483,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 06:05:06 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 06:05:06 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 06:05:06 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 06:05:07 [1;31mERROR[0;39m
@@ -495,12 +495,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 06:05:49 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -511,7 +511,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 06:05:49 [34mINFO [0;39m
 				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - The following 1 profile is active: "dev"
 2025-04-29 06:05:50 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.w.c.s.GenericWebApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.w.c.s.GenericWebApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 06:05:50 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.b.d.LoggingFailureAnalysisReporter[0;39m - 
 
@@ -521,12 +521,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 06:05:50 [31mWARN [0;39m
 				[36m[main][0;39m [35mo.s.test.context.TestContextManager[0;39m - Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [br.com.marcielli.bancom.BancoMApplicationTests@19b75b2b]
@@ -607,7 +607,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
-Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381)
@@ -636,7 +636,7 @@ Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Err
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
 	... 75 common frames omitted
-Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.raiseNoMatchingBeanFound(DefaultListableBeanFactory.java:2207)
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1630)
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1555)
@@ -739,7 +739,7 @@ java.lang.IllegalStateException: ApplicationContext failure threshold (1) exceed
 2025-04-29 06:07:19 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 06:07:19 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 06:07:19 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 06:07:19 [1;31mERROR[0;39m
@@ -751,12 +751,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 06:07:56 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -767,7 +767,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 06:07:56 [34mINFO [0;39m
 				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplicationTests[0;39m - The following 1 profile is active: "dev"
 2025-04-29 06:07:57 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.w.c.s.GenericWebApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.w.c.s.GenericWebApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 06:07:57 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.b.d.LoggingFailureAnalysisReporter[0;39m - 
 
@@ -777,12 +777,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 06:07:57 [31mWARN [0;39m
 				[36m[main][0;39m [35mo.s.test.context.TestContextManager[0;39m - Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [br.com.marcielli.bancom.BancoMApplicationTests@6d5f4900]
@@ -863,7 +863,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
-Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381)
@@ -892,7 +892,7 @@ Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Err
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
 	... 75 common frames omitted
-Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.raiseNoMatchingBeanFound(DefaultListableBeanFactory.java:2207)
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1630)
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1555)
@@ -995,7 +995,7 @@ java.lang.IllegalStateException: ApplicationContext failure threshold (1) exceed
 2025-04-29 06:11:29 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
 2025-04-29 06:11:29 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'br.com.marcielli.bancom.dao.RoleDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 06:11:29 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Stopping service [Tomcat]
 2025-04-29 06:11:29 [1;31mERROR[0;39m
@@ -1007,12 +1007,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' that could not be found.
+Parameter 0 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.RoleDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.RoleDao' in your configuration.
 
 2025-04-29 06:16:40 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -1037,7 +1037,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.RoleReposit
 2025-04-29 06:16:42 [34mINFO [0;39m
 				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
 2025-04-29 06:16:42 [31mWARN [0;39m
-				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 1: No qualifying bean of type 'br.com.marcielli.bancom.repository.UserRepositoryJDBC' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+				[36m[main][0;39m [35mo.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext[0;39m - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'adminUserConfig' defined in file [C:\Users\Marcielli\eclipse-workspace\BancoM\target\classes\br\com\marcielli\bancom\configuracao\AdminUserConfig.class]: Unsatisfied dependency expressed through constructor parameter 1: No qualifying bean of type 'br.com.marcielli.bancom.dao.UserDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
 2025-04-29 06:16:42 [34mINFO [0;39m
 				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Shutdown initiated...
 2025-04-29 06:16:42 [34mINFO [0;39m
@@ -1053,12 +1053,12 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 1 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.repository.UserRepositoryJDBC' that could not be found.
+Parameter 1 of constructor in br.com.marcielli.bancom.configuracao.AdminUserConfig required a bean of type 'br.com.marcielli.bancom.dao.UserDao' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'br.com.marcielli.bancom.repository.UserRepositoryJDBC' in your configuration.
+Consider defining a bean of type 'br.com.marcielli.bancom.dao.UserDao' in your configuration.
 
 2025-04-29 06:19:14 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
@@ -1115,7 +1115,7 @@ Consider defining a bean of type 'br.com.marcielli.bancom.repository.UserReposit
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=1, username=admin, password=$2a$10$z5uwBBu09gaLWFEo7b9Y.O8VprA.cYRduFODE4/I.UeMB7IBZY8T., user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -1124,7 +1124,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -1217,7 +1217,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=2, username=admin, password=$2a$10$gYOJTWOB/t4F0HBtuc7OcO0LFZ4d7gNO165rJHCBXl6bh.RpcINwW, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -1226,7 +1226,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -1319,7 +1319,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=3, username=admin, password=$2a$10$muJbeRSgk3Y.NJ9jAvyCNuURDkPF2fRqvAZ.Rizmu2o0fD6LquFXK, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -1328,7 +1328,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -1421,7 +1421,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=4, username=admin, password=$2a$10$ljBrbD.c2907bpIKe3RqnOb68ZMwbPomLElIVubTp0bskYLpHBxpq, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -1430,7 +1430,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -1523,7 +1523,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=5, username=admin, password=$2a$10$vLmHrcuKcw4B38pfWiNGmefGty9mVrDb0e2DcFCTbeN2SsM8n/hOO, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -1532,7 +1532,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -1615,7 +1615,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=6, username=admin, password=$2a$10$LhGTjbRRurt4zmMonMRU0O6n/mgg/VzZ.MbEL1cSTHff9J08MqJ/W, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -1624,7 +1624,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -1823,7 +1823,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=6, username=admin, password=$2a$10$LhGTjbRRurt4zmMonMRU0O6n/mgg/VzZ.MbEL1cSTHff9J08MqJ/W, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -1832,7 +1832,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -1996,7 +1996,7 @@ java.lang.IllegalStateException: ApplicationContext failure threshold (1) exceed
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=7, username=admin, password=$2a$10$N3fq5IRVw3JFoPuRPvNWsunqBdt1S9vjZze2bn9rX/dUKK0ljqT7q, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -2005,7 +2005,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -2204,7 +2204,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=7, username=admin, password=$2a$10$N3fq5IRVw3JFoPuRPvNWsunqBdt1S9vjZze2bn9rX/dUKK0ljqT7q, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -2213,7 +2213,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -2299,7 +2299,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=8, username=admin, password=$2a$10$DVXdsfOkDRkV9ALASuihB.850AUjzOEWbBU95zuTmPD/YW6XQ1bQm, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -2308,7 +2308,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -2507,7 +2507,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=8, username=admin, password=$2a$10$DVXdsfOkDRkV9ALASuihB.850AUjzOEWbBU95zuTmPD/YW6XQ1bQm, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -2516,7 +2516,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -2602,7 +2602,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=9, username=admin, password=$2a$10$TxzOSe30I539UjSkMMZ3v.dAyLaFTnttZ57/RW.BNtMZrMWYSNs5m, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -2611,7 +2611,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -2810,7 +2810,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=9, username=admin, password=$2a$10$TxzOSe30I539UjSkMMZ3v.dAyLaFTnttZ57/RW.BNtMZrMWYSNs5m, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -2819,7 +2819,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -2915,7 +2915,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=10, username=admin, password=$2a$10$0NyuDPitYRhRpKZSUuuoPu1I.hflpFIdj.dhC/26jzr33Q25XoVFq, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -2924,7 +2924,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -3007,7 +3007,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=11, username=admin, password=$2a$10$qRboY410yzqKw2Ovj5vzsesr4PVqRi3IINyyYSxco.RBx0hBTgocy, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -3016,7 +3016,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -3215,7 +3215,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=11, username=admin, password=$2a$10$qRboY410yzqKw2Ovj5vzsesr4PVqRi3IINyyYSxco.RBx0hBTgocy, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -3224,7 +3224,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -3320,7 +3320,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=12, username=admin, password=$2a$10$tvt.XDAfPTXD71I1UZcuw.4SNqWUZO1yZPrykLZMJbQMR6SDbeJAu, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -3329,7 +3329,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -3412,7 +3412,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=13, username=admin, password=$2a$10$LHYsf2F18uMMJLpC2Z7lNOt0oW3KbhiDvo0jaByA.94RN7/paOPvm, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -3421,7 +3421,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -3620,7 +3620,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=13, username=admin, password=$2a$10$LHYsf2F18uMMJLpC2Z7lNOt0oW3KbhiDvo0jaByA.94RN7/paOPvm, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -3629,7 +3629,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -3715,7 +3715,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=14, username=admin, password=$2a$10$/IalCVzO9RYG4UnLCGmwuOyvB0bMkleGM21j1klzmyoqFeQWcrsta, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -3724,7 +3724,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -3925,7 +3925,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=14, username=admin, password=$2a$10$/IalCVzO9RYG4UnLCGmwuOyvB0bMkleGM21j1klzmyoqFeQWcrsta, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -3934,7 +3934,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -4020,7 +4020,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=15, username=admin, password=$2a$10$DFj2RD.5DOHeSAtQ7BR2X.iK8IhHDMWgAn5Ndu1Xc2ESMxv8QZhJ6, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -4029,7 +4029,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -4228,7 +4228,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=15, username=admin, password=$2a$10$DFj2RD.5DOHeSAtQ7BR2X.iK8IhHDMWgAn5Ndu1Xc2ESMxv8QZhJ6, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -4237,7 +4237,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -4323,7 +4323,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=16, username=admin, password=$2a$10$Jj8VhcAKGiYb4J0j1kDfPOo6JyajDDfbG1M.gdheZovIIrDk3aZ2K, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -4332,7 +4332,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -4531,7 +4531,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=16, username=admin, password=$2a$10$Jj8VhcAKGiYb4J0j1kDfPOo6JyajDDfbG1M.gdheZovIIrDk3aZ2K, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -4540,7 +4540,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -4626,7 +4626,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=17, username=admin, password=$2a$10$BImvyydZT8vlQLFfTOjnou3vsPu9o.0DRn63vLXbt/woLldu6CXTm, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -4635,7 +4635,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -4834,7 +4834,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=17, username=admin, password=$2a$10$BImvyydZT8vlQLFfTOjnou3vsPu9o.0DRn63vLXbt/woLldu6CXTm, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -4843,7 +4843,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -4929,7 +4929,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=18, username=admin, password=$2a$10$9neGKlM7idFrbPvV3lkGouEcTHeglMqiEjgGZbsMtmNtVnFbGjHFK, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -4938,7 +4938,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -5139,7 +5139,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=18, username=admin, password=$2a$10$9neGKlM7idFrbPvV3lkGouEcTHeglMqiEjgGZbsMtmNtVnFbGjHFK, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -5148,7 +5148,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -5244,7 +5244,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=19, username=admin, password=$2a$10$m9Pc.G4HgcKli9bvGa3UreZZNUFW4OEC9CZ3agTT2d1YtNoH0jsRK, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -5253,7 +5253,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -5336,7 +5336,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=20, username=admin, password=$2a$10$vSiS2MgM2GfikzA5jpvVR.ozOaFyN4ug.yek9L.1f/GFJrRspTuzW, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -5345,7 +5345,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -5544,7 +5544,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=20, username=admin, password=$2a$10$vSiS2MgM2GfikzA5jpvVR.ozOaFyN4ug.yek9L.1f/GFJrRspTuzW, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -5553,7 +5553,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -5649,7 +5649,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=21, username=admin, password=$2a$10$IQZVg1iqOtw7pCfPTRYevu6lO3Zkj3A.d7AklPtmsxiLsRzH6y92q, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -5658,7 +5658,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -5751,7 +5751,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=22, username=admin, password=$2a$10$3/QrhugD3jHsmnxPnJ8eaeNSfwYajaRWcpNJA.8I9zOaAoTIM9XFm, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -5760,7 +5760,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -5853,7 +5853,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=23, username=admin, password=$2a$10$9na/z/R7j48jNUMbjcrf3eR2xp2gij0YFtBWB567is1AK0p14hmhK, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -5862,7 +5862,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -5955,7 +5955,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=24, username=admin, password=$2a$10$ziVsGtZN6FbA4Xs1ldKzzO22eA4EA9ZrH3TiYMHkaJAHKlUFFLACC, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -5964,7 +5964,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -6057,7 +6057,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=25, username=admin, password=$2a$10$IMcHmD9dREEaD4tR65pSM.DGHiGXse3smICh/FXKUAUQaEBQThXUO, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -6066,7 +6066,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -6149,7 +6149,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=26, username=admin, password=$2a$10$EfX8L3wFhDJJCRB6vN0u9.NA9sQUM0ooiCpuaFbZvLtSNa0J7bcpK, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -6158,7 +6158,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -6359,7 +6359,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=26, username=admin, password=$2a$10$EfX8L3wFhDJJCRB6vN0u9.NA9sQUM0ooiCpuaFbZvLtSNa0J7bcpK, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -6368,7 +6368,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -6464,7 +6464,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=27, username=admin, password=$2a$10$oBqfQvUxzBtuAI/3o7qowOa3UsLXxf/gPzAtzI9RLqcI0CR7yWVju, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -6473,7 +6473,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -6556,7 +6556,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=28, username=admin, password=$2a$10$SYwCL/6BIvPYAEVWJvPqx.nKhK0LmDF0KWd2WabYDcll7MXmD68lG, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -6565,7 +6565,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -6766,7 +6766,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=28, username=admin, password=$2a$10$SYwCL/6BIvPYAEVWJvPqx.nKhK0LmDF0KWd2WabYDcll7MXmD68lG, user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -6775,7 +6775,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -6871,7 +6871,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=29, username=admin, password=$2a$10$f1me7TN2d2MMObSGaoVi4OyPEMXlSie.EXCwtvS1IGSLg81UTrcV., user_ativo=true}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:41)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:41)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -6880,7 +6880,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -6975,10 +6975,10 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 2025-04-29 07:40:00 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "java.lang.Long.longValue()" because the return value of "br.com.marcielli.bancom.entity.Cliente.getCpf()" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.lambda$save$1(UserRepositoryJDBC.java:59)
+	at br.com.marcielli.bancom.dao.UserDao.lambda$save$1(UserRepositoryJDBC.java:59)
 	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:656)
 	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1003)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:56)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:56)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -6987,7 +6987,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.longValue()" becau
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -7078,10 +7078,10 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.longValue()" becau
 2025-04-29 07:59:07 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "java.lang.Long.longValue()" because the return value of "br.com.marcielli.bancom.entity.Cliente.getCpf()" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.lambda$save$0(UserRepositoryJDBC.java:57)
+	at br.com.marcielli.bancom.dao.UserDao.lambda$save$0(UserRepositoryJDBC.java:57)
 	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:656)
 	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1003)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:54)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:54)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -7090,7 +7090,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.longValue()" becau
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -7289,10 +7289,10 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 Caused by: java.lang.NullPointerException: Cannot invoke "java.lang.Long.longValue()" because the return value of "br.com.marcielli.bancom.entity.Cliente.getCpf()" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.lambda$save$0(UserRepositoryJDBC.java:57)
+	at br.com.marcielli.bancom.dao.UserDao.lambda$save$0(UserRepositoryJDBC.java:57)
 	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:656)
 	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1003)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:54)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:54)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -7301,7 +7301,7 @@ Caused by: java.lang.NullPointerException: Cannot invoke "java.lang.Long.longVal
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:66)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:55)
@@ -7407,7 +7407,7 @@ Caused by: java.lang.NullPointerException: Cannot invoke "java.lang.Long.longVal
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=33, nome=Admin, cpf=12345678901, cliente_ativo=true, user_id=32}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:69)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:69)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -7416,7 +7416,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -7509,7 +7509,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=35, nome=Admin, cpf=12345678901, cliente_ativo=true, user_id=33}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:69)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:69)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -7518,7 +7518,7 @@ org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method sh
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -7719,7 +7719,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKey method should only be used when a single key is returned. The current key entry contains multiple keys: [{id=35, nome=Admin, cpf=12345678901, cliente_ativo=true, user_id=33}]
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKeyAs(GeneratedKeyHolder.java:75)
 	at org.springframework.jdbc.support.GeneratedKeyHolder.getKey(GeneratedKeyHolder.java:65)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:69)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:69)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -7728,7 +7728,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -7840,7 +7840,7 @@ Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: The getKe
 2025-04-29 08:06:57 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -7849,7 +7849,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -7948,7 +7948,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 2025-04-29 08:07:19 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -7957,7 +7957,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -8156,7 +8156,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 Caused by: java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -8165,7 +8165,7 @@ Caused by: java.lang.NullPointerException: Cannot invoke "br.com.marcielli.banco
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -8277,7 +8277,7 @@ Caused by: java.lang.NullPointerException: Cannot invoke "br.com.marcielli.banco
 2025-04-29 08:10:14 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -8286,7 +8286,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -8385,7 +8385,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 2025-04-29 08:21:20 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -8394,7 +8394,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -8593,7 +8593,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 Caused by: java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -8602,7 +8602,7 @@ Caused by: java.lang.NullPointerException: Cannot invoke "br.com.marcielli.banco
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -8714,7 +8714,7 @@ Caused by: java.lang.NullPointerException: Cannot invoke "br.com.marcielli.banco
 2025-04-29 08:22:42 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -8723,7 +8723,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -8822,7 +8822,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 2025-04-29 08:28:26 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -8831,7 +8831,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.En
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -9030,7 +9030,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMerge
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 Caused by: java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Endereco.getRua()" because "endereco" is null
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:74)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:74)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -9039,7 +9039,7 @@ Caused by: java.lang.NullPointerException: Cannot invoke "br.com.marcielli.banco
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:67)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:56)
@@ -9514,7 +9514,7 @@ org.springframework.dao.DuplicateKeyException: PreparedStatementCallback; SQL [I
 	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:972)
 	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1016)
 	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1026)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC.save(ClienteRepositoryJDBC.java:35)
+	at br.com.marcielli.bancom.dao.ClienteDao.save(ClienteRepositoryJDBC.java:35)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -9523,7 +9523,7 @@ org.springframework.dao.DuplicateKeyException: PreparedStatementCallback; SQL [I
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.ClienteDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:86)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:73)
@@ -9620,7 +9620,7 @@ Caused by: org.postgresql.util.PSQLException: ERRO: duplicar valor da chave viol
 2025-04-29 09:06:18 [1;31mERROR[0;39m
 				[36m[main][0;39m [35mo.s.boot.SpringApplication[0;39m - Application run failed
 java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.User.getId()" because the return value of "br.com.marcielli.bancom.entity.Cliente.getUser()" is null
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC.save(ClienteRepositoryJDBC.java:35)
+	at br.com.marcielli.bancom.dao.ClienteDao.save(ClienteRepositoryJDBC.java:35)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -9629,7 +9629,7 @@ java.lang.NullPointerException: Cannot invoke "br.com.marcielli.bancom.entity.Us
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.ClienteDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:76)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:73)
@@ -10256,7 +10256,7 @@ org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad 
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:767)
 	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:889)
 	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:918)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC.save(UserRepositoryJDBC.java:32)
+	at br.com.marcielli.bancom.dao.UserDao.save(UserRepositoryJDBC.java:32)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -10265,7 +10265,7 @@ org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad 
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:727)
-	at br.com.marcielli.bancom.repository.UserRepositoryJDBC$$SpringCGLIB$$0.save(<generated>)
+	at br.com.marcielli.bancom.dao.UserDao$$SpringCGLIB$$0.save(<generated>)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.lambda$run$1(AdminUserConfig.java:98)
 	at java.base/java.util.Optional.ifPresentOrElse(Optional.java:198)
 	at br.com.marcielli.bancom.configuracao.AdminUserConfig.run(AdminUserConfig.java:83)
@@ -12420,7 +12420,7 @@ org.postgresql.util.PSQLException: ERRO: coluna c.endereco_id não existe
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:754)
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:767)
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:825)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC.findById(ClienteRepositoryJDBC.java:48)
+	at br.com.marcielli.bancom.dao.ClienteDao.findById(ClienteRepositoryJDBC.java:48)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -12429,7 +12429,7 @@ org.postgresql.util.PSQLException: ERRO: coluna c.endereco_id não existe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC$$SpringCGLIB$$0.findById(<generated>)
+	at br.com.marcielli.bancom.dao.ClienteDao$$SpringCGLIB$$0.findById(<generated>)
 	at br.com.marcielli.bancom.service.UserClienteService.getClienteById(UserClienteService.java:86)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
@@ -12590,7 +12590,7 @@ org.postgresql.util.PSQLException: ERRO: coluna c.endereco_id não existe
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:754)
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:767)
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:825)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC.findById(ClienteRepositoryJDBC.java:48)
+	at br.com.marcielli.bancom.dao.ClienteDao.findById(ClienteRepositoryJDBC.java:48)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -12599,7 +12599,7 @@ org.postgresql.util.PSQLException: ERRO: coluna c.endereco_id não existe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC$$SpringCGLIB$$0.findById(<generated>)
+	at br.com.marcielli.bancom.dao.ClienteDao$$SpringCGLIB$$0.findById(<generated>)
 	at br.com.marcielli.bancom.service.UserClienteService.getClienteById(UserClienteService.java:86)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
@@ -12849,7 +12849,7 @@ org.postgresql.util.PSQLException: ERRO: coluna c.endereco_id não existe
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:754)
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:767)
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:825)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC.findById(ClienteRepositoryJDBC.java:50)
+	at br.com.marcielli.bancom.dao.ClienteDao.findById(ClienteRepositoryJDBC.java:50)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -12858,7 +12858,7 @@ org.postgresql.util.PSQLException: ERRO: coluna c.endereco_id não existe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC$$SpringCGLIB$$0.findById(<generated>)
+	at br.com.marcielli.bancom.dao.ClienteDao$$SpringCGLIB$$0.findById(<generated>)
 	at br.com.marcielli.bancom.service.UserClienteService.getClienteById(UserClienteService.java:88)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
@@ -12998,7 +12998,7 @@ org.postgresql.util.PSQLException: ERRO: coluna c.endereco_id não existe
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:754)
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:767)
 	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:825)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC.findById(ClienteRepositoryJDBC.java:50)
+	at br.com.marcielli.bancom.dao.ClienteDao.findById(ClienteRepositoryJDBC.java:50)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
@@ -13007,7 +13007,7 @@ org.postgresql.util.PSQLException: ERRO: coluna c.endereco_id não existe
 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728)
-	at br.com.marcielli.bancom.repository.ClienteRepositoryJDBC$$SpringCGLIB$$0.findById(<generated>)
+	at br.com.marcielli.bancom.dao.ClienteDao$$SpringCGLIB$$0.findById(<generated>)
 	at br.com.marcielli.bancom.service.UserClienteService.update(UserClienteService.java:99)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)

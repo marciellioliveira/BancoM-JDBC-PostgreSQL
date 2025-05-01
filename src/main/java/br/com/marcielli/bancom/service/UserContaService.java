@@ -1,53 +1,42 @@
 package br.com.marcielli.bancom.service;
 
-import java.math.BigDecimal;
 import java.util.*;
 
+import br.com.marcielli.bancom.dao.ClienteDao;
 import br.com.marcielli.bancom.entity.*;
-import br.com.marcielli.bancom.repository.ClienteRepositoryJDBC;
-import br.com.marcielli.bancom.repository.ContaRepositoryJDBC;
+import br.com.marcielli.bancom.dao.ContaDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
-import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
-import br.com.marcielli.bancom.dto.security.ConversionResponseDTO;
-import br.com.marcielli.bancom.dto.security.UserContaDepositoDTO;
-import br.com.marcielli.bancom.dto.security.UserContaPixDTO;
-import br.com.marcielli.bancom.dto.security.UserContaSaqueDTO;
-import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.enuns.TipoConta;
-import br.com.marcielli.bancom.enuns.TipoTransferencia;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
-import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
-import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
-import br.com.marcielli.bancom.exception.TaxaDeCambioException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
 public class UserContaService {
 
-	private final ContaRepositoryJDBC contaRepositoryJDBC;
+	private final ContaDao contaDao;
 	private final ExchangeRateService exchangeRateService;
-	private final ClienteRepositoryJDBC clienteRepositoryJDBC;
+	private final ClienteDao clienteDao;
 
 	private Random random = new Random();
 
 	private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
 
-	public UserContaService(ContaRepositoryJDBC contaRepositoryJDBC,
-			ExchangeRateService exchangeRateService, ClienteRepositoryJDBC clienteRepositoryJDBC) {
-		this.contaRepositoryJDBC = contaRepositoryJDBC;
+	public UserContaService(ContaDao contaDao,
+							ExchangeRateService exchangeRateService, ClienteDao clienteDao) {
+		this.contaDao = contaDao;
 		this.exchangeRateService = exchangeRateService;
-		this.clienteRepositoryJDBC = clienteRepositoryJDBC;
+		this.clienteDao = clienteDao;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Conta save(ContaCreateDTO dto) {
 
-		Cliente cliente = clienteRepositoryJDBC.findById(dto.idUsuario())
+		Cliente cliente = clienteDao.findById(dto.idUsuario())
 				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 
 		if (!cliente.isClienteAtivo()) {
@@ -88,7 +77,7 @@ public class UserContaService {
 		conta.setStatus(true);
 		conta.setTaxas(taxas);
 
-		return contaRepositoryJDBC.save(conta);
+		return contaDao.save(conta);
 	}
 
 

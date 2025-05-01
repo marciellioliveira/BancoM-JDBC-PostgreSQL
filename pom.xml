@@ -28,6 +28,7 @@
 		<url/>
 	</scm>
 	<properties>
+		<exec.mainClass>br.com.marcielli.BancoMApplication</exec.mainClass>
 		<java.version>21</java.version>
 	</properties>
 	<dependencies>
@@ -75,57 +76,34 @@
 			<artifactId>modelmapper</artifactId>
 			<version>3.1.1</version>
 		</dependency>
-		
-		<dependency>
-	      <groupId>org.springframework.boot</groupId>
-	      <artifactId>spring-boot-starter-security</artifactId>
-	    </dependency>
-	    
-	    <dependency>
-	      <groupId>org.springframework.security</groupId>
-	      <artifactId>spring-security-test</artifactId>
-	      <scope>test</scope>
-	    </dependency>
-	    
+
 		
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 
 		</dependency>
+
+
 		
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
 		    <version>3.13.0</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-oauth2-jose</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		
+
 		<dependency>
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-api</artifactId>
 		</dependency>
 		
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-api</artifactId>
-		    <version>0.11.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-impl</artifactId>
-		    <version>0.11.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-jackson</artifactId>
-		    <version>0.11.5</version>
-		    <scope>runtime</scope>
-		</dependency>
+
 
 
 		<dependency>
@@ -152,7 +130,9 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>3.0.8</version> <!-- Specify the version explicitly -->
-
+				<configuration>
+					<mainClass>br.com.marcielli.BancoMApplication</mainClass>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -161,6 +141,15 @@
 				<version>3.2.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<mainClass>br.com.marcielli.BancoMApplication</mainClass> <!-- Substitua pelo seu caminho -->
 				</configuration>
 			</plugin>
 		

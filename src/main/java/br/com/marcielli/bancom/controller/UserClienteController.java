@@ -2,8 +2,7 @@ package br.com.marcielli.bancom.controller;
 
 import java.util.List;
 
-import br.com.marcielli.bancom.repository.UserRepositoryJDBC;
-import org.springframework.context.annotation.Profile;
+import br.com.marcielli.bancom.dao.UserDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,22 +14,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import br.com.marcielli.bancom.dto.security.UserClienteResponseDTO;
 import br.com.marcielli.bancom.dto.security.UserCreateDTO;
-import br.com.marcielli.bancom.entity.Cliente;
-import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.service.UserClienteService;
 
 @RestController
 public class UserClienteController {
 
-	private final UserRepositoryJDBC userRepositoryJDBC;
+	private final UserDao userDao;
 	private final UserClienteService clienteService;
 
-	public UserClienteController(UserClienteService clienteService, UserRepositoryJDBC userRepositoryJDBC) {
+	public UserClienteController(UserClienteService clienteService, UserDao userDao) {
 		this.clienteService = clienteService;
-		this.userRepositoryJDBC = userRepositoryJDBC;
+		this.userDao = userDao;
 	}
 
 	@PostMapping("/users")
@@ -90,7 +86,7 @@ public class UserClienteController {
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
 		try {
-			boolean deleted = userRepositoryJDBC.delete(id);
+			boolean deleted = userDao.delete(id);
 			if (deleted) {
 				return ResponseEntity.ok("Usuário deletado com sucesso.");
 			} else {

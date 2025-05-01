@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import br.com.marcielli.bancom.repository.*;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import br.com.marcielli.bancom.dao.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,22 +19,21 @@ import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.validation.ValidadorCPF;
 
-@Profile("cliente")
 @Service
 public class UserClienteService {
 
-	private final UserRepositoryJDBC userRepositoryJDBC;
-	private final ClienteRepositoryJDBC clienteRepositoryJDBC;
-	private final RoleRepositoryJDBC roleRepositoryJDBC;
-	private final BCryptPasswordEncoder passwordEncoder;
+	private final UserDao userDao;
+	private final ClienteDao clienteDao;
+	private final RoleDao roleDao;
+	//private final BCryptPasswordEncoder passwordEncoder;
 
-	public UserClienteService(UserRepositoryJDBC userRepositoryJDBC, RoleRepositoryJDBC roleRepositoryJDBC,
-			BCryptPasswordEncoder passwordEncoder, ClienteRepositoryJDBC clienteRepositoryJDBC) {
-		this.userRepositoryJDBC = userRepositoryJDBC;
-		this.roleRepositoryJDBC = roleRepositoryJDBC;
-		this.passwordEncoder = passwordEncoder;
-		this.clienteRepositoryJDBC = clienteRepositoryJDBC;
+	public UserClienteService(UserDao userDao, RoleDao roleDao, ClienteDao clienteDao) {
+		this.userDao = userDao;
+		this.roleDao = roleDao;
+		this.clienteDao = clienteDao;
 	}
+
+
 
 	@Transactional
 	public User save(UserCreateDTO cliente,  JwtAuthenticationToken token) {
@@ -48,20 +45,20 @@ public class UserClienteService {
 			}
 		}
 
-		if(clienteRepositoryJDBC.cpfExists(cliente.cpf())){
+		if(clienteDao.cpfExists(cliente.cpf())){
 			throw new ClienteCpfInvalidoException("CPF número "+cliente.cpf()+" já é cadastrado no sistema.");
 		}
 
-		var userFromDb = userRepositoryJDBC.findByUsername(cliente.username());
+		var userFromDb = userDao.findByUsername(cliente.username());
 		if (userFromDb.isPresent()) {
 			throw new ClienteEncontradoException("Usuário já existe.");
 		}
 
 		var user = new User();
 		user.setUsername(cliente.username());
-		user.setPassword(passwordEncoder.encode(cliente.password()));
-
-		var basicRole = roleRepositoryJDBC.findByName(Role.Values.BASIC.name());
+		//user.setPassword(passwordEncoder.encode(cliente.password()));
+		user.setPassword(cliente.password());
+		var basicRole = roleDao.findByName(Role.Values.BASIC.name());
 		user.setRoles(Set.of(basicRole));
 
 		Cliente client = new Cliente();
@@ -81,43 +78,35 @@ public class UserClienteService {
 		client.setUser(user);
 		user.setCliente(client);
 
-		return userRepositoryJDBC.save(user);
+		return userDao.save(user);
 	}
 
 	@Transactional
 	public User getUserById(Long id) {
-		return userRepositoryJDBC.findById(id)
+		return userDao.findById(id)
 				.orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
 	}
 
 
-
-
-//	@Transactional
-//	public User getClienteById(Long id) {
-//		//Fazer ele virar cliente aqui e devolver cliente
-//		return userRepositoryJDBC.findById(id).orElse(null);
-//	}
-
 	@Transactional
 	public List<User> getAllUsers(){
-		return userRepositoryJDBC.findAll();
+		return userDao.findAll();
 	}
 
 
 	@Transactional
 	public User update(Long id, UserCreateDTO dto) {
 		// Verifica se o usuário existe
-		User user = userRepositoryJDBC.findById(id)
+		User user = userDao.findById(id)
 				.orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado"));
 
 		// Verifica se o CPF já está em uso
-		Optional<User> existingUserWithCpf = userRepositoryJDBC.findByCpf(dto.cpf());
+		Optional<User> existingUserWithCpf = userDao.findByCpf(dto.cpf());
 		if (existingUserWithCpf.isPresent() && !existingUserWithCpf.get().getId().equals(user.getId())) {
 			throw new ClienteEncontradoException("CPF é único e não pode ser atualizado. " + dto.cpf());
 		}
 
-		Optional<User> existingUserWithUsername = userRepositoryJDBC.findByUsername(dto.username());
+		Optional<User> existingUserWithUsername = userDao.findByUsername(dto.username());
 		if(existingUserWithUsername.isPresent() && !existingUserWithUsername.get().equals(user.getId())){
 			throw new ClienteEncontradoException("Já existe um cliente com esse username. " + dto.username());
 		}
@@ -138,17 +127,17 @@ public class UserClienteService {
 		}
 
 		user.setUsername(dto.username());
-		user.setPassword(passwordEncoder.encode(dto.password())); // Criptografa a senha
-
+//		user.setPassword(passwordEncoder.encode(dto.password())); // Criptografa a senha
+		user.setPassword(dto.password()); // Criptografa a senha
 		// Chama o metodo de atualização no repositório
-		userRepositoryJDBC.update(user); // Atualiza o usuário no banco
+		userDao.update(user); // Atualiza o usuário no banco
 
 		return user;
 	}
 
 	@Transactional
 	public boolean deleteUser(Long id) {
-		return userRepositoryJDBC.delete(id);
+		return userDao.delete(id);
 	}
 
 }

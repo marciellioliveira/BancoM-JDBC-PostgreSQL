@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
-public class ModelMapperConfig { //Essa classe vai produzir um Bean com o método que vamos implementar.
+public class ModelMapperConfig { //Essa classe vai produzir um Bean com o metodo que vamos implementar.
 	//Ela fará a ligação entre ClienteCreateDTO e ClienteResponseDTO
 	
 	@Bean

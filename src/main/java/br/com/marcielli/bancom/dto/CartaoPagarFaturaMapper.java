@@ -1,4 +1,4 @@
-package br.com.marcielli.BancoM.dto;
+package br.com.marcielli.bancom.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
