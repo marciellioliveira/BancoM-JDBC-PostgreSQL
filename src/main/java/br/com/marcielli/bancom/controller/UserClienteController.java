@@ -3,8 +3,8 @@ package br.com.marcielli.bancom.controller;
 import java.util.List;
 
 import br.com.marcielli.bancom.dao.UserDao;
+import org.springframework.security.core.Authentication;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -87,7 +87,23 @@ public class UserClienteController {
 
 	@DeleteMapping("/users/{id}")
 	@PreAuthorize("hasRole('ADMIN') or @userSecurityService.checkUserId(authentication, #id)")
-	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id, Authentication authentication) {
+		
+		//Para todos os controlles e autenticação entre admin e basic
+		// Pegando a role do usuário autenticado
+	    boolean isAdmin = authentication.getAuthorities().stream()
+	            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+	    
+	    // Pegando o usuário autenticado (username)
+	    String loggedUser = authentication.getName();
+	    
+	    // Pegando o usuário a ser deletado
+	    User userToDelete = clienteService.getUserById(id); 
+	    
+	    if (isAdmin && userToDelete != null && userToDelete.getUsername().equals(loggedUser)) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Admin não pode deletar sua própria conta.");
+	    }		
+	  //Fim
 		
 		try {
 			boolean deleted = userDao.delete(id);
