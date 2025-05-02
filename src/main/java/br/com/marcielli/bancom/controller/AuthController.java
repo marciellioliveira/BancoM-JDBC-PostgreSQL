@@ -33,7 +33,20 @@ public class AuthController {
     @PostMapping("/auth/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequestDTO loginRequest) {
     	System.out.println("Tentando login para: " + loginRequest.username());
+    	
+    	// Carregar o usuário do banco pelo username
+        User user = userClienteService.findByUsername(loginRequest.username());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado");
+        }
+        
+        // Verifica se o usuário foi excluído ou está inativo
+        if (!user.isUserAtivo()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário está inativo");
+        }
+        
         try {
+        
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginRequest.username(),
@@ -42,12 +55,6 @@ public class AuthController {
             );
             
             System.out.println("Autenticação bem-sucedida para: " + loginRequest.username());
-
-            // Carregar o usuário do banco pelo username
-            User user = userClienteService.findByUsername(loginRequest.username());
-            if (user == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado");
-            }
 
             // Gerar token usando JwtService
             String token = jwtService.gerarToken(user);

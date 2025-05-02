@@ -19,7 +19,6 @@ public class UserContaController {
 		this.contaService = contaService;
 	}
 
-
 	@PostMapping("/contas")
 	@PreAuthorize("hasRole('ADMIN') or (@userSecurityService.checkUserId(authentication, #dto.userId))")
 	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto) {

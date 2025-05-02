@@ -1,8 +1,11 @@
 package br.com.marcielli.bancom.configuracao;
 
+import org.apache.catalina.core.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider; 
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -58,30 +61,19 @@ public class SecurityConfig {
                     // Permite o cadastro de usuários (POST)
                     .requestMatchers(HttpMethod.POST, "/users").permitAll()
                     
-                 // Admin pode acessar e modificar todos os dados
+                    // Admin pode acessar e modificar todos os dados
                     .requestMatchers("/users").hasRole("ADMIN")   // Para listar usuários
                     
-                 // Admin pode acessar e modificar qualquer usuário específico
+                    // Admin pode acessar e modificar qualquer usuário específico
                     .requestMatchers("/users/{id}").hasRole("ADMIN")  // Para acessar um usuário específico
                     .requestMatchers(HttpMethod.PUT, "/users/{id}").hasRole("ADMIN") // Para editar um usuário específico
-                    .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN") // Para deletar um usuário específico
+                    .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN") // Para deletar um usuário específico      
                     
-                   
                     
-                 // Controle de acesso para rotas específicas de ADMIN e BASIC
-                    .requestMatchers("/admin/**").hasRole("ADMIN")  // Apenas ADMIN pode acessar rotas de admin
-            		
-            		
-            		
-//                .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
-//                .requestMatchers("/favicon.ico", "/error").permitAll()
-//                .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()            
-//                .requestMatchers(HttpMethod.POST, "/users").permitAll() 
-//                .requestMatchers("/users").hasRole("ADMIN")    
-//                .requestMatchers("/admin/**").hasRole("ADMIN")
-//                .requestMatchers("/whitelist.txt").permitAll()
-//                .requestMatchers("/user").hasRole("BASIC")
-//                .requestMatchers("/admin").hasRole("ADMIN")
+                    
+                    //Acesso basic - Cliente
+                    .requestMatchers(HttpMethod.GET, "/users/{id}").hasRole("BASIC")
+                    
                 .anyRequest().authenticated())
             .httpBasic(basic -> basic.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -96,14 +88,9 @@ public class SecurityConfig {
 	} // ele vai validar se o usuário existe e se a senha tá certa, já faz isso
 		// automático, pq já é configurado pelo próprio String
 
-
-	
-//	@Bean
-//    public AuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(usuarioService);
-//        authProvider.setPasswordEncoder(passwordEncoder);
-//        return authProvider;
-//    }
+	@Bean
+	public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
+	    return new DefaultMethodSecurityExpressionHandler();
+	}
 
 }

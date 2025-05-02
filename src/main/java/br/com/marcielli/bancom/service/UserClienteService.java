@@ -7,6 +7,9 @@ import java.util.Set;
 import br.com.marcielli.bancom.dao.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,113 +32,109 @@ import jakarta.annotation.PostConstruct;
 
 @Service
 public class UserClienteService implements UserDetailsService {
-	
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	private final UserDao userDao; // e devolver pro Spring Security pra fazer a autenticação
 	private final ClienteDao clienteDao;
 	private final RoleDao roleDao;
-	//private final BCryptPasswordEncoder passwordEncoder;
+	// private final BCryptPasswordEncoder passwordEncoder;
 
 	public UserClienteService(UserDao userDao, RoleDao roleDao, ClienteDao clienteDao) {
 		this.userDao = userDao;
 		this.roleDao = roleDao;
 		this.clienteDao = clienteDao;
 	}
-	
+
 	@PostConstruct
-    @Transactional
-    public void initAdminUser() {
-        createRoleIfNotExists("ADMIN", 1L);
-        createRoleIfNotExists("BASIC", 2L);
+	@Transactional
+	public void initAdminUser() {
+		createRoleIfNotExists("ADMIN", 1L);
+		createRoleIfNotExists("BASIC", 2L);
 
-        Cliente clienteAdmin = new Cliente();
-        clienteAdmin.setClienteAtivo(true);
-        clienteAdmin.setNome("Admin");
+		Cliente clienteAdmin = new Cliente();
+		clienteAdmin.setClienteAtivo(true);
+		clienteAdmin.setNome("Admin");
 
-        Role roleAdmin = roleDao.findByName(Role.Values.ADMIN.name());
-        if (roleAdmin == null) {
-            throw new RuntimeException("Role ADMIN não encontrada");
-        }
+		Role roleAdmin = roleDao.findByName(Role.Values.ADMIN.name());
+		if (roleAdmin == null) {
+			throw new RuntimeException("Role ADMIN não encontrada");
+		}
 
-        var userAdmin = userDao.findByUsername("admin");
+		var userAdmin = userDao.findByUsername("admin");
 
-        userAdmin.ifPresentOrElse(user -> {
-            System.err.println("Admin já existe.");
-        }, () -> {
-            var user = new User();
-            user.setUsername("admin");
-            user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta"));
-            user.setUserAtivo(true);
-            user.setRole(roleAdmin.getName()); // Definir role como String ("ADMIN")
-            user.setCliente(clienteAdmin);
-            clienteAdmin.setUser(user);
+		userAdmin.ifPresentOrElse(user -> {
+			System.err.println("Admin já existe.");
+		}, () -> {
+			var user = new User();
+			user.setUsername("admin");
+			user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta"));
+			user.setUserAtivo(true);
+			user.setRole(roleAdmin.getName()); // Definir role como String ("ADMIN")
+			user.setCliente(clienteAdmin);
+			clienteAdmin.setUser(user);
 
-            userDao.save(user); // UserDao já insere em user_roles
-            System.err.println("Usuário admin criado com sucesso!");
-        });
-    }
-	
+			userDao.save(user); // UserDao já insere em user_roles
+			System.err.println("Usuário admin criado com sucesso!");
+		});
+	}
+
 	private void createRoleIfNotExists(String name, Long id) {
-        Role existingRole = roleDao.findByName(name);
-        if (existingRole == null) {
-            Role role = new Role();
-            role.setId(id);
-            role.setName(name);
-            roleDao.save(role);
-        }
-    }
-	
+		Role existingRole = roleDao.findByName(name);
+		if (existingRole == null) {
+			Role role = new Role();
+			role.setId(id);
+			role.setName(name);
+			roleDao.save(role);
+		}
+	}
+
 	@Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userDao.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
-        return org.springframework.security.core.userdetails.User.builder()
-            .username(user.getUsername())
-            .password(user.getPassword())
-            .roles(user.getRole())
-            .build();
-    }
-	
+		return org.springframework.security.core.userdetails.User.builder().username(user.getUsername())
+				.password(user.getPassword()).roles(user.getRole()).build();
+	}
+
 	public User findByUsername(String username) {
-        return userDao.findByUsername(username).orElse(null);
-    }
-	
+		return userDao.findByUsername(username).orElse(null);
+	}
+
 	public User save(UserCreateDTO dto) {
-        User user = new User();
-        user.setUsername(dto.username());
-        user.setPassword(passwordEncoder.encode(dto.password()));
-        user.setUserAtivo(true);
-        user.setRole("BASIC");
+		User user = new User();
+		user.setUsername(dto.username());
+		user.setPassword(passwordEncoder.encode(dto.password()));
+		user.setUserAtivo(true);
+		user.setRole("BASIC");
 
-        Cliente cliente = new Cliente();
-        cliente.setNome(dto.nome());
-        cliente.setCpf(dto.cpf());
-        cliente.setClienteAtivo(true);
-        cliente.setUser(user);
-        user.setCliente(cliente);
+		Cliente cliente = new Cliente();
+		cliente.setNome(dto.nome());
+		cliente.setCpf(dto.cpf());
+		cliente.setClienteAtivo(true);
+		cliente.setUser(user);
+		user.setCliente(cliente);
 
-        Endereco endereco = new Endereco();
-        endereco.setRua(dto.rua());
-        endereco.setNumero(dto.numero());
-        endereco.setBairro(dto.bairro());
-        endereco.setCidade(dto.cidade());
-        endereco.setEstado(dto.estado());
-        endereco.setComplemento(dto.complemento());
-        endereco.setCep(dto.cep());
-        cliente.setEndereco(endereco);
+		Endereco endereco = new Endereco();
+		endereco.setRua(dto.rua());
+		endereco.setNumero(dto.numero());
+		endereco.setBairro(dto.bairro());
+		endereco.setCidade(dto.cidade());
+		endereco.setEstado(dto.estado());
+		endereco.setComplemento(dto.complemento());
+		endereco.setCep(dto.cep());
+		cliente.setEndereco(endereco);
 
-        try {
-            return userDao.save(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-	
+		try {
+			return userDao.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 //	@Transactional
 //	public User save(UserCreateDTO cliente,  JwtAuthenticationToken token) {
 //
@@ -184,57 +183,140 @@ public class UserClienteService implements UserDetailsService {
 //	}
 
 	@Transactional
-	public User getUserById(Long id) {
-		return userDao.findById(id)
-				.orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
+	public User getUserById(Long id, Authentication authentication) {
+
+		// Verifica se o usuário não está autenticado
+		if (authentication == null) {
+			throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
+		}
+
+		String userDetails = authentication.getName();
+
+		// Se o usuário for admin, ele tem acesso a todos os usuários
+		if ("admin".equals(userDetails)) {
+			return userDao.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
+		}
+
+		// Se o usuário não for admin, ele só pode acessar o próprio perfil
+		if (!id.equals(Long.valueOf(userDetails))) {
+			throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para acessar este usuário.");
+		}
+
+		// Se o ID solicitado for o mesmo do usuário logado, permite o acesso
+		return userDao.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
 	}
 
-
 	@Transactional
-	public List<User> getAllUsers(){
+	public List<User> getAllUsers(Authentication authentication) {
+
+		if (authentication == null || !"admin".equals(authentication.getName())) {
+			throw new ClienteNaoEncontradoException("Acesso negado: apenas administradores podem acessar esta área.");
+		}
+
 		return userDao.findAll();
 	}
 
+	public User update(Long id, UserCreateDTO dto, Authentication authentication) {
 
-	public User update(Long id, UserCreateDTO dto) {
-        User user = userDao.findById(id).orElse(null);
-        if (user == null) {
-            return null;
-        }
+		// Verifica se o usuário não está autenticado
+	    if (authentication == null) {
+	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
+	    }
+	    
+	    String adminUsername = authentication.getName(); //nome do usuário autenticado
+	    User usernameAutenticado = findByUsername(adminUsername); // encontra o usuário no banco
+	    
+	    // Se o usuário não for encontrado, lança exceção
+	    if (usernameAutenticado == null) {
+	        throw new ClienteNaoEncontradoException("Usuário autenticado não encontrado no banco.");
+	    }
+	    
+	    // Verifica o role do usuário autenticado
+	    String role = usernameAutenticado.getRole(); 
+		
+	    if ("ADMIN".equals(role)) {
+	        // Admin pode atualizar qualquer usuário
+	    } else if ("BASIC".equals(role)) {
+	        // Usuário básico só pode atualizar o próprio cadastro
+	        if (id != usernameAutenticado.getId().longValue()) {
+	            throw new ClienteNaoEncontradoException("Acesso negado: usuário básico não pode atualizar outro usuário.");
+	        }
+	    } else {
+	        throw new ClienteNaoEncontradoException("Usuário com role inválido.");
+	    }
+		
+		User user = userDao.findById(id).orElseThrow(() ->
+	    new ClienteNaoEncontradoException("Usuário não encontrado para atualização")
+		);
+		
+		User userExistente = findByUsername(dto.username());
+		if (userExistente != null && !userExistente.getId().equals(user.getId())) {
+		    throw new ClienteNaoEncontradoException("Este nome de usuário já está em uso.");
+		}
 
-        user.setUsername(dto.username());
-        if (dto.password() != null && !dto.password().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(dto.password()));
-        }
+		user.setUsername(dto.username());
+		if (dto.password() != null && !dto.password().isEmpty()) {
+			user.setPassword(passwordEncoder.encode(dto.password()));
+		}
 
-        Cliente cliente = user.getCliente();
-        cliente.setNome(dto.nome());
-        cliente.setCpf(dto.cpf());
+		Cliente cliente = user.getCliente();
+		cliente.setNome(dto.nome());
+		cliente.setCpf(dto.cpf());
 
-        Endereco endereco = cliente.getEndereco();
-        if (endereco == null) {
-            endereco = new Endereco();
-            cliente.setEndereco(endereco);
-        }
-        endereco.setRua(dto.rua());
-        endereco.setNumero(dto.numero());
-        endereco.setBairro(dto.bairro());
-        endereco.setCidade(dto.cidade());
-        endereco.setEstado(dto.estado());
-        endereco.setComplemento(dto.complemento());
-        endereco.setCep(dto.cep());
+		Endereco endereco = cliente.getEndereco();
+		if (endereco == null) {
+			endereco = new Endereco();
+			cliente.setEndereco(endereco);
+		}
+		endereco.setRua(dto.rua());
+		endereco.setNumero(dto.numero());
+		endereco.setBairro(dto.bairro());
+		endereco.setCidade(dto.cidade());
+		endereco.setEstado(dto.estado());
+		endereco.setComplemento(dto.complemento());
+		endereco.setCep(dto.cep());
 
-        try {
-            return userDao.update(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
+		try {
+			return userDao.update(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	@Transactional
-	public boolean deleteUser(Long id) {
+	public boolean deleteUser(Long id, Authentication authentication) {
+	
+		// Verifica se o usuário não está autenticado
+		if (authentication == null) {
+	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
+	    }
+	    
+		String adminUsername = authentication.getName(); // nome do usuário autenticado
+	    User usernameAutenticado = findByUsername(adminUsername); // encontra o usuário no banco
+	    
+	    // Se o usuário não for encontrado, lança exceção
+	    if (usernameAutenticado == null) {
+	        throw new ClienteNaoEncontradoException("Usuário autenticado não encontrado no banco.");
+	    }
+	    
+	    // Verifica o role do usuário autenticado
+	    String role = usernameAutenticado.getRole(); 
+		
+	    if ("ADMIN".equals(role)) {
+	        // Admin pode deletar qualquer usuário, mas não pode deletar o próprio usuário
+	        if (id != null && id.longValue() == usernameAutenticado.getId().longValue()) {
+	            throw new ClienteNaoEncontradoException("O administrador não pode deletar o próprio usuário.");
+	        }
+	    } else if ("BASIC".equals(role)) {
+	        // Usuário básico só pode deletar o próprio cadastro
+	        if (id != usernameAutenticado.getId().longValue()) {
+	            throw new ClienteNaoEncontradoException("Acesso negado: usuário básico não pode deletar outro usuário.");
+	        }
+	    } else {
+	        throw new ClienteNaoEncontradoException("Usuário com role inválido.");
+	    }
+
 		return userDao.delete(id);
 	}
 
