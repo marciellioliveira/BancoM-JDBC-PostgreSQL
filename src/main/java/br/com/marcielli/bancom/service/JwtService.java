@@ -22,10 +22,12 @@ public class JwtService {
 	@Value("${jwt.secret}")
     private String secretKeyString;
 
+	// Obtém a chave secreta para assinatura
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
     }
 
+    //Validando o token e retornando as claims
     public Claims validateToken(String token) {
         return Jwts.parser()
             .verifyWith(getSigningKey())

@@ -135,116 +135,82 @@ public class UserClienteService implements UserDetailsService {
 		}
 	}
 
-//	@Transactional
-//	public User save(UserCreateDTO cliente,  JwtAuthenticationToken token) {
-//
-//		if (cliente.cpf() != null) {
-//			String cpfClient = Long.toString(cliente.cpf());
-//			if (!ValidadorCPF.validar(cpfClient)) {
-//				throw new ClienteCpfInvalidoException("CPF inválido");
-//			}
-//		}
-//
-//		if(clienteDao.cpfExists(cliente.cpf())){
-//			throw new ClienteCpfInvalidoException("CPF número "+cliente.cpf()+" já é cadastrado no sistema.");
-//		}
-//
-//		var userFromDb = userDao.findByUsername(cliente.username());
-//		if (userFromDb.isPresent()) {
-//			throw new ClienteEncontradoException("Usuário já existe.");
-//		}
-//
-//		var user = new User();
-//		user.setUsername(cliente.username());
-//		user.setPassword(passwordEncoder.encode(cliente.password()));
-//		//user.setPassword(cliente.password());
-//		var basicRole = roleDao.findByName(Role.Values.BASIC.name());
-//		//user.setRoles(Set.of(basicRole));
-//		user.setRole(basicRole.getName());
-//
-//		Cliente client = new Cliente();
-//		client.setNome(cliente.nome());
-//		client.setCpf(cliente.cpf());
-//
-//		Endereco address = new Endereco();
-//		address.setCep(cliente.cep());
-//		address.setCidade(cliente.cidade());
-//		address.setEstado(cliente.estado());
-//		address.setRua(cliente.rua());
-//		address.setNumero(cliente.numero());
-//		address.setBairro(cliente.bairro());
-//		address.setComplemento(cliente.complemento());
-//
-//		client.setEndereco(address);
-//		client.setUser(user);
-//		user.setCliente(client);
-//
-//		return userDao.save(user);
-//	}
 
 	@Transactional
-	public User getUserById(Long id, Authentication authentication) {
-
+	public User getUserById(Long id, Authentication authentication) {		
+		
 		// Verifica se o usuário não está autenticado
-		if (authentication == null) {
-			throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
-		}
+	    if (authentication == null) {
+	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
+	    }
+	    
+	    String username  = authentication.getName(); //nome do usuário autenticado
+	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
+	    
+	    //Long id (do parametro) = id pra ver, editar ou deletar
+	    //admin = admin name
+	    //usernameAutenticado.getUsername() = admin ou (outro usuario basic)
+	    //usernameAutenticado.getRole() = ADMIN ou BASIC
+	    //usernameAutenticado.getId() = id do user
+	    //usernameAutenticado.getCliente() = cliente com id, endereço...
 
-		String userDetails = authentication.getName();
-
-		// Se o usuário for admin, ele tem acesso a todos os usuários
-		if ("admin".equals(userDetails)) {
-			return userDao.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
-		}
-
-		// Se o usuário não for admin, ele só pode acessar o próprio perfil
-		if (!id.equals(Long.valueOf(userDetails))) {
-			throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para acessar este usuário.");
-		}
-
-		// Se o ID solicitado for o mesmo do usuário logado, permite o acesso
+	    System.err.println("long id parametro: "+id);
+	    System.err.println("username: "+username );
+	    System.err.println("loggedUser getUsername: "+loggedUser.getUsername());
+	    System.err.println("loggedUser getRole: "+loggedUser.getRole());
+	    System.err.println("loggedUser getId: "+loggedUser.getId());
+	    System.err.println("loggedUser getCliente: "+loggedUser.getCliente());
+	    
+	    // Se for BASIC, só pode acessar se for o próprio ID
+	    if("BASIC".equals(loggedUser.getRole())) {
+	    	if (!id.equals(loggedUser.getId().longValue())) {
+	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para acessar este usuário.");
+	        }
+	    }
+		
+	    // Se ADMIN, pode acessar qualquer um (sem restrição aqui)
 		return userDao.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
 	}
 
 	@Transactional
 	public List<User> getAllUsers(Authentication authentication) {
 
-		if (authentication == null || !"admin".equals(authentication.getName())) {
-			throw new ClienteNaoEncontradoException("Acesso negado: apenas administradores podem acessar esta área.");
-		}
+		// Verifica se o usuário não está autenticado
+	    if (authentication == null) {
+	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
+	    }
+	   
+	    String username  = authentication.getName(); //nome do usuário autenticado
+	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
 
+	    // Se for BASIC, não pode acessar NADA
+	    if("BASIC".equals(loggedUser.getRole())) {
+	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para ver todos os usuários.");
+	    }
+		
+	    // Se ADMIN, pode acessar qualquer um (sem restrição aqui)
 		return userDao.findAll();
 	}
 
 	public User update(Long id, UserCreateDTO dto, Authentication authentication) {
-
+		
 		// Verifica se o usuário não está autenticado
 	    if (authentication == null) {
 	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
 	    }
 	    
-	    String adminUsername = authentication.getName(); //nome do usuário autenticado
-	    User usernameAutenticado = findByUsername(adminUsername); // encontra o usuário no banco
+	    String username  = authentication.getName(); //nome do usuário autenticado
+	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
 	    
-	    // Se o usuário não for encontrado, lança exceção
-	    if (usernameAutenticado == null) {
-	        throw new ClienteNaoEncontradoException("Usuário autenticado não encontrado no banco.");
-	    }
-	    
-	    // Verifica o role do usuário autenticado
-	    String role = usernameAutenticado.getRole(); 
-		
-	    if ("ADMIN".equals(role)) {
-	        // Admin pode atualizar qualquer usuário
-	    } else if ("BASIC".equals(role)) {
-	        // Usuário básico só pode atualizar o próprio cadastro
-	        if (id != usernameAutenticado.getId().longValue()) {
-	            throw new ClienteNaoEncontradoException("Acesso negado: usuário básico não pode atualizar outro usuário.");
+	    // Se for BASIC, só pode atualizar se for o próprio ID
+	    if("BASIC".equals(loggedUser.getRole())) {
+	    	if (!id.equals(loggedUser.getId().longValue())) {
+	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para atualizar este usuário.");
 	        }
-	    } else {
-	        throw new ClienteNaoEncontradoException("Usuário com role inválido.");
 	    }
 		
+	    // Se ADMIN, pode acessar qualquer um (sem restrição aqui)
+				
 		User user = userDao.findById(id).orElseThrow(() ->
 	    new ClienteNaoEncontradoException("Usuário não encontrado para atualização")
 		);
@@ -286,37 +252,32 @@ public class UserClienteService implements UserDetailsService {
 
 	@Transactional
 	public boolean deleteUser(Long id, Authentication authentication) {
-	
 		// Verifica se o usuário não está autenticado
-		if (authentication == null) {
+	    if (authentication == null) {
 	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
 	    }
 	    
-		String adminUsername = authentication.getName(); // nome do usuário autenticado
-	    User usernameAutenticado = findByUsername(adminUsername); // encontra o usuário no banco
-	    
-	    // Se o usuário não for encontrado, lança exceção
-	    if (usernameAutenticado == null) {
-	        throw new ClienteNaoEncontradoException("Usuário autenticado não encontrado no banco.");
-	    }
-	    
-	    // Verifica o role do usuário autenticado
-	    String role = usernameAutenticado.getRole(); 
-		
-	    if ("ADMIN".equals(role)) {
-	        // Admin pode deletar qualquer usuário, mas não pode deletar o próprio usuário
-	        if (id != null && id.longValue() == usernameAutenticado.getId().longValue()) {
-	            throw new ClienteNaoEncontradoException("O administrador não pode deletar o próprio usuário.");
-	        }
-	    } else if ("BASIC".equals(role)) {
-	        // Usuário básico só pode deletar o próprio cadastro
-	        if (id != usernameAutenticado.getId().longValue()) {
-	            throw new ClienteNaoEncontradoException("Acesso negado: usuário básico não pode deletar outro usuário.");
-	        }
-	    } else {
-	        throw new ClienteNaoEncontradoException("Usuário com role inválido.");
-	    }
+	    String username  = authentication.getName(); //nome do usuário autenticado
+	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
 
+	    // Se for BASIC, só pode deletar se for o próprio ID
+	    if("BASIC".equals(loggedUser.getRole())) {
+	    	if (!id.equals(loggedUser.getId().longValue())) {
+	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para acessar este usuário.");
+	        }
+	    }
+	    
+	    //Ver se ta devendo (fazer uma logica pra não deixar deletar se tiver com fatura aberta, conta ou devendo de algum jeito
+	    //Como ainda não arrumei a conta, nem transferencia vou deixar sem implementar
+	    
+	    
+	    if("ADMIN".equals(loggedUser.getRole())) {
+	    	if (id.equals(loggedUser.getId().longValue())) {
+	    		throw new ClienteNaoEncontradoException("Administrador não pode deletar seu próprio usuário.");
+	    	}
+	    }
+	   
+	    //Administrador pode fazer tudo, menos deletar o próprio usuário
 		return userDao.delete(id);
 	}
 

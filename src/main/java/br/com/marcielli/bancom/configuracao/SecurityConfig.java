@@ -16,35 +16,40 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import br.com.marcielli.bancom.exception.AcessoNegadoException;
 import br.com.marcielli.bancom.filter.JwtAuthFilter;
+import br.com.marcielli.bancom.handler.CustomAccessDeniedHandler;
 import br.com.marcielli.bancom.service.UserClienteService;
 import br.com.marcielli.bancom.service.UserSecurityService;
-
-
-
-
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 	
+	@Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler(); // Define o handler como um bean
+    }
+	
 	private final JwtAuthFilter jwtAuthFilter;
 	
 	private final UserClienteService usuarioService;
 	private final PasswordEncoder passwordEncoder;
 	private final UserSecurityService userSecurityService;
-	
+	private final AccessDeniedHandler accessDeniedHandler;
 
-	public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserClienteService usuarioService, PasswordEncoder passwordEncoder, UserSecurityService userSecurityService) {
+	public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserClienteService usuarioService, PasswordEncoder passwordEncoder, UserSecurityService userSecurityService, AccessDeniedHandler accessDeniedHandler) {
 		this.jwtAuthFilter = jwtAuthFilter;
 		this.usuarioService = usuarioService;
 		this.passwordEncoder = passwordEncoder;
 		this.userSecurityService = userSecurityService;
+		 this.accessDeniedHandler = accessDeniedHandler;
 	}
 
 
@@ -61,20 +66,26 @@ public class SecurityConfig {
                     // Permite o cadastro de usuários (POST)
                     .requestMatchers(HttpMethod.POST, "/users").permitAll()
                     
-                    // Admin pode acessar e modificar todos os dados
-                    .requestMatchers("/users").hasRole("ADMIN")   // Para listar usuários
+                    // ADMIN pode listar todos os usuários
+                    .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                     
-                    // Admin pode acessar e modificar qualquer usuário específico
-                    .requestMatchers("/users/{id}").hasRole("ADMIN")  // Para acessar um usuário específico
-                    .requestMatchers(HttpMethod.PUT, "/users/{id}").hasRole("ADMIN") // Para editar um usuário específico
-                    .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN") // Para deletar um usuário específico      
+                    // GET por ID: ADMIN e BASIC
+                    .requestMatchers(HttpMethod.GET, "/users/*").hasAnyRole("ADMIN", "BASIC")
                     
+                    // PUT por ID: ADMIN e BASIC
+                    .requestMatchers(HttpMethod.PUT, "/users/*").hasAnyRole("ADMIN", "BASIC")
                     
+                    // DELETE por ID: ADMIN e BASIC
+                    .requestMatchers(HttpMethod.DELETE, "/users/*").hasAnyRole("ADMIN", "BASIC")
                     
-                    //Acesso basic - Cliente
-                    .requestMatchers(HttpMethod.GET, "/users/{id}").hasRole("BASIC")
+                    //Porque está assim?
+                    //ADMIN: é o dono do sistema (tipo um superuser)ele pode editar/deletar qualquer conta, MENOS a própria
+                    //BASIC: é só o usuário comum que pode editar/deletar só os próprios dados.
+                    //Então o resto da autenticação, a parte mais exigente vai estar no service.
                     
-                .anyRequest().authenticated())
+                .anyRequest().authenticated())       
+            .exceptionHandling(exceptionHandling -> 
+            exceptionHandling.accessDeniedHandler(accessDeniedHandler))
             .httpBasic(basic -> basic.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

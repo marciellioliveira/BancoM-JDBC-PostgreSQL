@@ -118,21 +118,6 @@ public class UserDao {
             cliente.getId()
         );
 
-        // Atualiza os roles
-        if (user.getRole() != null && !user.getRole().isEmpty()) {
-            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id = ?", user.getId());
-
-            Role role = roleDao.findByName(user.getRole());
-            if (role == null) {
-                throw new RuntimeException("Role não encontrada: " + user.getRole());
-            }
-            jdbcTemplate.update(
-                "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
-                user.getId(),
-                role.getId()
-            );
-        }
-
         return user;
     }
 
