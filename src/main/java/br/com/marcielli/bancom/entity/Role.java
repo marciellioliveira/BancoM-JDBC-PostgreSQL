@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.context.annotation.Profile;
 
-@Profile("cliente")
 @Getter
 @Setter
 @NoArgsConstructor

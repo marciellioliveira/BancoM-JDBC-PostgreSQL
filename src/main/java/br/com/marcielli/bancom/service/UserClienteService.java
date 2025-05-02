@@ -5,7 +5,14 @@ import java.util.Optional;
 import java.util.Set;
 
 import br.com.marcielli.bancom.dao.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +25,20 @@ import br.com.marcielli.bancom.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.validation.ValidadorCPF;
+import jakarta.annotation.PostConstruct;
 
 @Service
-public class UserClienteService {
+public class UserClienteService implements UserDetailsService {
+	
+//	
+//	@Autowired
+//    private JdbcUserDetailsManager jdbcUserDetailsManager;
 
-	private final UserDao userDao;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+	private final UserDao userDao; // e devolver pro Spring Security pra fazer a autenticação
 	private final ClienteDao clienteDao;
 	private final RoleDao roleDao;
 	//private final BCryptPasswordEncoder passwordEncoder;
@@ -32,9 +48,63 @@ public class UserClienteService {
 		this.roleDao = roleDao;
 		this.clienteDao = clienteDao;
 	}
+	
+	@PostConstruct
+    @Transactional
+    public void initAdminUser() {
+        createRoleIfNotExists("ADMIN", 1L);
+        createRoleIfNotExists("BASIC", 2L);
 
+        Cliente clienteAdmin = new Cliente();
+        clienteAdmin.setClienteAtivo(true);
+        clienteAdmin.setNome("Admin");
 
+        Role roleAdmin = roleDao.findByName(Role.Values.ADMIN.name());
+        if (roleAdmin == null) {
+            throw new RuntimeException("Role ADMIN não encontrada");
+        }
 
+        var userAdmin = userDao.findByUsername("admin");
+
+        userAdmin.ifPresentOrElse(user -> {
+            System.err.println("Admin já existe.");
+        }, () -> {
+            var user = new User();
+            user.setUsername("admin");
+            user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta"));
+            user.setUserAtivo(true);
+            user.setRole(roleAdmin.getName()); // Definir role como String ("ADMIN")
+            user.setCliente(clienteAdmin);
+            clienteAdmin.setUser(user);
+
+            userDao.save(user); // UserDao já insere em user_roles
+            System.err.println("Usuário admin criado com sucesso!");
+        });
+    }
+	
+	private void createRoleIfNotExists(String name, Long id) {
+        Role existingRole = roleDao.findByName(name);
+        if (existingRole == null) {
+            Role role = new Role();
+            role.setId(id);
+            role.setName(name);
+            roleDao.save(role);
+        }
+    }
+	
+	@Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userDao.findByUsername(username)
+	            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+
+		return org.springframework.security.core.userdetails.User.builder()
+	            .username(user.getUsername())
+	            .password(user.getPassword())
+	            .roles(user.getRole()) // Role é String
+	            .build();
+	    
+    }
+	
 	@Transactional
 	public User save(UserCreateDTO cliente,  JwtAuthenticationToken token) {
 
@@ -56,10 +126,11 @@ public class UserClienteService {
 
 		var user = new User();
 		user.setUsername(cliente.username());
-		//user.setPassword(passwordEncoder.encode(cliente.password()));
-		user.setPassword(cliente.password());
+		user.setPassword(passwordEncoder.encode(cliente.password()));
+		//user.setPassword(cliente.password());
 		var basicRole = roleDao.findByName(Role.Values.BASIC.name());
-		user.setRoles(Set.of(basicRole));
+		//user.setRoles(Set.of(basicRole));
+		user.setRole(basicRole.getName());
 
 		Cliente client = new Cliente();
 		client.setNome(cliente.nome());
@@ -127,8 +198,8 @@ public class UserClienteService {
 		}
 
 		user.setUsername(dto.username());
-//		user.setPassword(passwordEncoder.encode(dto.password())); // Criptografa a senha
-		user.setPassword(dto.password()); // Criptografa a senha
+		user.setPassword(passwordEncoder.encode(dto.password())); // Criptografa a senha
+		//user.setPassword(dto.password()); // Criptografa a senha
 		// Chama o metodo de atualização no repositório
 		userDao.update(user); // Atualiza o usuário no banco
 

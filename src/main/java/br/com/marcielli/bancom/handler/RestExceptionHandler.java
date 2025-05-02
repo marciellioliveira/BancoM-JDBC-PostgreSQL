@@ -14,8 +14,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	 // Acesso negado (Ainda não funcionou)
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AccessDeniedException exception) {
+    @ExceptionHandler(AcessoNegadoException.class)
+    public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AcessoNegadoException exception) {
+        RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.FORBIDDEN, "Você não tem permissão para acessar este recurso.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respostaTratada);
+    }
+    
+    @ExceptionHandler(AutenticacaoEntryPointException.class)
+    public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AutenticacaoEntryPointException exception) {
         RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.FORBIDDEN, "Você não tem permissão para acessar este recurso.");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respostaTratada);
     }

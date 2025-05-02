@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Profile("cliente")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +24,8 @@ public class User {
 	private String username;
 	private String password;
 	private boolean userAtivo = true;
-	private Set<Role> roles;
+	private String role;
+	//private Set<Role> roles;
 	private Cliente cliente;
 	
 	public boolean isLoginCorrect(LoginRequestDTO loginRequest, PasswordEncoder passwordEncoder) {

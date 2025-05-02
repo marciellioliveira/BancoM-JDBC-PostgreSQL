@@ -22,31 +22,21 @@ public class ClienteDao {
 
     public Optional<Cliente> findByCpf(Long cpf) {
         String sql = "SELECT c.id AS cliente_id, c.nome AS cliente_nome, c.cpf AS cliente_cpf, c.cliente_ativo, c.user_id, " +
-                "u.id AS user_id, u.username AS user_username, u.password AS user_password, u.user_ativo, " +
-                "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep " +
-                "FROM clientes c " +
-                "JOIN users u ON u.id = c.user_id " +
-                "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
-                "WHERE c.cpf = ?";
+            "u.id AS user_id, u.username AS user_username, u.password AS user_password, u.user_ativo " +
+            "FROM clientes c " +
+            "JOIN users u ON u.id = c.user_id " +
+            "WHERE c.cpf = ?";
 
         List<Cliente> clientes = jdbcTemplate.query(sql, new ClienteRowMapper(), cpf);
-
         return clientes.stream().findFirst();
     }
 
 
     public boolean cpfExists(Long cpf) {
         String sql = "SELECT 1 FROM clientes WHERE cpf = ? LIMIT 1";
-
-        List<Integer> result = jdbcTemplate.query(
-                sql,
-                new Object[]{cpf},
-                (rs, rowNum) -> rs.getInt(1)
-        );
-
+        List<Integer> result = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt(1), cpf);
         return !result.isEmpty();
     }
-
 
 
 
@@ -57,28 +47,24 @@ public class ClienteDao {
     }
 
     public void save(Cliente cliente) {
-
-        if(cpfExists(cliente.getCpf())) {
+    	if (cliente.getCpf() != null && cpfExists(cliente.getCpf())) {
             throw new ClienteEncontradoException("Já existe um cliente com esse CPF: " + cliente.getCpf());
         }
 
         String sql = "INSERT INTO clientes (nome, cpf, cliente_ativo, user_id) VALUES (?, ?, ?, ?)";
-
         try {
             jdbcTemplate.update(sql,
-                    cliente.getNome(),
-                    cliente.getCpf(),
-                    cliente.isClienteAtivo(),
-                    cliente.getUser().getId()
+                cliente.getNome(),
+                cliente.getCpf(),
+                cliente.isClienteAtivo(),
+                cliente.getUser().getId()
             );
         } catch (DuplicateKeyException e) {
-            // CPF já existente
-            throw new ClienteEncontradoException("Já existe um cliente com esse CPF: " + cliente.getCpf()+" - Exception:"+ e);
+            throw new ClienteEncontradoException("Já existe um cliente com esse CPF: " + cliente.getCpf() + " - Exception:" + e);
         } catch (DataAccessException e) {
-            throw new ClienteEncontradoException("Erro ao salvar cliente no banco de dados"+" - Exception:"+e);
+            throw new ClienteEncontradoException("Erro ao salvar cliente no banco de dados - Exception:" + e);
         }
     }
-
 
 //    public void save(Cliente cliente) {
 //        String sql = "INSERT INTO clientes (nome, cpf, cliente_ativo, user_id) VALUES (?, ?, ?, ?)";
@@ -86,15 +72,11 @@ public class ClienteDao {
 //    }
 
     public Optional<Cliente> findById(Long id) {
-        String sql = "SELECT c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
-                "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep " +
-                "FROM clientes c " +
-                "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
-                "WHERE c.id = ?";
+        String sql = "SELECT c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, c.user_id " +
+            "FROM clientes c " +
+            "WHERE c.id = ?";
 
-        List<Cliente> clientes = jdbcTemplate.query(sql, new Object[]{id}, new ClienteRowMapper());
-
-        // Retorna o cliente encontrado ou vazio caso não encontre
+        List<Cliente> clientes = jdbcTemplate.query(sql, new ClienteRowMapper(), id);
         return clientes.isEmpty() ? Optional.empty() : Optional.of(clientes.get(0));
     }
 

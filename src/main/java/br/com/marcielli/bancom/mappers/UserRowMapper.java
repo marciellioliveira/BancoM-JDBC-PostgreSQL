@@ -14,21 +14,21 @@ import java.util.Set;
 
 public class UserRowMapper implements RowMapper<User> {
 
-    @Override
+	@Override
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = new User();
-        Set<Role> roles = new HashSet<>();
-
         user.setId(rs.getInt("user_id"));
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password"));
         user.setUserAtivo(rs.getBoolean("user_ativo"));
+        user.setRole(rs.getString("role_name")); // Mapear role_name para role (String)
 
         Cliente cliente = new Cliente();
         cliente.setId(rs.getLong("cliente_id"));
         cliente.setNome(rs.getString("nome"));
         cliente.setCpf(rs.getLong("cpf"));
         cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+        user.setCliente(cliente);
 
         Endereco endereco = new Endereco();
         endereco.setId(rs.getLong("endereco_id"));
@@ -39,21 +39,7 @@ public class UserRowMapper implements RowMapper<User> {
         endereco.setEstado(rs.getString("estado"));
         endereco.setComplemento(rs.getString("complemento"));
         endereco.setCep(rs.getString("cep"));
-
         cliente.setEndereco(endereco);
-        cliente.setUser(user);
-        user.setCliente(cliente);
-
-        int roleId = rs.getInt("role_id");
-        String roleName = rs.getString("role_name");
-        if (roleId != 0 && roleName != null) {
-            Role role = new Role();
-            role.setId((long) roleId);
-            role.setName(roleName);
-            roles.add(role);
-        }
-
-        user.setRoles(roles);
 
         return user;
     }

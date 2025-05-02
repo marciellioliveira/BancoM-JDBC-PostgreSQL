@@ -28,8 +28,8 @@ public class RoleDao {
 
 
     public void save(Role role) {
-        String sql = "INSERT INTO roles (name) VALUES (?)";
-        jdbcTemplate.update(sql, role.getName());
+        String sql = "INSERT INTO roles (id, name) VALUES (?,?)";
+        jdbcTemplate.update(sql, role.getId(), role.getName());
     }
 
 }

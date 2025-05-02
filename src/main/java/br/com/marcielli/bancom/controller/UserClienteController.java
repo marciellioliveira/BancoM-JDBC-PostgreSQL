@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.bancom.dto.security.UserCreateDTO;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.service.UserClienteService;
+import jakarta.annotation.PostConstruct;
 
 @RestController
 public class UserClienteController {
@@ -40,6 +41,7 @@ public class UserClienteController {
 			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+	
 
 	@GetMapping("/users")
 	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
