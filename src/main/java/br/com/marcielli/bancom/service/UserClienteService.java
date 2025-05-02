@@ -94,63 +94,98 @@ public class UserClienteService implements UserDetailsService {
 	
 	@Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.findByUsername(username)
-	            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+        User user = userDao.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
-		return org.springframework.security.core.userdetails.User.builder()
-	            .username(user.getUsername())
-	            .password(user.getPassword())
-	            .roles(user.getRole()) // Role é String
-	            .build();
-	    
+        return org.springframework.security.core.userdetails.User.builder()
+            .username(user.getUsername())
+            .password(user.getPassword())
+            .roles(user.getRole())
+            .build();
     }
 	
-	@Transactional
-	public User save(UserCreateDTO cliente,  JwtAuthenticationToken token) {
+	public User findByUsername(String username) {
+        return userDao.findByUsername(username).orElse(null);
+    }
+	
+	public User save(UserCreateDTO dto) {
+        User user = new User();
+        user.setUsername(dto.username());
+        user.setPassword(passwordEncoder.encode(dto.password()));
+        user.setUserAtivo(true);
+        user.setRole("BASIC");
 
-		if (cliente.cpf() != null) {
-			String cpfClient = Long.toString(cliente.cpf());
-			if (!ValidadorCPF.validar(cpfClient)) {
-				throw new ClienteCpfInvalidoException("CPF inválido");
-			}
-		}
+        Cliente cliente = new Cliente();
+        cliente.setNome(dto.nome());
+        cliente.setCpf(dto.cpf());
+        cliente.setClienteAtivo(true);
+        cliente.setUser(user);
+        user.setCliente(cliente);
 
-		if(clienteDao.cpfExists(cliente.cpf())){
-			throw new ClienteCpfInvalidoException("CPF número "+cliente.cpf()+" já é cadastrado no sistema.");
-		}
+        Endereco endereco = new Endereco();
+        endereco.setRua(dto.rua());
+        endereco.setNumero(dto.numero());
+        endereco.setBairro(dto.bairro());
+        endereco.setCidade(dto.cidade());
+        endereco.setEstado(dto.estado());
+        endereco.setComplemento(dto.complemento());
+        endereco.setCep(dto.cep());
+        cliente.setEndereco(endereco);
 
-		var userFromDb = userDao.findByUsername(cliente.username());
-		if (userFromDb.isPresent()) {
-			throw new ClienteEncontradoException("Usuário já existe.");
-		}
-
-		var user = new User();
-		user.setUsername(cliente.username());
-		user.setPassword(passwordEncoder.encode(cliente.password()));
-		//user.setPassword(cliente.password());
-		var basicRole = roleDao.findByName(Role.Values.BASIC.name());
-		//user.setRoles(Set.of(basicRole));
-		user.setRole(basicRole.getName());
-
-		Cliente client = new Cliente();
-		client.setNome(cliente.nome());
-		client.setCpf(cliente.cpf());
-
-		Endereco address = new Endereco();
-		address.setCep(cliente.cep());
-		address.setCidade(cliente.cidade());
-		address.setEstado(cliente.estado());
-		address.setRua(cliente.rua());
-		address.setNumero(cliente.numero());
-		address.setBairro(cliente.bairro());
-		address.setComplemento(cliente.complemento());
-
-		client.setEndereco(address);
-		client.setUser(user);
-		user.setCliente(client);
-
-		return userDao.save(user);
-	}
+        try {
+            return userDao.save(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+	
+//	@Transactional
+//	public User save(UserCreateDTO cliente,  JwtAuthenticationToken token) {
+//
+//		if (cliente.cpf() != null) {
+//			String cpfClient = Long.toString(cliente.cpf());
+//			if (!ValidadorCPF.validar(cpfClient)) {
+//				throw new ClienteCpfInvalidoException("CPF inválido");
+//			}
+//		}
+//
+//		if(clienteDao.cpfExists(cliente.cpf())){
+//			throw new ClienteCpfInvalidoException("CPF número "+cliente.cpf()+" já é cadastrado no sistema.");
+//		}
+//
+//		var userFromDb = userDao.findByUsername(cliente.username());
+//		if (userFromDb.isPresent()) {
+//			throw new ClienteEncontradoException("Usuário já existe.");
+//		}
+//
+//		var user = new User();
+//		user.setUsername(cliente.username());
+//		user.setPassword(passwordEncoder.encode(cliente.password()));
+//		//user.setPassword(cliente.password());
+//		var basicRole = roleDao.findByName(Role.Values.BASIC.name());
+//		//user.setRoles(Set.of(basicRole));
+//		user.setRole(basicRole.getName());
+//
+//		Cliente client = new Cliente();
+//		client.setNome(cliente.nome());
+//		client.setCpf(cliente.cpf());
+//
+//		Endereco address = new Endereco();
+//		address.setCep(cliente.cep());
+//		address.setCidade(cliente.cidade());
+//		address.setEstado(cliente.estado());
+//		address.setRua(cliente.rua());
+//		address.setNumero(cliente.numero());
+//		address.setBairro(cliente.bairro());
+//		address.setComplemento(cliente.complemento());
+//
+//		client.setEndereco(address);
+//		client.setUser(user);
+//		user.setCliente(client);
+//
+//		return userDao.save(user);
+//	}
 
 	@Transactional
 	public User getUserById(Long id) {
@@ -165,46 +200,42 @@ public class UserClienteService implements UserDetailsService {
 	}
 
 
-	@Transactional
 	public User update(Long id, UserCreateDTO dto) {
-		// Verifica se o usuário existe
-		User user = userDao.findById(id)
-				.orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado"));
+        User user = userDao.findById(id).orElse(null);
+        if (user == null) {
+            return null;
+        }
 
-		// Verifica se o CPF já está em uso
-		Optional<User> existingUserWithCpf = userDao.findByCpf(dto.cpf());
-		if (existingUserWithCpf.isPresent() && !existingUserWithCpf.get().getId().equals(user.getId())) {
-			throw new ClienteEncontradoException("CPF é único e não pode ser atualizado. " + dto.cpf());
-		}
+        user.setUsername(dto.username());
+        if (dto.password() != null && !dto.password().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(dto.password()));
+        }
 
-		Optional<User> existingUserWithUsername = userDao.findByUsername(dto.username());
-		if(existingUserWithUsername.isPresent() && !existingUserWithUsername.get().equals(user.getId())){
-			throw new ClienteEncontradoException("Já existe um cliente com esse username. " + dto.username());
-		}
+        Cliente cliente = user.getCliente();
+        cliente.setNome(dto.nome());
+        cliente.setCpf(dto.cpf());
 
-		// Atualiza os dados do cliente, endereço e usuário
-		Cliente cliente = user.getCliente();
-		cliente.setNome(dto.nome());
+        Endereco endereco = cliente.getEndereco();
+        if (endereco == null) {
+            endereco = new Endereco();
+            cliente.setEndereco(endereco);
+        }
+        endereco.setRua(dto.rua());
+        endereco.setNumero(dto.numero());
+        endereco.setBairro(dto.bairro());
+        endereco.setCidade(dto.cidade());
+        endereco.setEstado(dto.estado());
+        endereco.setComplemento(dto.complemento());
+        endereco.setCep(dto.cep());
 
-		Endereco endereco = cliente.getEndereco();
-		if (endereco != null) {
-			endereco.setCep(dto.cep());
-			endereco.setCidade(dto.cidade());
-			endereco.setEstado(dto.estado());
-			endereco.setRua(dto.rua());
-			endereco.setNumero(dto.numero());
-			endereco.setBairro(dto.bairro());
-			endereco.setComplemento(dto.complemento());
-		}
+        try {
+            return userDao.update(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-		user.setUsername(dto.username());
-		user.setPassword(passwordEncoder.encode(dto.password())); // Criptografa a senha
-		//user.setPassword(dto.password()); // Criptografa a senha
-		// Chama o metodo de atualização no repositório
-		userDao.update(user); // Atualiza o usuário no banco
-
-		return user;
-	}
 
 	@Transactional
 	public boolean deleteUser(Long id) {

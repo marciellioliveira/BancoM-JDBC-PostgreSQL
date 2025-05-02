@@ -31,16 +31,14 @@ public class UserClienteController {
 	}
 
 	@PostMapping("/users")
-	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto, JwtAuthenticationToken token) {
-
-		User clienteAdicionado = clienteService.save(dto, token);
-
-		if (clienteAdicionado != null) {
-			return new ResponseEntity<String>("Cliente adicionado com sucesso", HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-		}
-	}
+	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto) {
+        User clienteAdicionado = clienteService.save(dto);
+        if (clienteAdicionado != null) {
+            return new ResponseEntity<>("Cliente adicionado com sucesso", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Erro ao adicionar cliente. Verifique os dados e tente novamente.", HttpStatus.BAD_REQUEST);
+        }
+    }
 	
 
 	@GetMapping("/users")
