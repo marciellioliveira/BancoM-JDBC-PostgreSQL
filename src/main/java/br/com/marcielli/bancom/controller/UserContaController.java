@@ -21,7 +21,7 @@ public class UserContaController {
 
 
 	@PostMapping("/contas")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasRole('ADMIN') or (@userSecurityService.checkUserId(authentication, #dto.userId))")
 	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto) {
 		Conta contaAdicionada = contaService.save(dto);
 

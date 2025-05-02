@@ -30,10 +30,6 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class UserClienteService implements UserDetailsService {
 	
-//	
-//	@Autowired
-//    private JdbcUserDetailsManager jdbcUserDetailsManager;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 

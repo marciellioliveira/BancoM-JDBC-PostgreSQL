@@ -3,6 +3,8 @@ package br.com.marcielli.bancom.controller;
 import java.util.List;
 
 import br.com.marcielli.bancom.dao.UserDao;
+
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.bancom.dto.security.UserCreateDTO;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.service.UserClienteService;
+import br.com.marcielli.bancom.service.UserSecurityService;
 import jakarta.annotation.PostConstruct;
 
 @RestController
@@ -24,10 +27,12 @@ public class UserClienteController {
 
 	private final UserDao userDao;
 	private final UserClienteService clienteService;
-
-	public UserClienteController(UserClienteService clienteService, UserDao userDao) {
+	private final UserSecurityService userSecurityService;
+	
+	public UserClienteController(UserClienteService clienteService, UserDao userDao, UserSecurityService userSecurityService) {
 		this.clienteService = clienteService;
 		this.userDao = userDao;
+		this.userSecurityService = userSecurityService;
 	}
 
 	@PostMapping("/users")
@@ -42,7 +47,7 @@ public class UserClienteController {
 	
 
 	@GetMapping("/users")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Object> listUsers() {
 		List<User> users = clienteService.getAllUsers();
 
@@ -54,8 +59,9 @@ public class UserClienteController {
 	}
 
 	@GetMapping("/users/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasRole('ADMIN') or @userSecurityService.checkUserId(authentication, #id)")
 	public ResponseEntity<Object> getUserById(@PathVariable("id") Long id) {
+				
 		User user = clienteService.getUserById(id);
 
 		if (user == null) {
@@ -66,7 +72,7 @@ public class UserClienteController {
 	}
 
 	@PutMapping("/users/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
+	@PreAuthorize("hasRole('ADMIN') or @userSecurityService.checkUserId(authentication, #id)")
 	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto) {
 
 		User updatedUser = clienteService.update(id, dto);
@@ -79,12 +85,10 @@ public class UserClienteController {
 	}
 
 
-	//Primeiro estou fazendo com delete normal. Ao finalizar o projeto
-	//Vou alterar para ao pedir para deletar, apenas deixar o usuario como false
-	//somente depois de um ano deletar definitivamente com o cron no automatico
 	@DeleteMapping("/users/{id}")
-	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or @userSecurityService.checkUserId(authentication, #id)")
 	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+		
 		try {
 			boolean deleted = userDao.delete(id);
 			if (deleted) {

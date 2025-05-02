@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 import br.com.marcielli.bancom.filter.JwtAuthFilter;
 import br.com.marcielli.bancom.service.UserClienteService;
+import br.com.marcielli.bancom.service.UserSecurityService;
 
 
 
@@ -33,12 +34,14 @@ public class SecurityConfig {
 	
 	private final UserClienteService usuarioService;
 	private final PasswordEncoder passwordEncoder;
+	private final UserSecurityService userSecurityService;
 	
 
-	public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserClienteService usuarioService, PasswordEncoder passwordEncoder) {
+	public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserClienteService usuarioService, PasswordEncoder passwordEncoder, UserSecurityService userSecurityService) {
 		this.jwtAuthFilter = jwtAuthFilter;
 		this.usuarioService = usuarioService;
 		this.passwordEncoder = passwordEncoder;
+		this.userSecurityService = userSecurityService;
 	}
 
 
@@ -47,15 +50,38 @@ public class SecurityConfig {
         return http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
-                .requestMatchers("/favicon.ico", "/error").permitAll()
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()            
-                .requestMatchers(HttpMethod.POST, "/users").permitAll() 
-                .requestMatchers("/users").hasRole("ADMIN")    
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/whitelist.txt").permitAll()
-                .requestMatchers("/user").hasRole("BASIC")
-                .requestMatchers("/admin").hasRole("ADMIN")
+            		// Permite acesso livre às páginas de login, home, etc.
+                    .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
+                    .requestMatchers("/favicon.ico", "/error").permitAll()
+                    .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()
+            		
+                    // Permite o cadastro de usuários (POST)
+                    .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                    
+                 // Admin pode acessar e modificar todos os dados
+                    .requestMatchers("/users").hasRole("ADMIN")   // Para listar usuários
+                    
+                 // Admin pode acessar e modificar qualquer usuário específico
+                    .requestMatchers("/users/{id}").hasRole("ADMIN")  // Para acessar um usuário específico
+                    .requestMatchers(HttpMethod.PUT, "/users/{id}").hasRole("ADMIN") // Para editar um usuário específico
+                    .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN") // Para deletar um usuário específico
+                    
+                   
+                    
+                 // Controle de acesso para rotas específicas de ADMIN e BASIC
+                    .requestMatchers("/admin/**").hasRole("ADMIN")  // Apenas ADMIN pode acessar rotas de admin
+            		
+            		
+            		
+//                .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
+//                .requestMatchers("/favicon.ico", "/error").permitAll()
+//                .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()            
+//                .requestMatchers(HttpMethod.POST, "/users").permitAll() 
+//                .requestMatchers("/users").hasRole("ADMIN")    
+//                .requestMatchers("/admin/**").hasRole("ADMIN")
+//                .requestMatchers("/whitelist.txt").permitAll()
+//                .requestMatchers("/user").hasRole("BASIC")
+//                .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .httpBasic(basic -> basic.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
