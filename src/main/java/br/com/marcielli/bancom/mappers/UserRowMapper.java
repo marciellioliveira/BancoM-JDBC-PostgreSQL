@@ -21,12 +21,29 @@ public class UserRowMapper implements RowMapper<User> {
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password"));
         user.setUserAtivo(rs.getBoolean("user_ativo"));
-       // user.setRole(rs.getString("role_name")); // Mapear role_name para role (String)
+        //user.setRole(rs.getString("role_name")); // Mapear role_name para role (String)
 
         Cliente cliente = new Cliente();
-        cliente.setId(rs.getLong("cliente_id"));
+        long clienteId = rs.getLong("cliente_id");
+        cliente.setId(clienteId);
+       // cliente.setId(rs.getLong("cliente_id"));
         cliente.setNome(rs.getString("nome"));
-        cliente.setCpf(rs.getLong("cpf"));
+        
+        String cpfString = rs.getString("cpf");
+        try {
+        	// se o CPF não é nulo antes da conversão
+        	if (rs.getString("cpf") != null) {
+        	    cliente.setCpf(Long.parseLong(rs.getString("cpf").replaceAll("\\D", "")));
+        	} else {
+        	    cliente.setCpf(0L); // Valor padrão ou lançar exceção
+        	}
+        	long cpfLong = Long.parseLong(cpfString.replaceAll("[^0-9]", ""));
+            cliente.setCpf(cpfLong);
+        } catch (NumberFormatException e) {
+            throw new SQLException("Formato de CPF inválido: " + cpfString);
+        }
+        
+        //cliente.setCpf(rs.getLong("cpf"));
         cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
         user.setCliente(cliente);
 

@@ -95,17 +95,19 @@ public class UserClienteService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-	    User user = userDao.findByUsername(username)
-	            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+	    System.out.println("===== Tentando autenticar: " + username + " =====");
 	    
-	    System.out.println("Senha REAL do banco: " + user.getPassword());
-	    System.out.println("UserDetailsService achou usuário: " + user.getUsername() + " com senha: " + user.getPassword());
-
+	    User user = userDao.findByUsername(username)
+	        .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+	    
+	    System.out.println("Usuário encontrado: " + user.getUsername());
+	    System.out.println("Role do usuário: " + user.getRole());
+	    
 	    return org.springframework.security.core.userdetails.User.builder()
-	            .username(user.getUsername())
-	            .password(user.getPassword())
-	            .authorities("ROLE_" + user.getRole()) 
-	            .build();
+	        .username(user.getUsername())
+	        .password(user.getPassword())
+	        .roles(user.getRole()) // Certifique-se que retorna "ADMIN" para o admin
+	        .build();
 	}
 	
 	

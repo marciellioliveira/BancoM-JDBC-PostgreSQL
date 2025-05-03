@@ -5,6 +5,8 @@ import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.mappers.UserRowMapper;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +41,7 @@ public class UserDao {
         if (role == null) {
             throw new RuntimeException("Role não encontrada: " + user.getRole());
         }
+        
         jdbcTemplate.update(
             "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
             userId,
@@ -122,21 +125,67 @@ public class UserDao {
     }
 
 
+//    public Optional<User> findByUsername(String username) {
+//        String sql = "SELECT u.id AS user_id, u.username, u.password, u.user_ativo, " +
+//            "c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
+//            "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep, " +
+//            "r.name AS role_name " +
+//            "FROM users u " +
+//            "JOIN clientes c ON c.user_id = u.id " +
+//            "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
+//            "LEFT JOIN user_roles ur ON ur.user_id = u.id " +
+//            "LEFT JOIN roles r ON r.id = ur.role_id " +
+//            "WHERE u.username = ?";
+//
+//        List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), username);
+//
+//        return users.isEmpty() ? Optional.empty() : Optional.of(users.getFirst());
+//    }
+    
     public Optional<User> findByUsername(String username) {
-        String sql = "SELECT u.id AS user_id, u.username, u.password, u.user_ativo, " +
-            "c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
-            "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep, " +
-            "r.name AS role_name " +
-            "FROM users u " +
-            "JOIN clientes c ON c.user_id = u.id " +
-            "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
-            "LEFT JOIN user_roles ur ON ur.user_id = u.id " +
-            "LEFT JOIN roles r ON r.id = ur.role_id " +
-            "WHERE u.username = ?";
+        String sql = """
+            SELECT u.id AS user_id, u.username, u.password, u.user_ativo, 
+                   c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo,
+                   r.name AS role_name
+            FROM users u
+            JOIN user_roles ur ON u.id = ur.user_id
+            JOIN roles r ON r.id = ur.role_id
+            JOIN clientes c ON c.user_id = u.id
+            WHERE u.username = ?""";
 
-        List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), username);
-
-        return users.isEmpty() ? Optional.empty() : Optional.of(users.getFirst());
+        try {
+            User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                User u = new User();
+                u.setId(rs.getInt("user_id"));
+                u.setUsername(rs.getString("username"));
+                u.setPassword(rs.getString("password"));
+                u.setUserAtivo(rs.getBoolean("user_ativo"));
+                u.setRole(rs.getString("role_name"));
+                
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getLong("cliente_id")); // Usando getLong diretamente
+                
+                // Conversão segura de String para Long no CPF
+                String cpfStr = rs.getString("cpf");
+                if (cpfStr != null) {
+                    try {
+                        cliente.setCpf(Long.parseLong(cpfStr.replaceAll("\\D", "")));
+                    } catch (NumberFormatException e) {
+                        cliente.setCpf(0L); // Ou outro valor padrão
+                    }
+                }
+                
+                cliente.setNome(rs.getString("nome"));
+                cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+                u.setCliente(cliente);
+                
+                return u;
+            }, username);
+            
+            return Optional.ofNullable(user);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<User> findAll() {

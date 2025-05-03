@@ -10,7 +10,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,36 +43,111 @@ public class AuthController {
         this.userClienteService = userClienteService;
     }
     
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
+//        System.out.println("========= CHEGOU NO LOGIN =========");
+//        System.out.println("Username recebido: " + request.username());
+//        
+//        try {
+//            System.out.println("Tentando autenticar...");
+//            Authentication auth = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                    request.username(),
+//                    request.password()
+//                )
+//            );
+//            
+//            System.out.println("Autenticação bem-sucedida!");
+//            
+//            // Obtém o UserDetails do Spring Security
+//            org.springframework.security.core.userdetails.User springUser = 
+//                (org.springframework.security.core.userdetails.User) auth.getPrincipal();
+//            
+//            // Extrai a role (supondo que a primeira role é a correta)
+//            String role = springUser.getAuthorities().stream()
+//                .findFirst()
+//                .map(GrantedAuthority::getAuthority)
+//                .orElse("ROLE_USER");
+//            
+//            // Cria um User temporário com os dados necessários
+//            User user = new User();
+//            user.setUsername(springUser.getUsername());
+//            user.setRole(role);
+//            
+//            System.out.println("Role do usuário: " + user.getRole());
+//            
+//            String token = jwtService.gerarToken(user);
+//            System.out.println("Token gerado: " + token);
+//            
+//            return ResponseEntity.ok(Map.of("token", token));
+//
+//        } catch (AuthenticationException e) {
+//            System.out.println("ERRO NA AUTENTICAÇÃO: " + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                .body(Map.of("error", "Credenciais inválidas"));
+//        }
+//    }
+    
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
-        System.out.println("========= CHEGOU NO LOGIN =========");
-        System.out.println("Username recebido: " + request.username());
+        System.out.println("Tentativa de login para: " + request.username());
         
         try {
-            System.out.println("Tentando autenticar...");
-            Authentication auth = authenticationManager.authenticate(
+            // 1. Realiza a autenticação
+            Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     request.username(),
                     request.password()
                 )
             );
             
-            System.out.println("Autenticação bem-sucedida!");
-            User user = (User) auth.getPrincipal();
-            System.out.println("Role do usuário: " + user.getRole());
+            // 2. Gera o token JWT
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String token = jwtService.generateToken(userDetails.getUsername());
             
-            String token = jwtService.gerarToken(user);
-            System.out.println("Token gerado: " + token);
+            System.out.println("Login bem-sucedido para: " + userDetails.getUsername());
             
-            return ResponseEntity.ok(Map.of("token", token));
-
+            // 3. Retorna a resposta
+            return ResponseEntity.ok(Map.of(
+                "token", token,
+                "role", userDetails.getAuthorities().iterator().next().getAuthority()
+            ));
+            
         } catch (AuthenticationException e) {
-            System.out.println("ERRO NA AUTENTICAÇÃO: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("error", "Credenciais inválidas"));
+            System.out.println("Falha no login: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-   
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
+//        System.out.println("========= CHEGOU NO LOGIN =========");
+//        System.out.println("Username recebido: " + request.username());
+//        
+//        try {
+//            System.out.println("Tentando autenticar...");
+//            Authentication auth = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                    request.username(),
+//                    request.password()
+//                )
+//            );
+//            
+//            System.out.println("Autenticação bem-sucedida!");
+//            User user = (User) auth.getPrincipal();
+//            System.out.println("Role do usuário: " + user.getRole());
+//            
+//            String token = jwtService.gerarToken(user);
+//            System.out.println("Token gerado: " + token);
+//            
+//            return ResponseEntity.ok(Map.of("token", token));
+//
+//        } catch (AuthenticationException e) {
+//            System.out.println("ERRO NA AUTENTICAÇÃO: " + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                .body(Map.of("error", "Credenciais inválidas"));
+//        }
+//    }
+//   
 
 //    @PostMapping("/auth/login")
 //    public ResponseEntity<Object> login(@RequestBody LoginRequestDTO loginRequest) {

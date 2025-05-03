@@ -25,6 +25,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.context.annotation.Bean;
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -57,26 +63,41 @@ public class SecurityConfig {
         return http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-            		// Permite acesso livre às páginas de login, home, etc.
-                    .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
-                    .requestMatchers("/favicon.ico", "/error").permitAll()
-                    .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                    
-                    // Permite o cadastro de usuários (POST)
-                    .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                    
-                    // ADMIN pode listar todos os usuários
-                    .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-                    
-                    // GET por ID: ADMIN e BASIC
-                    .requestMatchers(HttpMethod.GET, "/users/*").hasAnyRole("ADMIN", "BASIC")
-                    
-                    // PUT por ID: ADMIN e BASIC
-                    .requestMatchers(HttpMethod.PUT, "/users/*").hasAnyRole("ADMIN", "BASIC")
-                    
-                    // DELETE por ID: ADMIN e BASIC
-                    .requestMatchers(HttpMethod.DELETE, "/users/*").hasAnyRole("ADMIN", "BASIC")
+            		.requestMatchers(
+            		        "/",
+            		        "/home",
+            		        "/auth/login", // Libera explicitamente o endpoint de login
+            		        "/login",      // Libera o endpoint alternativo
+            		        "/favicon.ico",
+            		        "/error",
+            		        "/css/**",
+            		        "/js/**",
+            		        "/images/**",
+            		        "/static/**",
+            		        "/webjars/**",
+            		        "/users"  
+            		    ).permitAll()
+//            		// Permite acesso livre às páginas de login, home, etc.
+//                    .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
+//                    .requestMatchers("/favicon.ico", "/error").permitAll()
+//                    .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()
+//                   
+//                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+//                    
+//                    // Permite o cadastro de usuários (POST)
+//                    .requestMatchers(HttpMethod.POST, "/users").permitAll()
+//                    
+//                    // ADMIN pode listar todos os usuários
+//                    .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+//                    
+//                    // GET por ID: ADMIN e BASIC
+//                    .requestMatchers(HttpMethod.GET, "/users/*").hasAnyRole("ADMIN", "BASIC")
+//                    
+//                    // PUT por ID: ADMIN e BASIC
+//                    .requestMatchers(HttpMethod.PUT, "/users/*").hasAnyRole("ADMIN", "BASIC")
+//                    
+//                    // DELETE por ID: ADMIN e BASIC
+//                    .requestMatchers(HttpMethod.DELETE, "/users/*").hasAnyRole("ADMIN", "BASIC")
                     
                     //Porque está assim?
                     //ADMIN: é o dono do sistema (tipo um superuser)ele pode editar/deletar qualquer conta, MENOS a própria
@@ -93,10 +114,35 @@ public class SecurityConfig {
             .build();
     }
 	
+	@Bean
+	public CorsFilter corsFilter() {
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    CorsConfiguration config = new CorsConfiguration();
+	    
+	    // Permite todas origens (em produção, restrinja isso)
+	    config.setAllowedOriginPatterns(List.of("*"));
+	    
+	    // Permite todos métodos (GET, POST, etc)
+	    config.setAllowedMethods(List.of("*"));
+	    
+	    // Permite todos headers
+	    config.setAllowedHeaders(List.of("*"));
+	    
+	    // Permite headers de autenticação
+	    config.setExposedHeaders(List.of("Authorization"));
+	    
+	    // Permite credenciais
+	    config.setAllowCredentials(true);
+	    
+	    source.registerCorsConfiguration("/**", config);
+	    return new CorsFilter(source);
+	}
+	
 	
 	 
 	@Bean // ele é tipo o chefe
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		System.out.println("Criando AuthenticationManager");
 		return config.getAuthenticationManager(); // retorna o manager que vai processar login/autenticação
 	} // ele vai validar se o usuário existe e se a senha tá certa, já faz isso
 		// automático, pq já é configurado pelo próprio String

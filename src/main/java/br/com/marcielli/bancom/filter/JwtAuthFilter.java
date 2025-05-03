@@ -44,6 +44,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+    	
+    	// Pula verificação JWT para endpoints de login
+    	if (request.getServletPath().equals("/auth/login") || 
+                request.getServletPath().equals("/login")) {
+                filterChain.doFilter(request, response); // Usando o parâmetro recebido
+                return;
+            }
+    	
         String authHeader = request.getHeader("Authorization");
         System.out.println("Cabeçalho Authorization: " + authHeader);  
         
