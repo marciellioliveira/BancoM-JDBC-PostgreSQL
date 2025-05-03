@@ -2,6 +2,7 @@ package br.com.marcielli.bancom.dao;
 
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
+import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
 import org.springframework.dao.DataAccessException;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,6 +120,30 @@ public class ClienteDao {
         }
 
         return cliente;
+    }
+    
+    public Cliente findByIdWithUser(Long id) {
+        String sql = "SELECT c.*, u.id as user_id, u.username FROM clientes c " +
+                     "LEFT JOIN users u ON c.user_id = u.id WHERE c.id = ?";
+        
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            Cliente cliente = new Cliente();
+            
+            // Tratamento infalível:
+            try {
+                Integer userId = rs.getObject("user_id", Integer.class);
+                if (userId != null) {
+                    User user = new User();
+                    user.setId(userId); 
+                    user.setUsername(rs.getString("username"));
+                    cliente.setUser(user);
+                }
+            } catch (SQLException e) {
+                throw new DataAccessException("Erro ao ler user_id", e) {};
+            }
+            
+            return cliente;
+        }, id);
     }
 
 

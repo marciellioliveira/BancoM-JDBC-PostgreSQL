@@ -18,6 +18,7 @@ import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
 import br.com.marcielli.bancom.dto.security.UserContaResponseDTO;
 import br.com.marcielli.bancom.enuns.TipoConta;
+import br.com.marcielli.bancom.exception.AcessoNegadoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
@@ -120,73 +121,6 @@ public class UserContaService {
 
 	    return contaSalva;
 	}
-
-	//ADMIN pode criar conta pra ele e pra todos
-	//BASIC só pode criar conta pra ele mesmo
-//	@Transactional
-//	public Conta save(ContaCreateDTO dto, Authentication authentication) {
-//		
-//		//Pega a role do usuário logado
-//	    String role = authentication.getAuthorities().stream()
-//	            .map(GrantedAuthority::getAuthority)
-//	            .findFirst()
-//	            .orElse("");
-//	    
-//	    String username = authentication.getName();
-//	    
-//	    //Busca o usuário logado pelo username
-//	    User loggedInUser = userDao.findByUsername(username)
-//	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
-//	    
-//	    // Se for BASIC e está tentando criar conta para outro usuário, bloqueia
-//	    if ("ROLE_BASIC".equals(role) && !dto.idUsuario().equals(loggedInUser.getId().longValue())) {
-//	        throw new ClienteNaoEncontradoException("Usuário BASIC não tem permissão para criar conta para outro usuário.");
-//	    }		
-//		
-//	    Cliente cliente = clienteDao.findById(dto.idUsuario())
-//				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-//		
-//		if (!cliente.isClienteAtivo()) {
-//			throw new ClienteNaoEncontradoException("O cliente está desativado. Não é possível criar uma conta.");
-//		}
-//
-//		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
-//		List<TaxaManutencao> taxas = new ArrayList<>();
-//		taxas.add(taxa);
-//
-//		String numeroContaBase = gerarNumeroDaConta();
-//		String chavePix = gerarPixAleatorio().concat("-PIX");
-//
-//		Conta conta;
-//
-//		if (dto.tipoConta() == TipoConta.CORRENTE) {
-//			ContaCorrente cc = new ContaCorrente(taxa.getTaxaManutencaoMensal());
-//			cc.setNumeroConta(numeroContaBase.concat("-CC"));
-//			cc.setTaxaManutencaoMensal(taxa.getTaxaManutencaoMensal());
-//			conta = cc;
-//
-//		} else if (dto.tipoConta() == TipoConta.POUPANCA) {
-//			ContaPoupanca pp = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
-//			pp.setNumeroConta(numeroContaBase.concat("-PP"));
-//			pp.setTaxaAcrescRend(taxa.getTaxaAcrescRend());
-//			pp.setTaxaMensal(taxa.getTaxaMensal());
-//			conta = pp;
-//
-//		} else {
-//			throw new IllegalArgumentException("Tipo de conta inválido.");
-//		}
-//
-//		conta.setCliente(cliente);
-//		conta.setPixAleatorio(chavePix);
-//		conta.setCategoriaConta(taxa.getCategoria());
-//		conta.setTipoConta(dto.tipoConta());
-//		conta.setSaldoConta(dto.saldoConta());
-//		conta.setStatus(true);
-//		conta.setTaxas(taxas);
-//
-//		return contaDao.save(conta);
-//	}
-
 	
 	@Transactional
 	public List<Conta> getContas(Authentication authentication) {
@@ -281,36 +215,51 @@ public class UserContaService {
 
 //	@Transactional
 //	public Conta update(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
-//	    // Verifica se a conta existe
-//	    Conta contaExistente = contaDao.findById(idConta)
-//	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
-//
-//	    // Verificação segura do usuário/cliente
-//	    Cliente cliente = contaExistente.getCliente();
-//	    if (cliente == null || cliente.getUser() == null) {
-//	        throw new ClienteEncontradoException("Conta não vinculada a um usuário válido"); //OperacaoNaoPermitidaException
-//	    }
-//
-//	    // Verifica permissões
-//	    String username = authentication.getName();
-//	    boolean isAdmin = authentication.getAuthorities().stream()
-//	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-//
-//	    //  Validação de permissão com verificações seguras
-//	    if (!isAdmin && !username.equals(cliente.getUser().getUsername())) {
-//	        throw new ClienteEncontradoException("Você só pode atualizar sua própria conta"); //AcessoNegadoException
-//	    }
 //	   
+//	  
 //	    String novoPix = dto.pixAleatorio().concat("-PIX");
 //	    contaDao.atualizarPixAleatorio(idConta, novoPix);
-//
+//	    
 //	    return contaDao.findById(idConta)
 //	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada após atualização"));
 //	}
+	
+	@Transactional
+	public Conta update(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
+	    //Busca a conta
+	    Conta conta = contaDao.findById(idConta)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
+	    
+	    //Verifica se é admin
+	    boolean isAdmin = authentication.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+	    
+	    //Se não for admin, verifica se a conta pertence ao usuário logado
+	    if (!isAdmin) {
+	        // Obtém usuário logado
+	        User usuarioLogado = userDao.findByUsername(authentication.getName())
+	                .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
+	        
+	        // Verifica se o cliente tem usuário vinculado
+	        if (conta.getCliente() == null || conta.getCliente().getUser() == null) {
+	            throw new AcessoNegadoException("Conta não vinculada a um usuário válido");
+	        }
+	        
+	        // Verifica se o usuário logado é dono da conta
+	        if (!conta.getCliente().getUser().getId().equals(usuarioLogado.getId())) {
+	            throw new AcessoNegadoException("Você só pode alterar sua própria conta");
+	        }
+	    }
 
-
-
-
+	    //Atualiza o PIX
+	    String novoPix = dto.pixAleatorio().concat("-PIX");
+	    contaDao.atualizarPixAleatorio(idConta, novoPix);
+	    
+	    //Retorna a conta atualizada
+	    return contaDao.findById(idConta)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada após atualização"));
+	}
+	
 
 
 //	// Transferências

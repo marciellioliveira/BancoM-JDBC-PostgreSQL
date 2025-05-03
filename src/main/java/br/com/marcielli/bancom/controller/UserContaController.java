@@ -76,15 +76,11 @@ public class UserContaController {
 
 	//ADMIN pode atualizar a conta dele e de todos os outros
 	//BASIC só pode atualizar a conta dele próprio por id
-//	@PutMapping("/contas/{id}")
-//	public ResponseEntity<Conta> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, Authentication authentication) {
-//	    Conta conta = contaService.update(id, dto, authentication);
-//	    return ResponseEntity.ok(conta);  // Retorna a entidade pura
-//	}
-
-
-
-
+	@PutMapping("/contas/{id}")
+	public ResponseEntity<Conta> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, Authentication authentication) {
+	    Conta conta = contaService.update(id, dto, authentication);
+	    return ResponseEntity.ok(conta);  // Retorna a entidade pura
+	}
 
 
 	

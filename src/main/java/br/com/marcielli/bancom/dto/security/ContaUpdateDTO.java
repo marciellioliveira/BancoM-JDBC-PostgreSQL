@@ -1,5 +1,5 @@
 package br.com.marcielli.bancom.dto.security;
 
-public record ContaUpdateDTO(String pixAleatorio) {
+public record ContaUpdateDTO(Long idUsuario, String pixAleatorio) {
 
 }
