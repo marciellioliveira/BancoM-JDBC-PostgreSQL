@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -93,7 +94,7 @@ public class AuthController {
         System.out.println("Tentativa de login para: " + request.username());
         
         try {
-            // 1. Realiza a autenticação
+            // 1. Autenticação
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     request.username(),
@@ -101,21 +102,30 @@ public class AuthController {
                 )
             );
             
-            // 2. Gera o token JWT
+            // 2. Gera o token
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String token = jwtService.generateToken(userDetails.getUsername());
             
-            System.out.println("Login bem-sucedido para: " + userDetails.getUsername());
+            // 3. Extrai a role (garantindo formato consistente)
+            String role = authentication.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("ROLE_USER"); // Fallback seguro
             
-            // 3. Retorna a resposta
-            return ResponseEntity.ok(Map.of(
-                "token", token,
-                "role", userDetails.getAuthorities().iterator().next().getAuthority()
-            ));
+            System.out.println("Login bem-sucedido para: " + userDetails.getUsername() + " | Role: " + role);
             
+            // 4. Retorna resposta PADRONIZADA
+            return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of(
+                    "token", token, // SEMPRE string pura
+                    "role", role.replace("ROLE_", "") // Remove prefixo (opcional)
+                ));
+                
         } catch (AuthenticationException e) {
             System.out.println("Falha no login: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", "Credenciais inválidas")); // Padroniza erros também
         }
     }
 //    @PostMapping("/login")
