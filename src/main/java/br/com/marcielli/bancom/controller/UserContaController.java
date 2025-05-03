@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
@@ -31,8 +31,8 @@ public class UserContaController {
 	//ADMIN pode criar conta pra ele e pra todos
 	//BASIC só pode criar conta pra ele mesmo
 	@PostMapping("/contas")
-	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto) {
-		Conta contaAdicionada = contaService.save(dto);
+	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto, Authentication authentication) {
+		Conta contaAdicionada = contaService.save(dto, authentication);
 
 		if (contaAdicionada != null) {
 			return new ResponseEntity<>("Conta adicionada com sucesso. Número da conta: "+ contaAdicionada.getNumeroConta(), HttpStatus.CREATED);

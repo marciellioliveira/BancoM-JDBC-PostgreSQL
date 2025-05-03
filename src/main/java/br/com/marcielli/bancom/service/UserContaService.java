@@ -5,15 +5,18 @@ import java.util.*;
 import br.com.marcielli.bancom.dao.ClienteDao;
 import br.com.marcielli.bancom.entity.*;
 import br.com.marcielli.bancom.dao.ContaDao;
+import br.com.marcielli.bancom.dao.UserDao;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.enuns.TipoConta;
+import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class UserContaService {
@@ -21,24 +24,45 @@ public class UserContaService {
 	private final ContaDao contaDao;
 	private final ExchangeRateService exchangeRateService;
 	private final ClienteDao clienteDao;
-
+	private final UserDao userDao;
+	
 	private Random random = new Random();
 
-	private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
+	//private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
 
 	public UserContaService(ContaDao contaDao,
-							ExchangeRateService exchangeRateService, ClienteDao clienteDao) {
+							ExchangeRateService exchangeRateService, ClienteDao clienteDao, UserDao userDao) {
 		this.contaDao = contaDao;
 		this.exchangeRateService = exchangeRateService;
 		this.clienteDao = clienteDao;
+		this.userDao = userDao;
 	}
 
+	//ADMIN pode criar conta pra ele e pra todos
+	//BASIC só pode criar conta pra ele mesmo
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Conta save(ContaCreateDTO dto) {
-
-		Cliente cliente = clienteDao.findById(dto.idUsuario())
+	public Conta save(ContaCreateDTO dto, Authentication authentication) {
+		
+		//Pega a role do usuário logado
+	    String role = authentication.getAuthorities().stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
+	    
+	    String username = authentication.getName();
+	    
+	    //Busca o usuário logado pelo username
+	    User loggedInUser = userDao.findByUsername(username)
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+	    
+	    // Se for BASIC e está tentando criar conta para outro usuário, bloqueia
+	    if ("ROLE_BASIC".equals(role) && !dto.idUsuario().equals(loggedInUser.getId().longValue())) {
+	        throw new ClienteNaoEncontradoException("Usuário BASIC não tem permissão para criar conta para outro usuário.");
+	    }		
+		
+	    Cliente cliente = clienteDao.findById(dto.idUsuario())
 				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
-
+		
 		if (!cliente.isClienteAtivo()) {
 			throw new ClienteNaoEncontradoException("O cliente está desativado. Não é possível criar uma conta.");
 		}

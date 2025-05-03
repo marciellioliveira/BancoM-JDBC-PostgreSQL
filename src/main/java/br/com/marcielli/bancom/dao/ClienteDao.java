@@ -72,9 +72,27 @@ public class ClienteDao {
 //    }
 
     public Optional<Cliente> findById(Long id) {
-        String sql = "SELECT c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, c.user_id " +
-            "FROM clientes c " +
-            "WHERE c.id = ?";
+    	String sql = "SELECT " +
+    	        "c.id AS cliente_id, " +
+    	        "c.nome AS cliente_nome, " +
+    	        "c.cpf AS cliente_cpf, " +
+    	        "c.cliente_ativo, " +
+    	        "c.user_id, " +
+    	        "u.username AS user_username, " +
+    	        "u.password AS user_password, " +
+    	        "u.user_ativo AS user_ativo, " +
+    	        "e.id AS endereco_id, " +
+    	        "e.cep, " +
+    	        "e.cidade, " +
+    	        "e.estado, " +
+    	        "e.rua, " +
+    	        "e.numero, " +
+    	        "e.bairro, " +
+    	        "e.complemento " +
+    	        "FROM clientes c " +
+    	        "JOIN users u ON c.user_id = u.id " +
+    	        "LEFT JOIN enderecos e ON e.cliente_id = c.id " + 
+    	        "WHERE c.id = ?";
 
         List<Cliente> clientes = jdbcTemplate.query(sql, new ClienteRowMapper(), id);
         return clientes.isEmpty() ? Optional.empty() : Optional.of(clientes.get(0));

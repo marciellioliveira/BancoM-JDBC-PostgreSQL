@@ -1,14 +1,11 @@
 package br.com.marcielli.bancom.controller;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import br.com.marcielli.bancom.dao.UserDao;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.bancom.dto.security.UserCreateDTO;
 import br.com.marcielli.bancom.entity.User;
-import br.com.marcielli.bancom.enuns.PermissionAction;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.service.UserClienteService;
 import br.com.marcielli.bancom.service.UserSecurityService;
