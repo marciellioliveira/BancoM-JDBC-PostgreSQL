@@ -148,6 +148,13 @@ public class UserClienteService implements UserDetailsService {
 	}
 
 	public User save(UserCreateDTO dto) {
+		
+		Optional<User> userCpf = userDao.findByCpf(dto.cpf());
+		
+		if(userCpf.isPresent()) {
+			 throw new ClienteEncontradoException("Já existe uma conta com o CPF no sistema");
+		}
+		
 		User user = new User();
 		user.setUsername(dto.username());
 		user.setPassword(passwordEncoder.encode(dto.password()));
@@ -241,10 +248,14 @@ public class UserClienteService implements UserDetailsService {
 	            .findFirst()
 	            .orElse("");
 		
-		Long loggedInUserId = Long.parseLong(authentication.getName());
+		String username = authentication.getName(); // Agora é só o username mesmo
+		
+		 // Busca o usuário logado pelo username
+	    User loggedInUser = userDao.findByUsername(username)
+	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
 		
 		// Se for BASIC e está tentando atualizar outro usuário, bloqueia
-	    if ("ROLE_BASIC".equals(role) && !id.equals(loggedInUserId)) {
+	    if ("ROLE_BASIC".equals(role) && !id.equals(loggedInUser.getId().longValue())) {
 	        throw new ClienteEncontradoException("Usuário BASIC não tem permissão para atualizar outros usuários.");
 	    }
 				
@@ -257,13 +268,7 @@ public class UserClienteService implements UserDetailsService {
 		    throw new ClienteNaoEncontradoException("Este nome de usuário já está em uso.");
 		}
 
-		user.setUsername(dto.username());
-		if (dto.password() != null && !dto.password().isEmpty()) {
-			 // Só atualiza se a nova senha (em texto puro) for diferente da atual
-		    if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
-		        user.setPassword(passwordEncoder.encode(dto.password()));
-		    }
-		}
+		
 
 		Cliente cliente = user.getCliente();
 		cliente.setNome(dto.nome());
@@ -297,17 +302,21 @@ public class UserClienteService implements UserDetailsService {
 	            .findFirst()
 	            .orElse("");
 
-	    Long loggedInUserId = Long.parseLong(authentication.getName());
+	    String username = authentication.getName(); // Agora é só o username mesmo
+	    
+	    // Busca o usuário logado pelo username
+	    User loggedInUser = userDao.findByUsername(username)
+	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
 
 	    if ("ROLE_ADMIN".equals(role)) {
 	        // Admin não pode se deletar
-	        if (id.equals(loggedInUserId)) {
+	        if (id.equals(loggedInUser.getId().longValue())) {
 	            throw new ClienteEncontradoException("Administradores não podem deletar a si mesmos.");
 	        }
 	        return userDao.delete(id);
 	    } else if ("ROLE_BASIC".equals(role)) {
 	        // Basic só pode deletar a si mesmo
-	        if (!id.equals(loggedInUserId)) {
+	        if (!id.equals(loggedInUser.getId().longValue())) {
 	            throw new ClienteEncontradoException("Usuário BASIC não tem permissão para deletar outros usuários.");
 	        }
 	        return userDao.delete(id);

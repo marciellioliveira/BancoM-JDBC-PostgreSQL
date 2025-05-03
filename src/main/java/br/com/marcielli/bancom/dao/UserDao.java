@@ -87,11 +87,10 @@ public class UserDao {
     
     public User update(User user) {
         // Atualiza o usuário
-        String sqlUser = "UPDATE users SET username = ?, password = ?, user_ativo = ? WHERE id = ?";
+        String sqlUser = "UPDATE users SET username = ?, user_ativo = ? WHERE id = ?";
         jdbcTemplate.update(
             sqlUser,
             user.getUsername(),
-            user.getPassword(),
             user.isUserAtivo(),
             user.getId()
         );

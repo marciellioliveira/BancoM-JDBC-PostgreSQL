@@ -41,7 +41,7 @@ public class AuthController {
 	    System.out.println("Tentativa de login para: " + request.username());
 
 	    try {
-	        // 1. Autenticação
+	        //  Autenticação
 	        Authentication authentication = authenticationManager.authenticate(
 	            new UsernamePasswordAuthenticationToken(
 	                request.username(),
@@ -49,10 +49,10 @@ public class AuthController {
 	            )
 	        );
 
-	        // 2. Configura a autenticação no contexto de segurança
+	        //  Configura a autenticação no contexto de segurança
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-	        // 3. Obtém os detalhes
+	        //  Obtém os detalhes
 	        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 	        String role = authentication.getAuthorities().stream()
 	            .findFirst()
@@ -61,10 +61,10 @@ public class AuthController {
 
 	        System.out.println("Login bem-sucedido para: " + userDetails.getUsername() + " | Role: " + role);
 
-	        // 4. Gera o token
+	        //  Gera o token
 	        String token = jwtService.generateToken(userDetails.getUsername(), role);
 
-	        // 5. Retorna o token e a role
+	        // Retorna o token e a role
 	        return ResponseEntity.ok(Map.of(
 	            "token", token,
 	            "role", role
@@ -72,7 +72,11 @@ public class AuthController {
 
 	    } catch (AuthenticationException e) {
 	        System.out.println("Falha no login: " + e.getMessage());
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        return ResponseEntity
+	                .status(HttpStatus.UNAUTHORIZED)
+	                .body("Usuário não encontrado.");
+
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    }
 	}
 
