@@ -117,10 +117,7 @@ public class AuthController {
             String token = jwtService.generateToken(userDetails.getUsername(), role);
             
             // 5. Retorna a resposta padronizada
-            return ResponseEntity.ok(Map.of(
-                "token", token,
-                "role", role.replace("ROLE_", "") // Remove prefixo se existir
-            ));
+            return ResponseEntity.ok(token);
             
         } catch (AuthenticationException e) {
             System.out.println("Falha no login: " + e.getMessage());

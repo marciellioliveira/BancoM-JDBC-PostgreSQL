@@ -77,27 +77,6 @@ public class SecurityConfig {
             		        "/webjars/**",
             		        "/users"  
             		    ).permitAll()
-//            		// Permite acesso livre às páginas de login, home, etc.
-//                    .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
-//                    .requestMatchers("/favicon.ico", "/error").permitAll()
-//                    .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()
-//                   
-//                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-//                    
-//                    // Permite o cadastro de usuários (POST)
-//                    .requestMatchers(HttpMethod.POST, "/users").permitAll()
-//                    
-//                    // ADMIN pode listar todos os usuários
-//                    .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-//                    
-//                    // GET por ID: ADMIN e BASIC
-//                    .requestMatchers(HttpMethod.GET, "/users/*").hasAnyRole("ADMIN", "BASIC")
-//                    
-//                    // PUT por ID: ADMIN e BASIC
-//                    .requestMatchers(HttpMethod.PUT, "/users/*").hasAnyRole("ADMIN", "BASIC")
-//                    
-//                    // DELETE por ID: ADMIN e BASIC
-//                    .requestMatchers(HttpMethod.DELETE, "/users/*").hasAnyRole("ADMIN", "BASIC")
                     
                     //Porque está assim?
                     //ADMIN: é o dono do sistema (tipo um superuser)ele pode editar/deletar qualquer conta, MENOS a própria
