@@ -21,29 +21,39 @@ public class UserRowMapper implements RowMapper<User> {
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password"));
         user.setUserAtivo(rs.getBoolean("user_ativo"));
-        //user.setRole(rs.getString("role_name")); // Mapear role_name para role (String)
 
         Cliente cliente = new Cliente();
         long clienteId = rs.getLong("cliente_id");
         cliente.setId(clienteId);
-       // cliente.setId(rs.getLong("cliente_id"));
         cliente.setNome(rs.getString("nome"));
         
-        String cpfString = rs.getString("cpf");
-        try {
-        	// se o CPF não é nulo antes da conversão
-        	if (rs.getString("cpf") != null) {
-        	    cliente.setCpf(Long.parseLong(rs.getString("cpf").replaceAll("\\D", "")));
-        	} else {
-        	    cliente.setCpf(0L); // Valor padrão ou lançar exceção
-        	}
-        	long cpfLong = Long.parseLong(cpfString.replaceAll("[^0-9]", ""));
-            cliente.setCpf(cpfLong);
-        } catch (NumberFormatException e) {
-            throw new SQLException("Formato de CPF inválido: " + cpfString);
+        String cpf = rs.getString("cpf");
+        Long cpfLong = null;
+        
+        if (cpf != null && !cpf.trim().isEmpty()) {
+            // Remove pontos e traços, se existirem
+            cpf = cpf.replaceAll("[.-]", "").trim();
+            
+            // Verifica se depois de limpar, só restaram números
+            if (!cpf.isEmpty() && cpf.matches("\\d+")) {
+                cpfLong = Long.valueOf(cpf);
+            }
         }
         
-        //cliente.setCpf(rs.getLong("cpf"));
+     // Só seta se cpfLong não for nulo
+        if (cpfLong != null) {
+            cliente.setCpf(cpfLong);
+        }
+        
+        
+        
+//        if (cpf != null && cpf.matches(".*[.-].*")) {
+//            cpf = cpf.replaceAll("[.-]", "");
+//        }
+//        
+//        Long cpfLong = Long.valueOf(cpf);
+//        cliente.setCpf(cpfLong);
+  
         cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
         user.setCliente(cliente);
 
