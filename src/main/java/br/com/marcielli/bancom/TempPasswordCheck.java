@@ -4,7 +4,7 @@
 //
 //public class TempPasswordCheck {
 //	public static void main(String[] args) {
-//        String storedHash = "$2a$10$sKpNdB2d8A0ZXczWbjtc.OgsHRlB2Os7/F7aGBwN4WomJOL5Y6si.";
+//        String storedHash = "$2a$10$OxmnYO1yNlsAYEkBb01dHuq4GTe0JJFiouRM40VyjRxQUk0tHYqWS";
 //        String rawPassword = "minhasenhasuperhipermegapowersecreta11";
 //        
 //        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

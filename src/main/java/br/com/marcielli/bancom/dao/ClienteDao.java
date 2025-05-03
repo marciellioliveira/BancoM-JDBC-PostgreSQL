@@ -1,10 +1,12 @@
 package br.com.marcielli.bancom.dao;
 
 import br.com.marcielli.bancom.entity.Cliente;
+import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -66,11 +68,6 @@ public class ClienteDao {
         }
     }
 
-//    public void save(Cliente cliente) {
-//        String sql = "INSERT INTO clientes (nome, cpf, cliente_ativo, user_id) VALUES (?, ?, ?, ?)";
-//        jdbcTemplate.update(sql, cliente.getNome(), cliente.getCpf(), cliente.isClienteAtivo(), cliente.getUser().getId());
-//    }
-
     public Optional<Cliente> findById(Long id) {
     	String sql = "SELECT " +
     	        "c.id AS cliente_id, " +
@@ -97,8 +94,31 @@ public class ClienteDao {
         List<Cliente> clientes = jdbcTemplate.query(sql, new ClienteRowMapper(), id);
         return clientes.isEmpty() ? Optional.empty() : Optional.of(clientes.get(0));
     }
+    
+    public Cliente findByIdWithContas(Long id) {
+        // Busca o cliente
+        String clienteSql = "SELECT * FROM clientes WHERE id = ?";
+        Cliente cliente = jdbcTemplate.queryForObject(
+            clienteSql, 
+            new BeanPropertyRowMapper<>(Cliente.class), 
+            id
+        );
 
+        if (cliente != null) {
+            // Busca as contas associadas a esse cliente
+            String contasSql = "SELECT * FROM contas WHERE cliente_id = ?";
+            List<Conta> contas = jdbcTemplate.query(
+                contasSql,
+                new BeanPropertyRowMapper<>(Conta.class),
+                id
+            );
+            
+            //  Associa as contas ao cliente
+            cliente.setContas(contas);
+        }
 
+        return cliente;
+    }
 
 
 }

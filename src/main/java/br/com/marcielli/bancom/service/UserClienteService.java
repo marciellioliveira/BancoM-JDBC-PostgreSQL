@@ -143,10 +143,12 @@ public class UserClienteService implements UserDetailsService {
 //				.password(user.getPassword()).roles(user.getRole()).build();
 //	}
 
+	@Transactional
 	public User findByUsername(String username) {
 		return userDao.findByUsername(username).orElse(null);
 	}
 
+	@Transactional
 	public User save(UserCreateDTO dto) {
 		
 		Optional<User> userCpf = userDao.findByCpf(dto.cpf());
@@ -186,37 +188,75 @@ public class UserClienteService implements UserDetailsService {
 		}
 	}
 
-
 	@Transactional
-	public User getUserById(Long id, Authentication authentication) throws ClienteEncontradoException {	
-		String role = authentication.getAuthorities().stream()
+	public User getUserById(Long id, Authentication authentication) throws ClienteEncontradoException {    
+	    String role = authentication.getAuthorities().stream()
 	            .map(GrantedAuthority::getAuthority)
 	            .findFirst()
 	            .orElse("");
 
-		String username = authentication.getName(); // Agora é só o username mesmo
+	    String username = authentication.getName();
 	    
-	 // Busca o usuário logado pelo username
+	    // Busca o usuário logado pelo username
 	    User loggedInUser = userDao.findByUsername(username)
 	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
 
+	    User user;
+	    
 	    if ("ROLE_ADMIN".equals(role)) {
-	        // Admin pode acessar qualquer ID
-	        return userDao.findById(id)
+	        // Admin pode acessar qualquer ID        
+	        user = userDao.findById(id)
 	                .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
 	    } else if ("ROLE_BASIC".equals(role)) {
 	        // Basic só pode acessar o próprio ID
 	        if (!id.equals(loggedInUser.getId().longValue())) {
 	            throw new ClienteEncontradoException("Você não tem permissão para acessar esse usuário.");
 	        }
-	        return userDao.findById(id)
+	        user = userDao.findById(id)
 	                .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
 	    } else {
 	        throw new ClienteEncontradoException("Role não autorizada para esta ação.");
 	    }
 
-		//return userDao.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
+	    // Carrega as contas do cliente associado ao usuário
+	    if (user.getCliente() != null) {
+	        Cliente clienteComContas = clienteDao.findByIdWithContas(user.getCliente().getId());
+	        user.setCliente(clienteComContas);
+	    }
+
+	    return user;
 	}
+
+//	@Transactional
+//	public User getUserById(Long id, Authentication authentication) throws ClienteEncontradoException {	
+//		String role = authentication.getAuthorities().stream()
+//	            .map(GrantedAuthority::getAuthority)
+//	            .findFirst()
+//	            .orElse("");
+//
+//		String username = authentication.getName(); // Agora é só o username mesmo
+//	    
+//	 // Busca o usuário logado pelo username
+//	    User loggedInUser = userDao.findByUsername(username)
+//	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+//
+//	    if ("ROLE_ADMIN".equals(role)) {
+//	        // Admin pode acessar qualquer ID    	
+//	    	
+//	        return userDao.findById(id)
+//	                .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
+//	    } else if ("ROLE_BASIC".equals(role)) {
+//	        // Basic só pode acessar o próprio ID
+//	        if (!id.equals(loggedInUser.getId().longValue())) {
+//	            throw new ClienteEncontradoException("Você não tem permissão para acessar esse usuário.");
+//	        }
+//	        return userDao.findById(id)
+//	                .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
+//	    } else {
+//	        throw new ClienteEncontradoException("Role não autorizada para esta ação.");
+//	    }
+//
+//	}
 
 	@Transactional
 	public List<User> getAllUsers(Authentication authentication) throws ClienteEncontradoException {
@@ -241,6 +281,7 @@ public class UserClienteService implements UserDetailsService {
 	    }
 	}
 
+	@Transactional
 	public User update(Long id, UserCreateDTO dto, Authentication authentication ) throws ClienteEncontradoException {	
 		
 		String role = authentication.getAuthorities().stream()

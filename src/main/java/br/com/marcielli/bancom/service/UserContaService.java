@@ -1,5 +1,6 @@
 package br.com.marcielli.bancom.service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import br.com.marcielli.bancom.dao.ClienteDao;
@@ -14,9 +15,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
+import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
+import br.com.marcielli.bancom.dto.security.UserContaResponseDTO;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
+import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 
 @Service
 public class UserContaService {
@@ -37,10 +42,11 @@ public class UserContaService {
 		this.clienteDao = clienteDao;
 		this.userDao = userDao;
 	}
-
+	
+	
 	//ADMIN pode criar conta pra ele e pra todos
 	//BASIC só pode criar conta pra ele mesmo
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public Conta save(ContaCreateDTO dto, Authentication authentication) {
 		
 		//Pega a role do usuário logado
@@ -100,74 +106,211 @@ public class UserContaService {
 		conta.setSaldoConta(dto.saldoConta());
 		conta.setStatus(true);
 		conta.setTaxas(taxas);
+		
+		 // Salva a conta no banco 
+	    Conta contaSalva = contaDao.save(conta);
+	    
+	 // Atualiza a lista em memória do cliente
+	    if (cliente.getContas() == null) {
+	        cliente.setContas(new ArrayList<>());
+	    }
+	    cliente.getContas().add(contaSalva);
+	    
+	    //preciso salvar na tabela cliente
 
-		return contaDao.save(conta);
+	    return contaSalva;
+	}
+
+	//ADMIN pode criar conta pra ele e pra todos
+	//BASIC só pode criar conta pra ele mesmo
+//	@Transactional
+//	public Conta save(ContaCreateDTO dto, Authentication authentication) {
+//		
+//		//Pega a role do usuário logado
+//	    String role = authentication.getAuthorities().stream()
+//	            .map(GrantedAuthority::getAuthority)
+//	            .findFirst()
+//	            .orElse("");
+//	    
+//	    String username = authentication.getName();
+//	    
+//	    //Busca o usuário logado pelo username
+//	    User loggedInUser = userDao.findByUsername(username)
+//	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+//	    
+//	    // Se for BASIC e está tentando criar conta para outro usuário, bloqueia
+//	    if ("ROLE_BASIC".equals(role) && !dto.idUsuario().equals(loggedInUser.getId().longValue())) {
+//	        throw new ClienteNaoEncontradoException("Usuário BASIC não tem permissão para criar conta para outro usuário.");
+//	    }		
+//		
+//	    Cliente cliente = clienteDao.findById(dto.idUsuario())
+//				.orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
+//		
+//		if (!cliente.isClienteAtivo()) {
+//			throw new ClienteNaoEncontradoException("O cliente está desativado. Não é possível criar uma conta.");
+//		}
+//
+//		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
+//		List<TaxaManutencao> taxas = new ArrayList<>();
+//		taxas.add(taxa);
+//
+//		String numeroContaBase = gerarNumeroDaConta();
+//		String chavePix = gerarPixAleatorio().concat("-PIX");
+//
+//		Conta conta;
+//
+//		if (dto.tipoConta() == TipoConta.CORRENTE) {
+//			ContaCorrente cc = new ContaCorrente(taxa.getTaxaManutencaoMensal());
+//			cc.setNumeroConta(numeroContaBase.concat("-CC"));
+//			cc.setTaxaManutencaoMensal(taxa.getTaxaManutencaoMensal());
+//			conta = cc;
+//
+//		} else if (dto.tipoConta() == TipoConta.POUPANCA) {
+//			ContaPoupanca pp = new ContaPoupanca(taxa.getTaxaAcrescRend(), taxa.getTaxaMensal());
+//			pp.setNumeroConta(numeroContaBase.concat("-PP"));
+//			pp.setTaxaAcrescRend(taxa.getTaxaAcrescRend());
+//			pp.setTaxaMensal(taxa.getTaxaMensal());
+//			conta = pp;
+//
+//		} else {
+//			throw new IllegalArgumentException("Tipo de conta inválido.");
+//		}
+//
+//		conta.setCliente(cliente);
+//		conta.setPixAleatorio(chavePix);
+//		conta.setCategoriaConta(taxa.getCategoria());
+//		conta.setTipoConta(dto.tipoConta());
+//		conta.setSaldoConta(dto.saldoConta());
+//		conta.setStatus(true);
+//		conta.setTaxas(taxas);
+//
+//		return contaDao.save(conta);
+//	}
+
+	
+	@Transactional
+	public List<Conta> getContas(Authentication authentication) {
+	    String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
+
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // Admin pode ver todas as contas
+	        return contaDao.findAll();
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        String username = authentication.getName();
+	        return contaDao.findByUsername(username); // Retorna todas as contas desse usuário
+	    } else {
+	        throw new RuntimeException("Você não tem permissão para acessar a lista de contas.");
+	    }
+	}
+
+
+	@Transactional
+	public Conta getContasById(Long id, Authentication authentication) {
+	    String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
+
+	    String username = authentication.getName(); // Pegando o username do logado
+
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // Admin pode acessar qualquer conta por ID
+	        return contaDao.findById(id)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        // Basic só pode acessar a conta dele mesmo
+	        return contaDao.findByIdAndUsername(id, username)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou você não tem permissão para acessá-la."));
+	    } else {
+	        throw new RuntimeException("Você não tem permissão para acessar essa conta.");
+	    }
+	}
+	
+	@Transactional
+	public boolean delete(Long idConta, Authentication authentication) {
+
+	    String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
+
+	    String username = authentication.getName();
+
+	    Conta contaExistente;
+
+	    if ("ROLE_ADMIN".equals(role)) {
+	        contaExistente = contaDao.findById(idConta)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
+
+	        // Verificar se é a própria conta do admin
+	        Long contaUserId = contaExistente.getCliente().getUser().getId().longValue();
+	        User loggedInUser = userDao.findByUsername(username)
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+
+	        if (contaUserId.equals(loggedInUser.getId())) {
+	            throw new ContaExibirSaldoErroException("Administradores não podem deletar a própria conta. Apenas o superior pode realizar essa ação.");
+	        }
+
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        contaExistente = contaDao.findByIdAndUsername(idConta, username)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou você não tem permissão para deletá-la."));
+	    } else {
+	        throw new ClienteEncontradoException("Role não autorizada para deletar contas.");
+	    }
+
+	    // REGRAS DE SALDO
+	    if (contaExistente.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
+	        throw new ContaExibirSaldoErroException("A conta possui um saldo de R$ " + contaExistente.getSaldoConta() + ". Faça o saque antes de remover a conta.");
+	    } else if (contaExistente.getSaldoConta().compareTo(BigDecimal.ZERO) < 0) {
+	        throw new ContaExibirSaldoErroException("A conta está com saldo negativo. Regularize antes de remover a conta.");
+	    }
+
+	    if (!contaExistente.getStatus()) {
+	        throw new ContaExibirSaldoErroException("A conta já está desativada anteriormente.");
+	    }
+
+	    contaExistente.setStatus(false);
+	    contaDao.save(contaExistente);
+	    return true;
 	}
 
 
 
-
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public List<Conta> getContas() {
-//		return contaRepository.findAll();
-//	}
-
-
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Conta getContasById(Long id) {
-//		return contaRepository.findById(id).orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
-//	}
-
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Conta update(Long idConta, ContaUpdateDTO dto) { //, JwtAuthenticationToken token
-//
-//		Conta contaExistente = contaRepository.findById(idConta)
-//				.orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
-//
-//		Long userId = contaExistente.getCliente().getUser().getId().longValue();
-//
-//		if(userId != dto.idUsuario()) {
-//			throw new ClienteNaoEncontradoException("Você não tem permissão para alterar essa conta.");
-//		}
-//
-//		if (!contaExistente.getStatus()) { // A conta está ativa? Porque no banco eu prefiro não deletar e somente
-//											// desativar
-//			throw new ClienteNaoEncontradoException("Não é possível atualizar uma conta desativada");
-//		}
-//
-//		String novoPix = dto.pixAleatorio().concat("-PIX");
-//		contaExistente.setPixAleatorio(novoPix);
-//
-//		//Aqui tive que forçar o flush imediat porque ele estava salvando corretamente no banco mas não estava imprimindo corretamente no json
-//		Conta contaAtualizada = contaRepository.saveAndFlush(contaExistente);
-//
-//		return contaRepository.save(contaAtualizada);
-//	}
-
 //	@Transactional
-//	public boolean delete(Long idConta, ContaUpdateDTO dto) {
+//	public Conta update(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
+//	    // Verifica se a conta existe
+//	    Conta contaExistente = contaDao.findById(idConta)
+//	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
 //
-//		Conta contaExistente = contaRepository.findById(idConta)
-//				.orElseThrow(() -> new ClienteNaoEncontradoException("Conta não encontrada"));
+//	    // Verificação segura do usuário/cliente
+//	    Cliente cliente = contaExistente.getCliente();
+//	    if (cliente == null || cliente.getUser() == null) {
+//	        throw new ClienteEncontradoException("Conta não vinculada a um usuário válido"); //OperacaoNaoPermitidaException
+//	    }
 //
-//		if(contaExistente.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
-//			throw new ContaExibirSaldoErroException("A conta possui um saldo de R$ "+contaExistente.getSaldoConta()+". Faça o saque antes de remover a conta.");
-//		}
+//	    // Verifica permissões
+//	    String username = authentication.getName();
+//	    boolean isAdmin = authentication.getAuthorities().stream()
+//	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 //
-//		Long userId = contaExistente.getCliente().getUser().getId().longValue();
+//	    //  Validação de permissão com verificações seguras
+//	    if (!isAdmin && !username.equals(cliente.getUser().getUsername())) {
+//	        throw new ClienteEncontradoException("Você só pode atualizar sua própria conta"); //AcessoNegadoException
+//	    }
+//	   
+//	    String novoPix = dto.pixAleatorio().concat("-PIX");
+//	    contaDao.atualizarPixAleatorio(idConta, novoPix);
 //
-//		if(userId != dto.idUsuario()) {
-//			throw new ClienteNaoEncontradoException("Você não tem permissão para deletar essa conta.");
-//		}
-//
-//		if(contaExistente.getStatus() == false) {
-//			throw new ContaExibirSaldoErroException("A conta já está desativada anteriomente.");
-//		}
-//
-//		contaExistente.setStatus(false);
-//		contaRepository.save(contaExistente);
-//		return true;
+//	    return contaDao.findById(idConta)
+//	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada após atualização"));
 //	}
+
+
+
+
 
 
 //	// Transferências

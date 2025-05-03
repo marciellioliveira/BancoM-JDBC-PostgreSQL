@@ -12,6 +12,7 @@ import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
 import br.com.marcielli.bancom.dto.security.UserContaDepositoDTO;
 import br.com.marcielli.bancom.dto.security.UserContaPixDTO;
+import br.com.marcielli.bancom.dto.security.UserContaResponseDTO;
 import br.com.marcielli.bancom.dto.security.UserContaSaqueDTO;
 import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.entity.Conta;
@@ -45,82 +46,46 @@ public class UserContaController {
 	//ADMIN pode ver todas as contas
 	//BASIC pode ver apenas a conta com o id dele
 	@GetMapping("/contas")
-	public ResponseEntity<List<Conta>> listContas() {
-		return null;
-//		var contas = contaService.getContas();
-//		return ResponseEntity.status(HttpStatus.OK).body(contas);
+	public ResponseEntity<List<Conta>> listContas(Authentication authentication) {		
+		var contas = contaService.getContas(authentication);
+		return ResponseEntity.status(HttpStatus.OK).body(contas);
 	}
 
 	//ADMIN pode ver todas as contas por id, dele e de qualquer usuario
 	//BASIC só pode ver a conta dele
 	@GetMapping("/contas/{id}")
-	public ResponseEntity<?> getContaById(@PathVariable("id") Long id) {
-		return null; 
-
-//		Conta conta = contaService.getContasById(id);
-//
-//		UserContaResponseDTO response = new UserContaResponseDTO();
-//		response.setId(conta.getId());
-//		response.setTipoConta(conta.getTipoConta());
-//		response.setCategoriaConta(conta.getCategoriaConta());
-//		response.setSaldoConta(conta.getSaldoConta());
-//		response.setNumeroConta(conta.getNumeroConta());
-//		response.setPixAleatorio(conta.getPixAleatorio());
-//		response.setStatus(conta.getStatus());
-//
-//		if (conta instanceof ContaCorrente) {
-//			response.setTaxaManutencaoMensal(((ContaCorrente) conta).getTaxaManutencaoMensal());
-//		} else if (conta instanceof ContaPoupanca) {
-//			response.setTaxaAcrescRend(((ContaPoupanca) conta).getTaxaAcrescRend());
-//			response.setTaxaMensal(((ContaPoupanca) conta).getTaxaMensal());
-//		}
-//
-//		return ResponseEntity.status(HttpStatus.OK).body(response);
+	public ResponseEntity<?> getContaById(@PathVariable("id") Long id, Authentication authentication) {
+	    Conta conta = contaService.getContasById(id, authentication);
+	    return ResponseEntity.ok(conta);
 	}
+	
+	//ADMIN pode deletar a conta de todos, menos a dele
+	//BASIC só pode deletar a própria conta por id
+	@DeleteMapping("/contas/{id}")
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, Authentication authentication) {
+	    boolean conta = contaService.delete(id, authentication);
+
+	    if (conta) {
+	        return ResponseEntity.status(HttpStatus.OK).body("Conta deletada com sucesso!");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
+	    }
+	}
+
+
 
 	//ADMIN pode atualizar a conta dele e de todos os outros
 	//BASIC só pode atualizar a conta dele próprio por id
-	@PutMapping("/contas/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto) {
-		return null;
+//	@PutMapping("/contas/{id}")
+//	public ResponseEntity<Conta> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, Authentication authentication) {
+//	    Conta conta = contaService.update(id, dto, authentication);
+//	    return ResponseEntity.ok(conta);  // Retorna a entidade pura
+//	}
 
-//		Conta conta = contaService.update(id, dto);
-//
-//		UserContaResponseDTO response = new UserContaResponseDTO();
-//
-//		if (conta instanceof ContaCorrente contaCorrente) {
-//			response.setTaxaManutencaoMensal(contaCorrente.getTaxaManutencaoMensal());
-//		}
-//
-//		if (conta instanceof ContaPoupanca contaPoupanca) {
-//			response.setTaxaAcrescRend(contaPoupanca.getTaxaAcrescRend());
-//			response.setTaxaMensal(contaPoupanca.getTaxaMensal());
-//		}
-//
-//		response.setId(id);
-//		response.setTipoConta(conta.getTipoConta());
-//		response.setCategoriaConta(conta.getCategoriaConta());
-//		response.setSaldoConta(conta.getSaldoConta());
-//		response.setNumeroConta(conta.getNumeroConta());
-//		response.setPixAleatorio(conta.getPixAleatorio());
-//
-//		return ResponseEntity.ok(response);
-	}
 
-	//ADMIN pode deltar a conta de todos, menos a dele
-	//BASIC só pode deletar a própria conta por id
-	@DeleteMapping("/contas/{id}")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto) {
-		return null;
 
-//		boolean conta = contaService.delete(id, dto);
-//
-//		if (conta) {
-//			return ResponseEntity.status(HttpStatus.OK).body("Conta deletado com sucesso!");
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
-//		}
-	}
+
+
 
 	
 	
