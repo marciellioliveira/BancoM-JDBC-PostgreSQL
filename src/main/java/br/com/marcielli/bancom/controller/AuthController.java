@@ -102,30 +102,30 @@ public class AuthController {
                 )
             );
             
-            // 2. Gera o token
+            // 2. Extrai UserDetails do objeto de autenticação
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtService.generateToken(userDetails.getUsername());
             
-            // 3. Extrai a role (garantindo formato consistente)
-            String role = authentication.getAuthorities().stream()
+            // 3. Obtém a role (garantindo o formato correto)
+            String role = userDetails.getAuthorities().stream()
                 .findFirst()
                 .map(GrantedAuthority::getAuthority)
-                .orElse("ROLE_USER"); // Fallback seguro
+                .orElseThrow(() -> new IllegalStateException("Usuário sem roles definidas"));
             
             System.out.println("Login bem-sucedido para: " + userDetails.getUsername() + " | Role: " + role);
             
-            // 4. Retorna resposta PADRONIZADA
-            return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of(
-                    "token", token, // SEMPRE string pura
-                    "role", role.replace("ROLE_", "") // Remove prefixo (opcional)
-                ));
-                
+            // 4. Gera o token incluindo a role
+            String token = jwtService.generateToken(userDetails.getUsername(), role);
+            
+            // 5. Retorna a resposta padronizada
+            return ResponseEntity.ok(Map.of(
+                "token", token,
+                "role", role.replace("ROLE_", "") // Remove prefixo se existir
+            ));
+            
         } catch (AuthenticationException e) {
             System.out.println("Falha no login: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("error", "Credenciais inválidas")); // Padroniza erros também
+                .body(Map.of("error", "Credenciais inválidas"));
         }
     }
 //    @PostMapping("/login")

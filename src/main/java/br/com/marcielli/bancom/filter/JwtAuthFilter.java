@@ -45,59 +45,41 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
     	
-    	// Pula verificação JWT para endpoints de login
-    	if (request.getServletPath().equals("/auth/login") || 
-                request.getServletPath().equals("/login")) {
-                filterChain.doFilter(request, response); // Usando o parâmetro recebido
-                return;
-            }
-    	
-        String authHeader = request.getHeader("Authorization");
-        System.out.println("Cabeçalho Authorization: " + authHeader);  
-        
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-        	System.out.println("Cabeçalho Authorization ausente ou mal formatado.");
+    	// Pula endpoints públicos
+    	if (request.getServletPath().equals("/auth/login") || request.getServletPath().equals("/login")) {
             filterChain.doFilter(request, response);
             return;
         }
+    	
+    	// Valida header
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token ausente");
+            return;
+        }
 
-        String token = authHeader.replace("Bearer ", "");
-        System.out.println("Token extraído: " + token);
+        // Extrai e valida token
+        String token = authHeader.substring(7); // Remove "Bearer "
         try {
-            Claims claims = jwtService.validateToken(token); // Usar JwtService
-            System.out.println("Token validado com sucesso. Claims extraídas: " + claims);
-
+        	Claims claims = jwtService.validateToken(token);
             String username = claims.getSubject();
-            String role = claims.get("role", String.class); // Role como string
-            System.out.println("Username: " + username + ", Role: " + role); 
+            String role = "ROLE_" + claims.get("role", String.class); // Garante prefixo
             
-
-            if (username != null) {
-            	System.out.println("Username encontrado: " + username);
-                List<SimpleGrantedAuthority> authorities = List.of(
-                    new SimpleGrantedAuthority("ROLE_" + role)
-                );
-                
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                	    username, 
-                	    null, 
-                	    Collections.singletonList(new SimpleGrantedAuthority(role.startsWith("ROLE_") ? role : "ROLE_" + role))
-                	);
-                System.out.println("Autenticação configurada no SecurityContext.");
-                System.out.println("Authorities configuradas: " + authorities);
-//                UsernamePasswordAuthenticationToken authToken =
-//                    new UsernamePasswordAuthenticationToken(username, null, authorities);
-//                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                SecurityContextHolder.getContext().setAuthentication(authToken);
-//                System.out.println("Autenticação configurada no SecurityContext.");
-            }
+         // Configura autenticação no contexto
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                username,
+                null,
+                Collections.singletonList(new SimpleGrantedAuthority(role))
+            );
+            
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        	response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
             return;
         }
 
         filterChain.doFilter(request, response);
-        System.out.println("Passando para o próximo filtro.");
     }
 
 }

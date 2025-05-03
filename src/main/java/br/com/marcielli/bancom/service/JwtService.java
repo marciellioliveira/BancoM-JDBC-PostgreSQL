@@ -142,11 +142,12 @@ public class JwtService {
 //        }
 //    }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {  // Adicione o parâmetro role
         return Jwts.builder()
                 .subject(username)
+                .claim("role", role)  // Adiciona a role como claim
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(getSigningKey())
                 .compact();
     }
