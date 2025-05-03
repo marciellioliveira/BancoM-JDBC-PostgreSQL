@@ -89,46 +89,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-    
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-//            throws ServletException, IOException {
-//    	
-//    	// Pula endpoints públicos
-//    	if (request.getServletPath().equals("/auth/login") || request.getServletPath().equals("/login")) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-//    	
-//    	// Valida header
-//        String authHeader = request.getHeader("Authorization");
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token ausente");
-//            return;
-//        }
-//
-//        // Extrai e valida token
-//        String token = authHeader.substring(7); // Remove "Bearer "
-//        try {
-//        	Claims claims = jwtService.validateToken(token);
-//            String username = claims.getSubject();
-//            String role = "ROLE_" + claims.get("role", String.class); // Garante prefixo
-//            
-//         // Configura autenticação no contexto
-//            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-//                username,
-//                null,
-//                Collections.singletonList(new SimpleGrantedAuthority(role))
-//            );
-//            
-//            SecurityContextHolder.getContext().setAuthentication(authToken);
-//            
-//        } catch (Exception e) {
-//        	response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
-//            return;
-//        }
-//
-//        filterChain.doFilter(request, response);
-//    }
-
 }

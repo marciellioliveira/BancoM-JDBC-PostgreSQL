@@ -77,6 +77,17 @@ public class SecurityConfig {
             		        "/webjars/**",
             		        "/users"  
             		    ).permitAll()
+            		
+            		
+            		//ADMIN 
+            		
+            		
+            		
+            		
+            		//BASIC
+            		
+            		
+            		
                     
                     //Porque está assim?
                     //ADMIN: é o dono do sistema (tipo um superuser)ele pode editar/deletar qualquer conta, MENOS a própria

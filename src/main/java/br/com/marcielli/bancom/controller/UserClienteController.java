@@ -1,5 +1,6 @@
 package br.com.marcielli.bancom.controller;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import br.com.marcielli.bancom.dao.UserDao;
@@ -36,7 +37,7 @@ public class UserClienteController {
 		this.userSecurityService = userSecurityService;
 	}
 
-	//ADMIN e BASIC e qualquer outra pessoa
+	// ADMIN e BASIC e qualquer outra pessoa
 	@PostMapping("/users")
 	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto) {
 		User clienteAdicionado = clienteService.save(dto);
@@ -48,13 +49,10 @@ public class UserClienteController {
 		}
 	}
 
-	//ADMIN pode ver todos, BASIC só o seu
+	// ADMIN pode ver todos, BASIC só o seu
 	@GetMapping("/users")
-	public ResponseEntity<Object> listUsers() {		
-		
-		
-		
-		List<User> users = clienteService.getAllUsers();
+	public ResponseEntity<Object> listUsers(Authentication authentication) throws ClienteEncontradoException {
+		List<User> users = clienteService.getAllUsers(authentication);
 
 		if (users == null || users.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Nenhum usuário encontrado.");
@@ -62,56 +60,23 @@ public class UserClienteController {
 
 		return ResponseEntity.ok(users);
 	}
-	
-	//ADMIN pode ver todos, BASIC só o seu
+
+	// ADMIN pode ver todos, BASIC só o seu
 	@GetMapping("/users/{id}")
-	public ResponseEntity<Object> getUserById(@PathVariable("id") Long id, Authentication authentication) {
-		
+	public ResponseEntity<Object> getUserById(@PathVariable("id") Long id, Authentication authentication) throws ClienteEncontradoException {
 
-		// 1. Verifica autenticação
-	    if (authentication == null || !authentication.isAuthenticated()) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	    }
+		User requestedUser = clienteService.getUserById(id, authentication);
 
-	    // 2. Verifica roles corretamente
-	    boolean isBasic = authentication.getAuthorities().stream()
-	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_BASIC"));
-	    
-	    boolean isAdmin = authentication.getAuthorities().stream()
-	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+		return ResponseEntity.ok(requestedUser);
 
-	    System.out.println("É BASIC? " + isBasic);
-	    System.out.println("É ADMIN? " + isAdmin);
-		
-	 // 3. Lógica de autorização
-	    User requestedUser = clienteService.getUserById(id);
-	    if (requestedUser == null) {
-	        return ResponseEntity.notFound().build();
-	    }
-
-	    // ADMIN pode ver qualquer usuário, BASIC só pode ver a si mesmo
-	    if (!isAdmin && !authentication.getName().equals(requestedUser.getUsername())) {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-	    }
-
-	    return ResponseEntity.ok(requestedUser);
-		
-		
-//		User user = clienteService.getUserById(id);
-//
-//		if (user == null) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
-//		}
-//
-//		return ResponseEntity.ok(user);
 	}
 
-	//ADMIN pode atualizar todos, BASIC só o seu
+	// ADMIN pode atualizar todos, BASIC só o seu
 	@PutMapping("/users/{id}")
 	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody UserCreateDTO dto,
-			Authentication authentication) {
+			Authentication authentication) throws ClienteEncontradoException {
 
-		User updatedUser = clienteService.update(id, dto);
+		User updatedUser = clienteService.update(id, dto, authentication);
 
 		if (updatedUser == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
@@ -120,9 +85,9 @@ public class UserClienteController {
 		return ResponseEntity.ok(updatedUser);
 	}
 
-	//ADMIN pode deletar todos MENOS ele próprio, BASIC só o seu
+	// ADMIN pode deletar todos MENOS ele próprio, BASIC só o seu
 	@DeleteMapping("/users/{id}")
-	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id, Authentication authentication) {
+	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id, Authentication authentication) throws ClienteEncontradoException {
 
 		boolean deleted = clienteService.deleteUser(id, authentication);
 
