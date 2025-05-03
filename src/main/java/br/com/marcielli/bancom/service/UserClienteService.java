@@ -100,13 +100,17 @@ public class UserClienteService implements UserDetailsService {
 	    User user = userDao.findByUsername(username)
 	        .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 	    
+	    String role = user.getRole().startsWith("ROLE_") 
+	            ? user.getRole() 
+	            : "ROLE_" + user.getRole();
+	    
 	    System.out.println("Usuário encontrado: " + user.getUsername());
 	    System.out.println("Role do usuário: " + user.getRole());
 	    
 	    return org.springframework.security.core.userdetails.User.builder()
 	        .username(user.getUsername())
 	        .password(user.getPassword())
-	        .roles(user.getRole()) // Certifique-se que retorna "ADMIN" para o admin
+	        .roles(role.replace("ROLE_", "")) // Certifique-se que retorna "ADMIN" para o admin
 	        .build();
 	}
 	
@@ -175,79 +179,80 @@ public class UserClienteService implements UserDetailsService {
 
 
 	@Transactional
-	public User getUserById(Long id, Authentication authentication) {		
+	public User getUserById(Long id) {		
 		
-		// Verifica se o usuário não está autenticado
-	    if (authentication == null) {
-	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
-	    }
-	    
-	    String username  = authentication.getName(); //nome do usuário autenticado
-	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
-	    
-	    //Long id (do parametro) = id pra ver, editar ou deletar
-	    //admin = admin name
-	    //usernameAutenticado.getUsername() = admin ou (outro usuario basic)
-	    //usernameAutenticado.getRole() = ADMIN ou BASIC
-	    //usernameAutenticado.getId() = id do user
-	    //usernameAutenticado.getCliente() = cliente com id, endereço...
-
-	    System.err.println("long id parametro: "+id);
-	    System.err.println("username: "+username );
-	    System.err.println("loggedUser getUsername: "+loggedUser.getUsername());
-	    System.err.println("loggedUser getRole: "+loggedUser.getRole());
-	    System.err.println("loggedUser getId: "+loggedUser.getId());
-	    System.err.println("loggedUser getCliente: "+loggedUser.getCliente());
-	    
-	    // Se for BASIC, só pode acessar se for o próprio ID
-	    if("BASIC".equals(loggedUser.getRole())) {
-	    	if (!id.equals(loggedUser.getId().longValue())) {
-	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para acessar este usuário.");
-	        }
-	    }
-		
+//		// Verifica se o usuário não está autenticado
+//	    if (authentication == null) {
+//	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
+//	    }
+//	    
+//	    String username  = authentication.getName(); //nome do usuário autenticado
+//	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
+//	    
+//	    //Long id (do parametro) = id pra ver, editar ou deletar
+//	    //admin = admin name
+//	    //usernameAutenticado.getUsername() = admin ou (outro usuario basic)
+//	    //usernameAutenticado.getRole() = ADMIN ou BASIC
+//	    //usernameAutenticado.getId() = id do user
+//	    //usernameAutenticado.getCliente() = cliente com id, endereço...
+//
+//	    System.err.println("long id parametro: "+id);
+//	    System.err.println("username: "+username );
+//	    System.err.println("loggedUser getUsername: "+loggedUser.getUsername());
+//	    System.err.println("loggedUser getRole: "+loggedUser.getRole());
+//	    System.err.println("loggedUser getId: "+loggedUser.getId());
+//	    System.err.println("loggedUser getCliente: "+loggedUser.getCliente());
+//	    
+//	    // Se for BASIC, só pode acessar se for o próprio ID
+//	    if("BASIC".equals(loggedUser.getRole())) {
+//	    	if (!id.equals(loggedUser.getId().longValue())) {
+//	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para acessar este usuário.");
+//	        }
+//	    }
+//		
 	    // Se ADMIN, pode acessar qualquer um (sem restrição aqui)
 		return userDao.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado."));
 	}
 
 	@Transactional
-	public List<User> getAllUsers(Authentication authentication) {
-
-		// Verifica se o usuário não está autenticado
-	    if (authentication == null) {
-	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
-	    }
-	   
-	    String username  = authentication.getName(); //nome do usuário autenticado
-	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
-
-	    // Se for BASIC, não pode acessar NADA
-	    if("BASIC".equals(loggedUser.getRole())) {
-	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para ver todos os usuários.");
-	    }
-		
-	    // Se ADMIN, pode acessar qualquer um (sem restrição aqui)
+	public List<User> getAllUsers() {
+//		//System.err.println("fucking role "+authentication.getAuthorities());
+//		
+//		// Verifica se o usuário não está autenticado
+//	    if (authentication == null) {
+//	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
+//	    }
+//	   
+//	    String username  = authentication.getName(); //nome do usuário autenticado
+//	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
+//
+//	    // Se for BASIC, não pode acessar NADA
+//	    if("BASIC".equals(loggedUser.getRole())) {
+//	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para ver todos os usuários.");
+//	    }
+//		
+//	    // Se ADMIN, pode acessar qualquer um (sem restrição aqui)
 		return userDao.findAll();
 	}
 
-	public User update(Long id, UserCreateDTO dto, Authentication authentication) {
+	public User update(Long id, UserCreateDTO dto) {
 		
-		// Verifica se o usuário não está autenticado
-	    if (authentication == null) {
-	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
-	    }
-	    
-	    String username  = authentication.getName(); //nome do usuário autenticado
-	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
-	    
-	    // Se for BASIC, só pode atualizar se for o próprio ID
-	    if("BASIC".equals(loggedUser.getRole())) {
-	    	if (!id.equals(loggedUser.getId().longValue())) {
-	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para atualizar este usuário.");
-	        }
-	    }
-		
-	    // Se ADMIN, pode acessar qualquer um (sem restrição aqui)
+//		// Verifica se o usuário não está autenticado
+//	    if (authentication == null) {
+//	        throw new ClienteNaoEncontradoException("Acesso negado: usuário não autenticado.");
+//	    }
+//	    
+//	    String username  = authentication.getName(); //nome do usuário autenticado
+//	    User loggedUser = findByUsername(username ); // encontra o usuário no banco
+//	    
+//	    // Se for BASIC, só pode atualizar se for o próprio ID
+//	    if("BASIC".equals(loggedUser.getRole())) {
+//	    	if (!id.equals(loggedUser.getId().longValue())) {
+//	            throw new ClienteNaoEncontradoException("Acesso negado: você não tem permissão para atualizar este usuário.");
+//	        }
+//	    }
+//		
+//	    // Se ADMIN, pode acessar qualquer um (sem restrição aqui)
 				
 		User user = userDao.findById(id).orElseThrow(() ->
 	    new ClienteNaoEncontradoException("Usuário não encontrado para atualização")

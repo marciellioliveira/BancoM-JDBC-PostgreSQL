@@ -45,14 +45,6 @@ public class UserRowMapper implements RowMapper<User> {
             cliente.setCpf(cpfLong);
         }
         
-        
-        
-//        if (cpf != null && cpf.matches(".*[.-].*")) {
-//            cpf = cpf.replaceAll("[.-]", "");
-//        }
-//        
-//        Long cpfLong = Long.valueOf(cpf);
-//        cliente.setCpf(cpfLong);
   
         cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
         user.setCliente(cliente);

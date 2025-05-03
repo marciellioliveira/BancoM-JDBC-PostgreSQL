@@ -142,10 +142,13 @@ public class JwtService {
 //        }
 //    }
 
-    public String generateToken(String username, String role) {  // Adicione o parâmetro role
+    public String generateToken(String username, String role) {
+        // Remove "ROLE_" se já existir
+        String cleanRole = role.startsWith("ROLE_") ? role.substring(5) : role;
+        
         return Jwts.builder()
                 .subject(username)
-                .claim("role", role)  // Adiciona a role como claim
+                .claim("role", cleanRole) // Armazena como "BASIC" ou "ADMIN"
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(getSigningKey())

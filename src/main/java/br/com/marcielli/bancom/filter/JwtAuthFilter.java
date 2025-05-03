@@ -45,59 +45,44 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
     
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, 
+                                   HttpServletResponse response, 
+                                   FilterChain filterChain) 
+        throws IOException, ServletException {
         
-        // Pula endpoints públicos (opcional, apenas para performance)
-        if (request.getServletPath().equals("/auth/login") || request.getServletPath().equals("/login")) {
+        // Pula filtro para endpoints de login
+        if (request.getServletPath().equals("/login") || request.getServletPath().equals("/auth/login")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Verifica se há token
+        // Extrai o token
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            // Se não houver token, DEIXA O SPRING SECURITY DECIDIR (não bloqueia aqui)
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Processa token quando existir
         try {
-            String token = authHeader.substring(7).trim();
-            
-         // Verifica se o token está encapsulado em JSON
-            if (token.startsWith("{") && token.contains("\"token\":")) {
-                try {
-                    JsonNode jsonNode = new ObjectMapper().readTree(token);
-                    token = jsonNode.get("token").asText();
-                } catch (IOException e) {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Formato de token inválido");
-                    return;
-                }
-            }
-            
-            
-            
-            
-            
+            String token = authHeader.substring(7);
             Claims claims = jwtService.validateToken(token);
+            
+            // Recupera informações do token
             String username = claims.getSubject();
-            String role = "ROLE_" + claims.get("role", String.class);
+            String role = claims.get("role", String.class);
 
-            // Debug importante
-            System.out.println("Token recebido: " + token); // Deve mostrar APENAS o JWT
+            // Cria objeto de autenticação
+            UsernamePasswordAuthenticationToken authentication = 
+                new UsernamePasswordAuthenticationToken(
+                    username,
+                    null,
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
+                );
 
-            // Configura autenticação
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                username,
-                null,
-                Collections.singletonList(new SimpleGrantedAuthority(role))
-            );
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            // Configura no contexto de segurança
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (Exception e) {
-            System.err.println("[JWT FILTER] Erro no token: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
             return;
         }
