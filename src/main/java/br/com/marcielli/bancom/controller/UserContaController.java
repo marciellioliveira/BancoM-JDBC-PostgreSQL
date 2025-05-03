@@ -1,10 +1,19 @@
 package br.com.marcielli.bancom.controller;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
+import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
+import br.com.marcielli.bancom.dto.security.UserContaDepositoDTO;
+import br.com.marcielli.bancom.dto.security.UserContaPixDTO;
+import br.com.marcielli.bancom.dto.security.UserContaSaqueDTO;
+import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.service.UserContaService;
 
@@ -19,8 +28,9 @@ public class UserContaController {
 		this.contaService = contaService;
 	}
 
+	//ADMIN pode criar conta pra ele e pra todos
+	//BASIC só pode criar conta pra ele mesmo
 	@PostMapping("/contas")
-	@PreAuthorize("hasRole('ADMIN') or (@userSecurityService.checkUserId(authentication, #dto.userId))")
 	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto) {
 		Conta contaAdicionada = contaService.save(dto);
 
@@ -30,51 +40,23 @@ public class UserContaController {
 			return new ResponseEntity<>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+		
 
-
-
-//	@PostMapping("/contas")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<Object> createConta(@RequestBody ContaCreateDTO dto) { // , JwtAuthenticationToken token
-//
-//		Conta contaAdicionada = contaService.save(dto);
-//
-//		if (contaAdicionada != null) {
-//
-//			UserContaResponseDTO response = new UserContaResponseDTO();
-//			response.setId(contaAdicionada.getId());
-//			response.setTipoConta(contaAdicionada.getTipoConta());
-//			response.setCategoriaConta(contaAdicionada.getCategoriaConta());
-//			if (contaAdicionada instanceof ContaCorrente contaCorrente) {
-//				response.setTaxaManutencaoMensal(contaCorrente.getTaxaManutencaoMensal());
-//			}
-//
-//			if (contaAdicionada instanceof ContaPoupanca contaPoupanca) {
-//				response.setTaxaAcrescRend(contaPoupanca.getTaxaAcrescRend());
-//				response.setTaxaMensal(contaPoupanca.getTaxaMensal());
-//
-//			}
-//			response.setSaldoConta(contaAdicionada.getSaldoConta());
-//			response.setNumeroConta(contaAdicionada.getNumeroConta());
-//			response.setPixAleatorio(contaAdicionada.getPixAleatorio());
-//			response.setStatus(contaAdicionada.getStatus());
-//			return ResponseEntity.status(HttpStatus.CREATED).body(response);
-//		} else {
-//			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-//	}
-
-//	@GetMapping("/contas")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-//	public ResponseEntity<List<Conta>> listContas() {
+	//ADMIN pode ver todas as contas
+	//BASIC pode ver apenas a conta com o id dele
+	@GetMapping("/contas")
+	public ResponseEntity<List<Conta>> listContas() {
+		return null;
 //		var contas = contaService.getContas();
 //		return ResponseEntity.status(HttpStatus.OK).body(contas);
-//	}
-//
-//	@GetMapping("/contas/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<?> getContaById(@PathVariable("id") Long id) { // , JwtAuthenticationToken token
-//
+	}
+
+	//ADMIN pode ver todas as contas por id, dele e de qualquer usuario
+	//BASIC só pode ver a conta dele
+	@GetMapping("/contas/{id}")
+	public ResponseEntity<?> getContaById(@PathVariable("id") Long id) {
+		return null; 
+
 //		Conta conta = contaService.getContasById(id);
 //
 //		UserContaResponseDTO response = new UserContaResponseDTO();
@@ -94,12 +76,14 @@ public class UserContaController {
 //		}
 //
 //		return ResponseEntity.status(HttpStatus.OK).body(response);
-//	}
+	}
 
-//	@PutMapping("/contas/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto) {
-//
+	//ADMIN pode atualizar a conta dele e de todos os outros
+	//BASIC só pode atualizar a conta dele próprio por id
+	@PutMapping("/contas/{id}")
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto) {
+		return null;
+
 //		Conta conta = contaService.update(id, dto);
 //
 //		UserContaResponseDTO response = new UserContaResponseDTO();
@@ -121,12 +105,14 @@ public class UserContaController {
 //		response.setPixAleatorio(conta.getPixAleatorio());
 //
 //		return ResponseEntity.ok(response);
-//	}
-//
-//	@DeleteMapping("/contas/{id}")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-//	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto) {
-//
+	}
+
+	//ADMIN pode deltar a conta de todos, menos a dele
+	//BASIC só pode deletar a própria conta por id
+	@DeleteMapping("/contas/{id}")
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto) {
+		return null;
+
 //		boolean conta = contaService.delete(id, dto);
 //
 //		if (conta) {
@@ -134,30 +120,40 @@ public class UserContaController {
 //		} else {
 //			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
 //		}
-//	}
+	}
 
+	
+	
 	// Transferências
-//	@PostMapping("/contas/{idContaReceber}/transferencia")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,
-//			@RequestBody UserContaTedDTO dto) {
-//
+	
+	
+	//ADMIN pode fazer transferencia da conta dele para outras, e de outros para outros mas não pode fazer de outros para ele mesmo quando tiver logado
+	//BASIC só pode transferir da propria conta.
+	@PostMapping("/contas/{idContaReceber}/transferencia")
+	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,
+			@RequestBody UserContaTedDTO dto) {
+				return null;
+
 //		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto);
 //		return tedRealizada ? ResponseEntity.ok("Transferência realizada com sucesso.")
 //				: ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Dados da transferência são inválidos.");
-//	}
+	}
 
-//	@GetMapping("/contas/{contaId}/saldo")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public Map<String, BigDecimal> exibirSaldoConvertido(@PathVariable("contaId") Long contaId) {
+	//ADMIN pode ver saldo de todos
+	//BASIC só pode ver saldo dele mesmo.
+	@GetMapping("/contas/{contaId}/saldo")
+	public Map<String, BigDecimal> exibirSaldoConvertido(@PathVariable("contaId") Long contaId) {
+		return null;
 //		return contaService.exibirSaldoConvertido(contaId);
-//	}
+	}
 
-//	@PostMapping("/contas/{idContaReceber}/pix")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber,
-//			@RequestBody UserContaPixDTO dto) {
-//
+	//ADMIN pode fazer pix da conta dele para outras, e de outros para outros mas não pode fazer de outros para ele mesmo quando tiver logado
+	//BASIC só pode fazer pix da propria conta.
+	@PostMapping("/contas/{idContaReceber}/pix")
+	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber,
+			@RequestBody UserContaPixDTO dto) {
+				return null;
+
 //		boolean pixRealizado = contaService.transferirPIX(idContaReceber, dto);
 //
 //		if (pixRealizado) {
@@ -165,13 +161,15 @@ public class UserContaController {
 //		} else {
 //			return new ResponseEntity<String>("Dados do pix são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 //		}
-//	}
+	}
 
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	@PostMapping("/contas/{idContaReceber}/deposito")
-//	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber,
-//			@RequestBody UserContaDepositoDTO dto) {
-//
+	//ADMIN pode fazer deposito apenas na propria conta
+	//BASIC só pode fazer deposito na propria conta.
+	@PostMapping("/contas/{idContaReceber}/deposito")
+	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber,
+			@RequestBody UserContaDepositoDTO dto) {
+				return null;
+
 //		boolean depositoRealizado = contaService.transferirDEPOSITO(idContaReceber, dto);
 //
 //		if (depositoRealizado) {
@@ -179,13 +177,15 @@ public class UserContaController {
 //		} else {
 //			return new ResponseEntity<String>("Dados do depósito são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 //		}
-//	}
+	}
 
-//	@PostMapping("/contas/{idContaReceber}/saque")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN') or hasAuthority('SCOPE_BASIC')")
-//	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber,
-//			@RequestBody UserContaSaqueDTO dto) {
-//
+	//ADMIN sacar só da propria conta
+	//BASIC sacar só da propria conta
+	@PostMapping("/contas/{idContaReceber}/saque")
+	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber,
+			@RequestBody UserContaSaqueDTO dto) {
+				return null;
+
 //		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, dto);
 //
 //		if (saqueRealizado) {
@@ -193,14 +193,14 @@ public class UserContaController {
 //		} else {
 //			return new ResponseEntity<String>("Dados do saque são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 //		}
-//	}
+	}
 
 	// ROTAS MANUAIS - FUNCIONAM estou programando para elas serem cobradas
-	// automaticamente com o cron do spring
-//	@PutMapping("/contas/{idConta}/manutencao")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-//	public ResponseEntity<?> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta) {
-//
+	// automaticamente com o cron do spring	
+	@PutMapping("/contas/{idConta}/manutencao") //SOMENTE ADMIN/BANCO
+	public ResponseEntity<?> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta) {
+		return null;
+
 //		Conta contaAtualizada = contaService.manutencaoTaxaCC(idConta);
 //
 //		if (contaAtualizada != null) {
@@ -227,11 +227,11 @@ public class UserContaController {
 //		} else {
 //			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
 //		}
-//	}
+	}
 
-//	@PutMapping("/contas/{idConta}/rendimentos")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-//	public ResponseEntity<?> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta) {
+	@PutMapping("/contas/{idConta}/rendimentos") //SOMENTE ADMIN/BANCO
+	public ResponseEntity<?> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta) {
+		return null;
 //		Conta contaAtualizada = contaService.rendimentoTaxaCP(idConta);
 //		if (contaAtualizada != null) {
 //
@@ -257,7 +257,7 @@ public class UserContaController {
 //		} else {
 //			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
 //		}
-//	}
+	}
 
 //	@PutMapping("/contas/{idConta}/manutencao")
 //	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
