@@ -96,16 +96,4 @@ public class UserClienteController {
 
 	}
 
-	
-//	try {
-//		boolean deleted = userDao.delete(id, authentication);
-//		if (deleted) {
-//			return ResponseEntity.ok("Usuário deletado com sucesso.");
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
-//		}
-//	} catch (Exception e) {
-//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar o usuário.");
-//	}
-
 }

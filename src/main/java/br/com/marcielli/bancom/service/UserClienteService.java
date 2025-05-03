@@ -7,15 +7,18 @@ import java.util.Set;
 import br.com.marcielli.bancom.dao.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,15 +92,48 @@ public class UserClienteService implements UserDetailsService {
 			roleDao.save(role);
 		}
 	}
-
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+	    User user = userDao.findByUsername(username)
+	            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+	    
+	    System.out.println("Senha REAL do banco: " + user.getPassword());
+	    System.out.println("UserDetailsService achou usuário: " + user.getUsername() + " com senha: " + user.getPassword());
 
-		return org.springframework.security.core.userdetails.User.builder().username(user.getUsername())
-				.password(user.getPassword()).roles(user.getRole()).build();
+	    return org.springframework.security.core.userdetails.User.builder()
+	            .username(user.getUsername())
+	            .password(user.getPassword())
+	            .authorities("ROLE_" + user.getRole()) 
+	            .build();
 	}
+	
+	
+//	@Component
+//	public class TempPasswordGenerator implements CommandLineRunner {
+//		@Override
+//	    public void run(String... args) throws Exception {
+//	        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//	        String senha = "minhasenhasuperhipermegapowersecreta2";
+//	        String hash = encoder.encode(senha);
+//	        
+//	        System.out.println("\n\n=================================");
+//	        System.out.println("NOVO HASH PARA COPIAR NO BANCO:");
+//	        System.out.println(hash);
+//	        System.out.println("=================================\n\n");
+//	    }
+//	}
+
+//	@Override
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//		User user = userDao.findByUsername(username)
+//				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+//		
+//		System.out.println("UserDetailsService achou usuário: " + user.getUsername() + " com senha: " + user.getPassword());
+//
+//		return org.springframework.security.core.userdetails.User.builder().username(user.getUsername())
+//				.password(user.getPassword()).roles(user.getRole()).build();
+//	}
 
 	public User findByUsername(String username) {
 		return userDao.findByUsername(username).orElse(null);
@@ -222,7 +258,10 @@ public class UserClienteService implements UserDetailsService {
 
 		user.setUsername(dto.username());
 		if (dto.password() != null && !dto.password().isEmpty()) {
-			user.setPassword(passwordEncoder.encode(dto.password()));
+			 // Só atualiza se a nova senha (em texto puro) for diferente da atual
+		    if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
+		        user.setPassword(passwordEncoder.encode(dto.password()));
+		    }
 		}
 
 		Cliente cliente = user.getCliente();

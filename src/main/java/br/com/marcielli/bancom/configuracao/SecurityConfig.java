@@ -1,31 +1,29 @@
 package br.com.marcielli.bancom.configuracao;
 
-import org.apache.catalina.core.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider; 
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import br.com.marcielli.bancom.exception.AcessoNegadoException;
 import br.com.marcielli.bancom.filter.JwtAuthFilter;
 import br.com.marcielli.bancom.handler.CustomAccessDeniedHandler;
 import br.com.marcielli.bancom.service.UserClienteService;
 import br.com.marcielli.bancom.service.UserSecurityService;
+
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -51,10 +49,11 @@ public class SecurityConfig {
 		this.userSecurityService = userSecurityService;
 		 this.accessDeniedHandler = accessDeniedHandler;
 	}
-
-
+	
 	@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		 System.out.println("Configurando SecurityFilterChain...");
+		    System.out.println("Endpoints liberados: /auth/**, /login/**");
         return http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
@@ -62,7 +61,8 @@ public class SecurityConfig {
                     .requestMatchers("/", "/home", "/auth/**", "/login/**").permitAll()
                     .requestMatchers("/favicon.ico", "/error").permitAll()
                     .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**").permitAll()
-            		
+                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                    
                     // Permite o cadastro de usuários (POST)
                     .requestMatchers(HttpMethod.POST, "/users").permitAll()
                     
@@ -83,7 +83,7 @@ public class SecurityConfig {
                     //BASIC: é só o usuário comum que pode editar/deletar só os próprios dados.
                     //Então o resto da autenticação, a parte mais exigente vai estar no service.
                     
-                .anyRequest().authenticated())       
+                .anyRequest().authenticated())                   	
             .exceptionHandling(exceptionHandling -> 
             exceptionHandling.accessDeniedHandler(accessDeniedHandler))
             .httpBasic(basic -> basic.disable())
@@ -93,6 +93,8 @@ public class SecurityConfig {
             .build();
     }
 	
+	
+	 
 	@Bean // ele é tipo o chefe
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager(); // retorna o manager que vai processar login/autenticação
