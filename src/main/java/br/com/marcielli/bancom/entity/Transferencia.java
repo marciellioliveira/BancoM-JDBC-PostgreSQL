@@ -75,7 +75,7 @@ public class Transferencia implements Serializable {
 		
 		this.data = dataTransferencia;		
 		this.codigoOperacao = codTransferencia;
-	//	this.tipoCartao = Queria tirar o null do Banco, tentar colocar algum valor tipo "sem cartão ou algo assim, mas vou deixar pra melhorias futuras)
+		this.tipoCartao = TipoCartao.SEM_CARTAO;
 	}
 	
 	//DEPOSITO - SAQUE
@@ -93,7 +93,7 @@ public class Transferencia implements Serializable {
 		
 		this.data = dataTransferencia;		
 		this.codigoOperacao = codTransferencia;
-//		this.tipoCartao = Queria tirar o null do Banco, tentar colocar algum valor tipo "sem cartão ou algo assim, mas vou deixar pra melhorias futuras)
+		this.tipoCartao = TipoCartao.SEM_CARTAO;
 	}
 	
 	//CARTÃO CRÉDITO - DÉBITO
@@ -115,7 +115,6 @@ public class Transferencia implements Serializable {
 	}
 		
 	
-	//@Override
 	public String gerarCodigoTransferencia() {
 		int[] sequencia = new int[21];
 		Random random = new Random();

@@ -74,7 +74,7 @@ public class UserClienteService implements UserDetailsService {
 		}, () -> {
 			var user = new User();
 			user.setUsername("admin");
-			user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta"));
+			user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta11"));
 			user.setUserAtivo(true);
 			user.setRole(roleAdmin.getName()); // Definir role como String ("ADMIN")
 			user.setCliente(clienteAdmin);

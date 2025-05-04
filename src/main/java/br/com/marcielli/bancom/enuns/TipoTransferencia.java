@@ -6,8 +6,9 @@ public enum TipoTransferencia {
 	PIX(2, "PIX"),
 	DEPOSITO(3, "DEPOSITO"),
 	SAQUE(4, "SAQUE"),
-	CARTAO_DEBITO(1, "DEBITO"),
-	CARTAO_CREDITO(1, "CREDITO");
+	CARTAO_DEBITO(5, "DEBITO"),
+	CARTAO_CREDITO(6, "CREDITO");
+	
 		
 	private final int cod;
 	private final String descricao;

@@ -339,84 +339,120 @@ public class UserContaService {
 //	}
 
 	@Transactional
-	public boolean transferirTED(Long idContaReceber, UserContaTedDTO dto, Authentication authentication) {
-	    // 1. Buscar contas
-	    Conta contaOrigem = contaDao.findById(dto.idContaOrigem())
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta origem não encontrada"));
-	    
-	    Conta contaDestino = contaDao.findById(idContaReceber)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
+    public boolean transferirTED(Long idContaReceber, UserContaTedDTO dto, Authentication authentication) {
+        System.out.println("Iniciando transferência TED. Conta origem ID: " + dto.idContaOrigem() + 
+                           ", Conta destino ID: " + idContaReceber + ", Valor: " + dto.valor() + 
+                           ", Username: " + authentication.getName() + ", idUsuario (DTO): " + dto.idUsuario());
 
-	    // 2. Validar status das contas
-	    if(!contaOrigem.getStatus() || !contaDestino.getStatus()) {
-	        throw new ContaExibirSaldoErroException("Contas devem estar ativas para transferência");
-	    }
+        // Validar DTO
+        if (dto.idContaOrigem() == null) {
+            throw new IllegalArgumentException("ID da conta origem é obrigatório");
+        }
+        if (dto.valor() == null || dto.valor().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Valor da transferência deve ser maior que zero");
+        }
 
-	    // 3. Validar saldo
-	    if(contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
-	        throw new ContaExibirSaldoErroException("Saldo insuficiente para transferência");
-	    }
+        // Buscar contas
+        Conta contaOrigem = contaDao.findById(dto.idContaOrigem())
+                .orElseThrow(() -> new ContaNaoEncontradaException("Conta origem não encontrada"));
+        
+        Conta contaDestino = contaDao.findById(idContaReceber)
+                .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
 
-	    // 4. Validar cliente e usuário associado
-	    if(contaOrigem.getCliente() == null || contaOrigem.getCliente().getUser() == null) {
-	        throw new AcessoNegadoException("Conta origem não vinculada a um cliente válido");
-	    }
-	    
-	    if(contaDestino.getCliente() == null || contaDestino.getCliente().getUser() == null) {
-	        throw new AcessoNegadoException("Conta destino não vinculada a um cliente válido");
-	    }
+        System.out.println("Conta origem encontrada: Cliente ID " + 
+                           (contaOrigem.getCliente() != null ? contaOrigem.getCliente().getId() : "null"));
+        System.out.println("Conta destino encontrada: Cliente ID " + 
+                           (contaDestino.getCliente() != null ? contaDestino.getCliente().getId() : "null"));
 
-	    // 5. Validar permissões
-	    User usuarioLogado = userDao.findByUsername(authentication.getName())
-	            .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
-	    
-	    boolean isAdmin = authentication.getAuthorities().stream()
-	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        // Validar status das contas
+        if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
+            throw new ContaExibirSaldoErroException("Contas devem estar ativas para transferência");
+        }
 
-	    // BASIC só pode transferir da própria conta
-	    if(!isAdmin && !contaOrigem.getCliente().getUser().getId().equals(usuarioLogado.getId())) {
-	        throw new AcessoNegadoException("Você só pode transferir da sua própria conta");
-	    }
+        // Validar saldo
+        if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+            throw new ContaExibirSaldoErroException("Saldo insuficiente para transferência");
+        }
 
-	    // ADMIN não pode transferir para si mesmo
-	    if(isAdmin && contaDestino.getCliente().getUser().getId().equals(usuarioLogado.getId())) {
-	        throw new AcessoNegadoException("ADMIN não pode transferir para sua própria conta");
-	    }
+        // Validar cliente associado
+        if (contaOrigem.getCliente() == null) {
+            System.out.println("Falha: Conta origem não vinculada a um cliente");
+            throw new AcessoNegadoException("Conta origem não vinculada a um cliente");
+        }
+        if (contaDestino.getCliente() == null) {
+            System.out.println("Falha: Conta destino não vinculada a um cliente");
+            throw new AcessoNegadoException("Conta destino não vinculada a um cliente");
+        }
 
-	    // 6. Processar transferência (atualizar saldos)
-	    contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
-	    contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+        // Buscar usuário logado
+        User usuarioLogado = userDao.findByUsername(authentication.getName())
+                .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
 
-	    // 7. Aplicar taxas na conta origem
-	    TaxaManutencao taxaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
-	    contaOrigem.setCategoriaConta(taxaOrigem.getCategoria());
-	    if(contaOrigem instanceof ContaCorrente cc) {
-	        cc.setTaxaManutencaoMensal(taxaOrigem.getTaxaManutencaoMensal());
-	    } else if(contaOrigem instanceof ContaPoupanca cp) {
-	        cp.setTaxaAcrescRend(taxaOrigem.getTaxaAcrescRend());
-	        cp.setTaxaMensal(taxaOrigem.getTaxaMensal());
-	    }
+        System.out.println("Usuário logado: ID " + usuarioLogado.getId() + ", Username: " + usuarioLogado.getUsername());
 
-	    // 8. Aplicar taxas na conta destino
-	    TaxaManutencao taxaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
-	    contaDestino.setCategoriaConta(taxaDestino.getCategoria());
-	    if(contaDestino instanceof ContaCorrente cc) {
-	        cc.setTaxaManutencaoMensal(taxaDestino.getTaxaManutencaoMensal());
-	    } else if(contaDestino instanceof ContaPoupanca cp) {
-	        cp.setTaxaAcrescRend(taxaDestino.getTaxaAcrescRend());
-	        cp.setTaxaMensal(taxaDestino.getTaxaMensal());
-	    }
+        // Verificar permissões
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ADMIN"));
 
-	    // 9. Registrar transferência
-	    Transferencia transferencia = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
-	    transferenciaDao.save(transferencia);
+        System.out.println("Authorities: " + authentication.getAuthorities());
+        System.out.println("isAdmin: " + isAdmin);
 
-	    // 10. Atualizar contas no banco
-	    contaDao.updateSaldo(contaOrigem);
-	    contaDao.updateSaldo(contaDestino);
+        if (isAdmin) {
+            // ADMIN: Validar que a conta origem pertence ao idUsuario do DTO
+            if (dto.idUsuario() == null) {
+                throw new IllegalArgumentException("ID do usuário é obrigatório para transferências de admin");
+            }
+            if (!contaOrigem.getCliente().getId().equals(dto.idUsuario())) {
+                System.out.println("Falha: Conta origem Cliente ID " + 
+                                   contaOrigem.getCliente().getId() + 
+                                   " != idUsuario do DTO " + dto.idUsuario());
+                throw new AcessoNegadoException("Conta origem não pertence ao cliente especificado");
+            }
+        } else {
+            // BASIC: Validar que a conta origem pertence ao usuário logado
+            if (!contaOrigem.getCliente().getId().equals(usuarioLogado.getId().longValue())) {
+                System.out.println("Falha: Conta origem Cliente ID " + 
+                                   contaOrigem.getCliente().getId() + 
+                                   " != Usuário logado ID " + usuarioLogado.getId());
+                throw new AcessoNegadoException("Você só pode transferir da sua própria conta");
+            }
+        }
 
-	    return true;
-	}
+        // Processar transferência (atualizar saldos)
+        contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
+        contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+
+        // Aplicar taxas na conta origem
+        TaxaManutencao taxaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
+        contaOrigem.setCategoriaConta(taxaOrigem.getCategoria());
+        if (contaOrigem instanceof ContaCorrente cc) {
+            cc.setTaxaManutencaoMensal(taxaOrigem.getTaxaManutencaoMensal());
+        } else if (contaOrigem instanceof ContaPoupanca cp) {
+            cp.setTaxaAcrescRend(taxaOrigem.getTaxaAcrescRend());
+            cp.setTaxaMensal(taxaOrigem.getTaxaMensal());
+        }
+
+        // Aplicar taxas na conta destino
+        TaxaManutencao taxaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+        contaDestino.setCategoriaConta(taxaDestino.getCategoria());
+        if (contaDestino instanceof ContaCorrente cc) {
+            cc.setTaxaManutencaoMensal(taxaDestino.getTaxaManutencaoMensal());
+        } else if (contaDestino instanceof ContaPoupanca cp) {
+            cp.setTaxaAcrescRend(taxaDestino.getTaxaAcrescRend());
+            cp.setTaxaMensal(taxaDestino.getTaxaMensal());
+        }
+
+        // Registrar transferência
+        Transferencia transferencia = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
+        transferenciaDao.save(transferencia);
+
+        // Atualizar contas no banco
+        contaDao.updateSaldo(contaOrigem);
+        contaDao.updateSaldo(contaDestino);
+
+        System.out.println("Transferência TED concluída com sucesso");
+        return true;
+    }
 	
 	
 	

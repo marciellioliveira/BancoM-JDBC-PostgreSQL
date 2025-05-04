@@ -3,6 +3,7 @@ package br.com.marcielli.bancom.entity;
 import java.beans.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -63,7 +64,8 @@ public class Conta implements Serializable {
 
 	private String pixAleatorio;
 
-	private List<Transferencia> transferencia;
+	@JsonProperty("transferencia")
+	private List<Transferencia> transferencias = new ArrayList<Transferencia>();
 
 	@JsonManagedReference
 	private List<Cartao> cartoes;

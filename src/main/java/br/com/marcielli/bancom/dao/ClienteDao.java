@@ -2,9 +2,14 @@ package br.com.marcielli.bancom.dao;
 
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
+import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
+import br.com.marcielli.bancom.mappers.ContaWithTransferenciasRowMapper;
+import br.com.marcielli.bancom.mappers.ContasRowMapper;
+import br.com.marcielli.bancom.mappers.TransferenciaRowMapper;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -121,6 +126,7 @@ public class ClienteDao {
 
         return cliente;
     }
+      
     
     public Cliente findByIdWithUser(Long id) {
         String sql = "SELECT c.*, u.id as user_id, u.username FROM clientes c " +
@@ -145,6 +151,55 @@ public class ClienteDao {
             return cliente;
         }, id);
     }
+    
+    public Cliente findByIdWithContasAndTransferencias(Long id) {
+     
+        String clienteSql = "SELECT * FROM clientes WHERE id = ?";
+        Cliente cliente = jdbcTemplate.queryForObject(
+            clienteSql, 
+            new BeanPropertyRowMapper<>(Cliente.class), 
+            id
+        );
+
+        if (cliente != null) {
+         
+            ContasRowMapper contasRowMapper = new ContasRowMapper();
+            ContaWithTransferenciasRowMapper contaWithTransferenciasMapper = 
+                new ContaWithTransferenciasRowMapper(contasRowMapper, this);            
+           
+            String contasSql = "SELECT c.*, cl.nome AS cliente_nome FROM contas c " +
+                              "JOIN clientes cl ON c.cliente_id = cl.id " +
+                              "WHERE c.cliente_id = ?";
+            
+            List<Conta> contas = jdbcTemplate.query(
+                contasSql,
+                contaWithTransferenciasMapper,
+                id
+            );
+            
+            cliente.setContas(contas);
+        }
+
+        return cliente;
+    }
+
+    // Método auxiliar para buscar transferências por conta
+    public List<Transferencia> findByContaId(Long contaId) {
+        String sql = "SELECT * FROM transferencias " +
+                    "WHERE id_conta_origem = ? OR id_conta_destino = ? " +
+                    "ORDER BY data DESC";
+        
+        return jdbcTemplate.query(
+            sql,
+            new TransferenciaRowMapper(),
+            contaId, contaId
+        );
+    }
+    
+    
+    
+    
+    
 
 
 }

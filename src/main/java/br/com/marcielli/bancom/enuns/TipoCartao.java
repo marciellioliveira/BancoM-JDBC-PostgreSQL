@@ -3,7 +3,8 @@ package br.com.marcielli.bancom.enuns;
 public enum TipoCartao {
 
 	CREDITO(1, "CRÉDITO"),
-	DEBITO(2, "DÉBITO");
+	DEBITO(2, "DÉBITO"),
+	SEM_CARTAO(3, "SEM CARTAO");
 	
 	private final int cod;
 	private final String descricao;

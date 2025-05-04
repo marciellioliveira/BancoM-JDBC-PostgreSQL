@@ -6,6 +6,7 @@ import java.nio.file.AccessDeniedException;
 import br.com.marcielli.bancom.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -14,17 +15,19 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	 // Acesso negado (Ainda não funcionou)
-    @ExceptionHandler(AcessoNegadoException.class)
-    public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AcessoNegadoException exception) {
-        RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.FORBIDDEN, "Você não tem permissão para acessar este recurso.");
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respostaTratada);
-    }
-    
-    @ExceptionHandler(AutenticacaoEntryPointException.class)
-    public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AutenticacaoEntryPointException exception) {
-        RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.FORBIDDEN, "Você não tem permissão para acessar este recurso.");
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respostaTratada);
-    }
+//    @ExceptionHandler(AcessoNegadoException.class)
+//    public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AcessoNegadoException exception) {
+//        RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.FORBIDDEN, "Você não tem permissão para acessar este recurso.");
+//        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respostaTratada);
+//    }
+//    
+//    @ExceptionHandler(AutenticacaoEntryPointException.class)
+//    public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AutenticacaoEntryPointException exception) {
+//        RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.FORBIDDEN, "Você não tem permissão para acessar este recurso.");
+//        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respostaTratada);
+//    }
+	
+	
 
 	//Cliente
 

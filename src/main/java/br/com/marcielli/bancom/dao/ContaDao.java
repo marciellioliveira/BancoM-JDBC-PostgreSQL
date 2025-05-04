@@ -161,16 +161,17 @@ public class ContaDao {
 	    if(conta instanceof ContaCorrente cc) {
 	        params = new Object[]{
 	            conta.getSaldoConta(),
-	            conta.getCategoriaConta(),
+	            conta.getCategoriaConta().name(), // Convertendo enum para String
 	            cc.getTaxaManutencaoMensal(),
-	            null, null,
+	            null, 
+	            null,
 	            conta.getId()
 	        };
 	    } else {
 	        ContaPoupanca cp = (ContaPoupanca) conta;
 	        params = new Object[]{
 	            conta.getSaldoConta(),
-	            conta.getCategoriaConta(),
+	            conta.getCategoriaConta().name(), // Convertendo enum para String
 	            null,
 	            cp.getTaxaAcrescRend(),
 	            cp.getTaxaMensal(),
@@ -180,7 +181,6 @@ public class ContaDao {
 	    
 	    jdbcTemplate.update(sql, params);
 	}
-	
 	
 	
 	
