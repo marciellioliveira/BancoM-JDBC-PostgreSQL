@@ -6,6 +6,7 @@ import java.util.*;
 import br.com.marcielli.bancom.dao.ClienteDao;
 import br.com.marcielli.bancom.entity.*;
 import br.com.marcielli.bancom.dao.ContaDao;
+import br.com.marcielli.bancom.dao.TransferenciaDao;
 import br.com.marcielli.bancom.dao.UserDao;
 
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
 import br.com.marcielli.bancom.dto.security.UserContaResponseDTO;
+import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.enuns.TipoConta;
+import br.com.marcielli.bancom.enuns.TipoTransferencia;
 import br.com.marcielli.bancom.exception.AcessoNegadoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
@@ -31,17 +34,19 @@ public class UserContaService {
 	private final ExchangeRateService exchangeRateService;
 	private final ClienteDao clienteDao;
 	private final UserDao userDao;
+	private final TransferenciaDao transferenciaDao;
 	
 	private Random random = new Random();
 
 	//private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
 
 	public UserContaService(ContaDao contaDao,
-							ExchangeRateService exchangeRateService, ClienteDao clienteDao, UserDao userDao) {
+							ExchangeRateService exchangeRateService, ClienteDao clienteDao, UserDao userDao,TransferenciaDao transferenciaDao) {
 		this.contaDao = contaDao;
 		this.exchangeRateService = exchangeRateService;
 		this.clienteDao = clienteDao;
 		this.userDao = userDao;
+		this.transferenciaDao = transferenciaDao;
 	}
 	
 	
@@ -262,14 +267,14 @@ public class UserContaService {
 	
 
 
-//	// Transferências
+	// Transferências
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public boolean transferirTED(Long idContaReceber, UserContaTedDTO dto) {
 //
-//		Conta contaOrigem = contaRepository.findById(dto.idContaOrigem())
+//		Conta contaOrigem = contaDao.findById(dto.idContaOrigem())
 //				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
 //
-//		Conta contaDestino = contaRepository.findById(idContaReceber)
+//		Conta contaDestino = contaDao.findById(idContaReceber)
 //				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
 //
 //		if(contaOrigem.getStatus() == false || contaDestino.getStatus() == false) {
@@ -306,7 +311,7 @@ public class UserContaService {
 //		Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
 //		contaOrigem.getTransferencia().add(transferindo);
 //
-//		contaRepository.save(contaOrigem);
+//		contaDao.save(contaOrigem);
 //
 //		contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
 //		contasTransferidas.add(contaDestino);
@@ -328,11 +333,94 @@ public class UserContaService {
 //			cp.setTaxaMensal(taxaContaDestino.getTaxaMensal());
 //		}
 //
-//		contaRepository.save(contaDestino);
+//		contaDao.save(contaDestino);
 //
 //		return true;
 //	}
 
+	@Transactional
+	public boolean transferirTED(Long idContaReceber, UserContaTedDTO dto, Authentication authentication) {
+	    // 1. Buscar contas
+	    Conta contaOrigem = contaDao.findById(dto.idContaOrigem())
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta origem não encontrada"));
+	    
+	    Conta contaDestino = contaDao.findById(idContaReceber)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
+
+	    // 2. Validar status das contas
+	    if(!contaOrigem.getStatus() || !contaDestino.getStatus()) {
+	        throw new ContaExibirSaldoErroException("Contas devem estar ativas para transferência");
+	    }
+
+	    // 3. Validar saldo
+	    if(contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+	        throw new ContaExibirSaldoErroException("Saldo insuficiente para transferência");
+	    }
+
+	    // 4. Validar cliente e usuário associado
+	    if(contaOrigem.getCliente() == null || contaOrigem.getCliente().getUser() == null) {
+	        throw new AcessoNegadoException("Conta origem não vinculada a um cliente válido");
+	    }
+	    
+	    if(contaDestino.getCliente() == null || contaDestino.getCliente().getUser() == null) {
+	        throw new AcessoNegadoException("Conta destino não vinculada a um cliente válido");
+	    }
+
+	    // 5. Validar permissões
+	    User usuarioLogado = userDao.findByUsername(authentication.getName())
+	            .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
+	    
+	    boolean isAdmin = authentication.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+	    // BASIC só pode transferir da própria conta
+	    if(!isAdmin && !contaOrigem.getCliente().getUser().getId().equals(usuarioLogado.getId())) {
+	        throw new AcessoNegadoException("Você só pode transferir da sua própria conta");
+	    }
+
+	    // ADMIN não pode transferir para si mesmo
+	    if(isAdmin && contaDestino.getCliente().getUser().getId().equals(usuarioLogado.getId())) {
+	        throw new AcessoNegadoException("ADMIN não pode transferir para sua própria conta");
+	    }
+
+	    // 6. Processar transferência (atualizar saldos)
+	    contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
+	    contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+
+	    // 7. Aplicar taxas na conta origem
+	    TaxaManutencao taxaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
+	    contaOrigem.setCategoriaConta(taxaOrigem.getCategoria());
+	    if(contaOrigem instanceof ContaCorrente cc) {
+	        cc.setTaxaManutencaoMensal(taxaOrigem.getTaxaManutencaoMensal());
+	    } else if(contaOrigem instanceof ContaPoupanca cp) {
+	        cp.setTaxaAcrescRend(taxaOrigem.getTaxaAcrescRend());
+	        cp.setTaxaMensal(taxaOrigem.getTaxaMensal());
+	    }
+
+	    // 8. Aplicar taxas na conta destino
+	    TaxaManutencao taxaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+	    contaDestino.setCategoriaConta(taxaDestino.getCategoria());
+	    if(contaDestino instanceof ContaCorrente cc) {
+	        cc.setTaxaManutencaoMensal(taxaDestino.getTaxaManutencaoMensal());
+	    } else if(contaDestino instanceof ContaPoupanca cp) {
+	        cp.setTaxaAcrescRend(taxaDestino.getTaxaAcrescRend());
+	        cp.setTaxaMensal(taxaDestino.getTaxaMensal());
+	    }
+
+	    // 9. Registrar transferência
+	    Transferencia transferencia = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
+	    transferenciaDao.save(transferencia);
+
+	    // 10. Atualizar contas no banco
+	    contaDao.updateSaldo(contaOrigem);
+	    contaDao.updateSaldo(contaDestino);
+
+	    return true;
+	}
+	
+	
+	
+	
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId) {

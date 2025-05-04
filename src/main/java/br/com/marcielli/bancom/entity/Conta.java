@@ -7,7 +7,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoConta;
@@ -21,6 +23,7 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +31,11 @@ import org.slf4j.LoggerFactory;
 @ToString
 @EqualsAndHashCode
 public class Conta implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static final Logger log = LoggerFactory.getLogger(Conta.class);
 
@@ -37,6 +45,9 @@ public class Conta implements Serializable {
 	private Cliente cliente;
 
 	private TipoConta tipoConta;
+	
+	@JsonProperty("clienteNome")
+	private String clienteNome;
 
 	private CategoriaConta categoriaConta;
 
@@ -46,7 +57,6 @@ public class Conta implements Serializable {
 	private BigDecimal saldoConta;
 
 	@JsonIgnore
-
 	private BigDecimal valorTransferencia;
 
 	private String numeroConta;
@@ -108,5 +118,11 @@ public class Conta implements Serializable {
         }
         
 	}
+	
+	@JsonProperty("clienteNome")
+    public String getClienteNome() { return clienteNome; }
+
+    @JsonProperty("clienteNome")
+    public void setClienteNome(String clienteNome) { this.clienteNome = clienteNome; }
 
 }

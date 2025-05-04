@@ -222,6 +222,11 @@ public class UserClienteService implements UserDetailsService {
 	    if (user.getCliente() != null) {
 	        Cliente clienteComContas = clienteDao.findByIdWithContas(user.getCliente().getId());
 	        user.setCliente(clienteComContas);
+	        // Log para depuração
+	        System.out.println("Contas do cliente ID " + clienteComContas.getId() + ":");
+	        clienteComContas.getContas().forEach(conta -> 
+	            System.out.println("Conta ID " + conta.getId() + ", clienteNome: " + conta.getClienteNome())
+	        );
 	    }
 
 	    return user;

@@ -13,12 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ClienteRowMapper implements RowMapper<Cliente> {
-	
-//	 private final JdbcTemplate jdbcTemplate;
-//
-//	    public ClienteRowMapper(JdbcTemplate jdbcTemplate) {
-//	        this.jdbcTemplate = jdbcTemplate;
-//	    }
 
     @Override
     public Cliente mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -47,16 +41,9 @@ public class ClienteRowMapper implements RowMapper<Cliente> {
         endereco.setNumero(rs.getString("numero"));
         endereco.setBairro(rs.getString("bairro"));
         endereco.setComplemento(rs.getString("complemento"));
-        endereco.setCliente(cliente); // Relacionamento reverso
+        endereco.setCliente(cliente); 
         cliente.setEndereco(endereco);
         
-//        List<Conta> contas = jdbcTemplate.query(
-//                "SELECT * FROM contas WHERE cliente_id = ?", 
-//                new ContasRowMapper(), 
-//                cliente.getId()
-//            );
-//            cliente.setContas(contas);
-
         return cliente;
     }
 }

@@ -77,16 +77,7 @@ public class SecurityConfig {
             		        "/webjars/**",
             		        "/users"  
             		    ).permitAll()
-            		
-            		
-            		//ADMIN 
-            		
-            		
-            		
-            		
-            		//BASIC
-            		
-            		
+            			
             		
                     
                     //Porque está assim?

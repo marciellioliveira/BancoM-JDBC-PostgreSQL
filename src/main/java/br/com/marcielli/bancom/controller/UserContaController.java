@@ -72,8 +72,6 @@ public class UserContaController {
 	    }
 	}
 
-
-
 	//ADMIN pode atualizar a conta dele e de todos os outros
 	//BASIC só pode atualizar a conta dele próprio por id
 	@PutMapping("/contas/{id}")
@@ -92,12 +90,10 @@ public class UserContaController {
 	//BASIC só pode transferir da propria conta.
 	@PostMapping("/contas/{idContaReceber}/transferencia")
 	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,
-			@RequestBody UserContaTedDTO dto) {
-				return null;
-
-//		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto);
-//		return tedRealizada ? ResponseEntity.ok("Transferência realizada com sucesso.")
-//				: ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Dados da transferência são inválidos.");
+			@RequestBody UserContaTedDTO dto, Authentication authentication) {
+		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto,authentication);
+		return tedRealizada ? ResponseEntity.ok("Transferência realizada com sucesso.")
+				: ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Dados da transferência são inválidos.");
 	}
 
 	//ADMIN pode ver saldo de todos

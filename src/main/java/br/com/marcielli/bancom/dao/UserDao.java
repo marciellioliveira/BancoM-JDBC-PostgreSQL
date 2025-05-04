@@ -1,9 +1,12 @@
 package br.com.marcielli.bancom.dao;
 
 import br.com.marcielli.bancom.entity.Cliente;
+import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
+import br.com.marcielli.bancom.mappers.ClienteRowMapper;
+import br.com.marcielli.bancom.mappers.ContasRowMapper;
 import br.com.marcielli.bancom.mappers.UserRowMapper;
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -217,7 +220,52 @@ public class UserDao {
 
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
+    
+    public Cliente findByIdWithContas(Long clienteId) {
+        // Busca o cliente com seus dados (user e endereço)
+        String clienteSql = """
+            SELECT 
+                c.id AS cliente_id, 
+                c.nome AS cliente_nome, 
+                c.cpf AS cliente_cpf, 
+                c.cliente_ativo,
+                u.id AS user_id, 
+                u.username AS user_username, 
+                u.password AS user_password, 
+                u.user_ativo AS user_ativo,
+                e.id AS endereco_id, 
+                e.cep, 
+                e.cidade, 
+                e.estado, 
+                e.rua, 
+                e.numero, 
+                e.bairro, 
+                e.complemento
+            FROM clientes c
+            JOIN users u ON c.user_id = u.id
+            LEFT JOIN enderecos e ON e.cliente_id = c.id
+            WHERE c.id = ?
+        """;
 
+        Cliente cliente = jdbcTemplate.queryForObject(clienteSql, new ClienteRowMapper(), clienteId);
+
+        // Busca as contas do cliente
+        String contasSql = """
+            SELECT 
+                c.*,
+                cl.id AS cliente_id,
+                cl.nome AS cliente_nome
+            FROM contas c
+            JOIN clientes cl ON c.cliente_id = cl.id
+            WHERE c.cliente_id = ?
+        """;
+
+        List<Conta> contas = jdbcTemplate.query(contasSql, new ContasRowMapper(), clienteId);
+        cliente.setContas(contas);
+
+        return cliente;
+    }
+    
     public Optional<User> findByCpf(Long cpf) {
         if (cpf == null) {
             return Optional.empty();
