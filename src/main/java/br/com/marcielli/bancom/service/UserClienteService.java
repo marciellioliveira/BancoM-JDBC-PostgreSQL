@@ -1,26 +1,17 @@
 package br.com.marcielli.bancom.service;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import br.com.marcielli.bancom.dao.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +20,8 @@ import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
-import br.com.marcielli.bancom.exception.ClienteCpfInvalidoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
-import br.com.marcielli.bancom.validation.ValidadorCPF;
 import jakarta.annotation.PostConstruct;
 
 @Service
@@ -197,7 +186,6 @@ public class UserClienteService implements UserDetailsService {
 
 	    String username = authentication.getName();
 	    
-	    // Busca o usuário logado pelo username
 	    User loggedInUser = userDao.findByUsername(username)
 	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
 
@@ -218,12 +206,10 @@ public class UserClienteService implements UserDetailsService {
 	        throw new ClienteEncontradoException("Role não autorizada para esta ação.");
 	    }
 
-	    // Carrega as contas do cliente associado ao usuário
 	    if (user.getCliente() != null) {
-	        Cliente clienteComContas = clienteDao.findByIdWithContas(user.getCliente().getId());
+	        Cliente clienteComContas = clienteDao.findByIdWithContasAndTransferencias(user.getCliente().getId());
 	        user.setCliente(clienteComContas);
-	        // Log para depuração
-	        System.out.println("Contas do cliente ID " + clienteComContas.getId() + ":");
+	       
 	        clienteComContas.getContas().forEach(conta -> 
 	            System.out.println("Conta ID " + conta.getId() + ", clienteNome: " + conta.getClienteNome())
 	        );
@@ -244,10 +230,10 @@ public class UserClienteService implements UserDetailsService {
 	    List<User> users;
 	    
 	    if ("ROLE_ADMIN".equals(role)) {
-	        // Admin pode ver todos os usuários
+	        
 	        users = userDao.findAll();
 	    } else if ("ROLE_BASIC".equals(role)) {
-	        // Basic só pode ver o próprio usuário
+	   
 	        User loggedInUser = userDao.findByUsername(username)
 	                .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
 	        users = List.of(loggedInUser);
@@ -255,14 +241,13 @@ public class UserClienteService implements UserDetailsService {
 	        throw new ClienteEncontradoException("Você não tem permissão para acessar a lista de usuários.");
 	    }
 
-	    // Carrega as contas para cada cliente associado aos usuários
+	   
 	    for (User user : users) {
 	        if (user.getCliente() != null) {
-	            Cliente clienteComContas = clienteDao.findByIdWithContas(user.getCliente().getId());
-	            user.setCliente(clienteComContas);
-	            // Log para depuração
-	            System.out.println("Contas do cliente ID " + clienteComContas.getId() + ":");
-	            clienteComContas.getContas().forEach(conta -> 
+	            Cliente clienteCompleto = clienteDao.findByIdWithContasAndTransferencias(user.getCliente().getId());
+	            user.setCliente(clienteCompleto);
+	       
+	            clienteCompleto.getContas().forEach(conta -> 
 	                System.out.println("Conta ID " + conta.getId() + ", clienteNome: " + conta.getClienteNome())
 	            );
 	        }

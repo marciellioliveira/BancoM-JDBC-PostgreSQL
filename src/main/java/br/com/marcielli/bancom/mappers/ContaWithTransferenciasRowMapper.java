@@ -23,10 +23,15 @@ public class ContaWithTransferenciasRowMapper implements RowMapper<Conta>{
     @Override
     public Conta mapRow(ResultSet rs, int rowNum) throws SQLException {
       
-        Conta conta = contaRowMapper.mapRow(rs, rowNum);        
-        Long contaId = rs.getLong("id");        
-        List<Transferencia> transferencias = clientedao.findByContaId(contaId);        
+    	Conta conta = contaRowMapper.mapRow(rs, rowNum);
+        Long contaId = rs.getLong("id");
+        System.out.println("[DEBUG] Mapeando conta ID: " + contaId);
+        
+        List<Transferencia> transferencias = clientedao.findByContaId(contaId);
+        System.out.println("[DEBUG] Número de transferências encontradas: " + transferencias.size());
+        
         conta.setTransferencias(transferencias);
+        System.out.println("[DEBUG] Transferências na conta após set: " + conta.getTransferencias().size());
         
         return conta;
     }

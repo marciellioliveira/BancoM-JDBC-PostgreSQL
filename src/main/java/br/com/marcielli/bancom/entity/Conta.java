@@ -1,6 +1,5 @@
 package br.com.marcielli.bancom.entity;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
