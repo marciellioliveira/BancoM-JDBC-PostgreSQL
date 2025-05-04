@@ -234,25 +234,41 @@ public class UserClienteService implements UserDetailsService {
 
 	@Transactional
 	public List<User> getAllUsers(Authentication authentication) throws ClienteEncontradoException {
-		String role = authentication.getAuthorities().stream()
+	    String role = authentication.getAuthorities().stream()
 	            .map(GrantedAuthority::getAuthority)
 	            .findFirst()
 	            .orElse("");
 
+	    String username = authentication.getName();
+	    
+	    List<User> users;
+	    
 	    if ("ROLE_ADMIN".equals(role)) {
 	        // Admin pode ver todos os usuários
-	        return userDao.findAll();
+	        users = userDao.findAll();
 	    } else if ("ROLE_BASIC".equals(role)) {
-	    	String username = authentication.getName(); // Agora é só o username mesmo
-	    	 User loggedInUser = userDao.findByUsername(username)
-	    		        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
-	        
-	        return List.of(loggedInUser); // Retorna como lista para manter a mesma estrutura
-	       
-	    }else {
-	        // Qualquer outro role não autorizado
+	        // Basic só pode ver o próprio usuário
+	        User loggedInUser = userDao.findByUsername(username)
+	                .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+	        users = List.of(loggedInUser);
+	    } else {
 	        throw new ClienteEncontradoException("Você não tem permissão para acessar a lista de usuários.");
 	    }
+
+	    // Carrega as contas para cada cliente associado aos usuários
+	    for (User user : users) {
+	        if (user.getCliente() != null) {
+	            Cliente clienteComContas = clienteDao.findByIdWithContas(user.getCliente().getId());
+	            user.setCliente(clienteComContas);
+	            // Log para depuração
+	            System.out.println("Contas do cliente ID " + clienteComContas.getId() + ":");
+	            clienteComContas.getContas().forEach(conta -> 
+	                System.out.println("Conta ID " + conta.getId() + ", clienteNome: " + conta.getClienteNome())
+	            );
+	        }
+	    }
+
+	    return users;
 	}
 
 	@Transactional

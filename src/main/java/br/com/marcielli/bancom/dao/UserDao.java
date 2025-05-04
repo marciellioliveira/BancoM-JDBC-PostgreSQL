@@ -191,15 +191,31 @@ public class UserDao {
     }
 
     public List<User> findAll() {
-        String sql = "SELECT u.id AS user_id, u.username, u.password, u.user_ativo, " +
-            "c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
-            "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep, " +
-            "r.name AS role_name " +
-            "FROM users u " +
-            "JOIN clientes c ON c.user_id = u.id " +
-            "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
-            "LEFT JOIN user_roles ur ON ur.user_id = u.id " +
-            "LEFT JOIN roles r ON r.id = ur.role_id";
+        String sql = """
+            SELECT 
+                u.id AS user_id, 
+                u.username, 
+                u.password, 
+                u.user_ativo, 
+                c.id AS cliente_id, 
+                c.nome, 
+                c.cpf, 
+                c.cliente_ativo,
+                r.name AS role_name,
+                e.id AS endereco_id, 
+                e.cep, 
+                e.cidade, 
+                e.estado, 
+                e.rua, 
+                e.numero, 
+                e.bairro, 
+                e.complemento
+            FROM users u
+            JOIN clientes c ON c.user_id = u.id
+            LEFT JOIN user_roles ur ON u.id = ur.user_id
+            LEFT JOIN roles r ON r.id = ur.role_id
+            LEFT JOIN enderecos e ON e.cliente_id = c.id
+        """;
 
         return jdbcTemplate.query(sql, new UserRowMapper());
     }
