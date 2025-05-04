@@ -1,6 +1,7 @@
 package br.com.marcielli.bancom.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import br.com.marcielli.bancom.dao.ClienteDao;
@@ -26,6 +27,7 @@ import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
+import br.com.marcielli.bancom.exception.TaxaDeCambioException;
 
 @Service
 public class UserContaService {
@@ -216,19 +218,6 @@ public class UserContaService {
 	    return true;
 	}
 
-
-
-//	@Transactional
-//	public Conta update(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
-//	   
-//	  
-//	    String novoPix = dto.pixAleatorio().concat("-PIX");
-//	    contaDao.atualizarPixAleatorio(idConta, novoPix);
-//	    
-//	    return contaDao.findById(idConta)
-//	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada após atualização"));
-//	}
-	
 	@Transactional
 	public Conta update(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
 	    //Busca a conta
@@ -268,82 +257,10 @@ public class UserContaService {
 
 
 	// Transferências
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirTED(Long idContaReceber, UserContaTedDTO dto) {
-//
-//		Conta contaOrigem = contaDao.findById(dto.idContaOrigem())
-//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
-//
-//		Conta contaDestino = contaDao.findById(idContaReceber)
-//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
-//
-//		if(contaOrigem.getStatus() == false || contaDestino.getStatus() == false) {
-//			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
-//		}
-//
-//		// Verificar se o saldo da conta origem é suficiente para a transferência
-//		if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
-//			throw new ContaExibirSaldoErroException("Saldo insuficiente na conta origem.");
-//		}
-//
-//		List<Conta> contasTransferidas = new ArrayList<Conta>();
-//
-//		contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
-//		contasTransferidas.add(contaOrigem);
-//
-//		TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
-//
-//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-//		novaTaxa.add(taxaContaOrigem);
-//
-//		contaOrigem.setTaxas(novaTaxa);
-//		contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
-//
-//		if (contaOrigem instanceof ContaCorrente cc) {
-//			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
-//		}
-//
-//		if (contaOrigem instanceof ContaPoupanca cp) {
-//			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-//			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
-//		}
-//
-//		Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
-//		contaOrigem.getTransferencia().add(transferindo);
-//
-//		contaDao.save(contaOrigem);
-//
-//		contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
-//		contasTransferidas.add(contaDestino);
-//
-//		TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
-//
-//		List<TaxaManutencao> novaTaxa2 = new ArrayList<TaxaManutencao>();
-//		novaTaxa2.add(taxaContaDestino);
-//
-//		contaDestino.setTaxas(novaTaxa2);
-//		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
-//
-//		if (contaDestino instanceof ContaCorrente cc) {
-//			cc.setTaxaManutencaoMensal(taxaContaDestino.getTaxaManutencaoMensal());
-//		}
-//
-//		if (contaDestino instanceof ContaPoupanca cp) {
-//			cp.setTaxaAcrescRend(taxaContaDestino.getTaxaAcrescRend());
-//			cp.setTaxaMensal(taxaContaDestino.getTaxaMensal());
-//		}
-//
-//		contaDao.save(contaDestino);
-//
-//		return true;
-//	}
 
 	@Transactional
     public boolean transferirTED(Long idContaReceber, UserContaTedDTO dto, Authentication authentication) {
-        System.out.println("Iniciando transferência TED. Conta origem ID: " + dto.idContaOrigem() + 
-                           ", Conta destino ID: " + idContaReceber + ", Valor: " + dto.valor() + 
-                           ", Username: " + authentication.getName() + ", idUsuario (DTO): " + dto.idUsuario());
-
+       
         // Validar DTO
         if (dto.idContaOrigem() == null) {
             throw new IllegalArgumentException("ID da conta origem é obrigatório");
@@ -358,11 +275,6 @@ public class UserContaService {
         
         Conta contaDestino = contaDao.findById(idContaReceber)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
-
-        System.out.println("Conta origem encontrada: Cliente ID " + 
-                           (contaOrigem.getCliente() != null ? contaOrigem.getCliente().getId() : "null"));
-        System.out.println("Conta destino encontrada: Cliente ID " + 
-                           (contaDestino.getCliente() != null ? contaDestino.getCliente().getId() : "null"));
 
         // Validar status das contas
         if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
@@ -387,8 +299,6 @@ public class UserContaService {
         // Buscar usuário logado
         User usuarioLogado = userDao.findByUsername(authentication.getName())
                 .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
-
-        System.out.println("Usuário logado: ID " + usuarioLogado.getId() + ", Username: " + usuarioLogado.getUsername());
 
         // Verificar permissões
         boolean isAdmin = authentication.getAuthorities().stream()
@@ -446,7 +356,6 @@ public class UserContaService {
         Transferencia transferencia = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.TED);
         transferenciaDao.save(transferencia);
 
-        // Atualizar contas no banco
         contaDao.updateSaldo(contaOrigem);
         contaDao.updateSaldo(contaDestino);
 
@@ -455,39 +364,22 @@ public class UserContaService {
     }
 	
 	
-	
-	
+	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId, Authentication auth) {
+	   	    
+	    BigDecimal saldoBRL = contaDao.findById(contaId)
+	        .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"))
+	        .getSaldoConta();
 
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId) {
-//		Conta contaSaldo = contaRepository.findById(contaId)
-//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
-//
-//		if(contaSaldo.getStatus() == false) {
-//			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
-//		}
-//
-//		BigDecimal saldo = contaSaldo.getSaldoConta();
-//
-//		Map<String, BigDecimal> saldosConvertidos = new LinkedHashMap<>();
-//		saldosConvertidos.put("Saldo em Real", saldo);
-//
-//		try {
-//			ConversionResponseDTO saldoUSD = exchangeRateService.convertAmount(saldo, "BRL", "USD");
-//			saldosConvertidos.put("Dólar", saldoUSD.getValorConvertido());
-//		} catch (TaxaDeCambioException e) {
-//			saldosConvertidos.put("Dólar", BigDecimal.ZERO); // Valor zero em caso de erro
-//		}
-//
-//		try {
-//			ConversionResponseDTO saldoEUR = exchangeRateService.convertAmount(saldo, "BRL", "EUR");
-//			saldosConvertidos.put("Euro", saldoEUR.getValorConvertido());
-//		} catch (TaxaDeCambioException e) {
-//			saldosConvertidos.put("Euro", BigDecimal.ZERO); // Valor zero em caso de erro
-//		}
-//
-//		return saldosConvertidos;
-//	}
+	    Map<String, BigDecimal> resultado = new LinkedHashMap<>();
+	    resultado.put("BRL", saldoBRL);
+	    resultado.put("USD", exchangeRateService.converterMoeda(saldoBRL, "BRL", "USD"));
+	    resultado.put("EUR", exchangeRateService.converterMoeda(saldoBRL, "BRL", "EUR"));
+
+	    return resultado;
+	}
+	
+	
+	
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public boolean transferirPIX(Long idContaReceber, UserContaPixDTO dto) {

@@ -1,74 +1,69 @@
 package br.com.marcielli.bancom.service;
 
 import java.math.BigDecimal;
-
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import br.com.marcielli.bancom.dto.security.ConversionResponseDTO;
 import br.com.marcielli.bancom.exception.TaxaDeCambioException;
-import lombok.Data;
-
 
 @Service
+@Transactional
 public class ExchangeRateService {
 
-    @Autowired
-    private RestTemplate restTemplate;
+	
+	private final RestTemplate restTemplate;
+    private final String apiKey;
+    private static final Logger logger = LoggerFactory.getLogger(ExchangeRateService.class);
     
-    @Value("${exchangerate.api.key}")
-    private String apiKey;
-
-    public ConversionResponseDTO convertAmount(BigDecimal amount, String fromCurrency, String toCurrency) {
+    public ExchangeRateService(RestTemplate restTemplate, @Value("${exchangerate.api.key}") String apiKey) {
+        this.restTemplate = restTemplate;
+        this.apiKey = apiKey;
+    }
+    @Cacheable(value = "taxas", key = "{#moedaOrigem, #moedaDestino}")
+    public BigDecimal converterMoeda(BigDecimal valor, String moedaOrigem, String moedaDestino) {
         try {
-            String url = String.format("https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, fromCurrency);
+        	BigDecimal taxa = getTaxaCambio(moedaOrigem, moedaDestino);
+            BigDecimal valorConvertido = valor.multiply(taxa).setScale(2, RoundingMode.HALF_UP);
             
-            // Usar ExchangeRateApiResponse em vez de Map
-            ResponseEntity<ExchangeRateApiResponse> response = restTemplate.getForEntity(
-                url, 
-                ExchangeRateApiResponse.class
-            );
+            logger.debug("Conversão realizada: {} {} → {} {} = {}", 
+                valor, moedaOrigem, valorConvertido, moedaDestino, taxa);
             
-            ExchangeRateApiResponse apiResponse = response.getBody();
-
-            if (apiResponse != null && "success".equals(apiResponse.getResult())) {
-                //Acessar diretamente o mapa de taxas
-                Double rate = apiResponse.getConversion_rates().get(toCurrency.toUpperCase());
-                
-                if (rate == null) {
-                    throw new TaxaDeCambioException("Moeda de destino não encontrada: " + toCurrency);
-                }
-                
-                BigDecimal convertedAmount = amount.multiply(BigDecimal.valueOf(rate))
-                                               .setScale(2, RoundingMode.HALF_UP);
-                                               
-                return new ConversionResponseDTO(
-                    amount, 
-                    fromCurrency, 
-                    toCurrency, 
-                    convertedAmount, 
-                    BigDecimal.valueOf(rate)
-                );
-            } else {
-                throw new TaxaDeCambioException("Erro ao obter taxa de câmbio");
-            }
+            return valorConvertido;
         } catch (Exception e) {
-            System.err.println("Erro na chamada à API: " + e.getMessage());
-            throw new TaxaDeCambioException("Falha na comunicação com o serviço de câmbio");
+        	logger.error("Erro na conversão de {} para {} | Valor: {} | Erro: {}", 
+                    moedaOrigem, moedaDestino, valor, e.getMessage());
+            return BigDecimal.ZERO;
         }
     }
-    
 
-    @Data
-    private static class ExchangeRateApiResponse {
-        private String result;
-        private Map<String, Double> conversion_rates;
+    @CacheEvict(value = "taxas", allEntries = true)
+    public void atualizarTaxasCache() {
+    	logger.info("Cache de taxas limpo em {}", LocalDateTime.now());
+    }
+
+    @Cacheable(value = "taxas", key = "{#moedaOrigem, #moedaDestino}")
+    private BigDecimal getTaxaCambio(String moedaOrigem, String moedaDestino) {
+    	logger.info("Buscando taxa FRESCA: {} → {}", moedaOrigem, moedaDestino);
+        
+        String url = String.format("https://v6.exchangerate-api.com/v6/%s/pair/%s/%s", 
+                                 apiKey, moedaOrigem, moedaDestino);
+
+        Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+
+        if (response == null || !"success".equals(response.get("result"))) {
+            throw new TaxaDeCambioException("Falha ao obter taxa de câmbio");
+        }
+
+        return BigDecimal.valueOf((Double) response.get("conversion_rate"));
     }
 }
-

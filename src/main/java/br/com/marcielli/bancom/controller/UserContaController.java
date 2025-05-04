@@ -91,18 +91,30 @@ public class UserContaController {
 	@PostMapping("/contas/{idContaReceber}/transferencia")
 	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,
 			@RequestBody UserContaTedDTO dto, Authentication authentication) {
+		
 		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto,authentication);
 		return tedRealizada ? ResponseEntity.ok("Transferência realizada com sucesso.")
 				: ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Dados da transferência são inválidos.");
+		
 	}
+	
+	
 
 	//ADMIN pode ver saldo de todos
 	//BASIC só pode ver saldo dele mesmo.
 	@GetMapping("/contas/{contaId}/saldo")
-	public Map<String, BigDecimal> exibirSaldoConvertido(@PathVariable("contaId") Long contaId) {
-		return null;
-//		return contaService.exibirSaldoConvertido(contaId);
-	}
+	public Map<String, BigDecimal> exibirSaldoConvertido(
+            @PathVariable("contaId") Long contaId, 
+            Authentication authentication) {
+        return contaService.exibirSaldoConvertido(contaId, authentication);
+    }
+	
+	
+//	@GetMapping("/contas/{contaId}/saldo")
+//	public Map<String, BigDecimal> exibirSaldoConvertido(@PathVariable("contaId") Long contaId, Authentication authentication) {
+//		
+//		return contaService.exibirSaldoConvertido(contaId, authentication);
+//	}
 
 	//ADMIN pode fazer pix da conta dele para outras, e de outros para outros mas não pode fazer de outros para ele mesmo quando tiver logado
 	//BASIC só pode fazer pix da propria conta.

@@ -3,8 +3,11 @@ package br.com.marcielli.bancom.dao;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.ContaCorrente;
 import br.com.marcielli.bancom.entity.ContaPoupanca;
+import br.com.marcielli.bancom.exception.TaxaDeCambioException;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
+import br.com.marcielli.bancom.mappers.TaxaCambioRowMapper;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.mapping.AccessOptions.SetOptions.Propagation;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,7 +15,11 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -183,7 +190,64 @@ public class ContaDao {
 	}
 	
 	
+	public BigDecimal getTaxaCambio(String moedaOrigem, String moedaDestino) {
+	    String sql = """
+	        SELECT taxa FROM taxas_cambio 
+	        WHERE moeda_origem = ? AND moeda_destino = ?
+	        ORDER BY data_atualizacao DESC 
+	        LIMIT 1
+	    """;
+	    
+	    try {
+	        return jdbcTemplate.queryForObject(sql, new TaxaCambioRowMapper(), moedaOrigem, moedaDestino);
+	    } catch (EmptyResultDataAccessException e) {
+	        throw new TaxaDeCambioException("Taxa de câmbio não encontrada para: " + moedaOrigem + "->" + moedaDestino);
+	    }
+	}
+
+	public Map<String, BigDecimal> getMultiplasTaxasCambio(String moedaOrigem, List<String> moedasDestino) {
+	    String sql = """
+	        SELECT moeda_destino, taxa FROM (
+	            SELECT moeda_destino, taxa, 
+	                   ROW_NUMBER() OVER (PARTITION BY moeda_destino ORDER BY data_atualizacao DESC) as rn
+	            FROM taxas_cambio
+	            WHERE moeda_origem = ? AND moeda_destino IN (%s)
+	        ) t WHERE rn = 1
+	    """;
+	    
+	    String inClause = String.join(",", Collections.nCopies(moedasDestino.size(), "?"));
+	    sql = String.format(sql, inClause);
+	    
+	    List<Object> params = new ArrayList<Object>();
+	    params.add(moedaOrigem);
+	    params.addAll(moedasDestino);
+	    
+	    return jdbcTemplate.query(sql, rs -> {
+	        Map<String, BigDecimal> result = new LinkedHashMap<>();
+	        while (rs.next()) {
+	            result.put(rs.getString("moeda_destino"), rs.getBigDecimal("taxa"));
+	        }
+	        return result;
+	    }, params.toArray());
+	}
 	
+	
+	public boolean existsByIdAndUsername(Long contaId, String username) {
+        String sql = """
+            SELECT COUNT(c.id) > 0
+            FROM contas c
+            JOIN clientes cl ON c.cliente_id = cl.id
+            JOIN users u ON cl.user_id = u.id
+            WHERE c.id = ? AND u.username = ?
+        """;
+        
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(
+            sql, 
+            Boolean.class, 
+            contaId, 
+            username
+        ));
+    }
 	
 	
 
