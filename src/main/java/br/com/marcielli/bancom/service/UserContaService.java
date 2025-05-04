@@ -1,7 +1,6 @@
 package br.com.marcielli.bancom.service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 import br.com.marcielli.bancom.dao.ClienteDao;
@@ -10,15 +9,15 @@ import br.com.marcielli.bancom.dao.ContaDao;
 import br.com.marcielli.bancom.dao.TransferenciaDao;
 import br.com.marcielli.bancom.dao.UserDao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
-import br.com.marcielli.bancom.dto.security.UserContaResponseDTO;
 import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.enuns.TipoTransferencia;
@@ -27,7 +26,6 @@ import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
-import br.com.marcielli.bancom.exception.TaxaDeCambioException;
 
 @Service
 public class UserContaService {
@@ -40,7 +38,7 @@ public class UserContaService {
 	
 	private Random random = new Random();
 
-	//private static final Logger log = LoggerFactory.getLogger(UserContaService.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);	
 
 	public UserContaService(ContaDao contaDao,
 							ExchangeRateService exchangeRateService, ClienteDao clienteDao, UserDao userDao,TransferenciaDao transferenciaDao) {
@@ -363,13 +361,34 @@ public class UserContaService {
         return true;
     }
 	
-	
-	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId, Authentication auth) {
-	   	    
-	    BigDecimal saldoBRL = contaDao.findById(contaId)
-	        .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"))
-	        .getSaldoConta();
+	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId, Authentication authentication) {
+	    // 1. Verificar autenticação primeiro
+	    User usuarioLogado = userDao.findByUsername(authentication.getName())
+	            .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
 
+	    // 2. Buscar a conta
+	    Conta conta = contaDao.findById(contaId)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
+
+	    // 3. Verificar permissões
+	    boolean isAdmin = authentication.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+	    // 4. Validação de acesso
+	    if (!isAdmin) {
+	        if (conta.getCliente() == null || !conta.getCliente().getId().equals(usuarioLogado.getId())) {
+	            throw new AcessoNegadoException("Você só pode visualizar o saldo da sua própria conta");
+	        }
+	    }
+
+	    // 5. Validar status da conta
+	    if (!conta.getStatus()) {
+	        throw new ContaExibirSaldoErroException("Conta inativa");
+	    }
+
+	    // 6. Processar conversões
+	    BigDecimal saldoBRL = conta.getSaldoConta();
+	    
 	    Map<String, BigDecimal> resultado = new LinkedHashMap<>();
 	    resultado.put("BRL", saldoBRL);
 	    resultado.put("USD", exchangeRateService.converterMoeda(saldoBRL, "BRL", "USD"));
@@ -377,6 +396,21 @@ public class UserContaService {
 
 	    return resultado;
 	}
+	
+	
+//	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId, Authentication authentication) {
+//	   	    
+//	    BigDecimal saldoBRL = contaDao.findById(contaId)
+//	        .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"))
+//	        .getSaldoConta();
+//
+//	    Map<String, BigDecimal> resultado = new LinkedHashMap<>();
+//	    resultado.put("BRL", saldoBRL);
+//	    resultado.put("USD", exchangeRateService.converterMoeda(saldoBRL, "BRL", "USD"));
+//	    resultado.put("EUR", exchangeRateService.converterMoeda(saldoBRL, "BRL", "EUR"));
+//
+//	    return resultado;
+//	}
 	
 	
 	
