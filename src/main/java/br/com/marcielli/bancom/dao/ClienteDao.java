@@ -1,5 +1,6 @@
 package br.com.marcielli.bancom.dao;
 
+import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Transferencia;
@@ -196,7 +197,11 @@ public class ClienteDao {
         );
     }
 
-    
+    public List<Cartao> findCartoesByContaId(Long contaId) {
+        String cartaoSql = "SELECT * FROM cartoes WHERE conta_id = ?";
+        return jdbcTemplate.query(cartaoSql, new BeanPropertyRowMapper<>(Cartao.class), contaId);
+    }
+
     
     
     

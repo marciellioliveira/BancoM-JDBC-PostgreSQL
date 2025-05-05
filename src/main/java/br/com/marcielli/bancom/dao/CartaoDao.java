@@ -125,7 +125,13 @@ public class CartaoDao {
     }
 
 
+    public Cartao save(Cartao cartao) {
+        String sql = "UPDATE cartoes SET senha = ? WHERE id = ?";
+        jdbcTemplate.update(sql, cartao.getSenha(), cartao.getId());
+        return cartao;
+    }
     
+   
     
     
     

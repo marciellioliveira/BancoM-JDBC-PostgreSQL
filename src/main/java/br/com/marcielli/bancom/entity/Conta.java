@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoConta;
@@ -30,6 +31,21 @@ import org.slf4j.LoggerFactory;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonPropertyOrder({
+    "id",           
+    "pixAleatorio",
+    "status",
+    "taxaAcrescRend",
+    "taxaMensal",
+    "taxaManutencaoMensal",
+    "saldoConta",
+    "clienteNome",
+    "tipoConta",
+    "numeroConta",
+    "categoriaConta",
+    "cartoes", // Deixando as listas no final
+    "transferenciasEnviadas" // Deixando as listas no final
+})
 public class Conta implements Serializable {
 
 	/**

@@ -71,7 +71,7 @@ public class UserCartaoController {
 	//ADMIN pode atualizar de qualquer cartão
 	//BASIC pode atualizar somente do cartão com o id dele
 	@PutMapping("/cartoes/{id}")
-	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto, Authentication authentication) {
+	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto, Authentication authentication) throws AccessDeniedException {
 
 		Cartao cartaoAtualizado = cartaoService.updateSenha(id, dto, authentication);
 

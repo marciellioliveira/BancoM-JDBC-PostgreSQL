@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 
 import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.CartaoCredito;
@@ -28,7 +27,7 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
             cartao = new CartaoDebito();
             ((CartaoDebito) cartao).setLimiteDiarioTransacao(rs.getBigDecimal("limite_diario_transacao"));
         } else {
-            cartao = new Cartao(); // ou alguma classe base
+            cartao = new Cartao(); 
         }
 
         cartao.setId(rs.getLong("id"));
@@ -38,7 +37,7 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         cartao.setNumeroCartao(rs.getString("numero_cartao"));
         cartao.setStatus(rs.getBoolean("status"));
         cartao.setSenha(rs.getString("senha"));
-       
+
         Conta conta = new Conta();
         conta.setId(rs.getLong("conta_id"));
         cartao.setConta(conta);

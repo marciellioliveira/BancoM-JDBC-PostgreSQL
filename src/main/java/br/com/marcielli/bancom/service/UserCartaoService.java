@@ -154,27 +154,46 @@ public class UserCartaoService {
 
 
 	@Transactional
-	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, Authentication authentication) {
+	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, Authentication authentication) throws AccessDeniedException {
+	    String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
 
-		Cartao cartao = cartaoDao.findById(cartaoId)
-				.orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
-		
-		Long userId = cartao.getConta().getCliente().getUser().getId().longValue();
-		
-		if(userId != dto.getIdCliente()) {
-			throw new ClienteNaoEncontradoException("Você não tem permissão para alterar esse cartão.");
-		}	
+	    String username = authentication.getName();
 
-		if (!cartao.isStatus()) { // Só pode atualizar se o cartão estiver com status true
-			throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
-		}
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // Admin pode atualizar qualquer cartão
+	        Cartao cartao = cartaoDao.findById(cartaoId)
+	            .orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado"));
 
-		clienteDao.findById(dto.getIdCliente())
-				.orElseThrow(() -> new ContaNaoEncontradaException("Usuário não encontrado"));
+	        // Atualiza a senha
+	        cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
+	        return cartaoDao.save(cartao);
 
-		cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
-		return cartaoDao.save(cartao);
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        // Basic só pode atualizar o cartão dele
+	        Cartao cartao = cartaoDao.findByIdAndUsername(cartaoId, username)
+	            .orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado ou você não tem permissão para acessá-lo"));
+
+	        if (cartao.getConta().getCliente().getId() != dto.getIdCliente()) {
+	            throw new ClienteNaoEncontradoException("Você não tem permissão para alterar esse cartão.");
+	        }
+
+	        if (!cartao.isStatus()) {
+	            throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
+	        }
+
+	        cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
+	        return cartaoDao.save(cartao);
+	        
+	    } else {
+	        throw new AccessDeniedException("Você não tem permissão para atualizar a senha desse cartão.");
+	    }
 	}
+
+	
+	
 
 	
 	
