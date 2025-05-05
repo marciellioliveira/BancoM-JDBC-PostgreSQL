@@ -148,8 +148,7 @@ public class UserContaController {
 		}
 	}
 
-	// ROTAS MANUAIS - FUNCIONAM estou programando para elas serem cobradas
-	// automaticamente com o cron do spring
+	// ROTAS MANUAIS
 	@PutMapping("/contas/{idConta}/manutencao") // SOMENTE ADMIN/BANCO
 	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, Authentication authentication) {
 
@@ -162,6 +161,7 @@ public class UserContaController {
 		}
 	}
 	
+	// ROTAS MANUAIS
 	@PutMapping("/contas/{idConta}/rendimentos") // SOMENTE ADMIN/BANCO
 	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta, Authentication authentication) {
 		
@@ -173,19 +173,4 @@ public class UserContaController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao aplicar a taxa de rendimento");
 		}
 	}
-
-
-//	@PutMapping("/contas/{idConta}/manutencao")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-//	public ResponseEntity<?> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta) {
-//		return processarOperacaoConta(idConta, contaService::manutencaoTaxaCC);
-//	}
-//
-//	@PutMapping("/contas/{idConta}/rendimentos")
-//	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-//	public ResponseEntity<?> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta) {
-//		return processarOperacaoConta(idConta, contaService::rendimentoTaxaCP);
-//	}
-//
-
 }
