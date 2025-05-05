@@ -70,7 +70,7 @@ public class Conta implements Serializable {
 	@JsonIgnore
 	private List<TaxaManutencao> taxas;
 
-	private BigDecimal saldoConta;
+	private BigDecimal saldoConta = BigDecimal.ZERO;
 
 	@JsonIgnore
 	private BigDecimal valorTransferencia;

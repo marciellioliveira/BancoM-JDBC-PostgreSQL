@@ -97,29 +97,46 @@ public class UserCartaoController {
 		}
 	}
 	
-	
-	
-	
-	
-	
-
-//	//ADMIN pode deletar dele e de outras pessoas
-//	//BASIC só pode deletar dele
-//	@DeleteMapping("/cartoes/{id}")
-//	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto) {
-//		return null;
-//
-////		boolean deletado = cartaoService.delete(id, dto);
-////
-////		if (deletado) {
-////			return ResponseEntity.ok("Senha do cartão atualizada com sucesso");
-////		} else {
-////			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-////		}
-//
-//	}
 
 	// Pagamentos
+	
+	
+	//ADMIN pode fazer pagamento apenas com o cartão dele
+	//BASIC pode fazer pagamento apenas com o cartão dele
+	@PostMapping("/cartoes/{idContaReceber}/pagamento")
+	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserCartaoPagCartaoDTO dto, Authentication authentication) {
+				
+		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, dto, authentication);
+
+		if (pagamentoRealizado) {
+			return new ResponseEntity<>("Pagamento realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 //	//ADMIN pode fazer pagamento apenas com o cartão dele
 //	//BASIC pode fazer pagamento apenas com o cartão dele

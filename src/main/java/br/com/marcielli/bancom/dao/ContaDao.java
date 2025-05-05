@@ -1,10 +1,10 @@
 package br.com.marcielli.bancom.dao;
 
+import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.ContaCorrente;
 import br.com.marcielli.bancom.entity.ContaPoupanca;
 import br.com.marcielli.bancom.exception.ChavePixNaoEncontradaException;
-import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 import br.com.marcielli.bancom.exception.TaxaDeCambioException;
 import br.com.marcielli.bancom.mappers.ContaCorrenteRowMapper;
 import br.com.marcielli.bancom.mappers.ContaPoupancaRowMapper;
@@ -12,13 +12,11 @@ import br.com.marcielli.bancom.mappers.ContasRowMapper;
 import br.com.marcielli.bancom.mappers.TaxaCambioRowMapper;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.mapping.AccessOptions.SetOptions.Propagation;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -37,62 +35,149 @@ public class ContaDao {
 	public ContaDao(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-
+	
 	public Conta save(Conta conta) {
-		KeyHolder keyHolder = new GeneratedKeyHolder();
+	    // Se o cliente não está associado ou não tem ID, salvar o cliente primeiro
+	    if (conta.getCliente() == null || conta.getCliente().getId() == null) {
+	        if (conta.getCliente() == null) {
+	            throw new IllegalArgumentException("Cliente não pode ser nulo.");
+	        }
+	        conta.setCliente(saveCliente(conta.getCliente()));  // Salva o cliente se necessário
+	    }
 
-		String sql = """
-				    INSERT INTO contas (
-				        cliente_id, tipo_conta, categoria_conta, saldo_conta,
-				        numero_conta, pix_aleatorio, status,
-				        taxa_manutencao_mensal, taxa_acresc_rend, taxa_mensal
-				    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-				""";
+	    KeyHolder keyHolder = new GeneratedKeyHolder();
 
-		jdbcTemplate.update(connection -> {
+	    // SQL para inserir a conta
+	    String sql = """
+	                INSERT INTO contas (
+	                    cliente_id, tipo_conta, categoria_conta, saldo_conta,
+	                    numero_conta, pix_aleatorio, status,
+	                    taxa_manutencao_mensal, taxa_acresc_rend, taxa_mensal
+	                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	            """;
 
-			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+	    // Inserção da conta na tabela "contas"
+	    jdbcTemplate.update(connection -> {
+	        PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-			ps.setLong(1, conta.getCliente().getId());
-			ps.setString(2, conta.getTipoConta().name());
-			ps.setString(3, conta.getCategoriaConta().name());
-			ps.setBigDecimal(4, conta.getSaldoConta());
-			ps.setString(5, conta.getNumeroConta());
-			ps.setString(6, conta.getPixAleatorio());
-			ps.setBoolean(7, conta.getStatus());
+	        ps.setLong(1, conta.getCliente().getId()); // Associando o cliente à conta
+	        ps.setString(2, conta.getTipoConta().name());
+	        ps.setString(3, conta.getCategoriaConta().name());
+	        ps.setBigDecimal(4, conta.getSaldoConta());
+	        ps.setString(5, conta.getNumeroConta());
+	        ps.setString(6, conta.getPixAleatorio());
+	        ps.setBoolean(7, conta.getStatus());
 
-			switch (conta) {
-			case ContaCorrente cc -> {
-				ps.setBigDecimal(8, cc.getTaxaManutencaoMensal());
-				ps.setNull(9, Types.NUMERIC);
-				ps.setNull(10, Types.NUMERIC);
-			}
-			case ContaPoupanca cp -> {
-				ps.setNull(8, Types.NUMERIC);
-				ps.setBigDecimal(9, cp.getTaxaAcrescRend());
-				ps.setBigDecimal(10, cp.getTaxaMensal());
-			}
-			default -> {
-				ps.setNull(8, Types.NUMERIC);
-				ps.setNull(9, Types.NUMERIC);
-				ps.setNull(10, Types.NUMERIC);
-			}
-			}
+	        switch (conta) {
+	            case ContaCorrente cc -> {
+	                ps.setBigDecimal(8, cc.getTaxaManutencaoMensal());
+	                ps.setNull(9, Types.NUMERIC);
+	                ps.setNull(10, Types.NUMERIC);
+	            }
+	            case ContaPoupanca cp -> {
+	                ps.setNull(8, Types.NUMERIC);
+	                ps.setBigDecimal(9, cp.getTaxaAcrescRend());
+	                ps.setBigDecimal(10, cp.getTaxaMensal());
+	            }
+	            default -> {
+	                ps.setNull(8, Types.NUMERIC);
+	                ps.setNull(9, Types.NUMERIC);
+	                ps.setNull(10, Types.NUMERIC);
+	            }
+	        }
 
-			return ps;
-		}, keyHolder);
+	        return ps;
+	    }, keyHolder);
 
-		// Utilizando getKeys() para acessar todas as chaves geradas
-		Map<String, Object> keys = keyHolder.getKeys();
-		if (keys != null && !keys.isEmpty()) {
-			Number generatedId = (Number) keys.get("id");
-			if (generatedId != null) {
-				conta.setId(generatedId.longValue());
-			}
-		}
+	    // Recupera o ID gerado para a conta inserida
+	    Map<String, Object> keys = keyHolder.getKeys();
+	    if (keys != null && !keys.isEmpty()) {
+	        Number generatedId = (Number) keys.get("id");
+	        if (generatedId != null) {
+	            conta.setId(generatedId.longValue());
+	        }
+	    }
 
-		return conta;
+	    return conta; // Retorna a conta com o ID atribuído
 	}
+
+
+
+	
+	public Cliente saveCliente(Cliente cliente) {
+	    // Inserindo o cliente na tabela.
+	    String sql = """
+	                INSERT INTO clientes (nome, user_id) 
+	                VALUES (?, ?)
+	            """;
+	    
+	    jdbcTemplate.update(sql, cliente.getNome(), cliente.getId());
+	    
+	    String sqlSelect = "SELECT LAST_INSERT_ID()";
+	    Long clienteId = jdbcTemplate.queryForObject(sqlSelect, Long.class);
+	    
+	    cliente.setId(clienteId);
+
+	    return cliente; 
+	}
+
+	
+
+//	public Conta save(Conta conta) {
+//		KeyHolder keyHolder = new GeneratedKeyHolder();
+//
+//		String sql = """
+//				    INSERT INTO contas (
+//				        cliente_id, tipo_conta, categoria_conta, saldo_conta,
+//				        numero_conta, pix_aleatorio, status,
+//				        taxa_manutencao_mensal, taxa_acresc_rend, taxa_mensal
+//				    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//				""";
+//
+//		jdbcTemplate.update(connection -> {
+//
+//			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+//
+//			ps.setLong(1, conta.getCliente().getId());
+//			ps.setString(2, conta.getTipoConta().name());
+//			ps.setString(3, conta.getCategoriaConta().name());
+//			ps.setBigDecimal(4, conta.getSaldoConta());
+//			ps.setString(5, conta.getNumeroConta());
+//			ps.setString(6, conta.getPixAleatorio());
+//			ps.setBoolean(7, conta.getStatus());
+//
+//			switch (conta) {
+//			case ContaCorrente cc -> {
+//				ps.setBigDecimal(8, cc.getTaxaManutencaoMensal());
+//				ps.setNull(9, Types.NUMERIC);
+//				ps.setNull(10, Types.NUMERIC);
+//			}
+//			case ContaPoupanca cp -> {
+//				ps.setNull(8, Types.NUMERIC);
+//				ps.setBigDecimal(9, cp.getTaxaAcrescRend());
+//				ps.setBigDecimal(10, cp.getTaxaMensal());
+//			}
+//			default -> {
+//				ps.setNull(8, Types.NUMERIC);
+//				ps.setNull(9, Types.NUMERIC);
+//				ps.setNull(10, Types.NUMERIC);
+//			}
+//			}
+//
+//			return ps;
+//		}, keyHolder);
+//
+//		// Utilizando getKeys() para acessar todas as chaves geradas
+//		Map<String, Object> keys = keyHolder.getKeys();
+//		if (keys != null && !keys.isEmpty()) {
+//			Number generatedId = (Number) keys.get("id");
+//			if (generatedId != null) {
+//				conta.setId(generatedId.longValue());
+//			}
+//		}
+//
+//		return conta;
+//	}
 
 	public List<Conta> findAll() {
 		String sql = """
@@ -300,40 +385,6 @@ public class ContaDao {
 		}
 	}
 
-//	public void aplicarTaxaManutencaoTodasContas() {
-//		String sql = """
-//				    UPDATE contas
-//				    SET saldo_conta = saldo_conta - taxa_manutencao_mensal,
-//				        categoria_conta = CASE
-//				            WHEN (saldo_conta - taxa_manutencao_mensal) >= 10000 THEN 'PREMIUM'
-//				            WHEN (saldo_conta - taxa_manutencao_mensal) >= 5000 THEN 'SUPER'  
-//				            ELSE 'COMUM'  
-//				        END
-//				    WHERE tipo_conta = 'CORRENTE'
-//				    AND status = true
-//				    AND taxa_manutencao_mensal IS NOT NULL
-//				""";
-//
-//		jdbcTemplate.update(sql);
-//	}
-//
-//	public void aplicarRendimentoTodasPoupancas() {
-//		String sql = """
-//				    UPDATE contas
-//				    SET saldo_conta = saldo_conta + (saldo_conta * taxa_acresc_rend),
-//				        categoria_conta = CASE
-//				            WHEN (saldo_conta + (saldo_conta * taxa_acresc_rend)) >= 10000 THEN 'PREMIUM'
-//				            WHEN (saldo_conta + (saldo_conta * taxa_acresc_rend)) >= 5000 THEN 'SUPER' 
-//				            ELSE 'COMUM'  
-//				        END
-//				    WHERE tipo_conta = 'POUPANCA'
-//				    AND status = true
-//				    AND taxa_acresc_rend IS NOT NULL
-//				""";
-//
-//		jdbcTemplate.update(sql);
-//	}
-
 	//Deixei o em lote por ser melhor por desempenho. O outro conta por conta pode travar se tiver muitas contas.
 	public void aplicarRendimentoEmLotes(int batchSize) { //batchSize = qnt de contas a ser processada por vez
 		String selectSql = """
@@ -403,5 +454,86 @@ public class ContaDao {
 	        }
 	    });
 	}
+	
+	
+	
+	public void update(Conta conta) {
+	    String sql = """
+	                UPDATE contas SET
+	                    saldo_conta = ?, 
+	                    categoria_conta = ?, 
+	                    taxa_manutencao_mensal = ?, 
+	                    taxa_acresc_rend = ?, 
+	                    taxa_mensal = ?
+	                WHERE id = ?
+	            """;
+
+	    Object[] params;
+
+	    if (conta instanceof ContaCorrente cc) {
+	        params = new Object[] {
+	            conta.getSaldoConta(),
+	            conta.getCategoriaConta().name(),
+	            cc.getTaxaManutencaoMensal(),
+	            null, 
+	            null,
+	            conta.getId()
+	        };
+	    } else if (conta instanceof ContaPoupanca cp) {
+	        params = new Object[] {
+	            conta.getSaldoConta(),
+	            conta.getCategoriaConta().name(),
+	            null,
+	            cp.getTaxaAcrescRend(),
+	            cp.getTaxaMensal(),
+	            conta.getId()
+	        };
+	    } else {
+	        params = new Object[] {
+	            conta.getSaldoConta(),
+	            conta.getCategoriaConta().name(),
+	            null,
+	            null,
+	            null,
+	            conta.getId()
+	        };
+	    }
+
+	    jdbcTemplate.update(sql, params);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

@@ -22,6 +22,6 @@ public class CartaoCreateDTO {
 	private Long idCliente;	
 	private Long idConta;	
 	private TipoCartao tipoCartao;
-	public String senha;
+	private String senha;
 	
 }

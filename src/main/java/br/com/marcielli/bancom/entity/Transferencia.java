@@ -59,7 +59,18 @@ public class Transferencia implements Serializable {
 
 	// TED
 	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia) {
-		super();
+		
+		if (enviar.getCliente() != null) {
+	        this.idClienteOrigem = enviar.getCliente().getId();
+	    } else {
+	        throw new IllegalArgumentException("Cliente da conta de origem não pode ser nulo.");
+	    }
+	    if (receber.getCliente() != null) {
+	        this.idClienteDestino = receber.getCliente().getId();
+	    } else {
+	        throw new IllegalArgumentException("Cliente da conta de destino não pode ser nulo.");
+	    }
+		
 		this.idClienteOrigem = enviar.getCliente().getId();
 		this.idClienteDestino = receber.getCliente().getId();
 		this.idContaOrigem = enviar.getId();
@@ -76,15 +87,46 @@ public class Transferencia implements Serializable {
 	}
 
 	// PIX
-	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia,
-			String chavePixUtilizada) {
-		this(enviar, valor, receber, tipoTransferencia);
-		this.codigoOperacao = "PIX_" + chavePixUtilizada + "_" + this.codigoOperacao;
+	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia,String chavePixUtilizada) {
+		
+		if (enviar.getCliente() != null) {
+	        this.idClienteOrigem = enviar.getCliente().getId();
+	    } else {
+	        throw new IllegalArgumentException("Cliente da conta de origem não pode ser nulo.");
+	    }
+	    if (receber.getCliente() != null) {
+	        this.idClienteDestino = receber.getCliente().getId();
+	    } else {
+	        throw new IllegalArgumentException("Cliente da conta de destino não pode ser nulo.");
+	    }
+		
+		this.idClienteOrigem = enviar.getCliente().getId();
+	    this.idClienteDestino = receber.getCliente().getId();
+	    this.idContaOrigem = enviar.getId();
+	    this.idContaDestino = receber.getId();
+	    this.tipoTransferencia = tipoTransferencia;
+	    this.valor = valor;
+
+	    LocalDateTime dataTransferencia = LocalDateTime.now();
+	    String codTransferencia = gerarCodigoTransferencia();
+
+	    this.data = dataTransferencia;
+	    this.codigoOperacao = "PIX_" + chavePixUtilizada + "_" + codTransferencia;
+	    this.tipoCartao = TipoCartao.SEM_CARTAO;
+		
+//		this(enviar, valor, receber, tipoTransferencia);
+//		this.codigoOperacao = "PIX_" + chavePixUtilizada + "_" + this.codigoOperacao;
 	}
 
 	// DEPOSITO - SAQUE
 	public Transferencia(Conta conta, BigDecimal valor, TipoTransferencia tipoTransferencia) {
-		super();
+		
+		if (conta.getCliente() != null) {
+	        this.idClienteOrigem = conta.getCliente().getId();
+	    } else {
+	        throw new IllegalArgumentException("Cliente da conta não pode ser nulo.");
+	    }
+
 		this.idClienteOrigem = conta.getCliente().getId();
 		this.idClienteDestino = 0L;
 		this.idContaOrigem = conta.getId();
@@ -103,7 +145,18 @@ public class Transferencia implements Serializable {
 	// CARTÃO CRÉDITO - DÉBITO
 	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia,
 			TipoCartao tipoCartao) {
-		super();
+
+		if (enviar.getCliente() != null) {
+	        this.idClienteOrigem = enviar.getCliente().getId();
+	    } else {
+	        throw new IllegalArgumentException("Cliente da conta de origem não pode ser nulo.");
+	    }
+	    if (receber.getCliente() != null) {
+	        this.idClienteDestino = receber.getCliente().getId();
+	    } else {
+	        throw new IllegalArgumentException("Cliente da conta de destino não pode ser nulo.");
+	    }
+
 		this.idClienteOrigem = enviar.getCliente().getId();
 		this.idClienteDestino = receber.getCliente().getId();
 		this.idContaOrigem = enviar.getId();
@@ -118,6 +171,8 @@ public class Transferencia implements Serializable {
 		this.codigoOperacao = codTransferencia;
 		this.tipoCartao = tipoCartao;
 	}
+	
+	
 
 	public String gerarCodigoTransferencia() {
 		int[] sequencia = new int[21];

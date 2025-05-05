@@ -227,7 +227,7 @@ public class UserContaService {
 
 	@Transactional
 	public Conta update(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
-	    //Busca a conta
+	   
 	    Conta conta = contaDao.findById(idConta)
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
 	    
@@ -237,26 +237,21 @@ public class UserContaService {
 	    
 	    //Se não for admin, verifica se a conta pertence ao usuário logado
 	    if (!isAdmin) {
-	        // Obtém usuário logado
 	        User usuarioLogado = userDao.findByUsername(authentication.getName())
 	                .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
 	        
-	        // Verifica se o cliente tem usuário vinculado
 	        if (conta.getCliente() == null || conta.getCliente().getUser() == null) {
 	            throw new AcessoNegadoException("Conta não vinculada a um usuário válido");
 	        }
 	        
-	        // Verifica se o usuário logado é dono da conta
 	        if (!conta.getCliente().getUser().getId().equals(usuarioLogado.getId())) {
 	            throw new AcessoNegadoException("Você só pode alterar sua própria conta");
 	        }
 	    }
 
-	    //Atualiza o PIX
 	    String novoPix = dto.pixAleatorio().concat("-PIX");
 	    contaDao.atualizarPixAleatorio(idConta, novoPix);
 	    
-	    //Retorna a conta atualizada
 	    return contaDao.findById(idConta)
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada após atualização"));
 	}
