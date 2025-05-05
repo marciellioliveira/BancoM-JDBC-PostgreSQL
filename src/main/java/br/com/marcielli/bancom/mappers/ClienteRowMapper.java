@@ -1,16 +1,13 @@
 package br.com.marcielli.bancom.mappers;
 
 import br.com.marcielli.bancom.entity.Cliente;
-import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.User;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class ClienteRowMapper implements RowMapper<Cliente> {
 

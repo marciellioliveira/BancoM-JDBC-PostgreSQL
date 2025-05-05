@@ -4,11 +4,9 @@ import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.Role;
-import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
-import br.com.marcielli.bancom.mappers.TransferenciaRowMapper;
 import br.com.marcielli.bancom.mappers.UserRowMapper;
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -192,52 +190,6 @@ public class UserDao {
         }
     }
     
-//    public List<User> findAll() {
-//        String sql = """
-//            SELECT 
-//                u.id AS user_id, 
-//                u.username, 
-//                u.password, 
-//                u.user_ativo, 
-//                c.id AS cliente_id, 
-//                c.nome, 
-//                c.cpf, 
-//                c.cliente_ativo,
-//                r.name AS role_name,
-//                e.id AS endereco_id, 
-//                e.cep, 
-//                e.cidade, 
-//                e.estado, 
-//                e.rua, 
-//                e.numero, 
-//                e.bairro, 
-//                e.complemento
-//            FROM users u
-//            JOIN clientes c ON c.user_id = u.id
-//            LEFT JOIN user_roles ur ON u.id = ur.user_id
-//            LEFT JOIN roles r ON r.id = ur.role_id
-//            LEFT JOIN enderecos e ON e.cliente_id = c.id
-//        """;
-//
-//        List<User> users = jdbcTemplate.query(sql, new UserRowMapper());
-//
-//        for (User user : users) {
-//        	if (user.getCliente() != null && user.getCliente().getContas() != null) {
-//        	    for (Conta conta : user.getCliente().getContas()) {
-//        	        Long contaId = conta.getId();
-//        	        if (contaId != null) {
-//        	            String sqlEnviadas = "SELECT * FROM transferencias WHERE id_conta_origem = ?";
-//        	            List<Transferencia> transferenciasEnviadas = jdbcTemplate.query(sqlEnviadas, new TransferenciaRowMapper(), contaId);
-//
-//        	            conta.setTransferencias(transferenciasEnviadas);
-//        	        }
-//        	    }
-//        	}
-//
-//        }
-//
-//        return users;
-//    }
 
 
     public List<User> findAll() {

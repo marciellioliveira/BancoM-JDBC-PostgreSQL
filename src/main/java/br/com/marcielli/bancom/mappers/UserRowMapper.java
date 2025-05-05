@@ -2,15 +2,12 @@ package br.com.marcielli.bancom.mappers;
 
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Endereco;
-import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
 import org.springframework.jdbc.core.RowMapper;
 
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
 
 public class UserRowMapper implements RowMapper<User> {
 
@@ -40,7 +37,7 @@ public class UserRowMapper implements RowMapper<User> {
             }
         }
         
-     // Só seta se cpfLong não for nulo
+        // Só seta se cpfLong não for nulo
         if (cpfLong != null) {
             cliente.setCpf(cpfLong);
         }

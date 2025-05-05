@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import br.com.marcielli.bancom.dao.ClienteDao;
@@ -14,6 +16,7 @@ public class ContaWithTransferenciasRowMapper implements RowMapper<Conta>{
 
 	private final ContasRowMapper contaRowMapper;
     private final ClienteDao clientedao;
+    private static final Logger logger = LoggerFactory.getLogger(Conta.class);
 
     public ContaWithTransferenciasRowMapper(ContasRowMapper contaRowMapper, ClienteDao clientedao) {
         this.contaRowMapper = contaRowMapper;
@@ -25,13 +28,13 @@ public class ContaWithTransferenciasRowMapper implements RowMapper<Conta>{
       
     	Conta conta = contaRowMapper.mapRow(rs, rowNum);
         Long contaId = rs.getLong("id");
-        System.out.println("[DEBUG] Mapeando conta ID: " + contaId);
+        logger.debug("[DEBUG] Mapeando conta ID: "+ contaId);
         
         List<Transferencia> transferencias = clientedao.findByContaId(contaId);
-        System.out.println("[DEBUG] Número de transferências encontradas: " + transferencias.size());
+        logger.debug("[DEBUG]  Número de transferências encontradas: " + transferencias.size());
         
         conta.setTransferencias(transferencias);
-        System.out.println("[DEBUG] Transferências na conta após set: " + conta.getTransferencias().size());
+        logger.debug("[DEBUG]   Transferências na conta após set: " + conta.getTransferencias().size());
         
         return conta;
     }

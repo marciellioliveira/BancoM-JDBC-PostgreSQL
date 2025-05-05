@@ -419,6 +419,29 @@ public class UserContaService {
 	    if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
 	        throw new ClienteNaoTemSaldoSuficienteException("Saldo insuficiente");
 	    }
+	    
+	    // Buscar usuário logado
+	    User usuarioLogado = userDao.findByUsername(authentication.getName())
+	            .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
+	    
+	    // Verificar permissões
+	    boolean isAdmin = authentication.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ADMIN"));
+	    
+	    if (isAdmin) {
+	        // ADMIN: Validar que a conta origem pertence ao idUsuario do DTO
+	        if (dto.idUsuario() == null) {
+	            throw new IllegalArgumentException("ID do usuário é obrigatório para transferências de admin");
+	        }
+	        if (!contaOrigem.getCliente().getId().equals(dto.idUsuario())) {
+	            throw new AcessoNegadoException("Conta origem não pertence ao cliente especificado");
+	        }
+	    } else {
+	        // BASIC: Validar que a conta origem pertence ao usuário logado
+	        if (!contaOrigem.getCliente().getId().equals(usuarioLogado.getId().longValue())) {
+	            throw new AcessoNegadoException("Você só pode transferir da sua própria conta");
+	        }
+	    }
 
         // Atualiza saldos
 	    contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));

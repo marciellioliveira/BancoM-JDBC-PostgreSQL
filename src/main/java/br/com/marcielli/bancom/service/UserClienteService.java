@@ -105,32 +105,6 @@ public class UserClienteService implements UserDetailsService {
 	        .build();
 	}
 	
-	
-//	@Component
-//	public class TempPasswordGenerator implements CommandLineRunner {
-//		@Override
-//	    public void run(String... args) throws Exception {
-//	        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//	        String senha = "minhasenhasuperhipermegapowersecreta2";
-//	        String hash = encoder.encode(senha);
-//	        
-//	        System.out.println("\n\n=================================");
-//	        System.out.println("NOVO HASH PARA COPIAR NO BANCO:");
-//	        System.out.println(hash);
-//	        System.out.println("=================================\n\n");
-//	    }
-//	}
-
-//	@Override
-//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//		User user = userDao.findByUsername(username)
-//				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
-//		
-//		System.out.println("UserDetailsService achou usuário: " + user.getUsername() + " com senha: " + user.getPassword());
-//
-//		return org.springframework.security.core.userdetails.User.builder().username(user.getUsername())
-//				.password(user.getPassword()).roles(user.getRole()).build();
-//	}
 
 	@Transactional
 	public User findByUsername(String username) {
