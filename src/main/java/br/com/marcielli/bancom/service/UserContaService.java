@@ -21,6 +21,7 @@ import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
 import br.com.marcielli.bancom.dto.security.UserContaDepositoDTO;
 import br.com.marcielli.bancom.dto.security.UserContaPixDTO;
+import br.com.marcielli.bancom.dto.security.UserContaSaqueDTO;
 import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
@@ -553,52 +554,78 @@ public class UserContaService {
 
 	    return true;
 	}
+	
+	@Transactional
+	public boolean transferirSAQUE(Long idContaReceber, UserContaSaqueDTO dto, Authentication authentication) {
+
+		// Busca conta destino
+	    Conta conta = contaDao.findById(idContaReceber)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
+
+	    if (!conta.getStatus()) {
+	        throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
+	    }
+
+	    if (conta.getSaldoConta().compareTo(dto.valor()) < 0 || conta.getSaldoConta().compareTo(BigDecimal.ZERO) == 0) {
+	        throw new ContaExibirSaldoErroException("Saldo insuficiente.");
+	    }
+
+	    // Busca usuário logado
+	    User usuarioLogado = userDao.findByUsername(authentication.getName())
+	            .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
+
+	    // Verificar permissões
+	    boolean isAdmin = authentication.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ADMIN"));
+
+	    if (isAdmin) {
+	        // ADMIN: Verifica se a conta de saque pertence ao idUsuario do DTO (Admin pode sacar de qualquer conta)
+	        if (dto.idUsuario() == null) {
+	            throw new IllegalArgumentException("ID do usuário é obrigatório para saques de admin");
+	        }
+	        if (!conta.getCliente().getId().equals(dto.idUsuario())) {
+	            throw new AcessoNegadoException("Conta destino não pertence ao cliente especificado");
+	        }
+	    } else {
+	        // BASIC: Verifica se a conta de saque é a própria conta do usuário logado
+	        if (!conta.getCliente().getId().equals(usuarioLogado.getId().longValue())) {
+	            throw new AcessoNegadoException("Você só pode sacar da sua própria conta");
+	        }
+	    }
+
+	    // Atualiza saldo 
+	    conta.setSaldoConta(conta.getSaldoConta().subtract(dto.valor()));
+
+	    // Atualiza taxas
+	    TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+
+	    List<TaxaManutencao> novaTaxa = new ArrayList<>();
+	    novaTaxa.add(taxaContaOrigem);
+
+	    conta.setTaxas(novaTaxa);
+	    conta.setCategoriaConta(taxaContaOrigem.getCategoria());
+
+	    Transferencia transferencia = new Transferencia();
+	    transferencia.setIdClienteOrigem(conta.getCliente().getId());  
+	    transferencia.setIdClienteDestino(conta.getCliente().getId()); 
+	    transferencia.setIdContaOrigem(conta.getId());  
+	    transferencia.setIdContaDestino(conta.getId());  
+	    transferencia.setTipoTransferencia(TipoTransferencia.SAQUE);  
+	    transferencia.setValor(dto.valor());
+	    transferencia.setData(LocalDateTime.now());
+	    transferencia.setCodigoOperacao(gerarCodigoTransferencia()); 
+	    transferencia.setTipoCartao(TipoCartao.SEM_CARTAO); 
+
+	    transferencia.setConta(conta);
+	    conta.getTransferencias().add(transferencia);  
+
+	    transferenciaDao.save(transferencia);
+	    contaDao.updateSaldo(conta);
+
+	    return true;
+	}
 
 
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirDEPOSITO(Long idContaReceber, UserContaDepositoDTO dto) {
-//
-//		Conta conta = contaRepository.findById(idContaReceber)
-//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
-//
-//		Cliente cliente = clienteRepository.findById(dto.idUsuario())
-//				.orElseThrow(() -> new ContaNaoEncontradaException("O cliente não existe."));
-//
-//		if(conta.getStatus() == false) {
-//			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
-//		}
-//
-//		if(!cliente.getContas().contains(conta)) {
-//			throw new ContaExibirSaldoErroException("A conta não é do cliente informado.");
-//		}
-//
-//		conta.setSaldoConta(conta.getSaldoConta().add(dto.valor()));
-//		System.err.println(conta);
-//
-//		TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
-//
-//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-//		novaTaxa.add(taxaContaOrigem);
-//
-//		conta.setTaxas(novaTaxa);
-//		conta.setCategoriaConta(taxaContaOrigem.getCategoria());
-//
-//		Transferencia transferindo = new Transferencia(conta, dto.valor(), conta, TipoTransferencia.DEPOSITO);
-//		conta.getTransferencia().add(transferindo);
-//
-//		if (conta instanceof ContaCorrente cc) {
-//			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
-//		}
-//
-//		if (conta instanceof ContaPoupanca cp) {
-//			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-//			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
-//		}
-//
-//		contaRepository.save(conta);
-//
-//		return true;
-//	}
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public boolean transferirSAQUE(Long idContaReceber, UserContaSaqueDTO dto) {

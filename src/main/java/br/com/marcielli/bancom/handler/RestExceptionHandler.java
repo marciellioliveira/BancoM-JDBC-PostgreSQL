@@ -18,6 +18,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         RestErrorMessage respostaTratada = new RestErrorMessage(HttpStatus.FORBIDDEN, exception.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respostaTratada);
     }
+	
+	@ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>("Erro: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
 	
 	

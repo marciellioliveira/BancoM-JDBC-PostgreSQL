@@ -126,7 +126,7 @@ public class UserContaController {
 	
 	
 	
-	//ADMIN pode fazer deposito apenas na propria conta
+	//ADMIN pode fazer deposito  na propria conta e de outras pessoas
 	//BASIC só pode fazer deposito na propria conta.
 	@PostMapping("/contas/{idContaReceber}/deposito")
 	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber,
@@ -141,31 +141,29 @@ public class UserContaController {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-
-
-
-	//ADMIN sacar só da propria conta
+	//ADMIN pode fazer deposito  na propria conta e de outras pessoas
 	//BASIC sacar só da propria conta
 	@PostMapping("/contas/{idContaReceber}/saque")
 	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber,
-			@RequestBody UserContaSaqueDTO dto) {
-				return null;
+			@RequestBody UserContaSaqueDTO dto, Authentication authentication) {
+		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, dto,authentication);
 
-//		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, dto);
-//
-//		if (saqueRealizado) {
-//			return new ResponseEntity<String>("Saque realizado com sucesso.", HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<String>("Dados do saque são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
+		if (saqueRealizado) {
+			return new ResponseEntity<String>("Saque realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do saque são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
 	}
+	
+	
+	
+	
+	
+	
+
+
+
+	
 
 	// ROTAS MANUAIS - FUNCIONAM estou programando para elas serem cobradas
 	// automaticamente com o cron do spring	
