@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import br.com.marcielli.bancom.dao.CartaoDao;
 import br.com.marcielli.bancom.dao.ClienteDao;
@@ -30,6 +33,7 @@ import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 import br.com.marcielli.bancom.exception.PermissaoNegadaException;
 import br.com.marcielli.bancom.utils.GerarNumeros;
@@ -44,6 +48,7 @@ public class UserCartaoService {
 	private final CartaoDao cartaoDao;
 	private final GerarNumeros gerarNumeros;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);	
 	
 	
 	public UserCartaoService(ClienteDao clienteDao, UserDao userDao, TransferenciaDao transferenciaDao, ContaDao contaDao, CartaoDao cartaoDao, GerarNumeros gerarNumeros, BCryptPasswordEncoder passwordEncoder) {
@@ -188,12 +193,91 @@ public class UserCartaoService {
 	        return cartaoDao.save(cartao);
 	        
 	    } else {
+	    	logger.error("Você não tem permissão para atualizar a senha desse cartão"+role);
 	        throw new AccessDeniedException("Você não tem permissão para atualizar a senha desse cartão.");
 	    }
 	}
 
 	
-	
+	@Transactional
+	public boolean delete(Long idCartao, Authentication authentication) {
+	    String role = authentication.getAuthorities().stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
+
+	    String username = authentication.getName();
+
+	    // Usar o novo método para verificar a conta associada ao cartão
+	    Conta contaAssociada = verificarContaAssociadaAoCartao(idCartao);
+
+	    // Verificação de permissões e saldo da conta (continua igual)
+	    if ("ROLE_ADMIN".equals(role)) {
+	        logger.info("Conta carregada: {}", contaAssociada);
+
+	        if (contaAssociada.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
+	            throw new IllegalArgumentException("A conta associada ao cartão possui saldo positivo. Faça o saque antes de remover o cartão.");
+	        } else if (contaAssociada.getSaldoConta().compareTo(BigDecimal.ZERO) < 0) {
+	            throw new IllegalArgumentException("A conta associada ao cartão está com saldo negativo. Regularize antes de remover o cartão.");
+	        }
+
+	        if (!contaAssociada.getStatus()) {
+	            throw new IllegalArgumentException("A conta associada ao cartão já está desativada.");
+	        }
+	    } 
+	    else if ("ROLE_BASIC".equals(role)) {
+	        // Verificar se o usuário logado é o proprietário da conta
+	        if (!contaAssociada.getCliente().getUser().getUsername().equals(username)) {
+	            throw new IllegalArgumentException("Você não tem permissão para excluir este cartão");
+	        }
+
+	        if (contaAssociada.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
+	            throw new IllegalArgumentException("A conta associada ao cartão possui saldo positivo. Faça o saque antes de remover o cartão.");
+	        } else if (contaAssociada.getSaldoConta().compareTo(BigDecimal.ZERO) < 0) {
+	            throw new IllegalArgumentException("A conta associada ao cartão está com saldo negativo. Regularize antes de remover o cartão.");
+	        }
+
+	        if (!contaAssociada.getStatus()) {
+	            throw new IllegalArgumentException("A conta associada ao cartão já está desativada.");
+	        }
+	    } 
+	    // Caso a role não seja nem ADMIN nem BASIC
+	    else {
+	        logger.error("Você não tem permissão para deletar este cartão - Role: " + role);
+	        throw new IllegalArgumentException("Role não autorizada para deletar cartões: " + role);
+	    }
+
+	    cartaoDao.deleteCartao(idCartao);
+	    return true;
+	}
+
+	public Conta verificarContaAssociadaAoCartao(Long idCartao) {
+	    Cartao cartaoExistente = cartaoDao.findById(idCartao)
+	            .orElseThrow(() -> new IllegalArgumentException("Cartão não encontrado"));
+
+	    if (cartaoExistente.getConta() == null) {
+	        throw new IllegalArgumentException("Conta associada ao cartão não encontrada");
+	    }
+
+	    Long idConta = cartaoExistente.getConta().getId();
+	    logger.info("cartao: {}, contaId: {}", cartaoExistente.getId(), idConta);
+
+	    // Agora busca a CONTA COMPLETA usando o contaDao:
+	    Conta contaAssociada = contaDao.findById(idConta)
+	            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada pelo ID"));
+
+	    logger.info("Conta completa carregada: {}", contaAssociada);
+
+	    List<Cartao> cartoesDaConta = cartaoDao.findByContaId(idConta);
+	    if (cartoesDaConta.size() <= 1) {
+	        throw new IllegalArgumentException("Não é possível excluir este cartão, pois é o único cartão associado à conta.");
+	    }
+
+	    return contaAssociada;
+	}
+
+
+
 
 	
 	

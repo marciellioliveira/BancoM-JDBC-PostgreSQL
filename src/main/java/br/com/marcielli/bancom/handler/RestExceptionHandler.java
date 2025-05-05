@@ -2,9 +2,12 @@ package br.com.marcielli.bancom.handler;
 
 
 import br.com.marcielli.bancom.exception.*;
+import br.com.marcielli.bancom.service.UserClienteService;
 
 import java.nio.file.AccessDeniedException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
+	private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);	
 	
 	//Global
 	@ExceptionHandler(AcessoNegadoException.class)
@@ -24,6 +28,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+		logger.error("Erro ocorrido: {}", ex.getMessage());
         return new ResponseEntity<>("Erro: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 	
@@ -31,6 +36,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
+    
+    
 
 	
 	

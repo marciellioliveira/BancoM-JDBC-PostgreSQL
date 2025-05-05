@@ -83,22 +83,25 @@ public class UserCartaoController {
 	}
 
 
+	//ADMIN pode deletar dele e de outras pessoas
+	//BASIC só pode deletar dele
+	@DeleteMapping("/cartoes/{id}")
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, Authentication authentication) {
 
+		boolean deletado = cartaoService.delete(id,  authentication);
 
-//	//ADMIN pode atualizar de qualquer cartão
-//	//BASIC pode atualizar somente do cartão com o id dele
-//	@PutMapping("/cartoes/{id}")
-//	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto) {
-//		return null;
-//
-////		Cartao cartaoAtualizado = cartaoService.updateSenha(id, dto);
-////
-////		if (cartaoAtualizado != null) {
-////			return ResponseEntity.ok("Senha do cartão atualizada com sucesso");
-////		} else {
-////			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-////		}
-//	}
+		if (deletado) {
+			return ResponseEntity.ok("Cartão deletado com sucesso");
+		} else {
+			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	
+	
+	
+	
+	
 
 //	//ADMIN pode deletar dele e de outras pessoas
 //	//BASIC só pode deletar dele

@@ -17,13 +17,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class CartaoUpdateDTO {
 
-	@NotNull(message = "O id do cliente deve ser informado.")
-	private Long idCliente;	
-	
-	@NotNull(message = "O id da conta deve ser informado.")
+	private Long idCliente;		
 	private Long idConta;		
-	
-	@NotBlank(message = "A senha deve ser informada.")
 	public String senha;
 	
 }

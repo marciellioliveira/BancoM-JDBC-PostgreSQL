@@ -1,16 +1,23 @@
 package br.com.marcielli.bancom.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
 import org.springframework.stereotype.Component;
 
 import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.CartaoCredito;
 import br.com.marcielli.bancom.entity.CartaoDebito;
+import br.com.marcielli.bancom.enuns.CategoriaConta;
+import br.com.marcielli.bancom.enuns.TipoCartao;
+import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.mappers.CartaoRowMapper;
 
 @Component
@@ -79,12 +86,35 @@ public class CartaoDao {
         
         return cartao;
     }
-        
+    
     public Optional<Cartao> findById(Long id) {
         String sql = "SELECT * FROM cartoes WHERE id = ?";
-        List<Cartao> cartoes = jdbcTemplate.query(sql, new CartaoRowMapper(), id);
-        return cartoes.isEmpty() ? Optional.empty() : Optional.of(cartoes.get(0));
+        try {
+            Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id); 
+            return Optional.of(cartao);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
+    
+    public void deleteCartao(Long id) {
+        String sql = "DELETE FROM cartoes WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    
+    
+//    public List<Cartao> findByContaId(Long contaId) {
+//        String sql = "SELECT * FROM cartoes WHERE conta_id = ?";
+//        return jdbcTemplate.query(sql, new CartaoRowMapper(), contaId);
+//    }
+
+        
+//    public Optional<Cartao> findById(Long id) {
+//        String sql = "SELECT * FROM cartoes WHERE id = ?";
+//        List<Cartao> cartoes = jdbcTemplate.query(sql, new CartaoRowMapper(), id);
+//        return cartoes.isEmpty() ? Optional.empty() : Optional.of(cartoes.get(0));
+//    }
 
     public List<Cartao> findAll() {
         String sql = "SELECT * FROM cartoes";
@@ -131,12 +161,33 @@ public class CartaoDao {
         return cartao;
     }
     
-   
-    
-    
-    
-    
-    
+    // Método para desativar 
+    public boolean desativarCartao(Long id) {
+        String sql = "UPDATE cartoes SET status = false WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, id);
+        return rowsAffected > 0;
+    }
+
+   // Método que busca todos os cartões associados a uma conta
+    public List<Cartao> findByContaId(Long contaId) {
+        String sql = "SELECT c.*, t.saldo_conta\r\n"
+        		+ "FROM cartoes c\r\n"
+        		+ "JOIN contas t ON c.conta_id = t.id\r\n"
+        		+ "WHERE c.conta_id = ?\r\n"
+        		+ "";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Cartao cartao = new Cartao();
+            cartao.setId(rs.getLong("id"));
+            cartao.setNumeroCartao(rs.getString("numero_cartao"));
+            cartao.setStatus(rs.getBoolean("status"));
+            cartao.setTipoConta(TipoConta.valueOf(rs.getString("tipo_conta"))); 
+            cartao.setCategoriaConta(CategoriaConta.valueOf(rs.getString("categoria_conta"))); 
+            cartao.setTipoCartao(TipoCartao.valueOf(rs.getString("tipo_cartao"))); 
+            cartao.setSenha(rs.getString("senha"));
+            return cartao;
+        }, contaId); 
+    }
     
     
     

@@ -3,6 +3,8 @@ package br.com.marcielli.bancom.mappers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import br.com.marcielli.bancom.entity.Cartao;
@@ -12,8 +14,11 @@ import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
+import br.com.marcielli.bancom.service.UserClienteService;
 
 public class CartaoRowMapper implements RowMapper<Cartao> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);	
 	
 	@Override
     public Cartao mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -38,9 +43,19 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         cartao.setStatus(rs.getBoolean("status"));
         cartao.setSenha(rs.getString("senha"));
 
-        Conta conta = new Conta();
-        conta.setId(rs.getLong("conta_id"));
-        cartao.setConta(conta);
+        long contaId = rs.getLong("conta_id");
+        if (!rs.wasNull()) { //Tinha id vindo como nulo mesmo usando NOT NULL e por isso fiz essa verificação antes
+            Conta conta = new Conta();
+           // conta.setSaldoConta(rs.getBigDecimal("saldo_conta"));
+            conta.setId(contaId);
+            cartao.setConta(conta);
+        } else {
+        	logger.error("Cartão ID={} não tem conta_id associado!", rs.getLong("id"));
+            throw new IllegalStateException("Cartão não possui conta vinculada.");
+        }
+        
+        
+       
 
         return cartao;
     }

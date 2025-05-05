@@ -104,7 +104,7 @@ public class ClienteDao {
     }
     
     public Cliente findByIdWithContas(Long id) {
-        // Busca o cliente
+       
         String clienteSql = "SELECT * FROM clientes WHERE id = ?";
         Cliente cliente = jdbcTemplate.queryForObject(
             clienteSql, 
@@ -113,7 +113,7 @@ public class ClienteDao {
         );
 
         if (cliente != null) {
-            // Busca as contas associadas a esse cliente
+         
             String contasSql = "SELECT * FROM contas WHERE cliente_id = ?";
             List<Conta> contas = jdbcTemplate.query(
                 contasSql,
@@ -121,7 +121,6 @@ public class ClienteDao {
                 id
             );
             
-            //  Associa as contas ao cliente
             cliente.setContas(contas);
         }
 
@@ -136,7 +135,6 @@ public class ClienteDao {
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             Cliente cliente = new Cliente();
             
-            // Tratamento infalível:
             try {
                 Integer userId = rs.getObject("user_id", Integer.class);
                 if (userId != null) {
@@ -184,7 +182,6 @@ public class ClienteDao {
         return cliente;
     }
 
-    // Método auxiliar para buscar transferências por conta
     public List<Transferencia> findByContaId(Long contaId) {
         String sql = "SELECT * FROM transferencias " +
                      "WHERE id_conta_origem = ? " +
