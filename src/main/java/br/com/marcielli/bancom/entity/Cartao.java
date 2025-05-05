@@ -7,7 +7,8 @@ import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,6 +22,21 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonPropertyOrder({
+    "id",    
+    "tipoCartao",
+    "numeroCartao",
+    "status",
+    "senha",
+    "limiteDiarioTransacao",
+    "totalGastoMes",
+    "limiteCreditoPreAprovado",
+    "taxaUtilizacao",
+    "taxaSeguroViagem",
+    "totalGastoMesCredito",
+    "categoriaConta", //Quero que essa informação fique por último
+    "tipoConta" //Quero que essa informação fique por último
+})
 public class Cartao implements Serializable {
 
 	/**

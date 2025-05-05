@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -85,9 +86,45 @@ public class CartaoDao {
         return cartoes.isEmpty() ? Optional.empty() : Optional.of(cartoes.get(0));
     }
 
+    public List<Cartao> findAll() {
+        String sql = "SELECT * FROM cartoes";
+        return jdbcTemplate.query(sql, new CartaoRowMapper());
+    }
+
     
+    public List<Cartao> findByUsername(String username) {
+        String sql = """
+            SELECT c.*
+            FROM cartoes c
+            INNER JOIN contas ct ON c.conta_id = ct.id
+            WHERE ct.username = ?
+        """;
+        return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
+    }
+
     
-    
+    public Optional<Cartao> findByIdAndUsername(Long id, String username) {
+        String sql = "SELECT c.* " +
+                     "FROM cartoes c " +
+                     "JOIN contas co ON c.id = co.id " +
+                     "JOIN clientes cl ON co.id = cl.id " +
+                     "JOIN users u ON cl.id = u.id " +
+                     "WHERE c.id = ? AND u.username = ?";
+        
+        try {
+            Cartao cartao = jdbcTemplate.queryForObject(
+                sql,
+                new CartaoRowMapper(),
+                id,
+                username
+            );
+            return Optional.ofNullable(cartao);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+
     
     
     

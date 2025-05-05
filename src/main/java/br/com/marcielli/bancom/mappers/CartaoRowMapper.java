@@ -18,31 +18,31 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
 	
 	@Override
     public Cartao mapRow(ResultSet rs, int rowNum) throws SQLException {
-        
-		Cartao cartao = (rs.getString("tipo_cartao").equals("CREDITO")) 
-            ? new CartaoCredito() 
-            : new CartaoDebito();
-        
+        String tipoCartao = rs.getString("tipo_cartao");
+
+        Cartao cartao;
+        if ("CREDITO".equalsIgnoreCase(tipoCartao)) {
+            cartao = new CartaoCredito();
+            ((CartaoCredito) cartao).setLimiteCreditoPreAprovado(rs.getBigDecimal("limite_credito_pre_aprovado"));
+        } else if ("DEBITO".equalsIgnoreCase(tipoCartao)) {
+            cartao = new CartaoDebito();
+            ((CartaoDebito) cartao).setLimiteDiarioTransacao(rs.getBigDecimal("limite_diario_transacao"));
+        } else {
+            cartao = new Cartao(); // ou alguma classe base
+        }
+
         cartao.setId(rs.getLong("id"));
+        cartao.setTipoConta(Enum.valueOf(TipoConta.class, rs.getString("tipo_conta")));
+        cartao.setCategoriaConta(Enum.valueOf(CategoriaConta.class, rs.getString("categoria_conta")));
+        cartao.setTipoCartao(Enum.valueOf(TipoCartao.class, rs.getString("tipo_cartao")));
         cartao.setNumeroCartao(rs.getString("numero_cartao"));
-        cartao.setSenha(rs.getString("senha"));
         cartao.setStatus(rs.getBoolean("status"));
-        cartao.setCategoriaConta(CategoriaConta.valueOf(rs.getString("categoria_conta")));
-        cartao.setTipoConta(TipoConta.valueOf(rs.getString("tipo_conta")));
-        cartao.setTipoCartao(TipoCartao.valueOf(rs.getString("tipo_cartao")));
-        
+        cartao.setSenha(rs.getString("senha"));
+       
         Conta conta = new Conta();
         conta.setId(rs.getLong("conta_id"));
         cartao.setConta(conta);
-        
-        if(cartao instanceof CartaoCredito cc) {
-            cc.setLimiteCreditoPreAprovado(rs.getBigDecimal("limite_credito"));
-        } 
-        
-        else if(cartao instanceof CartaoDebito cd) {
-            cd.setLimiteDiarioTransacao(rs.getBigDecimal("limite_diario"));
-        }
-        
+
         return cartao;
     }
 }

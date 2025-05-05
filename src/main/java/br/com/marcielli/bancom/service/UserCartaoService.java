@@ -1,8 +1,10 @@
 package br.com.marcielli.bancom.service;
 
 import java.math.BigDecimal;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,7 @@ import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
+import br.com.marcielli.bancom.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 import br.com.marcielli.bancom.utils.GerarNumeros;
@@ -104,5 +107,55 @@ public class UserCartaoService {
 
         return cartaoDao.saveWithRelations(cartao);
     }
+	
+	
+	@Transactional
+	public List<Cartao> getCartoes(Authentication authentication) {
+	    
+		String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
+
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // Admin pode ver todos os cartões
+	        return cartaoDao.findAll();
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        String username = authentication.getName();
+	        return cartaoDao.findByUsername(username); // Retorna todos os cartões desse usuário
+	    } else {
+	        throw new RuntimeException("Você não tem permissão para acessar a lista de cartões.");
+	    }
+	}
+
+	@Transactional
+	public Cartao getCartoesById(Long id, Authentication authentication) throws AccessDeniedException {
+	    String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
+
+	    String username = authentication.getName(); // Pegando o username do logado
+
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // Admin pode acessar qualquer cartão por ID
+	        return cartaoDao.findById(id)
+	            .orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado."));
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        // Basic só pode acessar o cartão dele mesmo
+	        return cartaoDao.findByIdAndUsername(id, username)
+	            .orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado ou você não tem permissão para acessá-lo."));
+	    } else {
+	        throw new AccessDeniedException("Você não tem permissão para acessar esse cartão.");
+	    }
+	}
+
+
+	
+	
+	
+	
+	
+	
 	
 }
