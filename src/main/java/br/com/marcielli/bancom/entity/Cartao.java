@@ -23,20 +23,17 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Cartao implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
-
-	@JsonIgnore
 	private TipoConta tipoConta;
-
-	@JsonIgnore
 	private CategoriaConta categoriaConta;
-
 	private TipoCartao tipoCartao;
-	
 	private String numeroCartao;
-	
 	private boolean status;
-	
 	public String senha;
 
 	@JsonBackReference
@@ -46,7 +43,6 @@ public class Cartao implements Serializable {
 	private Fatura fatura;
 
 	@JsonBackReference
-	private List<Seguro> seguros;
-	
+	private List<Seguro> seguros;	
 	
 }

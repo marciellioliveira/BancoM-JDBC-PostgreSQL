@@ -32,6 +32,7 @@ import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoTemSaldoSuficienteException;
 import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
+import br.com.marcielli.bancom.utils.GerarNumeros;
 
 @Service
 public class UserContaService {
@@ -41,18 +42,20 @@ public class UserContaService {
 	private final ClienteDao clienteDao;
 	private final UserDao userDao;
 	private final TransferenciaDao transferenciaDao;
+	private final GerarNumeros gerarNumero;
 	
 	private Random random = new Random();
 
 	private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);	
 
 	public UserContaService(ContaDao contaDao,
-							ExchangeRateService exchangeRateService, ClienteDao clienteDao, UserDao userDao,TransferenciaDao transferenciaDao) {
+							ExchangeRateService exchangeRateService, ClienteDao clienteDao, UserDao userDao,TransferenciaDao transferenciaDao, GerarNumeros gerarNumero) {
 		this.contaDao = contaDao;
 		this.exchangeRateService = exchangeRateService;
 		this.clienteDao = clienteDao;
 		this.userDao = userDao;
 		this.transferenciaDao = transferenciaDao;
+		this.gerarNumero = gerarNumero;
 	}
 	
 	
@@ -89,8 +92,8 @@ public class UserContaService {
 		List<TaxaManutencao> taxas = new ArrayList<>();
 		taxas.add(taxa);
 
-		String numeroContaBase = gerarNumeroDaConta();
-		String chavePix = gerarPixAleatorio().concat("-PIX");
+		String numeroContaBase = gerarNumero.gerarNumeroGeral();
+		String chavePix = gerarNumero.gerarNumeroGeral().concat("-PIX");
 
 		Conta conta;
 
@@ -462,7 +465,7 @@ public class UserContaService {
 	    transferencia.setTipoTransferencia(TipoTransferencia.PIX);
 	    transferencia.setValor(dto.valor());
 	    transferencia.setData(LocalDateTime.now());
-	    transferencia.setCodigoOperacao(gerarCodigoTransferencia());
+	    transferencia.setCodigoOperacao(gerarNumero.gerarNumeroGeral());
 	    transferencia.setTipoCartao(TipoCartao.SEM_CARTAO);
 	    
 	    transferencia.setConta(contaOrigem);
@@ -542,7 +545,7 @@ public class UserContaService {
 	    transferencia.setTipoTransferencia(TipoTransferencia.DEPOSITO);
 	    transferencia.setValor(dto.valor());
 	    transferencia.setData(LocalDateTime.now());
-	    transferencia.setCodigoOperacao(gerarCodigoTransferencia());
+	    transferencia.setCodigoOperacao(gerarNumero.gerarNumeroGeral());
 	    transferencia.setTipoCartao(TipoCartao.SEM_CARTAO);
 
 	    transferencia.setConta(contaDestino);
@@ -613,7 +616,7 @@ public class UserContaService {
 	    transferencia.setTipoTransferencia(TipoTransferencia.SAQUE);  
 	    transferencia.setValor(dto.valor());
 	    transferencia.setData(LocalDateTime.now());
-	    transferencia.setCodigoOperacao(gerarCodigoTransferencia()); 
+	    transferencia.setCodigoOperacao(gerarNumero.gerarNumeroGeral()); 
 	    transferencia.setTipoCartao(TipoCartao.SEM_CARTAO); 
 
 	    transferencia.setConta(conta);
@@ -694,74 +697,41 @@ public class UserContaService {
 	}
 	
 
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Conta rendimentoTaxaCP(Long idConta) {
-//		Conta conta = contaRepository.findById(idConta)
-//				.orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
-//
-//		if(conta.getStatus() == false) {
-//			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
-//		}
-//
-//		if (conta.getSaldoConta() == null) {
-//			throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
-//		}
-//
-//		if (!(conta instanceof ContaPoupanca)) {
-//			throw new ContaNaoEncontradaException("Rendimentos só podem ser aplicados a contas poupança.");
-//		}
-//
-//		ContaPoupanca cp = (ContaPoupanca) conta;
-//
-//		BigDecimal rendimento = conta.getSaldoConta().multiply(cp.getTaxaAcrescRend());
-//
-//		conta.setSaldoConta(conta.getSaldoConta().add(rendimento));
-//
-//		TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
-//		conta.setCategoriaConta(novaTaxa.getCategoria());
-//		conta.getTaxas().add(novaTaxa);
-//
-//		return contaRepository.save(conta);
-//	}
-
-
-
-
 	// Outros métodos
-	public String gerarNumeroDaConta() {
-		int[] sequencia = new int[8];
-		StringBuilder minhaConta = new StringBuilder();
-
-		for (int i = 0; i < sequencia.length; i++) {
-			sequencia[i] = 1 + random.nextInt(8);
-			minhaConta.append(sequencia[i]);
-		}
-
-		return minhaConta.toString();
-	}
-
-	public String gerarPixAleatorio() {
-		int[] sequencia = new int[8];
-		StringBuilder meuPix = new StringBuilder();
-
-		for (int i = 0; i < sequencia.length; i++) {
-			sequencia[i] = 1 + random.nextInt(8);
-			meuPix.append(sequencia[i]);
-		}
-
-		return meuPix.toString();
-	}
-
-	public String gerarCodigoTransferencia() {
-		int[] sequencia = new int[8];
-		StringBuilder codTransferencia = new StringBuilder();
-
-		for (int i = 0; i < sequencia.length; i++) {
-			sequencia[i] = 1 + random.nextInt(8);
-			codTransferencia.append(sequencia[i]);
-		}
-
-		return codTransferencia.toString();
-	}
+//	public String gerarNumeroDaConta() {
+//		int[] sequencia = new int[8];
+//		StringBuilder minhaConta = new StringBuilder();
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			sequencia[i] = 1 + random.nextInt(8);
+//			minhaConta.append(sequencia[i]);
+//		}
+//
+//		return minhaConta.toString();
+//	}
+//
+//	public String gerarPixAleatorio() {
+//		int[] sequencia = new int[8];
+//		StringBuilder meuPix = new StringBuilder();
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			sequencia[i] = 1 + random.nextInt(8);
+//			meuPix.append(sequencia[i]);
+//		}
+//
+//		return meuPix.toString();
+//	}
+//
+//	public String gerarCodigoTransferencia() {
+//		int[] sequencia = new int[8];
+//		StringBuilder codTransferencia = new StringBuilder();
+//
+//		for (int i = 0; i < sequencia.length; i++) {
+//			sequencia[i] = 1 + random.nextInt(8);
+//			codTransferencia.append(sequencia[i]);
+//		}
+//
+//		return codTransferencia.toString();
+//	}
 
 }

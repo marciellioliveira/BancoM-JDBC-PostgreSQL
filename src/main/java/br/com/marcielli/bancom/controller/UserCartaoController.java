@@ -2,7 +2,9 @@ package br.com.marcielli.bancom.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,49 +21,66 @@ import br.com.marcielli.bancom.dto.security.UserCartaoAlterarSenhaCartaoDTO;
 import br.com.marcielli.bancom.dto.security.UserCartaoAlterarStatusCartaoDTO;
 import br.com.marcielli.bancom.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.bancom.entity.Cartao;
+import br.com.marcielli.bancom.service.UserCartaoService;
 
 @RestController
 public class UserCartaoController {
 
-	//private final UserCartaoService cartaoService;
+	private final UserCartaoService cartaoService;
 
-//	public UserCartaoController(UserCartaoService cartaoService) {
-//		this.cartaoService = cartaoService;
-//	}
+	
+	public UserCartaoController(UserCartaoService cartaoService) {
+		this.cartaoService = cartaoService;
+	}
 
 	//ADMIN pode criar cartao pra ele e pra todos
 	//BASIC só pode criar cartao pra ele mesmo
 	@PostMapping("/cartoes")
-	public ResponseEntity<?> createCartao(@RequestBody CartaoCreateDTO dto) {
-		return null;
+	public ResponseEntity<Object> criarCartao(@RequestBody CartaoCreateDTO cartao, Authentication authentication) {
+        
+            Cartao cartaoSalvo = cartaoService.salvar(cartao, authentication);
+            
+            if(cartaoSalvo != null) {
+            	return ResponseEntity.status(HttpStatus.CREATED).body(cartaoSalvo);
+            } else {
+            	return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                        .body("Tente novamente mais tarde.");
+            }
+    }
 
-//		Cartao cartaoAdicionado = cartaoService.save(dto);
+//	//ADMIN pode criar cartao pra ele e pra todos
+//	//BASIC só pode criar cartao pra ele mesmo
+//	@PostMapping("/cartoes")
+//	public ResponseEntity<?> createCartao(@RequestBody CartaoCreateDTO dto) {
+//		return null;
 //
-//		if (cartaoAdicionado != null) {
-//			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-//
-//			response.setId(cartaoAdicionado.getId());
-//			response.setIdConta(cartaoAdicionado.getConta().getId());
-//			response.setTipoConta(cartaoAdicionado.getConta().getTipoConta());
-//			response.setCategoriaConta(cartaoAdicionado.getCategoriaConta());
-//			response.setTipoCartao(cartaoAdicionado.getTipoCartao());
-//			response.setNumeroCartao(cartaoAdicionado.getNumeroCartao());
-//			response.setStatus(cartaoAdicionado.isStatus());
-//			response.setSenha(cartaoAdicionado.getSenha());
-//
-//			if (cartaoAdicionado instanceof CartaoCredito cc) {
-//				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-//			}
-//
-//			if (cartaoAdicionado instanceof CartaoDebito cd) {
-//				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
-//			}
-//
-//			return ResponseEntity.status(HttpStatus.CREATED).body(response);
-//		} else {
-//			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
-//		}
-	}
+////		Cartao cartaoAdicionado = cartaoService.save(dto);
+////
+////		if (cartaoAdicionado != null) {
+////			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
+////
+////			response.setId(cartaoAdicionado.getId());
+////			response.setIdConta(cartaoAdicionado.getConta().getId());
+////			response.setTipoConta(cartaoAdicionado.getConta().getTipoConta());
+////			response.setCategoriaConta(cartaoAdicionado.getCategoriaConta());
+////			response.setTipoCartao(cartaoAdicionado.getTipoCartao());
+////			response.setNumeroCartao(cartaoAdicionado.getNumeroCartao());
+////			response.setStatus(cartaoAdicionado.isStatus());
+////			response.setSenha(cartaoAdicionado.getSenha());
+////
+////			if (cartaoAdicionado instanceof CartaoCredito cc) {
+////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
+////			}
+////
+////			if (cartaoAdicionado instanceof CartaoDebito cd) {
+////				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
+////			}
+////
+////			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+////		} else {
+////			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+////		}
+//	}
 
 	//ADMIN pode ver todos os cartões
 	//BASIC pode ver apenas os cartões com o id dele
