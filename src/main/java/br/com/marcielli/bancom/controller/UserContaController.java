@@ -151,8 +151,7 @@ public class UserContaController {
 	// ROTAS MANUAIS - FUNCIONAM estou programando para elas serem cobradas
 	// automaticamente com o cron do spring
 	@PutMapping("/contas/{idConta}/manutencao") // SOMENTE ADMIN/BANCO
-	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta,
-			Authentication authentication) {
+	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, Authentication authentication) {
 
 		boolean sucesso = contaService.manutencaoTaxaCC(idConta, authentication);
 
@@ -162,36 +161,19 @@ public class UserContaController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao aplicar a taxa de manutenção");
 		}
 	}
-
+	
 	@PutMapping("/contas/{idConta}/rendimentos") // SOMENTE ADMIN/BANCO
-	public ResponseEntity<?> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta) {
-		return null;
-//		Conta contaAtualizada = contaService.rendimentoTaxaCP(idConta);
-//		if (contaAtualizada != null) {
-//
-//			UserContaResponseDTO response = new UserContaResponseDTO();
-//			response.setId(contaAtualizada.getId());
-//			response.setTipoConta(contaAtualizada.getTipoConta());
-//			response.setCategoriaConta(contaAtualizada.getCategoriaConta());
-//			if (contaAtualizada instanceof ContaCorrente contaCorrente) {
-//				response.setTaxaManutencaoMensal(contaCorrente.getTaxaManutencaoMensal());
-//			}
-//
-//			if (contaAtualizada instanceof ContaPoupanca contaPoupanca) {
-//				response.setTaxaAcrescRend(contaPoupanca.getTaxaAcrescRend());
-//				response.setTaxaMensal(contaPoupanca.getTaxaMensal());
-//			}
-//
-//			response.setSaldoConta(contaAtualizada.getSaldoConta());
-//			response.setNumeroConta(contaAtualizada.getNumeroConta());
-//			response.setPixAleatorio(contaAtualizada.getPixAleatorio());
-//			response.setStatus(contaAtualizada.getStatus());
-//
-//			return ResponseEntity.status(HttpStatus.OK).body(response);
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-//		}
+	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta, Authentication authentication) {
+		
+		boolean sucesso = contaService.rendimentoTaxaCP(idConta, authentication);
+		if (sucesso) {
+
+			return ResponseEntity.ok("Taxa de rendimento aplicada com sucesso");
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao aplicar a taxa de rendimento");
+		}
 	}
+
 
 //	@PutMapping("/contas/{idConta}/manutencao")
 //	@PreAuthorize("hasAuthority('SCOPE_ADMIN')")

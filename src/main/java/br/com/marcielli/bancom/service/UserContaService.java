@@ -656,39 +656,43 @@ public class UserContaService {
 	    return true;
 	}
 	
+	@Transactional
+	public boolean rendimentoTaxaCP(Long idConta, Authentication authentication) {
+	   
+	    if (!authentication.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || 
+	                             auth.getAuthority().equals("ADMIN"))) {
+	        throw new AcessoNegadoException("Apenas administradores podem executar esta operação");
+	    }
+
+	    ContaPoupanca cp = contaDao.findContaPoupancaById(idConta)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta poupança não encontrada."));
+
+	    if(!cp.getStatus()) {
+	        throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
+	    }
+
+	    if (cp.getSaldoConta() == null) {
+	        throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
+	    }
+
+	    if (cp.getTaxaAcrescRend() == null) {
+	        throw new ContaExibirSaldoErroException("Taxa de rendimento não configurada para esta conta");
+	    }
+
+	    BigDecimal rendimento = cp.getSaldoConta().multiply(cp.getTaxaAcrescRend());
+	    BigDecimal novoSaldo = cp.getSaldoConta().add(rendimento);
+	    
+	    cp.setSaldoConta(novoSaldo);
+	    
+	    TaxaManutencao novaTaxa = new TaxaManutencao(novoSaldo, cp.getTipoConta());
+	    cp.setCategoriaConta(novaTaxa.getCategoria());
+	    
+	    contaDao.updateSaldo(cp);
+	    
+	    return true;
+	}
 	
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public Conta manutencaoTaxaCC(Long idConta) {
-//		Conta conta = contaRepository.findById(idConta)
-//				.orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
-//
-//		if(conta.getStatus() == false) {
-//			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
-//		}
-//
-//		if (conta.getSaldoConta() == null) {
-//			throw new ContaNaoEncontradaException("Saldo da conta está indefinido.");
-//		}
-//
-//		if (!(conta instanceof ContaCorrente)) {
-//			throw new ContaNaoEncontradaException("Taxa de manutenção só pode ser aplicada a contas correntes.");
-//		}
-//
-//		ContaCorrente cc = (ContaCorrente) conta;
-//		BigDecimal taxa = cc.getTaxaManutencaoMensal();
-//
-//		if (conta.getSaldoConta().compareTo(taxa) < 0) {
-//			throw new ContaExibirSaldoErroException("Saldo insuficiente para cobrança da taxa de manutenção");
-//		}
-//
-//		conta.setSaldoConta(conta.getSaldoConta().subtract(taxa));
-//
-//		TaxaManutencao novaTaxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
-//		conta.setCategoriaConta(novaTaxa.getCategoria());
-//		conta.getTaxas().add(novaTaxa);
-//
-//		return contaRepository.save(conta);
-//	}
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public Conta rendimentoTaxaCP(Long idConta) {
