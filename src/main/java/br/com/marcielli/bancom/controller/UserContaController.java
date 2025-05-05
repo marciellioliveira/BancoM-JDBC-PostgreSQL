@@ -109,6 +109,7 @@ public class UserContaController {
         return contaService.exibirSaldoConvertido(contaId, authentication);
     }
 	
+	
 	//ADMIN pode fazer pix da conta dele para outras, e de outros para outros mas não pode fazer de outros para ele mesmo quando tiver logado
 	//BASIC só pode fazer pix da propria conta.
 	@PostMapping("/contas/{chaveOuIdDestino}/pix")
@@ -125,31 +126,30 @@ public class UserContaController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	//ADMIN pode fazer deposito apenas na propria conta
 	//BASIC só pode fazer deposito na propria conta.
 	@PostMapping("/contas/{idContaReceber}/deposito")
 	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber,
-			@RequestBody UserContaDepositoDTO dto) {
-				return null;
+			@RequestBody UserContaDepositoDTO dto, Authentication authentication) {
 
-//		boolean depositoRealizado = contaService.transferirDEPOSITO(idContaReceber, dto);
-//
-//		if (depositoRealizado) {
-//			return new ResponseEntity<String>("Depósito realizado com sucesso.", HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<String>("Dados do depósito são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
+		boolean depositoRealizado = contaService.transferirDEPOSITO(idContaReceber, dto, authentication);
+
+		if (depositoRealizado) {
+			return new ResponseEntity<String>("Depósito realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do depósito são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+
+
 
 	//ADMIN sacar só da propria conta
 	//BASIC sacar só da propria conta

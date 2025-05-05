@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
+import br.com.marcielli.bancom.dto.security.UserContaDepositoDTO;
 import br.com.marcielli.bancom.dto.security.UserContaPixDTO;
 import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.enuns.TipoCartao;
@@ -490,81 +491,69 @@ public class UserContaService {
 	    }
 	}
 	
-//	private Conta buscarContaPorChavePix(String chave) {
-//	    // Primeiro tenta buscar como id como era no projeto anterior, se não achar busca pela chave
-//	    try {
-//	        Long id = Long.parseLong(chave);
-//	        return contaDao.findById(id)
-//	                .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
-//	    } catch (NumberFormatException e) {
-//	        // Se não for número, busca como chave PIX
-//	        ChavePix chavePix = chavePixDao.findByValorChave(chave)
-//	                .orElseThrow(() -> new ChavePixNaoEncontradaException("Chave PIX não encontrada"));
-//	        
-//	        return chavePix.getConta();
-//	    }
-//	}
+	
+	@Transactional
+	public boolean transferirDEPOSITO(Long idContaReceber, UserContaDepositoDTO dto, Authentication authentication) {
 
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirPIX(Long idContaReceber, UserContaPixDTO dto) {
-//
-//		Conta contaOrigem = contaRepository.findById(dto.idContaOrigem())
-//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
-//
-//		Conta contaDestino = contaRepository.findById(idContaReceber)
-//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta destino não existe."));
-//
-//		if(contaOrigem.getStatus() == false || contaDestino.getStatus() == false) {
-//			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
-//		}
-//
-//		contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
-//
-//		TaxaManutencao taxaContaOrigem = new TaxaManutencao(contaOrigem.getSaldoConta(), contaOrigem.getTipoConta());
-//
-//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-//		novaTaxa.add(taxaContaOrigem);
-//
-//		contaOrigem.setTaxas(novaTaxa);
-//		contaOrigem.setCategoriaConta(taxaContaOrigem.getCategoria());
-//
-//		Transferencia transferindo = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.PIX);
-//		contaOrigem.getTransferencia().add(transferindo);
-//
-//		if (contaOrigem instanceof ContaCorrente cc) {
-//			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
-//		}
-//
-//		if (contaOrigem instanceof ContaPoupanca cp) {
-//			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-//			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
-//		}
-//
-//		contaRepository.save(contaOrigem);
-//
-//		contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
-//
-//		TaxaManutencao taxaContaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
-//
-//		List<TaxaManutencao> novaTaxa2 = new ArrayList<TaxaManutencao>();
-//		novaTaxa2.add(taxaContaDestino);
-//
-//		contaDestino.setTaxas(novaTaxa2);
-//		contaDestino.setCategoriaConta(taxaContaDestino.getCategoria());
-//
-//		if (contaDestino instanceof ContaCorrente cc) {
-//			cc.setTaxaManutencaoMensal(taxaContaDestino.getTaxaManutencaoMensal());
-//		}
-//
-//		if (contaDestino instanceof ContaPoupanca cp) {
-//			cp.setTaxaAcrescRend(taxaContaDestino.getTaxaAcrescRend());
-//			cp.setTaxaMensal(taxaContaDestino.getTaxaMensal());
-//		}
-//
-//		contaRepository.save(contaDestino);
-//
-//		return true;
-//	}
+		 // Busca conta destino 
+	    Conta contaDestino = contaDao.findById(idContaReceber)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
+
+	    if (!contaDestino.getStatus()) {
+	        throw new ContaExibirSaldoErroException("Conta deve estar ativa");
+	    }
+
+	    // Busca usuário logado
+	    User usuarioLogado = userDao.findByUsername(authentication.getName())
+	            .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
+
+	    // Verificar permissões
+	    boolean isAdmin = authentication.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ADMIN"));
+	    
+	    if (isAdmin) {
+	        // ADMIN: Verifica se a conta destino pertence ao idUsuario do DTO (Admin pode depositar em qualquer conta)
+	        if (dto.idUsuario() == null) {
+	            throw new IllegalArgumentException("ID do usuário é obrigatório para depósitos de admin");
+	        }
+	        if (!contaDestino.getCliente().getId().equals(dto.idUsuario())) {
+	            throw new AcessoNegadoException("Conta destino não pertence ao cliente especificado");
+	        }
+	    } else {
+	        // BASIC: Verifica se a conta destino é a própria conta do usuário logado
+	        if (!contaDestino.getCliente().getId().equals(usuarioLogado.getId().longValue())) {
+	            throw new AcessoNegadoException("Você só pode depositar na sua própria conta");
+	        }
+	    }
+
+	    // Atualiza saldo
+	    contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+
+	    // Atualiza taxas
+	    atualizarTaxas(contaDestino);
+
+	    // Criação da transferência
+	    Transferencia transferencia = new Transferencia();
+	    transferencia.setIdClienteOrigem(contaDestino.getCliente().getId());
+	    transferencia.setIdClienteDestino(contaDestino.getCliente().getId());
+	    transferencia.setIdContaOrigem(contaDestino.getId());
+	    transferencia.setIdContaDestino(contaDestino.getId());
+	    transferencia.setTipoTransferencia(TipoTransferencia.DEPOSITO);
+	    transferencia.setValor(dto.valor());
+	    transferencia.setData(LocalDateTime.now());
+	    transferencia.setCodigoOperacao(gerarCodigoTransferencia());
+	    transferencia.setTipoCartao(TipoCartao.SEM_CARTAO);
+
+	    transferencia.setConta(contaDestino);
+
+	    contaDestino.getTransferencias().add(transferencia);
+
+	    transferenciaDao.save(transferencia);
+	    contaDao.updateSaldo(contaDestino);
+
+	    return true;
+	}
+
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public boolean transferirDEPOSITO(Long idContaReceber, UserContaDepositoDTO dto) {
