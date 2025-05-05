@@ -109,28 +109,31 @@ public class UserContaController {
         return contaService.exibirSaldoConvertido(contaId, authentication);
     }
 	
-	
-//	@GetMapping("/contas/{contaId}/saldo")
-//	public Map<String, BigDecimal> exibirSaldoConvertido(@PathVariable("contaId") Long contaId, Authentication authentication) {
-//		
-//		return contaService.exibirSaldoConvertido(contaId, authentication);
-//	}
-
 	//ADMIN pode fazer pix da conta dele para outras, e de outros para outros mas não pode fazer de outros para ele mesmo quando tiver logado
 	//BASIC só pode fazer pix da propria conta.
-	@PostMapping("/contas/{idContaReceber}/pix")
-	public ResponseEntity<String> transferirPIX(@PathVariable("idContaReceber") Long idContaReceber,
-			@RequestBody UserContaPixDTO dto) {
-				return null;
+	@PostMapping("/contas/{chaveOuIdDestino}/pix")
+	public ResponseEntity<String> transferirPIX(@PathVariable("chaveOuIdDestino") String chaveOuIdDestino,
+			@RequestBody UserContaPixDTO dto, Authentication authentication) {
+		boolean pixRealizado = contaService.transferirPIX(chaveOuIdDestino, dto,authentication);
 
-//		boolean pixRealizado = contaService.transferirPIX(idContaReceber, dto);
-//
-//		if (pixRealizado) {
-//			return new ResponseEntity<String>("Pix realizado com sucesso.", HttpStatus.OK);
-//		} else {
-//			return new ResponseEntity<String>("Dados do pix são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-//		}
+		if (pixRealizado) {
+			return new ResponseEntity<String>("Pix realizado com sucesso.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Dados do pix são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	//ADMIN pode fazer deposito apenas na propria conta
 	//BASIC só pode fazer deposito na propria conta.

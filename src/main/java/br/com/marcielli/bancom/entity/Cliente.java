@@ -30,11 +30,9 @@ public class Cliente implements Serializable {
 	@JsonManagedReference
 	private Endereco endereco;
 
-//	@Transient //Retirar depois (Ta aqui apenas para ver se o user está funcionando)
 	@JsonManagedReference
 	private List<Conta> contas;
 
-//	@Transient //Retirar depois (Ta aqui apenas para ver se o user está funcionando)
 	@JsonIgnore
     private User user;
 }

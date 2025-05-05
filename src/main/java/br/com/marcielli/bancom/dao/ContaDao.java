@@ -3,6 +3,8 @@ package br.com.marcielli.bancom.dao;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.ContaCorrente;
 import br.com.marcielli.bancom.entity.ContaPoupanca;
+import br.com.marcielli.bancom.exception.ChavePixNaoEncontradaException;
+import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 import br.com.marcielli.bancom.exception.TaxaDeCambioException;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
 import br.com.marcielli.bancom.mappers.TaxaCambioRowMapper;
@@ -156,8 +158,8 @@ public class ContaDao {
 	    String sql = "UPDATE contas SET pix_aleatorio = ? WHERE id = ?";
 	    jdbcTemplate.update(sql, novoPix, idConta);
 	}
-		
 	
+
 	public void updateSaldo(Conta conta) {
 	    String sql = "UPDATE contas SET saldo_conta = ?, categoria_conta = ?, " +
 	                 "taxa_manutencao_mensal = ?, taxa_acresc_rend = ?, taxa_mensal = ? " +
@@ -168,7 +170,7 @@ public class ContaDao {
 	    if(conta instanceof ContaCorrente cc) {
 	        params = new Object[]{
 	            conta.getSaldoConta(),
-	            conta.getCategoriaConta().name(), // Convertendo enum para String
+	            conta.getCategoriaConta().name(),
 	            cc.getTaxaManutencaoMensal(),
 	            null, 
 	            null,
@@ -178,7 +180,7 @@ public class ContaDao {
 	        ContaPoupanca cp = (ContaPoupanca) conta;
 	        params = new Object[]{
 	            conta.getSaldoConta(),
-	            conta.getCategoriaConta().name(), // Convertendo enum para String
+	            conta.getCategoriaConta().name(),
 	            null,
 	            cp.getTaxaAcrescRend(),
 	            cp.getTaxaMensal(),
@@ -248,6 +250,23 @@ public class ContaDao {
             username
         ));
     }
+	
+	public Conta findByChavePix(String chave) {
+	    String sql = """
+	        SELECT c.*, cl.id AS cliente_id, cl.nome AS cliente_nome,
+	               u.id AS user_id, u.username
+	        FROM contas c
+	        JOIN clientes cl ON c.cliente_id = cl.id
+	        JOIN users u ON cl.user_id = u.id
+	        WHERE c.pix_aleatorio = ?
+	    """;
+	    
+	    List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), chave);
+	    if (!contas.isEmpty()) {
+	        return contas.get(0);
+	    }
+	    throw new ChavePixNaoEncontradaException("Chave PIX não encontrada: " + chave);
+	}
 	
 	
 

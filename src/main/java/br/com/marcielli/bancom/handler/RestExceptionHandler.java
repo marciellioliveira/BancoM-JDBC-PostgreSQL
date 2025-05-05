@@ -97,6 +97,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage()));
     }
+    
+    
+    
+    //PIX
+    @ExceptionHandler(ChavePixNaoEncontradaException.class)
+    private ResponseEntity<RestErrorMessage> transferenciaHandler(ChavePixNaoEncontradaException exception) {        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage()));
+    }
 	
 	
 	

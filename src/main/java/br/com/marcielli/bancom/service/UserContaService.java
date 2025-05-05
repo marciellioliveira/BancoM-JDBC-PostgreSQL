@@ -18,12 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
+import br.com.marcielli.bancom.dto.security.UserContaPixDTO;
 import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.enuns.TipoTransferencia;
 import br.com.marcielli.bancom.exception.AcessoNegadoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.bancom.exception.ClienteNaoTemSaldoSuficienteException;
 import br.com.marcielli.bancom.exception.ContaExibirSaldoErroException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 
@@ -362,31 +364,31 @@ public class UserContaService {
     }
 	
 	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId, Authentication authentication) {
-	    // 1. Verificar autenticação primeiro
+	    //Verificar autenticação primeiro
 	    User usuarioLogado = userDao.findByUsername(authentication.getName())
 	            .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
 
-	    // 2. Buscar a conta
+	    //Buscar a conta
 	    Conta conta = contaDao.findById(contaId)
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
 
-	    // 3. Verificar permissões
+	    //Verificar permissões
 	    boolean isAdmin = authentication.getAuthorities().stream()
 	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-	    // 4. Validação de acesso
+	    //Validação de acesso
 	    if (!isAdmin) {
 	        if (conta.getCliente() == null || !conta.getCliente().getId().equals(usuarioLogado.getId())) {
 	            throw new AcessoNegadoException("Você só pode visualizar o saldo da sua própria conta");
 	        }
 	    }
 
-	    // 5. Validar status da conta
+	    //Validar status da conta
 	    if (!conta.getStatus()) {
 	        throw new ContaExibirSaldoErroException("Conta inativa");
 	    }
 
-	    // 6. Processar conversões
+	    //Processar conversões
 	    BigDecimal saldoBRL = conta.getSaldoConta();
 	    
 	    Map<String, BigDecimal> resultado = new LinkedHashMap<>();
@@ -398,22 +400,69 @@ public class UserContaService {
 	}
 	
 	
-//	public Map<String, BigDecimal> exibirSaldoConvertido(Long contaId, Authentication authentication) {
-//	   	    
-//	    BigDecimal saldoBRL = contaDao.findById(contaId)
-//	        .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"))
-//	        .getSaldoConta();
-//
-//	    Map<String, BigDecimal> resultado = new LinkedHashMap<>();
-//	    resultado.put("BRL", saldoBRL);
-//	    resultado.put("USD", exchangeRateService.converterMoeda(saldoBRL, "BRL", "USD"));
-//	    resultado.put("EUR", exchangeRateService.converterMoeda(saldoBRL, "BRL", "EUR"));
-//
-//	    return resultado;
+	@Transactional
+    public boolean transferirPIX(String chaveOuIdDestino, UserContaPixDTO dto, Authentication authentication) {
+       
+		// Busca conta origem
+        Conta contaOrigem = contaDao.findById(dto.idContaOrigem())
+                .orElseThrow(() -> new ContaNaoEncontradaException("Conta origem não encontrada"));
+
+        // Busca conta destino por chave PIX ou ID
+        Conta contaDestino = contaDao.findByChavePix(chaveOuIdDestino);
+
+        if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
+            throw new ContaExibirSaldoErroException("Contas devem estar ativas");
+        }
+
+        if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+            throw new ClienteNaoTemSaldoSuficienteException("Saldo insuficiente");
+        }
+
+        // Atualiza saldos
+        contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
+        contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+        
+        // Atualiza taxas
+        atualizarTaxas(contaOrigem);
+        atualizarTaxas(contaDestino);
+        
+        contaDao.updateSaldo(contaOrigem);
+        contaDao.updateSaldo(contaDestino);
+        
+        // Cria e salva a transferência
+        Transferencia transferencia = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.PIX, chaveOuIdDestino);
+        transferenciaDao.save(transferencia);
+
+        return true;
+    }
+	
+	private void atualizarTaxas(Conta conta) {
+	    TaxaManutencao taxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
+	    
+	    if (conta instanceof ContaCorrente cc) {
+	        cc.setTaxaManutencaoMensal(taxa.getTaxaManutencaoMensal());
+	    } else if (conta instanceof ContaPoupanca cp) {
+	        cp.setTaxaAcrescRend(taxa.getTaxaAcrescRend());
+	        cp.setTaxaMensal(taxa.getTaxaMensal());
+	    }
+	    
+	    conta.setCategoriaConta(taxa.getCategoria());
+	}
+	
+//	private Conta buscarContaPorChavePix(String chave) {
+//	    // Primeiro tenta buscar como id como era no projeto anterior, se não achar busca pela chave
+//	    try {
+//	        Long id = Long.parseLong(chave);
+//	        return contaDao.findById(id)
+//	                .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
+//	    } catch (NumberFormatException e) {
+//	        // Se não for número, busca como chave PIX
+//	        ChavePix chavePix = chavePixDao.findByValorChave(chave)
+//	                .orElseThrow(() -> new ChavePixNaoEncontradaException("Chave PIX não encontrada"));
+//	        
+//	        return chavePix.getConta();
+//	    }
 //	}
-	
-	
-	
 
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public boolean transferirPIX(Long idContaReceber, UserContaPixDTO dto) {

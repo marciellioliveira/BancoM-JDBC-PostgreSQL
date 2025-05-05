@@ -1,6 +1,6 @@
 package br.com.marcielli.bancom.dao;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,9 +20,12 @@ public class TransferenciaDao {
 
 	    public void save(Transferencia transferencia) {
 	        String sql = "INSERT INTO transferencias " +
-	                    "(id_cliente_origem, id_cliente_destino, id_conta_origem, id_conta_destino, " +
-	                    "tipo_transferencia, valor, data, codigo_operacao, tipo_cartao) " +
-	                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	                     "(id_cliente_origem, id_cliente_destino, id_conta_origem, " +
+	                     "id_conta_destino, tipo_transferencia, valor, data, codigo_operacao, tipo_cartao) " +
+	                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	        
+	        Timestamp timestamp = transferencia.getData() != null ? 
+	                            Timestamp.valueOf(transferencia.getData()) : null;
 	        
 	        jdbcTemplate.update(sql,
 	            transferencia.getIdClienteOrigem(),
@@ -31,10 +34,9 @@ public class TransferenciaDao {
 	            transferencia.getIdContaDestino(),
 	            transferencia.getTipoTransferencia().name(),
 	            transferencia.getValor(),
-	            transferencia.getData(),
+	            timestamp,  
 	            transferencia.getCodigoOperacao(),
-	            transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null
-	        );
+	            transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null);
 	    }
 	    
 	    // Buscar todas as transferências

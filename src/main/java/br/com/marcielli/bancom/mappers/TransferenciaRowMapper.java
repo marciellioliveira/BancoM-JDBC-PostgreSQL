@@ -2,6 +2,7 @@ package br.com.marcielli.bancom.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -21,7 +22,11 @@ public class TransferenciaRowMapper implements RowMapper<Transferencia> {
         transferencia.setIdContaDestino(rs.getLong("id_conta_destino"));
         transferencia.setTipoTransferencia(TipoTransferencia.valueOf(rs.getString("tipo_transferencia")));
         transferencia.setValor(rs.getBigDecimal("valor"));
-        transferencia.setData(rs.getTimestamp("data").toLocalDateTime());
+        
+        // Convertendo Timestamp para LocalDateTime
+        Timestamp timestamp = rs.getTimestamp("data");
+        transferencia.setData(timestamp != null ? timestamp.toLocalDateTime() : null);
+        
         transferencia.setCodigoOperacao(rs.getString("codigo_operacao"));
         
         String tipoCartaoStr = rs.getString("tipo_cartao");

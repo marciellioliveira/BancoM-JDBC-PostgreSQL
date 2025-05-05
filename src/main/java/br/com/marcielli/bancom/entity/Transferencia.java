@@ -31,22 +31,22 @@ public class Transferencia implements Serializable {
 	private Long id;
 
 	@JsonInclude
-	private Long idClienteOrigem;	
+	private Long idClienteOrigem;
 	private Long idClienteDestino;
-	
+
 	@JsonInclude
 	private Long idContaOrigem;
 	private Long idContaDestino;
-	
+
 	private TipoTransferencia tipoTransferencia;
-	
+
 	private BigDecimal valor;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime data;
 
 	private String codigoOperacao;
-	
+
 	private TipoCartao tipoCartao;
 
 	@JsonIgnore
@@ -55,66 +55,72 @@ public class Transferencia implements Serializable {
 	@JsonBackReference
 	@ToString.Exclude
 	private Fatura fatura;
-	
-	
+
 //	@ManyToOne(cascade = {CascadeType.ALL})
 //	private Fatura fatura;
 
-	//TED - PIX
+	// TED
 	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia) {
 		super();
-		this.idClienteOrigem = enviar.getCliente().getId();		
-		this.idClienteDestino = receber.getCliente().getId();	
+		this.idClienteOrigem = enviar.getCliente().getId();
+		this.idClienteDestino = receber.getCliente().getId();
 		this.idContaOrigem = enviar.getId();
 		this.idContaDestino = receber.getId();
 		this.tipoTransferencia = tipoTransferencia;
 		this.valor = valor;
-		
+
 		LocalDateTime dataTransferencia = LocalDateTime.now();
-		String codTransferencia = gerarCodigoTransferencia();		
-		
-		this.data = dataTransferencia;		
+		String codTransferencia = gerarCodigoTransferencia();
+
+		this.data = dataTransferencia;
 		this.codigoOperacao = codTransferencia;
 		this.tipoCartao = TipoCartao.SEM_CARTAO;
 	}
-	
-	//DEPOSITO - SAQUE
+
+	// PIX
+	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia,
+			String chavePixUtilizada) {
+		this(enviar, valor, receber, tipoTransferencia);
+		this.codigoOperacao = "PIX_" + chavePixUtilizada + "_" + this.codigoOperacao;
+	}
+
+	// DEPOSITO - SAQUE
 	public Transferencia(Conta conta, BigDecimal valor, TipoTransferencia tipoTransferencia) {
 		super();
-		this.idClienteOrigem = conta.getCliente().getId();		
-		this.idClienteDestino = 0L;	
+		this.idClienteOrigem = conta.getCliente().getId();
+		this.idClienteDestino = 0L;
 		this.idContaOrigem = conta.getId();
 		this.idContaDestino = 0L;
 		this.tipoTransferencia = tipoTransferencia;
 		this.valor = valor;
-		
+
 		LocalDateTime dataTransferencia = LocalDateTime.now();
-		String codTransferencia = gerarCodigoTransferencia();		
-		
-		this.data = dataTransferencia;		
+		String codTransferencia = gerarCodigoTransferencia();
+
+		this.data = dataTransferencia;
 		this.codigoOperacao = codTransferencia;
 		this.tipoCartao = TipoCartao.SEM_CARTAO;
 	}
-	
-	//CARTÃO CRÉDITO - DÉBITO
-	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia, TipoCartao tipoCartao) {
+
+	// CARTÃO CRÉDITO - DÉBITO
+	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia,
+			TipoCartao tipoCartao) {
 		super();
-		this.idClienteOrigem = enviar.getCliente().getId();		
-		this.idClienteDestino = receber.getCliente().getId();	
+		this.idClienteOrigem = enviar.getCliente().getId();
+		this.idClienteDestino = receber.getCliente().getId();
 		this.idContaOrigem = enviar.getId();
 		this.idContaDestino = receber.getId();
 		this.tipoTransferencia = tipoTransferencia;
 		this.valor = valor;
-		
+
 		LocalDateTime dataTransferencia = LocalDateTime.now();
-		String codTransferencia = gerarCodigoTransferencia();		
-		
-		this.data = dataTransferencia;		
+		String codTransferencia = gerarCodigoTransferencia();
+
+		this.data = dataTransferencia;
 		this.codigoOperacao = codTransferencia;
 		this.tipoCartao = tipoCartao;
 	}
-		
-	
+
 	public String gerarCodigoTransferencia() {
 		int[] sequencia = new int[21];
 		Random random = new Random();
@@ -128,8 +134,7 @@ public class Transferencia implements Serializable {
 			codTransferencia += Integer.toString(sequencia[i]);
 		}
 
-		return codTransferencia;		
+		return codTransferencia;
 	}
 
-	
 }
