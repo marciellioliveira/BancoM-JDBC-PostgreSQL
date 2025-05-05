@@ -625,58 +625,38 @@ public class UserContaService {
 	    return true;
 	}
 
-
-
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean transferirSAQUE(Long idContaReceber, UserContaSaqueDTO dto) {
-//
-//		Conta conta = contaRepository.findById(idContaReceber)
-//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta não existe."));
-//
-//		Cliente cliente = clienteRepository.findById(dto.idUsuario())
-//				.orElseThrow(() -> new ContaNaoEncontradaException("O cliente não existe."));
-//
-//		if(conta.getStatus() == false) {
-//			throw new ContaExibirSaldoErroException("Não é possível realizar operações de contas desativadas");
-//		}
-//
-//		if(!cliente.getContas().contains(conta)) {
-//			throw new ContaExibirSaldoErroException("A conta não é do cliente informado.");
-//		}
-//
-//		if (conta.getSaldoConta().compareTo(dto.valor()) < 0 || conta.getSaldoConta().compareTo(BigDecimal.ZERO) == 0) {
-//			throw new ContaExibirSaldoErroException("Saldo insuficiente.");
-//		}
-//
-//
-//		conta.setSaldoConta(conta.getSaldoConta().subtract(dto.valor()));
-//
-//		TaxaManutencao taxaContaOrigem = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
-//
-//		List<TaxaManutencao> novaTaxa = new ArrayList<TaxaManutencao>();
-//		novaTaxa.add(taxaContaOrigem);
-//
-//		conta.setTaxas(novaTaxa);
-//		conta.setCategoriaConta(taxaContaOrigem.getCategoria());
-//
-//		Transferencia transferindo = new Transferencia(conta, dto.valor(), conta, TipoTransferencia.SAQUE);
-//		conta.getTransferencia().add(transferindo);
-//
-//		if (conta instanceof ContaCorrente cc) {
-//			cc.setTaxaManutencaoMensal(taxaContaOrigem.getTaxaManutencaoMensal());
-//		}
-//
-//		if (conta instanceof ContaPoupanca cp) {
-//			cp.setTaxaAcrescRend(taxaContaOrigem.getTaxaAcrescRend());
-//			cp.setTaxaMensal(taxaContaOrigem.getTaxaMensal());
-//		}
-//
-//		contaRepository.save(conta);
-//
-//		return true;
-//	}
-
 	// ROTAS MANUAIS
+	@Transactional
+	public boolean manutencaoTaxaCC(Long idConta, Authentication authentication) {
+	    
+	    if (!authentication.getAuthorities().stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || 
+	                             auth.getAuthority().equals("ADMIN"))) {
+	        throw new AcessoNegadoException("Apenas administradores podem executar esta operação");
+	    }
+
+	    ContaCorrente cc = contaDao.findContaCorrenteById(idConta)
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta corrente não encontrada"));
+
+	    if (!cc.getStatus()) {
+	        throw new ContaExibirSaldoErroException("Não é possível operar com contas desativadas");
+	    }
+	    if (cc.getSaldoConta() == null || cc.getTaxaManutencaoMensal() == null) {
+	        throw new ContaExibirSaldoErroException("Saldo ou taxa não configurados corretamente");
+	    }
+	    if (cc.getSaldoConta().compareTo(cc.getTaxaManutencaoMensal()) < 0) {
+	        throw new ContaExibirSaldoErroException("Saldo insuficiente para cobrança da taxa");
+	    }
+
+	    BigDecimal novoSaldo = cc.getSaldoConta().subtract(cc.getTaxaManutencaoMensal());
+	    cc.setSaldoConta(novoSaldo);
+	    cc.setCategoriaConta(new TaxaManutencao(novoSaldo, cc.getTipoConta()).getCategoria());
+	    contaDao.updateContaCorrente(cc);
+	    
+	    return true;
+	}
+	
+	
 //	@Transactional(propagation = Propagation.REQUIRES_NEW)
 //	public Conta manutencaoTaxaCC(Long idConta) {
 //		Conta conta = contaRepository.findById(idConta)

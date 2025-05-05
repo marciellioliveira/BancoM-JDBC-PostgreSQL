@@ -18,7 +18,6 @@ import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.service.UserContaService;
 
-
 @RestController
 public class UserContaController {
 
@@ -29,93 +28,89 @@ public class UserContaController {
 		this.contaService = contaService;
 	}
 
-	//ADMIN pode criar conta pra ele e pra todos
-	//BASIC só pode criar conta pra ele mesmo
+	// ADMIN pode criar conta pra ele e pra todos
+	// BASIC só pode criar conta pra ele mesmo
 	@PostMapping("/contas")
 	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto, Authentication authentication) {
 		Conta contaAdicionada = contaService.save(dto, authentication);
 
 		if (contaAdicionada != null) {
-			return new ResponseEntity<>("Conta adicionada com sucesso. Número da conta: "+ contaAdicionada.getNumeroConta(), HttpStatus.CREATED);
+			return new ResponseEntity<>(
+					"Conta adicionada com sucesso. Número da conta: " + contaAdicionada.getNumeroConta(),
+					HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-		
 
-	//ADMIN pode ver todas as contas
-	//BASIC pode ver apenas a conta com o id dele
+	// ADMIN pode ver todas as contas
+	// BASIC pode ver apenas a conta com o id dele
 	@GetMapping("/contas")
-	public ResponseEntity<List<Conta>> listContas(Authentication authentication) {		
+	public ResponseEntity<List<Conta>> listContas(Authentication authentication) {
 		var contas = contaService.getContas(authentication);
 		return ResponseEntity.status(HttpStatus.OK).body(contas);
 	}
 
-	//ADMIN pode ver todas as contas por id, dele e de qualquer usuario
-	//BASIC só pode ver a conta dele
+	// ADMIN pode ver todas as contas por id, dele e de qualquer usuario
+	// BASIC só pode ver a conta dele
 	@GetMapping("/contas/{id}")
 	public ResponseEntity<?> getContaById(@PathVariable("id") Long id, Authentication authentication) {
-	    Conta conta = contaService.getContasById(id, authentication);
-	    return ResponseEntity.ok(conta);
+		Conta conta = contaService.getContasById(id, authentication);
+		return ResponseEntity.ok(conta);
 	}
-	
-	//ADMIN pode deletar a conta de todos, menos a dele
-	//BASIC só pode deletar a própria conta por id
+
+	// ADMIN pode deletar a conta de todos, menos a dele
+	// BASIC só pode deletar a própria conta por id
 	@DeleteMapping("/contas/{id}")
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id, Authentication authentication) {
-	    boolean conta = contaService.delete(id, authentication);
+		boolean conta = contaService.delete(id, authentication);
 
-	    if (conta) {
-	        return ResponseEntity.status(HttpStatus.OK).body("Conta deletada com sucesso!");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
-	    }
+		if (conta) {
+			return ResponseEntity.status(HttpStatus.OK).body("Conta deletada com sucesso!");
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
+		}
 	}
 
-	//ADMIN pode atualizar a conta dele e de todos os outros
-	//BASIC só pode atualizar a conta dele próprio por id
+	// ADMIN pode atualizar a conta dele e de todos os outros
+	// BASIC só pode atualizar a conta dele próprio por id
 	@PutMapping("/contas/{id}")
-	public ResponseEntity<Conta> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, Authentication authentication) {
-	    Conta conta = contaService.update(id, dto, authentication);
-	    return ResponseEntity.ok(conta);  // Retorna a entidade pura
+	public ResponseEntity<Conta> atualizar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto,
+			Authentication authentication) {
+		Conta conta = contaService.update(id, dto, authentication);
+		return ResponseEntity.ok(conta); // Retorna a entidade pura
 	}
 
-
-	
-	
 	// Transferências
-	
-	
-	//ADMIN pode fazer transferencia da conta dele para outras, e de outros para outros mas não pode fazer de outros para ele mesmo quando tiver logado
-	//BASIC só pode transferir da propria conta.
+
+	// ADMIN pode fazer transferencia da conta dele para outras, e de outros para
+	// outros mas não pode fazer de outros para ele mesmo quando tiver logado
+	// BASIC só pode transferir da propria conta.
 	@PostMapping("/contas/{idContaReceber}/transferencia")
 	public ResponseEntity<String> transferirTED(@PathVariable("idContaReceber") Long idContaReceber,
 			@RequestBody UserContaTedDTO dto, Authentication authentication) {
-		
-		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto,authentication);
+
+		boolean tedRealizada = contaService.transferirTED(idContaReceber, dto, authentication);
 		return tedRealizada ? ResponseEntity.ok("Transferência realizada com sucesso.")
 				: ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Dados da transferência são inválidos.");
-		
-	}
-	
-	
 
-	//ADMIN pode ver saldo de todos
-	//BASIC só pode ver saldo dele mesmo.
+	}
+
+	// ADMIN pode ver saldo de todos
+	// BASIC só pode ver saldo dele mesmo.
 	@GetMapping("/contas/{contaId}/saldo")
-	public Map<String, BigDecimal> exibirSaldoConvertido(
-            @PathVariable("contaId") Long contaId, 
-            Authentication authentication) {
-        return contaService.exibirSaldoConvertido(contaId, authentication);
-    }
-	
-	
-	//ADMIN pode fazer pix da conta dele para outras, e de outros para outros mas não pode fazer de outros para ele mesmo quando tiver logado
-	//BASIC só pode fazer pix da propria conta.
+	public Map<String, BigDecimal> exibirSaldoConvertido(@PathVariable("contaId") Long contaId,
+			Authentication authentication) {
+		return contaService.exibirSaldoConvertido(contaId, authentication);
+	}
+
+	// ADMIN pode fazer pix da conta dele para outras, e de outros para outros mas
+	// não pode fazer de outros para ele mesmo quando tiver logado
+	// BASIC só pode fazer pix da propria conta.
 	@PostMapping("/contas/{chaveOuIdDestino}/pix")
 	public ResponseEntity<String> transferirPIX(@PathVariable("chaveOuIdDestino") String chaveOuIdDestino,
 			@RequestBody UserContaPixDTO dto, Authentication authentication) {
-		boolean pixRealizado = contaService.transferirPIX(chaveOuIdDestino, dto,authentication);
+		boolean pixRealizado = contaService.transferirPIX(chaveOuIdDestino, dto, authentication);
 
 		if (pixRealizado) {
 			return new ResponseEntity<String>("Pix realizado com sucesso.", HttpStatus.OK);
@@ -123,11 +118,9 @@ public class UserContaController {
 			return new ResponseEntity<String>("Dados do pix são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
-	
-	
-	//ADMIN pode fazer deposito  na propria conta e de outras pessoas
-	//BASIC só pode fazer deposito na propria conta.
+
+	// ADMIN pode fazer deposito na propria conta e de outras pessoas
+	// BASIC só pode fazer deposito na propria conta.
 	@PostMapping("/contas/{idContaReceber}/deposito")
 	public ResponseEntity<String> transferirDEPOSITO(@PathVariable("idContaReceber") Long idContaReceber,
 			@RequestBody UserContaDepositoDTO dto, Authentication authentication) {
@@ -140,13 +133,13 @@ public class UserContaController {
 			return new ResponseEntity<String>("Dados do depósito são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
-	//ADMIN pode fazer deposito  na propria conta e de outras pessoas
-	//BASIC sacar só da propria conta
+
+	// ADMIN pode fazer deposito na propria conta e de outras pessoas
+	// BASIC sacar só da propria conta
 	@PostMapping("/contas/{idContaReceber}/saque")
 	public ResponseEntity<String> transferirSAQUE(@PathVariable("idContaReceber") Long idContaReceber,
 			@RequestBody UserContaSaqueDTO dto, Authentication authentication) {
-		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, dto,authentication);
+		boolean saqueRealizado = contaService.transferirSAQUE(idContaReceber, dto, authentication);
 
 		if (saqueRealizado) {
 			return new ResponseEntity<String>("Saque realizado com sucesso.", HttpStatus.OK);
@@ -154,52 +147,23 @@ public class UserContaController {
 			return new ResponseEntity<String>("Dados do saque são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
-	
-	
-	
-	
-	
-
-
-
-	
 
 	// ROTAS MANUAIS - FUNCIONAM estou programando para elas serem cobradas
-	// automaticamente com o cron do spring	
-	@PutMapping("/contas/{idConta}/manutencao") //SOMENTE ADMIN/BANCO
-	public ResponseEntity<?> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta) {
-		return null;
+	// automaticamente com o cron do spring
+	@PutMapping("/contas/{idConta}/manutencao") // SOMENTE ADMIN/BANCO
+	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta,
+			Authentication authentication) {
 
-//		Conta contaAtualizada = contaService.manutencaoTaxaCC(idConta);
-//
-//		if (contaAtualizada != null) {
-//
-//			UserContaResponseDTO response = new UserContaResponseDTO();
-//			response.setId(contaAtualizada.getId());
-//			response.setTipoConta(contaAtualizada.getTipoConta());
-//			response.setCategoriaConta(contaAtualizada.getCategoriaConta());
-//			if (contaAtualizada instanceof ContaCorrente contaCorrente) {
-//				response.setTaxaManutencaoMensal(contaCorrente.getTaxaManutencaoMensal());
-//			}
-//
-//			if (contaAtualizada instanceof ContaPoupanca contaPoupanca) {
-//				response.setTaxaAcrescRend(contaPoupanca.getTaxaAcrescRend());
-//				response.setTaxaMensal(contaPoupanca.getTaxaMensal());
-//			}
-//
-//			response.setSaldoConta(contaAtualizada.getSaldoConta());
-//			response.setNumeroConta(contaAtualizada.getNumeroConta());
-//			response.setPixAleatorio(contaAtualizada.getPixAleatorio());
-//			response.setStatus(contaAtualizada.getStatus());
-//
-//			return ResponseEntity.status(HttpStatus.OK).body(response);
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-//		}
+		boolean sucesso = contaService.manutencaoTaxaCC(idConta, authentication);
+
+		if (sucesso) {
+			return ResponseEntity.ok("Taxa de manutenção aplicada com sucesso");
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao aplicar a taxa de manutenção");
+		}
 	}
 
-	@PutMapping("/contas/{idConta}/rendimentos") //SOMENTE ADMIN/BANCO
+	@PutMapping("/contas/{idConta}/rendimentos") // SOMENTE ADMIN/BANCO
 	public ResponseEntity<?> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta) {
 		return null;
 //		Conta contaAtualizada = contaService.rendimentoTaxaCP(idConta);

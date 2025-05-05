@@ -6,6 +6,7 @@ import br.com.marcielli.bancom.entity.ContaPoupanca;
 import br.com.marcielli.bancom.exception.ChavePixNaoEncontradaException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 import br.com.marcielli.bancom.exception.TaxaDeCambioException;
+import br.com.marcielli.bancom.mappers.ContaCorrenteRowMapper;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
 import br.com.marcielli.bancom.mappers.TaxaCambioRowMapper;
 
@@ -266,6 +267,41 @@ public class ContaDao {
 	        return contas.get(0);
 	    }
 	    throw new ChavePixNaoEncontradaException("Chave PIX não encontrada: " + chave);
+	}
+	
+	public Optional<ContaCorrente> findContaCorrenteById(Long id) {
+	    String sql = """
+	        SELECT 
+	            c.*,
+	            cl.id AS cliente_id,
+	            cl.nome AS cliente_nome
+	        FROM contas c
+	        JOIN clientes cl ON c.cliente_id = cl.id
+	        WHERE c.id = ? AND c.tipo_conta = 'CORRENTE'
+	    """;
+	    
+	    try {
+	        ContaCorrente cc = jdbcTemplate.queryForObject(sql, new ContaCorrenteRowMapper(), id);
+	        return Optional.ofNullable(cc);
+	    } catch (EmptyResultDataAccessException e) {
+	        return Optional.empty();
+	    }
+	}
+
+	public void updateContaCorrente(ContaCorrente cc) {
+	    String sql = """
+	        UPDATE contas SET
+	            saldo_conta = ?,
+	            categoria_conta = ?,
+	            taxa_manutencao_mensal = ?
+	        WHERE id = ? AND tipo_conta = 'CORRENTE'
+	    """;
+	    
+	    jdbcTemplate.update(sql,
+	        cc.getSaldoConta(),
+	        cc.getCategoriaConta().name(),
+	        cc.getTaxaManutencaoMensal(),
+	        cc.getId());
 	}
 	
 	
