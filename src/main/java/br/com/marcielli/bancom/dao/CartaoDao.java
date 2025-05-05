@@ -106,11 +106,11 @@ public class CartaoDao {
     public Optional<Cartao> findByIdAndUsername(Long id, String username) {
         String sql = "SELECT c.* " +
                      "FROM cartoes c " +
-                     "JOIN contas co ON c.id = co.id " +
-                     "JOIN clientes cl ON co.id = cl.id " +
-                     "JOIN users u ON cl.id = u.id " +
+                     "JOIN contas co ON c.conta_id = co.id " +
+                     "JOIN clientes cl ON co.cliente_id = cl.id " +
+                     "JOIN users u ON cl.user = u.id " +
                      "WHERE c.id = ? AND u.username = ?";
-        
+
         try {
             Cartao cartao = jdbcTemplate.queryForObject(
                 sql,

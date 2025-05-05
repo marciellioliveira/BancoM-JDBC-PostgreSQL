@@ -19,6 +19,7 @@ import br.com.marcielli.bancom.dao.ContaDao;
 import br.com.marcielli.bancom.dao.TransferenciaDao;
 import br.com.marcielli.bancom.dao.UserDao;
 import br.com.marcielli.bancom.dto.CartaoCreateDTO;
+import br.com.marcielli.bancom.dto.CartaoUpdateDTO;
 import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.CartaoCredito;
 import br.com.marcielli.bancom.entity.CartaoDebito;
@@ -30,6 +31,7 @@ import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
+import br.com.marcielli.bancom.exception.PermissaoNegadaException;
 import br.com.marcielli.bancom.utils.GerarNumeros;
 
 @Service
@@ -151,7 +153,29 @@ public class UserCartaoService {
 	}
 
 
-	
+	@Transactional
+	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, Authentication authentication) {
+
+		Cartao cartao = cartaoDao.findById(cartaoId)
+				.orElseThrow(() -> new ContaNaoEncontradaException("Cartão não encontrado"));
+		
+		Long userId = cartao.getConta().getCliente().getUser().getId().longValue();
+		
+		if(userId != dto.getIdCliente()) {
+			throw new ClienteNaoEncontradoException("Você não tem permissão para alterar esse cartão.");
+		}	
+
+		if (!cartao.isStatus()) { // Só pode atualizar se o cartão estiver com status true
+			throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
+		}
+
+		clienteDao.findById(dto.getIdCliente())
+				.orElseThrow(() -> new ContaNaoEncontradaException("Usuário não encontrado"));
+
+		cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
+		return cartaoDao.save(cartao);
+	}
+
 	
 	
 	

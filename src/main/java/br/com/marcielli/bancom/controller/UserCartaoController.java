@@ -67,40 +67,23 @@ public class UserCartaoController {
 		
 	    return ResponseEntity.ok(cartao);
 	}
+	
+	//ADMIN pode atualizar de qualquer cartão
+	//BASIC pode atualizar somente do cartão com o id dele
+	@PutMapping("/cartoes/{id}")
+	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto, Authentication authentication) {
+
+		Cartao cartaoAtualizado = cartaoService.updateSenha(id, dto, authentication);
+
+		if (cartaoAtualizado != null) {
+			return ResponseEntity.ok("Senha do cartão atualizada com sucesso");
+		} else {
+			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
 
 
-	//ADMIN pode ver todos os cartões por id, dele e de qualquer usuario
-	//BASIC só pode ver o cartão com id dele
-//	@GetMapping("/cartoes/{id}")
-//	public ResponseEntity<?> getCartoesById(@PathVariable("id") Long id) {
-//		return null;
-//
-////		Cartao cartao = cartaoService.getCartoesById(id);
-////
-////		if (cartao != null) {
-////			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-////
-////			response.setId(id);
-////			response.setTipoConta(cartao.getConta().getTipoConta());
-////			response.setCategoriaConta(cartao.getCategoriaConta());
-////			response.setTipoCartao(cartao.getTipoCartao());
-////			response.setNumeroCartao(cartao.getNumeroCartao());
-////			response.setStatus(cartao.isStatus());
-////			response.setSenha(cartao.getSenha());
-////
-////			if (cartao instanceof CartaoCredito cc) {
-////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-////			}
-////
-////			if (cartao instanceof CartaoDebito cd) {
-////				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
-////			}
-////
-////			return ResponseEntity.status(HttpStatus.OK).body(response);
-////		} else {
-////			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-////		}
-//	}
+
 
 //	//ADMIN pode atualizar de qualquer cartão
 //	//BASIC pode atualizar somente do cartão com o id dele
