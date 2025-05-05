@@ -28,7 +28,7 @@ public class ClienteRowMapper implements RowMapper<Cliente> {
         user.setUsername(rs.getString("user_username"));
         user.setPassword(rs.getString("user_password"));
         user.setUserAtivo(rs.getBoolean("user_ativo"));
-        user.setCliente(cliente); // Relacionamento reverso
+        user.setCliente(cliente); 
         cliente.setUser(user);
 
         // Endereco

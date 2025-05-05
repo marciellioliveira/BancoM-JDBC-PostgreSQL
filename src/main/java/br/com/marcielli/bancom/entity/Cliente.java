@@ -13,7 +13,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.context.annotation.Profile;
 
-@Profile("cliente")
 @Setter
 @Getter
 @NoArgsConstructor

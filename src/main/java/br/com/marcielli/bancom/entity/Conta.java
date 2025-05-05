@@ -63,7 +63,7 @@ public class Conta implements Serializable {
 
 	private String pixAleatorio;
 
-	@JsonProperty("transferencia")
+	@JsonProperty("transferenciasEnviadas") 
 	private List<Transferencia> transferencias = new ArrayList<Transferencia>();
 
 	@JsonManagedReference

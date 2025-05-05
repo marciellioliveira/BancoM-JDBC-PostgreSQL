@@ -1,6 +1,7 @@
 package br.com.marcielli.bancom.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import br.com.marcielli.bancom.dao.ClienteDao;
@@ -20,6 +21,7 @@ import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
 import br.com.marcielli.bancom.dto.security.UserContaPixDTO;
 import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
+import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.enuns.TipoTransferencia;
 import br.com.marcielli.bancom.exception.AcessoNegadoException;
@@ -404,34 +406,47 @@ public class UserContaService {
     public boolean transferirPIX(String chaveOuIdDestino, UserContaPixDTO dto, Authentication authentication) {
        
 		// Busca conta origem
-        Conta contaOrigem = contaDao.findById(dto.idContaOrigem())
-                .orElseThrow(() -> new ContaNaoEncontradaException("Conta origem não encontrada"));
+		Conta contaOrigem = contaDao.findById(dto.idContaOrigem())
+	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta origem não encontrada"));
 
-        // Busca conta destino por chave PIX ou ID
-        Conta contaDestino = contaDao.findByChavePix(chaveOuIdDestino);
+        // Busca conta destino por chave pix ou id (no projeto anterior era somente id)
+		Conta contaDestino = contaDao.findByChavePix(chaveOuIdDestino);
 
-        if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
-            throw new ContaExibirSaldoErroException("Contas devem estar ativas");
-        }
+		if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
+	        throw new ContaExibirSaldoErroException("Contas devem estar ativas");
+	    }
 
-        if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
-            throw new ClienteNaoTemSaldoSuficienteException("Saldo insuficiente");
-        }
+	    if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+	        throw new ClienteNaoTemSaldoSuficienteException("Saldo insuficiente");
+	    }
 
         // Atualiza saldos
-        contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
-        contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+	    contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
+	    contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
         
         // Atualiza taxas
-        atualizarTaxas(contaOrigem);
-        atualizarTaxas(contaDestino);
+	    atualizarTaxas(contaOrigem);
+	    atualizarTaxas(contaDestino);
+	    
+	    // Cria a transferência somentepara origem
+	    Transferencia transferencia = new Transferencia();
+	    transferencia.setIdClienteOrigem(contaOrigem.getCliente().getId());
+	    transferencia.setIdClienteDestino(contaDestino.getCliente().getId());
+	    transferencia.setIdContaOrigem(contaOrigem.getId());
+	    transferencia.setIdContaDestino(contaDestino.getId());
+	    transferencia.setTipoTransferencia(TipoTransferencia.PIX);
+	    transferencia.setValor(dto.valor());
+	    transferencia.setData(LocalDateTime.now());
+	    transferencia.setCodigoOperacao(gerarCodigoTransferencia());
+	    transferencia.setTipoCartao(TipoCartao.SEM_CARTAO);
+	    
+	    transferencia.setConta(contaOrigem);
+	    
+	    contaOrigem.getTransferencias().add(transferencia);
         
-        contaDao.updateSaldo(contaOrigem);
-        contaDao.updateSaldo(contaDestino);
-        
-        // Cria e salva a transferência
-        Transferencia transferencia = new Transferencia(contaOrigem, dto.valor(), contaDestino, TipoTransferencia.PIX, chaveOuIdDestino);
-        transferenciaDao.save(transferencia);
+	    transferenciaDao.save(transferencia);
+	    contaDao.updateSaldo(contaOrigem);
+	    contaDao.updateSaldo(contaDestino);
 
         return true;
     }
@@ -439,14 +454,17 @@ public class UserContaService {
 	private void atualizarTaxas(Conta conta) {
 	    TaxaManutencao taxa = new TaxaManutencao(conta.getSaldoConta(), conta.getTipoConta());
 	    
+	    List<TaxaManutencao> novaTaxa = new ArrayList<>();
+	    novaTaxa.add(taxa);
+	    conta.setTaxas(novaTaxa);
+	    conta.setCategoriaConta(taxa.getCategoria());
+
 	    if (conta instanceof ContaCorrente cc) {
 	        cc.setTaxaManutencaoMensal(taxa.getTaxaManutencaoMensal());
 	    } else if (conta instanceof ContaPoupanca cp) {
 	        cp.setTaxaAcrescRend(taxa.getTaxaAcrescRend());
 	        cp.setTaxaMensal(taxa.getTaxaMensal());
 	    }
-	    
-	    conta.setCategoriaConta(taxa.getCategoria());
 	}
 	
 //	private Conta buscarContaPorChavePix(String chave) {
@@ -711,5 +729,16 @@ public class UserContaService {
 		return meuPix.toString();
 	}
 
+	public String gerarCodigoTransferencia() {
+		int[] sequencia = new int[8];
+		StringBuilder codTransferencia = new StringBuilder();
+
+		for (int i = 0; i < sequencia.length; i++) {
+			sequencia[i] = 1 + random.nextInt(8);
+			codTransferencia.append(sequencia[i]);
+		}
+
+		return codTransferencia.toString();
+	}
 
 }

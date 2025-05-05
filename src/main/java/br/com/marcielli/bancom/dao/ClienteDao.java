@@ -184,17 +184,18 @@ public class ClienteDao {
     }
 
     // Método auxiliar para buscar transferências por conta
-    public List<Transferencia> findByContaId(Long contaId) {
-        String sql = "SELECT * FROM transferencias " +
-                    "WHERE id_conta_origem = ? OR id_conta_destino = ? " +
-                    "ORDER BY data DESC";
-        
-        return jdbcTemplate.query(
-            sql,
-            new TransferenciaRowMapper(),
-            contaId, contaId
-        );
-    }
+	    public List<Transferencia> findByContaId(Long contaId) {
+	        String sql = "SELECT * FROM transferencias " +
+	                     "WHERE id_conta_origem = ? " +
+	                     "ORDER BY data DESC";
+	        
+	        return jdbcTemplate.query(
+	            sql,
+	            new TransferenciaRowMapper(),
+	            contaId
+	        );
+	    }
+
     
     
     

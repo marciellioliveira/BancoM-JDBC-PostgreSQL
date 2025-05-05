@@ -56,8 +56,6 @@ public class Transferencia implements Serializable {
 	@ToString.Exclude
 	private Fatura fatura;
 
-//	@ManyToOne(cascade = {CascadeType.ALL})
-//	private Fatura fatura;
 
 	// TED
 	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia) {
