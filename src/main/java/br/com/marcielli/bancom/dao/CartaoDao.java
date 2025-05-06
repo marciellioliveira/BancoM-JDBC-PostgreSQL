@@ -1,7 +1,5 @@
 package br.com.marcielli.bancom.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 import org.springframework.stereotype.Component;
 
@@ -23,7 +20,6 @@ import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.mappers.CartaoRowMapper;
-import br.com.marcielli.bancom.service.UserCartaoService;
 
 @Component
 public class CartaoDao {
@@ -89,65 +85,6 @@ public class CartaoDao {
 		jdbcTemplate.batchUpdate(sqlSeguro, batchArgs);
 	}
 
-//    public Cartao saveWithRelations(Cartao cartao) {
-//       
-//        String sqlCartao = """
-//            INSERT INTO cartoes 
-//            (tipo_conta, categoria_conta, tipo_cartao, numero_cartao, status, senha, conta_id,
-//             limite_credito_pre_aprovado, limite_diario_transacao)
-//            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-//            RETURNING id
-//            """;
-//        
-//        Long cartaoId = jdbcTemplate.queryForObject(sqlCartao, Long.class,
-//            cartao.getTipoConta().toString(),
-//            cartao.getCategoriaConta().toString(),
-//            cartao.getTipoCartao().toString(),
-//            cartao.getNumeroCartao(),
-//            cartao.isStatus(),
-//            cartao.getSenha(),
-//            cartao.getConta().getId(),
-//            
-//            cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getLimiteCreditoPreAprovado() : null,
-//            cartao instanceof CartaoDebito ? ((CartaoDebito) cartao).getLimiteDiarioTransacao() : null
-//        );
-//        logger.info("cartaoDao  {}", cartao.getConta().getId());
-//        cartao.setId(cartaoId);
-//        
-//        if(cartao.getFatura() != null) {
-//            String sqlFatura = """
-//                INSERT INTO faturas 
-//                (cartao_id, valor_total, data_vencimento)
-//                VALUES (?, ?, ?)
-//                """;
-//                
-//            jdbcTemplate.update(sqlFatura,
-//                cartaoId,
-//               // cartao.getFatura().getValorTotal(),
-//                cartao.getFatura().getDataVencimento());
-//        }
-//        
-//        if(cartao.getSeguros() != null && !cartao.getSeguros().isEmpty()) {
-//            String sqlSeguro = """
-//                INSERT INTO seguros 
-//                (cartao_id, tipo, valor_cobertura)
-//                VALUES (?, ?, ?)
-//                """;
-//                
-//            List<Object[]> batchArgs = cartao.getSeguros().stream()
-//                .map(s -> new Object[]{
-//                    cartaoId,
-//                    s.getTipo().toString(),
-//                   // s.getValorCobertura()
-//                })
-//                .collect(Collectors.toList());
-//                
-//            jdbcTemplate.batchUpdate(sqlSeguro, batchArgs);
-//        }
-//        
-//        return cartao;
-//    }
-	
 	public Optional<Cartao> findById(Long id) {
 	    String sql = """
 	        SELECT
@@ -200,37 +137,6 @@ public class CartaoDao {
 	    }
 	}
 
-//	public Optional<Cartao> findById(Long id) {
-//		String sql = """
-//					SELECT
-//				    c.*,
-//				    ct.saldo_conta AS conta_saldo,
-//				    ct.status AS conta_status,
-//				    ct.tipo_conta AS conta_tipo_conta,
-//				    ct.categoria_conta AS conta_categoria_conta,
-//				    ct.numero_conta,
-//				    ct.pix_aleatorio,
-//				    ct.taxa_manutencao_mensal,
-//				    ct.taxa_acresc_rend,
-//				    ct.taxa_mensal,
-//				    c.limite_credito_pre_aprovado,
-//				    c.taxa_utilizacao,
-//				    c.taxa_seguro_viagem,
-//				    c.total_gasto_mes_credito,
-//				    c.limite_diario_transacao,
-//				    c.total_gasto_mes
-//				FROM cartoes c
-//				JOIN contas ct ON c.conta_id = ct.id
-//				WHERE c.id = ?
-//
-//									    """;
-//		try {
-//			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id);
-//			return Optional.of(cartao);
-//		} catch (EmptyResultDataAccessException e) {
-//			return Optional.empty();
-//		}
-//	}
 
 	public void deleteCartao(Long id) {
 		String sql = "DELETE FROM cartoes WHERE id = ?";
@@ -326,20 +232,20 @@ public class CartaoDao {
 	    """;
 	    
 	    jdbcTemplate.update(sql,
-	        cartao.getTipoConta(),
-	        cartao.getCategoriaConta(),
-	        cartao.getTipoCartao(),
-	        cartao.getNumeroCartao(),
-	        cartao.isStatus(),
-	        cartao.getSenha(),
-	        cartao.getConta() != null ? cartao.getConta().getId() : null,
-	        cartao.getFatura() != null ? cartao.getFatura().getId() : null,
-	        cartao.getLimiteCreditoPreAprovado(),
-	        cartao.getTaxaUtilizacao(),
-	        cartao.getTaxaSeguroViagem(),
-	        cartao.getTotalGastoMesCredito(),
-	        cartao.getId()
-	    );
+	    	    cartao.getTipoConta() != null ? cartao.getTipoConta().name() : null,
+	    	    cartao.getCategoriaConta() != null ? cartao.getCategoriaConta().name() : null,
+	    	    cartao.getTipoCartao() != null ? cartao.getTipoCartao().name() : null,
+	    	    cartao.getNumeroCartao(),
+	    	    cartao.isStatus(),
+	    	    cartao.getSenha(),
+	    	    cartao.getConta() != null ? cartao.getConta().getId() : null,
+	    	    cartao.getFatura() != null ? cartao.getFatura().getId() : null,
+	    	    cartao.getLimiteCreditoPreAprovado(),
+	    	    cartao.getTaxaUtilizacao(),
+	    	    cartao.getTaxaSeguroViagem(),
+	    	    cartao.getTotalGastoMesCredito(),
+	    	    cartao.getId()
+	    	);
 	}
 
 	private void updateCartaoDebito(CartaoDebito cartao) {
@@ -390,9 +296,9 @@ public class CartaoDao {
 	    """;
 	    
 	    jdbcTemplate.update(sql,
-	        cartao.getTipoConta(),
-	        cartao.getCategoriaConta(),
-	        cartao.getTipoCartao(),
+	        cartao.getTipoConta() != null ? cartao.getTipoConta().name() : null,  // convertendo o enum para String porque o banco não estava aceitando
+	        cartao.getCategoriaConta() != null ? cartao.getCategoriaConta().name() : null,   // convertendo o enum para String
+	        cartao.getTipoCartao() != null ? cartao.getTipoCartao().name() : null,   // convertendo o enum para String
 	        cartao.getNumeroCartao(),
 	        cartao.isStatus(),
 	        cartao.getSenha(),
@@ -401,5 +307,6 @@ public class CartaoDao {
 	        cartao.getId()
 	    );
 	}
+
 
 }
