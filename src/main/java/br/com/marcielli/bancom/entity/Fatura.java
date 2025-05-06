@@ -1,6 +1,7 @@
 package br.com.marcielli.bancom.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-//@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
@@ -30,13 +30,11 @@ public class Fatura  implements Serializable {
 	//Apenas para teste
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime dataVencimento;
-	
-//	private BigDecimal limiteCredito; 
-//	
-//	private BigDecimal totalGastoNoMes;
 
 	@JsonManagedReference
-	private List<Transferencia> transferenciasCredito;
+	private List<Transferencia> transferenciasCredito = new ArrayList<>();
+	
+	private BigDecimal valor_total;
 	
 	public Fatura() {
 		this.dataVencimento = LocalDateTime.now();
@@ -49,12 +47,11 @@ public class Fatura  implements Serializable {
 	public boolean status = false; //Se tiver verdadeiro é porque a fatura foi paga
 
 	
-	public void adicionarTransfCredito(Transferencia transferindo) {
+	public void adicionarTransfCredito(Transferencia transferencia) {
 		if (transferenciasCredito == null) {
-			transferenciasCredito = new ArrayList<>();
-		}
-		this.transferenciasCredito.add(transferindo);
-		transferindo.setFatura(this);
+            transferenciasCredito = new ArrayList<>();
+        }
+		transferenciasCredito.add(transferencia);
 		
 	}
 }
