@@ -34,7 +34,7 @@ public class UserClienteController {
 	}
 
 	// ADMIN e BASIC e qualquer outra pessoa
-	@PostMapping("/users")
+	@PostMapping("/auth/users")
 	public ResponseEntity<String> newUser(@RequestBody UserCreateDTO dto) {
 		User clienteAdicionado = clienteService.save(dto);
 		if (clienteAdicionado != null) {

@@ -12,6 +12,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import br.com.marcielli.bancom.filter.JwtAuthFilter;
+import br.com.marcielli.bancom.handler.CustomAccessDeniedHandler;
 import br.com.marcielli.bancom.service.UserClienteService;
 import br.com.marcielli.bancom.service.UserSecurityService;
 
@@ -25,10 +26,10 @@ import org.springframework.security.access.expression.method.DefaultMethodSecuri
 @EnableMethodSecurity
 public class SecurityConfig {
 	
-//	@Bean
-//    public AccessDeniedHandler accessDeniedHandler() {
-//        return new CustomAccessDeniedHandler(); // Define o handler como um bean
-//    }
+	@Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler(); // Define o handler como um bean
+    }
 	
 	private final JwtAuthFilter jwtAuthFilter;
 	
@@ -53,6 +54,7 @@ public class SecurityConfig {
             		.requestMatchers(
             		        "/",
             		        "/home",
+            		        "/auth/users", // Libera explicitamente o endpoint de cadastro
             		        "/auth/login", // Libera explicitamente o endpoint de login
             		        "/login",      // Libera o endpoint alternativo
             		        "/favicon.ico",
@@ -64,48 +66,22 @@ public class SecurityConfig {
             		        "/webjars/**",
             		        "/users"  
             		    ).permitAll()
-            			
-            		
-                    
-                    //Porque está assim?
-                    //ADMIN: é o dono do sistema (tipo um superuser)ele pode editar/deletar qualquer conta, MENOS a própria
-                    //BASIC: é só o usuário comum que pode editar/deletar só os próprios dados.
-                    //Então o resto da autenticação, a parte mais exigente vai estar no service.
-                    
-                .anyRequest().authenticated())                   	
-//            .exceptionHandling(exceptionHandling -> 
-//            exceptionHandling.accessDeniedHandler(accessDeniedHandler))
-            .httpBasic(basic -> basic.disable())
+            		 // Todas as outras rotas exigem autenticação
+                .anyRequest().authenticated()
+                )                   	
+            .exceptionHandling(exceptionHandling -> 
+            exceptionHandling.accessDeniedHandler(accessDeniedHandler)) // Tratamento de erros de acesso negado
+            .httpBasic(basic -> basic.disable()) 
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
             .build();
     }
-//	
-//	@Bean
-//	public CorsFilter corsFilter() {
-//	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//	    CorsConfiguration config = new CorsConfiguration();
-//	    
-//	   // config.setAllowedOriginPatterns(List.of("*"));
-//	    
-//	    // Permite todos métodos (GET, POST, etc)
-//	    config.setAllowedMethods(List.of("*"));
-//	    
-//	    // Permite todos headers
-//	    config.setAllowedHeaders(List.of("*"));
-//	    
-//	    // Permite headers de autenticação
-//	    config.setExposedHeaders(List.of("Authorization"));
-//	    
-//	    // Permite credenciais
-//	    config.setAllowCredentials(true);
-//	    
-//	    source.registerCorsConfiguration("/**", config);
-//	    return new CorsFilter(source);
-//	}
-	
-	
+	//Porque está assim?
+    //ADMIN: é o dono do sistema (tipo um superuser)ele pode editar/deletar qualquer conta, MENOS a própria
+    //BASIC: é só o usuário comum que pode editar/deletar só os próprios dados.
+    //Então o resto da autenticação, a parte mais exigente vai estar no service.
+
 	 
 	@Bean // ele é tipo o chefe
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

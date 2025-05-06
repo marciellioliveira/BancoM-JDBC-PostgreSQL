@@ -1,52 +1,50 @@
-2025-05-05 18:11:04 [34mINFO [0;39m
+2025-05-06 10:25:28 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
-2025-05-05 18:11:04 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 16176 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
-2025-05-05 18:11:04 [34mINFO [0;39m
+2025-05-06 10:25:28 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 12500 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
+2025-05-06 10:25:28 [34mINFO [0;39m
 				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
-2025-05-05 18:11:05 [34mINFO [0;39m
+2025-05-06 10:25:29 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
-2025-05-05 18:11:05 [34mINFO [0;39m
+2025-05-06 10:25:29 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
-2025-05-05 18:11:05 [34mINFO [0;39m
+2025-05-06 10:25:29 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
-2025-05-05 18:11:05 [34mINFO [0;39m
+2025-05-06 10:25:29 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
-2025-05-05 18:11:05 [34mINFO [0;39m
+2025-05-06 10:25:29 [34mINFO [0;39m
 				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
-2025-05-05 18:11:05 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@586495f1
-2025-05-05 18:11:05 [34mINFO [0;39m
+2025-05-06 10:25:29 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7e52a26b
+2025-05-06 10:25:29 [34mINFO [0;39m
 				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
-2025-05-05 18:11:06 [34mINFO [0;39m
+2025-05-06 10:25:30 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
+2025-05-06 10:25:30 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-05-06 10:25:30 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
-2025-05-05 18:11:06 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.643 seconds (process running for 2.902)
-2025-05-05 18:11:30 [34mINFO [0;39m
+2025-05-06 10:25:30 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.613 seconds (process running for 2.861)
+2025-05-06 10:25:37 [34mINFO [0;39m
 				[36m[http-nio-8087-exec-2][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-05-05 18:22:08 [34mINFO [0;39m
-				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
-2025-05-05 18:22:08 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 14676 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
-2025-05-05 18:22:08 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
-2025-05-05 18:22:10 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
-2025-05-05 18:22:10 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
-2025-05-05 18:22:10 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
-2025-05-05 18:22:10 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
-2025-05-05 18:22:10 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
-2025-05-05 18:22:10 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@586495f1
-2025-05-05 18:22:10 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
-2025-05-05 18:22:11 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
-2025-05-05 18:22:11 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.599 seconds (process running for 2.829)
-2025-05-05 18:22:15 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-2][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-06 10:25:37 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /auth/users
+2025-05-06 10:25:37 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /error
+2025-05-06 10:25:37 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-05-06 10:25:37 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /error
+2025-05-06 10:25:47 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /auth/login
+2025-05-06 10:25:47 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-05-06 10:25:47 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /auth/login
+2025-05-06 10:25:47 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.s.a.d.DaoAuthenticationProvider[0;39m - Authenticated user
+2025-05-06 10:25:51 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /auth/users
+2025-05-06 10:25:51 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /auth/users
