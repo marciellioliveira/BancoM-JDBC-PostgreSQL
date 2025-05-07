@@ -214,7 +214,6 @@ public class UserClienteService implements UserDetailsService {
 	    } else {
 	        throw new ClienteEncontradoException("Você não tem permissão para acessar a lista de usuários.");
 	    }
-
 	   
 	    for (User user : users) {
 	        if (user.getCliente() != null) {

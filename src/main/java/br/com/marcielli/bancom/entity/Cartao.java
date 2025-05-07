@@ -1,6 +1,8 @@
 package br.com.marcielli.bancom.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.marcielli.bancom.enuns.CategoriaConta;
@@ -39,26 +41,27 @@ import lombok.ToString;
 })
 public class Cartao implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private TipoConta tipoConta;
-	private CategoriaConta categoriaConta;
-	private TipoCartao tipoCartao;
-	private String numeroCartao;
-	private boolean status;
-	public String senha;
+    private TipoConta tipoConta;
+    private CategoriaConta categoriaConta;
+    private TipoCartao tipoCartao;
+    private String numeroCartao;
+    private boolean status;
+    private String senha;
+    private Long contaId;
+    private Long faturaId;
+    private BigDecimal totalGastoMes;
+    private List<Transferencia> transferenciasCredito = new ArrayList<Transferencia>();
 
-	@JsonBackReference
-	private Conta conta;
+    @JsonBackReference
+    private Conta conta;
 
-	@JsonBackReference
-	private Fatura fatura;
+    @JsonBackReference
+    private Fatura fatura;
 
-	@JsonBackReference
-	private List<Seguro> seguros;	
+    @JsonBackReference
+    private List<Seguro> seguros;
 	
 }

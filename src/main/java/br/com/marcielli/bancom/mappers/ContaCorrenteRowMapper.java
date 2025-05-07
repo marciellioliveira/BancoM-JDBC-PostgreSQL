@@ -4,12 +4,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.ContaCorrente;
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoConta;
 
+@Component
 public class ContaCorrenteRowMapper implements RowMapper<ContaCorrente> {
 
 	@Override

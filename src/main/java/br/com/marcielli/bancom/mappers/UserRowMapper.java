@@ -4,11 +4,12 @@ import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.User;
 import org.springframework.jdbc.core.RowMapper;
-
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class UserRowMapper implements RowMapper<User> {
 
 	@Override

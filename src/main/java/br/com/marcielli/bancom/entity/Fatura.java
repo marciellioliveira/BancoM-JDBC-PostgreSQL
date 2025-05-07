@@ -26,16 +26,16 @@ public class Fatura  implements Serializable {
 
 	private Long id;
 
+	private Long cartaoId;
 	
-	//Apenas para teste
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime dataVencimento;
 
 	@JsonManagedReference
 	private List<Transferencia> transferenciasCredito = new ArrayList<>();
 	
-	private BigDecimal valor_total;
-	
+	private BigDecimal valorTotal;
+		
 	public Fatura() {
 		this.dataVencimento = LocalDateTime.now();
 		this.transferenciasCredito = new ArrayList<Transferencia>();

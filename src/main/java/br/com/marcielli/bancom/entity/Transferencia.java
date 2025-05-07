@@ -37,6 +37,8 @@ public class Transferencia implements Serializable {
 	@JsonInclude
 	private Long idContaOrigem;
 	private Long idContaDestino;
+	
+	private Long idCartao;
 
 	private TipoTransferencia tipoTransferencia;
 
@@ -146,31 +148,25 @@ public class Transferencia implements Serializable {
 	public Transferencia(Conta enviar, BigDecimal valor, Conta receber, TipoTransferencia tipoTransferencia,
 			TipoCartao tipoCartao) {
 
-		if (enviar.getCliente() != null) {
-	        this.idClienteOrigem = enviar.getCliente().getId();
-	    } else {
-	        throw new IllegalArgumentException("Cliente da conta de origem não pode ser nulo.");
-	    }
-	    if (receber.getCliente() != null) {
-	        this.idClienteDestino = receber.getCliente().getId();
-	    } else {
-	        throw new IllegalArgumentException("Cliente da conta de destino não pode ser nulo.");
-	    }
+		if (enviar.getCliente() == null || receber.getCliente() == null) {
+            throw new IllegalArgumentException("Contas devem ter clientes associados");
+        }
 
 		this.idClienteOrigem = enviar.getCliente().getId();
-		this.idClienteDestino = receber.getCliente().getId();
-		this.idContaOrigem = enviar.getId();
-		this.idContaDestino = receber.getId();
-		this.tipoTransferencia = tipoTransferencia;
-		this.valor = valor;
-
-		LocalDateTime dataTransferencia = LocalDateTime.now();
-		String codTransferencia = gerarCodigoTransferencia();
-
-		this.data = dataTransferencia;
-		this.codigoOperacao = codTransferencia;
-		this.tipoCartao = tipoCartao;
+        this.idClienteDestino = receber.getCliente().getId();
+        this.idContaOrigem = enviar.getId();
+        this.idContaDestino = receber.getId();
+        this.tipoTransferencia = tipoTransferencia;
+        this.valor = valor;
+        this.tipoCartao = tipoCartao;
+        
+        // Campos automáticos
+        this.data = LocalDateTime.now();
+        this.codigoOperacao = gerarCodigoTransferencia();
+        
+        this.idCartao = null;
 	}
+	
 	
 	
 

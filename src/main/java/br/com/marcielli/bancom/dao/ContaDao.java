@@ -4,6 +4,7 @@ import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.ContaCorrente;
 import br.com.marcielli.bancom.entity.ContaPoupanca;
+import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.exception.ChavePixNaoEncontradaException;
 import br.com.marcielli.bancom.exception.TaxaDeCambioException;
 import br.com.marcielli.bancom.mappers.ContaCorrenteRowMapper;
@@ -504,7 +505,20 @@ public class ContaDao {
 
 	
 	
+	public void atualizarTransferenciasEnviadas(Long contaId, Transferencia transferencia) {
+	    Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+	    if (conta.getTransferencias() == null) {
+	        conta.setTransferencias(new ArrayList<>());
+	    }
+	    conta.getTransferencias().add(transferencia);
+	    update(conta);
+	}
 	
+	public void atualizarSaldo(Long contaId, BigDecimal novoSaldo) {
+	    Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+	    conta.setSaldoConta(novoSaldo);
+	    update(conta);
+	}
 	
 	
 	

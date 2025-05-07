@@ -18,6 +18,7 @@ import br.com.marcielli.bancom.entity.CartaoCredito;
 import br.com.marcielli.bancom.entity.CartaoDebito;
 import br.com.marcielli.bancom.entity.Fatura;
 import br.com.marcielli.bancom.entity.Seguro;
+import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
@@ -87,10 +88,9 @@ public class CartaoDao {
 		jdbcTemplate.batchUpdate(sqlSeguro, batchArgs);
 	}
 
-	public Optional<Cartao> findById(Long id) {
+	public Optional<Cartao> findById(Long id) { // ct.saldo_conta AS conta_saldo,
 	    String sql = """
-	        SELECT
-	            /* Campos da tabela cartoes */
+	        SELECT	          
 	            c.id,
 	            c.tipo_conta,
 	            c.categoria_conta,
@@ -105,22 +105,18 @@ public class CartaoDao {
 	            c.limite_diario_transacao,
 	            c.total_gasto_mes,
 	            c.conta_id,
-	            c.fatura_id,
-	            
-	            /* Campos da tabela contas */
+	            c.fatura_id,      
 	            ct.id AS conta_id,
 	            ct.cliente_id,
 	            ct.tipo_conta AS conta_tipo_conta,
 	            ct.categoria_conta AS conta_categoria_conta,
-	            ct.saldo_conta AS conta_saldo,
+	            ct.saldo_conta,
 	            ct.numero_conta,
 	            ct.pix_aleatorio,
 	            ct.status AS conta_status,
 	            ct.taxa_manutencao_mensal,
 	            ct.taxa_acresc_rend,
 	            ct.taxa_mensal,
-	            
-	            /* Campos da tabela clientes */
 	            cli.id AS cliente_id,
 	            cli.nome AS cliente_nome,
 	            cli.cpf AS cliente_cpf,
@@ -226,102 +222,6 @@ public class CartaoDao {
         }
     }
 
-//	private void updateCartaoCredito(CartaoCredito cartao) {
-//	    String sql = """
-//	        UPDATE cartoes
-//	        SET 
-//	            tipo_conta = ?,
-//	            categoria_conta = ?,
-//	            tipo_cartao = ?,
-//	            numero_cartao = ?,
-//	            status = ?,
-//	            senha = ?,
-//	            conta_id = ?,
-//	            fatura_id = ?,
-//	            limite_credito_pre_aprovado = ?,
-//	            taxa_utilizacao = ?,
-//	            taxa_seguro_viagem = ?,
-//	            total_gasto_mes_credito = ?
-//	        WHERE id = ?
-//	    """;
-//	    
-//	    jdbcTemplate.update(sql,
-//	    	    cartao.getTipoConta() != null ? cartao.getTipoConta().name() : null,
-//	    	    cartao.getCategoriaConta() != null ? cartao.getCategoriaConta().name() : null,
-//	    	    cartao.getTipoCartao() != null ? cartao.getTipoCartao().name() : null,
-//	    	    cartao.getNumeroCartao(),
-//	    	    cartao.isStatus(),
-//	    	    cartao.getSenha(),
-//	    	    cartao.getConta() != null ? cartao.getConta().getId() : null,
-//	    	    cartao.getFatura() != null ? cartao.getFatura().getId() : null,
-//	    	    cartao.getLimiteCreditoPreAprovado(),
-//	    	    cartao.getTaxaUtilizacao(),
-//	    	    cartao.getTaxaSeguroViagem(),
-//	    	    cartao.getTotalGastoMesCredito(),
-//	    	    cartao.getId()
-//	    	);
-//	}
-//
-//	private void updateCartaoDebito(CartaoDebito cartao) {
-//	    String sql = """
-//	        UPDATE cartoes
-//	        SET 
-//	            tipo_conta = ?,
-//	            categoria_conta = ?,
-//	            tipo_cartao = ?,
-//	            numero_cartao = ?,
-//	            status = ?,
-//	            senha = ?,
-//	            conta_id = ?,
-//	            fatura_id = ?,
-//	            limite_diario_transacao = ?,
-//	            total_gasto_mes = ?
-//	        WHERE id = ?
-//	    """;
-//	    
-//	    jdbcTemplate.update(sql,
-//	        cartao.getTipoConta() != null ? cartao.getTipoConta().name() : null,
-//	        cartao.getCategoriaConta() != null ? cartao.getCategoriaConta().name() : null,
-//	        cartao.getTipoCartao() != null ? cartao.getTipoCartao().name() : null,
-//	        cartao.getNumeroCartao(),
-//	        cartao.isStatus(),
-//	        cartao.getSenha(),
-//	        cartao.getConta() != null ? cartao.getConta().getId() : null,
-//	        cartao.getFatura() != null ? cartao.getFatura().getId() : null,
-//	        cartao.getLimiteDiarioTransacao(),
-//	        cartao.getTotalGastoMes(),
-//	        cartao.getId()
-//	    );
-//	}
-
-	private void updateCartaoBase(Cartao cartao) {
-	    String sql = """
-	        UPDATE cartoes
-	        SET 
-	            tipo_conta = ?,
-	            categoria_conta = ?,
-	            tipo_cartao = ?,
-	            numero_cartao = ?,
-	            status = ?,
-	            senha = ?,
-	            conta_id = ?,
-	            fatura_id = ?
-	        WHERE id = ?
-	    """;
-	    
-	    jdbcTemplate.update(sql,
-	        cartao.getTipoConta() != null ? cartao.getTipoConta().name() : null,  // convertendo o enum para String porque o banco não estava aceitando
-	        cartao.getCategoriaConta() != null ? cartao.getCategoriaConta().name() : null,   // convertendo o enum para String
-	        cartao.getTipoCartao() != null ? cartao.getTipoCartao().name() : null,   // convertendo o enum para String
-	        cartao.getNumeroCartao(),
-	        cartao.isStatus(),
-	        cartao.getSenha(),
-	        cartao.getConta() != null ? cartao.getConta().getId() : null,
-	        cartao.getFatura() != null ? cartao.getFatura().getId() : null,
-	        cartao.getId()
-	    );
-	}
-	
 	public void atualizarLimitesCartaoCredito(Long cartaoId, BigDecimal novoLimite, BigDecimal novoTotalGasto) {
         String sql = """
             UPDATE cartoes
@@ -357,7 +257,7 @@ public class CartaoDao {
 	            Fatura f = new Fatura();
 	            f.setId(rs.getLong("id"));
 	            f.setDataVencimento(rs.getObject("data_vencimento", LocalDateTime.class));
-	            f.setValor_total(rs.getBigDecimal("valor_total")); 
+	            f.setValorTotal(rs.getBigDecimal("valor_total")); 
 	            return f;
 	        }, cartaoId);
 	        return Optional.ofNullable(fatura);
@@ -389,6 +289,15 @@ public class CartaoDao {
         	logger.error("Cartão com id={} não encontrado ao verificar fatura_id", cartaoId);
             throw new IllegalArgumentException("Cartão não encontrado: " + cartaoId);
         }
+    }
+	
+	public void atualizarTransferenciasCredito(Long cartaoId, Transferencia transferencia) {
+        String sql = """
+            UPDATE transferencias
+            SET cartao_id = ?
+            WHERE id = ?
+            """;
+        jdbcTemplate.update(sql, cartaoId, transferencia.getId());
     }
 
 }

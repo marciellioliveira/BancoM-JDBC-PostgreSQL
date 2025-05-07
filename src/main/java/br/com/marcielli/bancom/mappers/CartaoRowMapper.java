@@ -1,30 +1,37 @@
 package br.com.marcielli.bancom.mappers;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
+import br.com.marcielli.bancom.dao.TransferenciaDao;
 import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.CartaoCredito;
 import br.com.marcielli.bancom.entity.CartaoDebito;
 import br.com.marcielli.bancom.entity.Conta;
+import br.com.marcielli.bancom.entity.Fatura;
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.service.UserClienteService;
 
+@Component
 public class CartaoRowMapper implements RowMapper<Cartao> {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);    
 
-    @Override
+
+	@Override
     public Cartao mapRow(ResultSet rs, int rowNum) throws SQLException {
         String tipoCartao = rs.getString("tipo_cartao");
 
-        // Criação do objeto Cartao dependendo do tipo
         Cartao cartao;
         if ("CREDITO".equalsIgnoreCase(tipoCartao)) {
             cartao = new CartaoCredito();
@@ -43,6 +50,20 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         cartao.setNumeroCartao(rs.getString("numero_cartao"));
         cartao.setStatus(rs.getBoolean("status"));
         cartao.setSenha(rs.getString("senha"));
+        cartao.setFaturaId(rs.getLong("fatura_id"));
+        cartao.setTotalGastoMes(rs.getBigDecimal("total_gasto_mes"));
+
+        // Mapear a fatura
+        Long faturaId = rs.getLong("fatura_id");
+        if (!rs.wasNull() && faturaId != 0) {
+            Fatura fatura = new Fatura();
+            fatura.setId(faturaId);
+            fatura.setCartaoId(rs.getLong("fatura_cartao_id"));
+            fatura.setValorTotal(rs.getBigDecimal("fatura_valor_total"));
+            fatura.setDataVencimento(rs.getObject("fatura_data_vencimento", LocalDateTime.class));
+            cartao.setFatura(fatura);
+            logger.debug("[DEBUG] Fatura mapeada para cartão ID: " + cartao.getId() + ", fatura ID: " + faturaId);
+        }
 
         long contaId = rs.getLong("conta_id");
         if (!rs.wasNull()) {
@@ -52,6 +73,7 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
             logger.error("Cartão ID={} não tem conta_id associado!", rs.getLong("id"));
             throw new IllegalStateException("Cartão não possui conta vinculada.");
         }
+        
 
         return cartao;
     }
@@ -83,7 +105,10 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         conta.setTipoConta(parseEnum(TipoConta.class, rs.getString("conta_tipo_conta")));
         conta.setCategoriaConta(parseEnum(CategoriaConta.class, rs.getString("conta_categoria_conta")));
         conta.setStatus(rs.getBoolean("conta_status"));
-        conta.setSaldoConta(rs.getBigDecimal("conta_saldo"));
+        
+        conta.setSaldoConta(rs.getBigDecimal("saldo_conta"));
+        
         return conta;
     }
+
 }

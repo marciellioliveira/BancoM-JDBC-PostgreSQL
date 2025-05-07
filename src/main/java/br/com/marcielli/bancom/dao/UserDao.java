@@ -125,24 +125,6 @@ public class UserDao {
 
         return user;
     }
-
-
-//    public Optional<User> findByUsername(String username) {
-//        String sql = "SELECT u.id AS user_id, u.username, u.password, u.user_ativo, " +
-//            "c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
-//            "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep, " +
-//            "r.name AS role_name " +
-//            "FROM users u " +
-//            "JOIN clientes c ON c.user_id = u.id " +
-//            "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
-//            "LEFT JOIN user_roles ur ON ur.user_id = u.id " +
-//            "LEFT JOIN roles r ON r.id = ur.role_id " +
-//            "WHERE u.username = ?";
-//
-//        List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), username);
-//
-//        return users.isEmpty() ? Optional.empty() : Optional.of(users.getFirst());
-//    }
     
     public Optional<User> findByUsername(String username) {
         String sql = """
