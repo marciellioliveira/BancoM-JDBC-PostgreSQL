@@ -9,6 +9,7 @@ import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.AllArgsConstructor;
@@ -44,11 +45,13 @@ public class Cartao implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
+	@JsonIgnore
     private TipoConta tipoConta;
     private CategoriaConta categoriaConta;
     private TipoCartao tipoCartao;
     private String numeroCartao;
-    private boolean status;
+    private boolean status = true;
     private String senha;
     private Long contaId;
     private Long faturaId;

@@ -191,6 +191,10 @@ public class ClienteDao {
     		        t.codigo_operacao,
     		        t.tipo_cartao,
     		        ca.id AS cartao_id,               -- ID do cartão
+    		        ca.senha,
+    		        ca.total_gasto_mes,
+    		        ca.conta_id,
+    		        ca.fatura_id,
     		        ca.numero_cartao,                 -- Número do cartão
     		        ca.tipo_cartao,                   -- Tipo do cartão
     		        ca.categoria_conta,               -- Categoria da conta do cartão
@@ -259,8 +263,10 @@ public class ClienteDao {
                     if (!rs.wasNull()) {
                         String tipoCartaoStr = rs.getString("tipo_cartao");
                         TipoCartao tipoCartao = TipoCartao.valueOf(tipoCartaoStr);
+                       
                         Cartao cartao;
 
+                       
                         if (tipoCartao == TipoCartao.CREDITO) {
                             CartaoCredito cartaoCredito = new CartaoCredito();
                             cartaoCredito.setId(cartaoId);
@@ -270,6 +276,11 @@ public class ClienteDao {
                             cartaoCredito.setStatus(Boolean.valueOf(rs.getString("status")));
                             cartaoCredito.setLimiteCreditoPreAprovado(rs.getBigDecimal("limite_credito_pre_aprovado"));
                             cartaoCredito.setTotalGastoMesCredito(rs.getBigDecimal("total_gasto_mes_credito"));
+                            cartaoCredito.setSenha(rs.getString("senha"));
+                            cartaoCredito.setTotalGastoMes(rs.getBigDecimal("total_gasto_mes"));
+                            cartaoCredito.setContaId(rs.getLong("conta_id"));
+                            cartaoCredito.setFaturaId(rs.getLong("fatura_id"));
+                            
                             cartao = cartaoCredito;
                         } else if (tipoCartao == TipoCartao.DEBITO) {
                             CartaoDebito cartaoDebito = new CartaoDebito();
@@ -279,6 +290,9 @@ public class ClienteDao {
                             cartaoDebito.setCategoriaConta(CategoriaConta.valueOf(rs.getString("categoria_conta")));
                             cartaoDebito.setStatus(Boolean.valueOf(rs.getString("status")));
                             cartaoDebito.setTotalGastoMes(rs.getBigDecimal("total_gasto_mes"));
+                            cartaoDebito.setSenha(rs.getString("senha"));
+                            cartaoDebito.setContaId(rs.getLong("conta_id"));
+                            cartaoDebito.setFaturaId(rs.getLong("fatura_id"));
                             cartao = cartaoDebito;
                         } else {
                             throw new IllegalArgumentException("Tipo de cartão desconhecido: " + tipoCartaoStr);
