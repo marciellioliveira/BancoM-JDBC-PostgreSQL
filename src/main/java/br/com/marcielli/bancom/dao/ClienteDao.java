@@ -5,7 +5,9 @@ import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.entity.User;
+import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
+import br.com.marcielli.bancom.enuns.TipoTransferencia;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.mappers.CartaoRowMapper;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
@@ -164,22 +166,32 @@ public class ClienteDao {
     public Cliente findByIdWithContasAndTransferencias(Long clienteId) {
         String sql = """
             SELECT
-                c.id AS cliente_id,
-                c.nome,
-                c.cpf,
-                c.cliente_ativo,
-                co.id AS conta_id,
-                co.numero_conta,
-                co.tipo_conta,
-                co.saldo_conta,
-                t.id AS transferencia_id,
-                t.valor,
-                t.data
-            FROM clientes c
-            LEFT JOIN contas co ON co.cliente_id = c.id
-            LEFT JOIN transferencias t ON t.id_conta_origem = co.id
-            WHERE c.id = :clienteId
-            """;
+			    c.id AS cliente_id,
+			    c.nome,
+			    c.cpf,
+			    c.cliente_ativo,
+			    co.id AS conta_id,
+			    co.numero_conta,
+			    co.tipo_conta,
+			    co.saldo_conta,
+			    t.id AS transferencia_id,
+			    t.valor,
+			    t.data,
+			    t.id_cliente_origem,
+			    t.id_cliente_destino,
+			    t.id_conta_origem,
+			    t.id_conta_destino,
+			    t.id_cartao,
+			    t.fatura_id,
+			    t.tipo_transferencia,
+			    t.codigo_operacao,
+			    t.tipo_cartao
+			FROM clientes c
+			LEFT JOIN contas co ON co.cliente_id = c.id
+			LEFT JOIN transferencias t ON t.id_conta_origem = co.id OR t.id_conta_destino = co.id
+			WHERE c.id = :clienteId
+
+        """;
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("clienteId", clienteId);
@@ -201,13 +213,17 @@ public class ClienteDao {
                         }
                         c.setClienteAtivo(rs.getBoolean("cliente_ativo"));
                     } catch (SQLException e) {
-                        throw new RuntimeException(e); // propaga como unchecked
+                        throw new RuntimeException(e); 
                     }
                     return c;
                 });
 
                 Long contaId = rs.getLong("conta_id");
-                if (contaId != 0) {
+                if (rs.wasNull()) {
+                    contaId = null;
+                }
+
+                if (contaId != null) {
                     Conta conta = contaMap.computeIfAbsent(contaId, id -> {
                         Conta co = new Conta();
                         co.setId(id);
@@ -223,7 +239,11 @@ public class ClienteDao {
                     });
 
                     Long transferenciaId = rs.getLong("transferencia_id");
-                    if (transferenciaId != 0) {
+                    if (rs.wasNull()) {
+                        transferenciaId = null; 
+                    }
+
+                    if (transferenciaId != null) {
                         Transferencia transferencia = new Transferencia();
                         transferencia.setId(transferenciaId);
                         try {
@@ -232,6 +252,17 @@ public class ClienteDao {
                             if (timestamp != null) {
                                 transferencia.setData(timestamp.toLocalDateTime());
                             }
+
+                            // Preencher os campos restantes
+                            transferencia.setIdClienteOrigem(rs.getLong("id_cliente_origem"));
+                            transferencia.setIdClienteDestino(rs.getLong("id_cliente_destino"));
+                            transferencia.setIdContaOrigem(rs.getLong("id_conta_origem"));
+                            transferencia.setIdContaDestino(rs.getLong("id_conta_destino"));
+                            transferencia.setIdCartao(rs.getLong("id_cartao"));
+                            transferencia.setFaturaId(rs.getLong("fatura_id"));
+                            transferencia.setTipoTransferencia(TipoTransferencia.valueOf(rs.getString("tipo_transferencia")));
+                            transferencia.setCodigoOperacao(rs.getString("codigo_operacao"));
+                            transferencia.setTipoCartao(TipoCartao.valueOf(rs.getString("tipo_cartao")));
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -245,6 +276,7 @@ public class ClienteDao {
 
         return clienteMap.values().stream().findFirst().orElse(null);
     }
+
 
 
 
