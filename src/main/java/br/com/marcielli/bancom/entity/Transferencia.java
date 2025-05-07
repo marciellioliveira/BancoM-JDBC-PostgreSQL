@@ -39,6 +39,7 @@ public class Transferencia implements Serializable {
 	private Long idContaDestino;
 	
 	private Long idCartao;
+	private Long faturaId;
 
 	private TipoTransferencia tipoTransferencia;
 
@@ -165,6 +166,8 @@ public class Transferencia implements Serializable {
         this.codigoOperacao = gerarCodigoTransferencia();
         
         this.idCartao = null;
+        
+        
 	}
 	
 	

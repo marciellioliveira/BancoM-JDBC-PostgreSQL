@@ -133,49 +133,6 @@ public class CartaoDao {
 				LEFT JOIN faturas f ON c.fatura_id = f.id
 				WHERE c.id = ?
 						    """;
-//		String sql = """
-//		        SELECT	          
-//		            c.id,
-//		            c.tipo_conta,
-//		            c.categoria_conta,
-//		            c.tipo_cartao,
-//		            c.numero_cartao,
-//		            c.status,
-//		            c.senha,
-//		            c.limite_credito_pre_aprovado,
-//		            c.taxa_utilizacao,
-//		            c.taxa_seguro_viagem,
-//		            c.total_gasto_mes_credito,
-//		            c.limite_diario_transacao,
-//		            c.total_gasto_mes,
-//		            c.conta_id AS cartao_conta_id,
-//		            c.fatura_id AS cartao_fatura_id,      
-//		            ct.id AS conta_id,
-//		            ct.cliente_id,
-//		            ct.tipo_conta AS conta_tipo_conta,
-//		            ct.categoria_conta AS conta_categoria_conta,
-//		            ct.saldo_conta,
-//		            ct.numero_conta,
-//		            ct.pix_aleatorio,
-//		            ct.status AS conta_status,
-//		            ct.taxa_manutencao_mensal,
-//		            ct.taxa_acresc_rend,
-//		            ct.taxa_mensal,
-//		            cli.id AS cliente_id,
-//		            cli.nome AS cliente_nome,
-//		            cli.cpf AS cliente_cpf,
-//		            cli.cliente_ativo AS cliente_ativo,
-//		            cli.user_id AS cliente_user_id,
-//		            f.id AS fatura_id,
-//		            f.cartao_id AS fatura_cartao_id,
-//		            f.valor_total AS fatura_valor_total,
-//					f.data_vencimento AS fatura_data_vencimento
-//		        FROM cartoes c
-//		        JOIN contas ct ON c.conta_id = ct.id
-//		        JOIN clientes cli ON ct.cliente_id = cli.id
-//		        JOIN faturas f ON c.fatura_id = f.id
-//		        WHERE c.id = ?
-//		    """;
 		try {
 			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id);
 			logger.info("Cartão encontrado: {}", cartao);

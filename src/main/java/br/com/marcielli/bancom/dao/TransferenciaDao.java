@@ -18,14 +18,14 @@ public class TransferenciaDao {
     public TransferenciaDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
+    
     public Long save(Transferencia transferencia) {
         String sql = """
             INSERT INTO transferencias 
             (id_cliente_origem, id_cliente_destino, id_conta_origem,
              id_conta_destino, tipo_transferencia, valor, data,
-             codigo_operacao, tipo_cartao, id_cartao)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             codigo_operacao, tipo_cartao, id_cartao, fatura_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             RETURNING id""";
         
         return jdbcTemplate.queryForObject(sql, Long.class,
@@ -38,8 +38,32 @@ public class TransferenciaDao {
             Timestamp.valueOf(transferencia.getData()),
             transferencia.getCodigoOperacao(),
             transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null,
-            transferencia.getIdCartao());
+            transferencia.getIdCartao(),
+            transferencia.getFaturaId());  // Agora passamos o faturaId
     }
+
+
+//    public Long save(Transferencia transferencia) {
+//        String sql = """
+//            INSERT INTO transferencias 
+//            (id_cliente_origem, id_cliente_destino, id_conta_origem,
+//             id_conta_destino, tipo_transferencia, valor, data,
+//             codigo_operacao, tipo_cartao, id_cartao)
+//            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//            RETURNING id""";
+//        
+//        return jdbcTemplate.queryForObject(sql, Long.class,
+//            transferencia.getIdClienteOrigem(),
+//            transferencia.getIdClienteDestino(),
+//            transferencia.getIdContaOrigem(),
+//            transferencia.getIdContaDestino(),
+//            transferencia.getTipoTransferencia().name(),
+//            transferencia.getValor(),
+//            Timestamp.valueOf(transferencia.getData()),
+//            transferencia.getCodigoOperacao(),
+//            transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null,
+//            transferencia.getIdCartao());
+//    }
     
     public List<Transferencia> findByCartaoId(Long cartaoId) {
         String sql = "SELECT * FROM transferencias WHERE id_cartao = ? " +

@@ -399,14 +399,26 @@ public class UserCartaoService {
             //fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
             transferencia.setFatura(fatura);
             fatura.adicionarTransfCredito(transferencia);
-            
+                        
             //teste inserindo na lista de transferencias e na lista de credito
             contaOrigem.getTransferencias().add(transferencia);
             fatura.getTransferenciasCredito().add(transferencia);
-
-            Long faturaId = faturaDao.save(fatura);
-            fatura.setId(faturaId);
-            cartaoDao.associarFaturaAoCartao(cartaoCredito.getId(), faturaId);
+            
+            fatura.setCartao(cartaoOrigem); // atribuindo o cartão a fatura
+            Long faturaId = faturaDao.save(fatura); //salvei a fatura e retornei o id
+            fatura.setId(faturaId);         
+            
+            //ligando a transferencia a fatura antes de salvar
+            transferencia.setFaturaId(faturaId);
+            
+            Long transferenciaId = transferenciaDao.save(transferencia); //salvo a transferencia e pego o id
+            transferencia.setId(transferenciaId);
+            transferenciaDao.associarTransferenciaAFatura(faturaId, transferenciaId); //associo a transferencia a fatura na tabela de ligação
+            cartaoDao.associarFaturaAoCartao(cartaoCredito.getId(), faturaId); //associei a fatura ao cartão
+            
+            cartaoCredito.setFaturaId(faturaId); //atualizando o objeto em memoria
+           
+            
         } else if (cartaoOrigem instanceof CartaoDebito cartaoDebito) {
             if (dto.valor().compareTo(cartaoDebito.getLimiteDiarioTransacao()) > 0) {
                 throw new TransferenciaNaoRealizadaException("Limite diário excedido");
