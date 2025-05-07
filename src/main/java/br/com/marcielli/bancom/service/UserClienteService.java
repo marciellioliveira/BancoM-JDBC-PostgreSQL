@@ -1,5 +1,6 @@
 package br.com.marcielli.bancom.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.marcielli.bancom.dto.security.UserCreateDTO;
 import br.com.marcielli.bancom.entity.Cliente;
+import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
@@ -217,12 +219,28 @@ public class UserClienteService implements UserDetailsService {
 	   
 	    for (User user : users) {
 	        if (user.getCliente() != null) {
+	        	
+	        	// carregando o cliente completo com as contas e transferências
 	            Cliente clienteCompleto = clienteDao.findByIdWithContasAndTransferencias(user.getCliente().getId());
+	            
+	            //se a lista de contas for null, ela precisa ser iniciada vazia
+	            if(clienteCompleto.getContas() == null) {
+	            	 clienteCompleto.setContas(new ArrayList<Conta>());
+	            }
+	            
 	            user.setCliente(clienteCompleto);
-	       
-	            clienteCompleto.getContas().forEach(conta -> 
-	                System.out.println("Conta ID " + conta.getId() + ", clienteNome: " + conta.getClienteNome())
-	            );
+	            
+	            // carregando as transferências enviadas para cada conta.
+	            clienteCompleto.getContas().forEach(conta -> {
+	                // usando rowmapper existente para carregar as transferências
+	                System.out.println("Conta ID " + conta.getId() + ", clienteNome: " + conta.getClienteNome());
+	                
+	                // Agora, vamos iterar sobre as transferências de cada conta
+	                conta.getTransferencias().forEach(transferencia -> {
+	                    System.out.println("  Transferência Enviada ID: " + transferencia.getId() + ", Valor: " + transferencia.getValor());
+	                });
+	            });
+
 	        }
 	    }
 

@@ -5,6 +5,7 @@ import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.entity.User;
+import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.mappers.CartaoRowMapper;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
@@ -16,11 +17,21 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.sql.Timestamp;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.jdbc.core.RowMapper;
+
 
 @Component
 public class ClienteDao {
@@ -28,9 +39,12 @@ public class ClienteDao {
     private final JdbcTemplate jdbcTemplate;
     private final ContasRowMapper contasRowMapper;
     
-    public ClienteDao(JdbcTemplate jdbcTemplate, ContasRowMapper contasRowMapper) {
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    
+    public ClienteDao(JdbcTemplate jdbcTemplate, ContasRowMapper contasRowMapper, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.contasRowMapper = contasRowMapper;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     public Optional<Cliente> findByCpf(Long cpf) {
@@ -147,33 +161,93 @@ public class ClienteDao {
         }, id);
     }
     
-    public Cliente findByIdWithContasAndTransferencias(Long id) {
-        String clienteSql = "SELECT * FROM clientes WHERE id = ?";
-        Cliente cliente = jdbcTemplate.queryForObject(clienteSql, new BeanPropertyRowMapper<>(Cliente.class), id);
+    public Cliente findByIdWithContasAndTransferencias(Long clienteId) {
+        String sql = """
+            SELECT
+                c.id AS cliente_id,
+                c.nome,
+                c.cpf,
+                c.cliente_ativo,
+                co.id AS conta_id,
+                co.numero_conta,
+                co.tipo_conta,
+                co.saldo_conta,
+                t.id AS transferencia_id,
+                t.valor,
+                t.data
+            FROM clientes c
+            LEFT JOIN contas co ON co.cliente_id = c.id
+            LEFT JOIN transferencias t ON t.id_conta_origem = co.id
+            WHERE c.id = :clienteId
+            """;
 
-        if (cliente != null) {
-            String contasSql = """
-                SELECT c.*, cl.nome AS cliente_nome 
-                FROM contas c 
-                JOIN clientes cl ON c.cliente_id = cl.id 
-                WHERE c.cliente_id = ?""";
-                
-            List<Conta> contas = jdbcTemplate.query(
-                contasSql,
-                new ContaWithTransferenciasRowMapper(contasRowMapper, this),
-                id
-            );
-            
-            contas.forEach(conta -> {
-                List<Cartao> cartoes = findCartoesByContaId(conta.getId());
-                conta.setCartoes(cartoes);
-            });
-            
-            cliente.setContas(contas);
-        }
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("clienteId", clienteId);
 
-        return cliente;
+        Map<Long, Cliente> clienteMap = new HashMap<>();
+        Map<Long, Conta> contaMap = new HashMap<>();
+
+        namedParameterJdbcTemplate.query(sql, params, rs -> {
+            try {
+                Long clienteIdRs = rs.getLong("cliente_id");
+                Cliente cliente = clienteMap.computeIfAbsent(clienteIdRs, id -> {
+                    Cliente c = new Cliente();
+                    c.setId(id);
+                    try {
+                        c.setNome(rs.getString("nome"));
+                        String cpfStr = rs.getString("cpf");
+                        if (cpfStr != null) {
+                            c.setCpf(Long.valueOf(cpfStr));
+                        }
+                        c.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e); // propaga como unchecked
+                    }
+                    return c;
+                });
+
+                Long contaId = rs.getLong("conta_id");
+                if (contaId != 0) {
+                    Conta conta = contaMap.computeIfAbsent(contaId, id -> {
+                        Conta co = new Conta();
+                        co.setId(id);
+                        try {
+                            co.setNumeroConta(rs.getString("numero_conta"));
+                            co.setTipoConta(TipoConta.valueOf(rs.getString("tipo_conta")));
+                            co.setSaldoConta(rs.getBigDecimal("saldo_conta"));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                        cliente.getContas().add(co);
+                        return co;
+                    });
+
+                    Long transferenciaId = rs.getLong("transferencia_id");
+                    if (transferenciaId != 0) {
+                        Transferencia transferencia = new Transferencia();
+                        transferencia.setId(transferenciaId);
+                        try {
+                            transferencia.setValor(rs.getBigDecimal("valor"));
+                            Timestamp timestamp = rs.getTimestamp("data");
+                            if (timestamp != null) {
+                                transferencia.setData(timestamp.toLocalDateTime());
+                            }
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                        conta.getTransferencias().add(transferencia);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        return clienteMap.values().stream().findFirst().orElse(null);
     }
+
+
+
 
     public List<Transferencia> findByContaId(Long contaId) {
         String sql = "SELECT * FROM transferencias " +
@@ -217,11 +291,7 @@ public class ClienteDao {
         """;
         return jdbcTemplate.query(cartaoSql, new CartaoRowMapper(), contaId);
     }
-
-    
-    
-    
-    
+   
 
 
 }

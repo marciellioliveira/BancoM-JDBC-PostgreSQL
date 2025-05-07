@@ -1,6 +1,7 @@
 package br.com.marcielli.bancom.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.context.annotation.Profile;
 
 @Setter
 @Getter
@@ -20,7 +20,9 @@ import org.springframework.context.annotation.Profile;
 @ToString
 @EqualsAndHashCode
 public class Cliente implements Serializable {
-
+	
+	private static final long serialVersionUID = 1L;
+	
 	private Long id;
 	private String nome;
 	private Long cpf;
@@ -34,4 +36,11 @@ public class Cliente implements Serializable {
 
 	@JsonIgnore
     private User user;
+	
+	public List<Conta> getContas() {
+        if (contas == null) {
+            contas = new ArrayList<>();
+        }
+        return contas;
+    }
 }
