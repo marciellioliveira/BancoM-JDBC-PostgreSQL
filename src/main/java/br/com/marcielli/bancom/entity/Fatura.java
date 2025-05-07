@@ -34,7 +34,7 @@ public class Fatura  implements Serializable {
 	@JsonManagedReference
 	private List<Transferencia> transferenciasCredito = new ArrayList<>();
 	
-	private BigDecimal valorTotal;
+	private BigDecimal valorTotal = BigDecimal.ZERO;
 		
 	public Fatura() {
 		this.dataVencimento = LocalDateTime.now();

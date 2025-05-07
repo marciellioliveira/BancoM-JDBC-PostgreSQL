@@ -370,7 +370,6 @@ public class UserCartaoService {
         if (contaOrigem.getTransferencias() == null) {
             contaOrigem.setTransferencias(new ArrayList<>());
         }
-//        contaOrigem.getTransferencias().add(transferencia);
 
         //se o cartão de origem for credito(não vai retirar valor do saldo), vai passar como credito e precisa entrar nas duas listas: transferenciasCredito (pq ele não ta tirando do dinheiro dele no
         //momento, está pagando no credito e transferenciasEnviadas porque foi um tipo de transferencia enviada
@@ -395,7 +394,9 @@ public class UserCartaoService {
                         return novaFatura;
                     });
 
-            fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
+            BigDecimal atual = fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO;
+            fatura.setValorTotal(atual.add(dto.valor())); //precisei tratar antes com zero porque mesmo iniciando na entidade ainda estava dando null (também colquei no banco para não aceitar valor null"
+            //fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
             transferencia.setFatura(fatura);
             fatura.adicionarTransfCredito(transferencia);
             

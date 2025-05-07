@@ -50,7 +50,7 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         cartao.setNumeroCartao(rs.getString("numero_cartao"));
         cartao.setStatus(rs.getBoolean("status"));
         cartao.setSenha(rs.getString("senha"));
-        cartao.setFaturaId(rs.getLong("fatura_id"));
+        cartao.setFaturaId(rs.getLong("fatura_cartao_id"));
         cartao.setTotalGastoMes(rs.getBigDecimal("total_gasto_mes"));
 
         // Mapear a fatura
@@ -58,9 +58,9 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         if (!rs.wasNull() && faturaId != 0) {
             Fatura fatura = new Fatura();
             fatura.setId(faturaId);
-            fatura.setCartaoId(rs.getLong("fatura_cartao_id"));
+            fatura.setCartaoId(rs.getLong("fatura_id"));
             fatura.setValorTotal(rs.getBigDecimal("fatura_valor_total"));
-            fatura.setDataVencimento(rs.getObject("fatura_data_vencimento", LocalDateTime.class));
+           fatura.setDataVencimento(rs.getObject("fatura_data_vencimento", LocalDateTime.class));
             cartao.setFatura(fatura);
             logger.debug("[DEBUG] Fatura mapeada para cartão ID: " + cartao.getId() + ", fatura ID: " + faturaId);
         }
