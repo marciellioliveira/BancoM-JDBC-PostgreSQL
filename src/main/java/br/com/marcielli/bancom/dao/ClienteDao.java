@@ -1,10 +1,13 @@
 package br.com.marcielli.bancom.dao;
 
 import br.com.marcielli.bancom.entity.Cartao;
+import br.com.marcielli.bancom.entity.CartaoCredito;
+import br.com.marcielli.bancom.entity.CartaoDebito;
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.entity.User;
+import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.enuns.TipoTransferencia;
@@ -27,6 +30,7 @@ import java.sql.Timestamp;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,34 +168,43 @@ public class ClienteDao {
     }
     
     public Cliente findByIdWithContasAndTransferencias(Long clienteId) {
-        String sql = """
-            SELECT
-			    c.id AS cliente_id,
-			    c.nome,
-			    c.cpf,
-			    c.cliente_ativo,
-			    co.id AS conta_id,
-			    co.numero_conta,
-			    co.tipo_conta,
-			    co.saldo_conta,
-			    t.id AS transferencia_id,
-			    t.valor,
-			    t.data,
-			    t.id_cliente_origem,
-			    t.id_cliente_destino,
-			    t.id_conta_origem,
-			    t.id_conta_destino,
-			    t.id_cartao,
-			    t.fatura_id,
-			    t.tipo_transferencia,
-			    t.codigo_operacao,
-			    t.tipo_cartao
-			FROM clientes c
-			LEFT JOIN contas co ON co.cliente_id = c.id
-			LEFT JOIN transferencias t ON t.id_conta_origem = co.id OR t.id_conta_destino = co.id
-			WHERE c.id = :clienteId
+    	String sql = """
+    		    SELECT
+    		        c.id AS cliente_id,
+    		        c.nome,
+    		        c.cpf,
+    		        c.cliente_ativo,
+    		        co.id AS conta_id,
+    		        co.numero_conta,
+    		        co.tipo_conta,
+    		        co.saldo_conta,
+    		        t.id AS transferencia_id,
+    		        t.valor,
+    		        t.data,
+    		        t.id_cliente_origem,
+    		        t.id_cliente_destino,
+    		        t.id_conta_origem,
+    		        t.id_conta_destino,
+    		        t.id_cartao,
+    		        t.fatura_id,
+    		        t.tipo_transferencia,
+    		        t.codigo_operacao,
+    		        t.tipo_cartao,
+    		        ca.id AS cartao_id,               -- ID do cartão
+    		        ca.numero_cartao,                 -- Número do cartão
+    		        ca.tipo_cartao,                   -- Tipo do cartão
+    		        ca.categoria_conta,               -- Categoria da conta do cartão
+    		        ca.limite_credito_pre_aprovado,   -- Limite de crédito pré-aprovado
+    		        ca.status,                         -- Status do cartão
+    		        ca.total_gasto_mes,               -- Total gasto no mês
+    		        ca.total_gasto_mes_credito        -- Total gasto no crédito
+    		    FROM clientes c
+    		    LEFT JOIN contas co ON co.cliente_id = c.id
+    		    LEFT JOIN transferencias t ON t.id_conta_origem = co.id OR t.id_conta_destino = co.id
+    		    LEFT JOIN cartoes ca ON t.id_cartao = ca.id   -- Junção com a tabela de cartões
+    		    WHERE c.id = :clienteId
+    		""";
 
-        """;
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("clienteId", clienteId);
@@ -218,6 +231,7 @@ public class ClienteDao {
                     return c;
                 });
 
+                //Conta
                 Long contaId = rs.getLong("conta_id");
                 if (rs.wasNull()) {
                     contaId = null;
@@ -237,6 +251,49 @@ public class ClienteDao {
                         cliente.getContas().add(co);
                         return co;
                     });
+                    
+                    
+                    //Cartão
+                    
+                    Long cartaoId = rs.getLong("cartao_id");
+                    if (!rs.wasNull()) {
+                        String tipoCartaoStr = rs.getString("tipo_cartao");
+                        TipoCartao tipoCartao = TipoCartao.valueOf(tipoCartaoStr);
+                        Cartao cartao;
+
+                        if (tipoCartao == TipoCartao.CREDITO) {
+                            CartaoCredito cartaoCredito = new CartaoCredito();
+                            cartaoCredito.setId(cartaoId);
+                            cartaoCredito.setNumeroCartao(rs.getString("numero_cartao"));
+                            cartaoCredito.setTipoCartao(tipoCartao);
+                            cartaoCredito.setCategoriaConta(CategoriaConta.valueOf(rs.getString("categoria_conta")));
+                            cartaoCredito.setStatus(Boolean.valueOf(rs.getString("status")));
+                            cartaoCredito.setLimiteCreditoPreAprovado(rs.getBigDecimal("limite_credito_pre_aprovado"));
+                            cartaoCredito.setTotalGastoMesCredito(rs.getBigDecimal("total_gasto_mes_credito"));
+                            cartao = cartaoCredito;
+                        } else if (tipoCartao == TipoCartao.DEBITO) {
+                            CartaoDebito cartaoDebito = new CartaoDebito();
+                            cartaoDebito.setId(cartaoId);
+                            cartaoDebito.setNumeroCartao(rs.getString("numero_cartao"));
+                            cartaoDebito.setTipoCartao(tipoCartao);
+                            cartaoDebito.setCategoriaConta(CategoriaConta.valueOf(rs.getString("categoria_conta")));
+                            cartaoDebito.setStatus(Boolean.valueOf(rs.getString("status")));
+                            cartaoDebito.setTotalGastoMes(rs.getBigDecimal("total_gasto_mes"));
+                            cartao = cartaoDebito;
+                        } else {
+                            throw new IllegalArgumentException("Tipo de cartão desconhecido: " + tipoCartaoStr);
+                        }
+
+                        if (conta.getCartoes() == null) {
+                            conta.setCartoes(new ArrayList<Cartao>());
+                        }
+                        conta.getCartoes().add(cartao); //associando o cartão a conta
+                       
+                    
+                    
+                    
+                    
+                    //Transferencia
 
                     Long transferenciaId = rs.getLong("transferencia_id");
                     if (rs.wasNull()) {
@@ -262,12 +319,18 @@ public class ClienteDao {
                             transferencia.setFaturaId(rs.getLong("fatura_id"));
                             transferencia.setTipoTransferencia(TipoTransferencia.valueOf(rs.getString("tipo_transferencia")));
                             transferencia.setCodigoOperacao(rs.getString("codigo_operacao"));
-                            transferencia.setTipoCartao(TipoCartao.valueOf(rs.getString("tipo_cartao")));
+                            transferencia.setTipoCartao(TipoCartao.valueOf(rs.getString("tipo_cartao")));                            
+                            
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
+                        if (conta.getTransferencias() == null) {
+                            conta.setTransferencias(new ArrayList<>());
+                        }
+
                         conta.getTransferencias().add(transferencia);
                     }
+                }
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);

@@ -22,7 +22,6 @@ public class CartaoCredito extends Cartao {
 	private BigDecimal taxaUtilizacao;
 	private BigDecimal taxaSeguroViagem;
 	private BigDecimal totalGastoMesCredito = BigDecimal.ZERO;
-	//private List<Transferencia> faturaCredito = new ArrayList<Transferencia>();
 
 	public void atualizarTotalGastoMes(BigDecimal valor) {
 
