@@ -183,33 +183,59 @@ public class CartaoDao {
 	    return jdbcTemplate.query(sql, new CartaoRowMapper());
 	}
 
-
-//	public List<Cartao> findAll() {
-//		String sql = "SELECT * FROM cartoes";
-//		return jdbcTemplate.query(sql, new CartaoRowMapper());
+//
+//	public List<Cartao> findByUsername(String username) {
+//		String sql = """
+//				    SELECT c.*
+//				    FROM cartoes c
+//				    INNER JOIN contas ct ON c.conta_id = ct.id
+//				    WHERE ct.username = ?
+//				""";
+//		return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
 //	}
-
+	
 	public List<Cartao> findByUsername(String username) {
-		String sql = """
-				    SELECT c.*
-				    FROM cartoes c
-				    INNER JOIN contas ct ON c.conta_id = ct.id
-				    WHERE ct.username = ?
-				""";
-		return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
+	    String sql = """
+	            SELECT 
+	                c.*,
+	                ct.id AS conta_id,
+	                ct.saldo_conta,
+	                ct.numero_conta,
+	                ct.status AS conta_status
+	                -- Include other columns your mapper needs
+	            FROM cartoes c
+	            INNER JOIN contas ct ON c.conta_id = ct.id
+	            INNER JOIN clientes cl ON ct.cliente_id = cl.id
+	            INNER JOIN users u ON cl.user_id = u.id
+	            WHERE u.username = ?
+	            """;
+	    return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
 	}
 
 	public Optional<Cartao> findByIdAndUsername(Long id, String username) {
-		String sql = "SELECT c.* " + "FROM cartoes c " + "JOIN contas co ON c.conta_id = co.id "
-				+ "JOIN clientes cl ON co.cliente_id = cl.id " + "JOIN users u ON cl.user = u.id "
-				+ "WHERE c.id = ? AND u.username = ?";
-
-		try {
-			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id, username);
-			return Optional.ofNullable(cartao);
-		} catch (EmptyResultDataAccessException e) {
-			return Optional.empty();
-		}
+	    String sql = """
+	            SELECT 
+	                c.*,
+	                co.id AS conta_id,
+	                co.cliente_id,
+	                co.saldo_conta,
+	                co.numero_conta,
+	                co.status AS conta_status,
+	                cl.id AS cliente_id,
+	                cl.nome AS cliente_nome,
+	                u.username
+	            FROM cartoes c
+	            JOIN contas co ON c.conta_id = co.id
+	            JOIN clientes cl ON co.cliente_id = cl.id
+	            JOIN users u ON cl.user_id = u.id
+	            WHERE c.id = ? AND u.username = ?
+	            """;
+	    try {
+	        Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id, username);
+	        return Optional.ofNullable(cartao);
+	    } catch (EmptyResultDataAccessException e) {
+	        return Optional.empty();
+	    }
 	}
 
 	public Cartao save(Cartao cartao) {
