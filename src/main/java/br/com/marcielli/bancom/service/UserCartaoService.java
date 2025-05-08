@@ -289,7 +289,6 @@ public class UserCartaoService {
 	}
 
 
-
 	@Transactional
     public boolean pagCartao(Long idContaReceber, UserCartaoPagCartaoDTO dto, Authentication authentication) {
        
@@ -370,10 +369,9 @@ public class UserCartaoService {
         if (contaOrigem.getTransferencias() == null) {
             contaOrigem.setTransferencias(new ArrayList<>());
         }
+        
+     // Mantenha todo o código anterior igual até o bloco do cartão de crédito
 
-        //se o cartão de origem for credito(não vai retirar valor do saldo), vai passar como credito e precisa entrar nas duas listas: transferenciasCredito (pq ele não ta tirando do dinheiro dele no
-        //momento, está pagando no credito e transferenciasEnviadas porque foi um tipo de transferencia enviada
-        //se for debito, precisa descontar do valor da conta e somente entrar em transferenciasEnviadas
         if (cartaoOrigem instanceof CartaoCredito cartaoCredito) {
             if (dto.valor().compareTo(cartaoCredito.getLimiteCreditoPreAprovado()) > 0) {
                 throw new TransferenciaNaoRealizadaException("Limite de crédito insuficiente");
@@ -394,32 +392,31 @@ public class UserCartaoService {
                         return novaFatura;
                     });
 
-            BigDecimal atual = fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO;
-            fatura.setValorTotal(atual.add(dto.valor())); //precisei tratar antes com zero porque mesmo iniciando na entidade ainda estava dando null (também colquei no banco para não aceitar valor null"
-            //fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
+            fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
             transferencia.setFatura(fatura);
-            fatura.adicionarTransfCredito(transferencia);
-                        
-            //teste inserindo na lista de transferencias e na lista de credito
+            
+            // Salva a fatura primeiro
+            Long faturaId = faturaDao.save(fatura);
+            fatura.setId(faturaId);
+            
+            // Salva a transferência
+            Long transferenciaId = transferenciaDao.save(transferencia);
+            transferencia.setId(transferenciaId);
+            
+            // Faz as associações
+            transferenciaDao.associarTransferenciaAFatura(faturaId, transferenciaId);
+            cartaoDao.associarFaturaAoCartao(cartaoCredito.getId(), faturaId);
+            
+            // Atualiza o cartão
+            cartaoCredito.setFaturaId(faturaId);
+            cartaoDao.update(cartaoCredito);
+            
+            // Adiciona às listas (apenas uma vez)
             contaOrigem.getTransferencias().add(transferencia);
             fatura.getTransferenciasCredito().add(transferencia);
             
-            fatura.setCartao(cartaoOrigem); // atribuindo o cartão a fatura
-            Long faturaId = faturaDao.save(fatura); //salvei a fatura e retornei o id
-            fatura.setId(faturaId);         
-            
-            //ligando a transferencia a fatura antes de salvar
-            transferencia.setFaturaId(faturaId);
-            
-            Long transferenciaId = transferenciaDao.save(transferencia); //salvo a transferencia e pego o id
-            transferencia.setId(transferenciaId);
-            transferenciaDao.associarTransferenciaAFatura(faturaId, transferenciaId); //associo a transferencia a fatura na tabela de ligação
-            cartaoDao.associarFaturaAoCartao(cartaoCredito.getId(), faturaId); //associei a fatura ao cartão
-            
-            cartaoCredito.setFaturaId(faturaId); //atualizando o objeto em memoria
-           
-            
         } else if (cartaoOrigem instanceof CartaoDebito cartaoDebito) {
+            // Mantenha o código do débito exatamente como está
             if (dto.valor().compareTo(cartaoDebito.getLimiteDiarioTransacao()) > 0) {
                 throw new TransferenciaNaoRealizadaException("Limite diário excedido");
             }
@@ -432,178 +429,271 @@ public class UserCartaoService {
             BigDecimal novoTotalGastoMes = cartaoDebito.getTotalGastoMes() != null ?
                     cartaoDebito.getTotalGastoMes().add(dto.valor()) : dto.valor();
             cartaoDebito.setTotalGastoMes(novoTotalGastoMes);
+            
+            // Para débito, adiciona apenas na lista geral
+            contaOrigem.getTransferencias().add(transferencia);
         }
 
+        // Atualiza o saldo da conta destino (comum para crédito e débito)
         contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
         TaxaManutencao taxaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
         contaDestino.setCategoriaConta(taxaDestino.getCategoria());
         contaDestino.setTaxas(List.of(taxaDestino));
-        
-        //teste somente na lista de transferencia
-        contaOrigem.getTransferencias().add(transferencia);
-       
 
-        Long transferenciaId = transferenciaDao.save(transferencia);
-        transferencia.setId(transferenciaId);
+        // Salva a transferência apenas uma vez (já foi salva dentro do bloco do crédito)
+        if (!(cartaoOrigem instanceof CartaoCredito)) {
+            Long transferenciaId = transferenciaDao.save(transferencia);
+            transferencia.setId(transferenciaId);
+        }
+
+        // Atualiza as contas
         contaDao.update(contaOrigem);
         contaDao.update(contaDestino);
-        cartaoDao.update(cartaoOrigem);
 
         return true;
+
+//        //se o cartão de origem for credito(não vai retirar valor do saldo), vai passar como credito e precisa entrar nas duas listas: transferenciasCredito (pq ele não ta tirando do dinheiro dele no
+//        //momento, está pagando no credito e transferenciasEnviadas porque foi um tipo de transferencia enviada
+//        //se for debito, precisa descontar do valor da conta e somente entrar em transferenciasEnviadas
+//        if (cartaoOrigem instanceof CartaoCredito cartaoCredito) {
+//            if (dto.valor().compareTo(cartaoCredito.getLimiteCreditoPreAprovado()) > 0) {
+//                throw new TransferenciaNaoRealizadaException("Limite de crédito insuficiente");
+//            }
+//
+//            BigDecimal novoLimite = cartaoCredito.getLimiteCreditoPreAprovado().subtract(dto.valor());
+//            BigDecimal novoTotalGasto = cartaoCredito.getTotalGastoMesCredito() != null ?
+//                    cartaoCredito.getTotalGastoMesCredito().add(dto.valor()) : dto.valor();
+//            cartaoCredito.setLimiteCreditoPreAprovado(novoLimite);
+//            cartaoCredito.setTotalGastoMesCredito(novoTotalGasto);
+//            
+//            Fatura fatura = faturaDao.findByCartaoId(cartaoCredito.getId())
+//                    .orElseGet(() -> {
+//                        Fatura novaFatura = new Fatura();
+//                        novaFatura.setCartao(cartaoCredito);
+//                        novaFatura.setDataVencimento(LocalDateTime.now().plusDays(10));
+//                        novaFatura.setValorTotal(BigDecimal.ZERO);
+//                        return novaFatura;
+//                    });
+//
+//            BigDecimal atual = fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO;
+//            fatura.setValorTotal(atual.add(dto.valor())); //precisei tratar antes com zero porque mesmo iniciando na entidade ainda estava dando null (também colquei no banco para não aceitar valor null"
+//            //fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
+//            transferencia.setFatura(fatura);
+//            fatura.adicionarTransfCredito(transferencia);
+//                        
+//            //teste inserindo na lista de transferencias e na lista de credito
+//            contaOrigem.getTransferencias().add(transferencia);
+//            fatura.getTransferenciasCredito().add(transferencia);
+//            
+//            fatura.setCartao(cartaoOrigem); // atribuindo o cartão a fatura
+//            Long faturaId = faturaDao.save(fatura); //salvei a fatura e retornei o id
+//            fatura.setId(faturaId);         
+//            
+//            //ligando a transferencia a fatura antes de salvar
+//            transferencia.setFaturaId(faturaId);
+//            
+//            Long transferenciaId = transferenciaDao.save(transferencia); //salvo a transferencia e pego o id
+//            transferencia.setId(transferenciaId);
+//            transferenciaDao.associarTransferenciaAFatura(faturaId, transferenciaId); //associo a transferencia a fatura na tabela de ligação
+//            cartaoDao.associarFaturaAoCartao(cartaoCredito.getId(), faturaId); //associei a fatura ao cartão
+//            
+//            cartaoCredito.setFaturaId(faturaId); //atualizando o objeto em memoria
+//           
+//            
+//        } else if (cartaoOrigem instanceof CartaoDebito cartaoDebito) {
+//            if (dto.valor().compareTo(cartaoDebito.getLimiteDiarioTransacao()) > 0) {
+//                throw new TransferenciaNaoRealizadaException("Limite diário excedido");
+//            }
+//            if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+//                throw new TransferenciaNaoRealizadaException("Saldo insuficiente");
+//            }
+//
+//            contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
+//            cartaoDebito.setLimiteDiarioTransacao(cartaoDebito.getLimiteDiarioTransacao().subtract(dto.valor()));
+//            BigDecimal novoTotalGastoMes = cartaoDebito.getTotalGastoMes() != null ?
+//                    cartaoDebito.getTotalGastoMes().add(dto.valor()) : dto.valor();
+//            cartaoDebito.setTotalGastoMes(novoTotalGastoMes);
+//        }
+//
+//        contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+//        TaxaManutencao taxaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+//        contaDestino.setCategoriaConta(taxaDestino.getCategoria());
+//        contaDestino.setTaxas(List.of(taxaDestino));
+//        
+//        //teste somente na lista de transferencia
+//        contaOrigem.getTransferencias().add(transferencia);
+//       
+//
+//        Long transferenciaId = transferenciaDao.save(transferencia);
+//        transferencia.setId(transferenciaId);
+//        contaDao.update(contaOrigem);
+//        contaDao.update(contaDestino);
+//        cartaoDao.update(cartaoOrigem);
+//
+//        return true;
     }
+
 //	@Transactional
-//	public boolean pagCartao(Long idContaReceber, UserCartaoPagCartaoDTO dto, Authentication authentication) {
-//	    if (dto.idCartao() == null) {
-//	        throw new IllegalArgumentException("ID do cartão é obrigatório");
-//	    }
-//	    if (dto.valor() == null || dto.valor().compareTo(BigDecimal.ZERO) <= 0) {
-//	        throw new IllegalArgumentException("O valor deve ser maior que zero");
-//	    }
-//	    if (dto.senha() == null || dto.senha().isEmpty()) {
-//	        throw new IllegalArgumentException("Senha do cartão é obrigatória");
-//	    }
+//    public boolean pagCartao(Long idContaReceber, UserCartaoPagCartaoDTO dto, Authentication authentication) {
+//       
+//		// Validando inputs
+//        if (dto.idCartao() == null) {
+//            throw new IllegalArgumentException("ID do cartão é obrigatório");
+//        }
+//        if (dto.valor() == null || dto.valor().compareTo(BigDecimal.ZERO) <= 0) {
+//            throw new IllegalArgumentException("O valor deve ser maior que zero");
+//        }
+//        if (dto.senha() == null || dto.senha().isEmpty()) {
+//            throw new IllegalArgumentException("Senha do cartão é obrigatória");
+//        }
 //
-//	    Cartao cartaoOrigem = cartaoDao.findById(dto.idCartao())
-//	            .orElseThrow(() -> new IllegalArgumentException("Cartão não encontrado"));
-//	    
-//	    if (!passwordEncoder.matches(dto.senha(), cartaoOrigem.getSenha())) {
-//	        throw new IllegalArgumentException("Senha do cartão incorreta");
-//	    }
+//        //Cartão que vai fazer o pagamento
+//        Cartao cartaoOrigem = cartaoDao.findById(dto.idCartao())
+//                .orElseThrow(() -> new IllegalArgumentException("Cartão não encontrado"));
+//       
+//        //Validando a senha do cartão
+//        if (!passwordEncoder.matches(dto.senha(), cartaoOrigem.getSenha())) {
+//            throw new IllegalArgumentException("Senha do cartão incorreta");
+//        }
+//       
+//        //Validando o status do cartão
+//        if (!cartaoOrigem.isStatus()) {
+//            throw new PermissaoNegadaException("Cartão está desativado");
+//        }
 //
-//	    Conta contaOrigem = contaDao.findById(cartaoOrigem.getConta().getId())
-//	            .orElseThrow(() -> new IllegalArgumentException("Conta associada ao cartão não encontrada"));
-//	    
-//	    Cliente clienteOrigem = clienteDao.findById(contaOrigem.getCliente().getId())
-//	            .orElseThrow(() -> new IllegalArgumentException("Cliente da conta de origem não encontrado"));
-//	    
-//	    contaOrigem.setCliente(clienteOrigem);
-//	    cartaoOrigem.setConta(contaOrigem);
+//        //Conta que vai fazer o pagamento
+//        Conta contaOrigem = contaDao.findById(cartaoOrigem.getConta().getId())
+//                .orElseThrow(() -> new IllegalArgumentException("Conta associada ao cartão não encontrada"));
+//        
+//        // Conta que vai receber o valor
+//        Conta contaDestino = contaDao.findById(idContaReceber)
+//                .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
 //
-//	    Conta contaDestino = contaDao.findById(idContaReceber)
-//	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
+//        //Validando a conta que vai receber o valor
+//        if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
+//            throw new PermissaoNegadaException("Uma das contas está desativada");
+//        }
 //
-//	    if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
-//	        throw new PermissaoNegadaException("Uma das contas está desativada");
-//	    }
-//	    if (!cartaoOrigem.isStatus()) {
-//	        throw new PermissaoNegadaException("Cartão está desativado");
-//	    }
+//        //Cliente que vai enviar o valor
+//        Cliente clienteOrigem = clienteDao.findById(contaOrigem.getCliente().getId())
+//                .orElseThrow(() -> new IllegalArgumentException("Cliente da conta de origem não encontrado"));
+//        
+//        // Usuario que está logado - aqui preciso disso porque se for ADMIN preciso autenticar se ele está enviando da conta dele ou da conta de outra pessoa
+//        User usuarioLogado = userDao.findByUsername(authentication.getName())
+//                .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
+//        
+//        boolean isAdmin = authentication.getAuthorities().stream()        		
+//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+//        
+//        //se for user basic e ele estiver tentando enviar de outro usuario para outra pessoa, vai barrar
+//        if (!isAdmin && !clienteOrigem.getId().equals(usuarioLogado.getId().longValue())) {
+//            throw new AcessoNegadoException("Você só pode pagar com cartão vinculado à sua própria conta");
+//        }
 //
-//	    User usuarioLogado = userDao.findByUsername(authentication.getName())
-//	            .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
+//        //transferencia - debito ou credito
+//        //se o cartão de origem for credito(não vai retirar valor do saldo), vai passar como credito e precisa entrar nas duas listas: transferenciasCredito (pq ele não ta tirando do dinheiro dele no
+//        //momento, está pagando no credito e transferenciasEnviadas porque foi um tipo de transferencia enviada
+//        
+//        //se for debito, precisa descontar do valor da conta e somente entrar em transferenciasEnviadas
+//        Transferencia transferencia = new Transferencia(
+//                contaOrigem,
+//                dto.valor(),
+//                contaDestino,
+//                (cartaoOrigem instanceof CartaoCredito) ? TipoTransferencia.CARTAO_CREDITO : TipoTransferencia.CARTAO_DEBITO,
+//                cartaoOrigem.getTipoCartao()
+//        );
+//        transferencia.setIdCartao(cartaoOrigem.getId());
+//        transferencia.setIdClienteOrigem(clienteOrigem.getId());
+//        transferencia.setIdClienteDestino(contaDestino.getCliente().getId());
+//        transferencia.setIdContaOrigem(contaOrigem.getId());
+//        transferencia.setIdContaDestino(contaDestino.getId());
+//        transferencia.setData(LocalDateTime.now());
+//        transferencia.setCodigoOperacao(gerarNumeros.gerarNumeroGeral());
 //
-//	    boolean isAdmin = authentication.getAuthorities().stream()
-//	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+//        if (contaOrigem.getTransferencias() == null) {
+//            contaOrigem.setTransferencias(new ArrayList<>());
+//        }
 //
-//	    if (!isAdmin && !clienteOrigem.getId().equals(usuarioLogado.getId().longValue())) {
-//	        throw new AcessoNegadoException("Você só pode pagar com cartão vinculado à sua própria conta");
-//	    }
+//        //se o cartão de origem for credito(não vai retirar valor do saldo), vai passar como credito e precisa entrar nas duas listas: transferenciasCredito (pq ele não ta tirando do dinheiro dele no
+//        //momento, está pagando no credito e transferenciasEnviadas porque foi um tipo de transferencia enviada
+//        //se for debito, precisa descontar do valor da conta e somente entrar em transferenciasEnviadas
+//        if (cartaoOrigem instanceof CartaoCredito cartaoCredito) {
+//            if (dto.valor().compareTo(cartaoCredito.getLimiteCreditoPreAprovado()) > 0) {
+//                throw new TransferenciaNaoRealizadaException("Limite de crédito insuficiente");
+//            }
 //
-//	    Transferencia transferencia = new Transferencia(
-//	        contaOrigem, 
-//	        dto.valor(), 
-//	        contaDestino,
-//	        TipoTransferencia.TED, 
-//	        cartaoOrigem.getTipoCartao()
-//	    );
+//            BigDecimal novoLimite = cartaoCredito.getLimiteCreditoPreAprovado().subtract(dto.valor());
+//            BigDecimal novoTotalGasto = cartaoCredito.getTotalGastoMesCredito() != null ?
+//                    cartaoCredito.getTotalGastoMesCredito().add(dto.valor()) : dto.valor();
+//            cartaoCredito.setLimiteCreditoPreAprovado(novoLimite);
+//            cartaoCredito.setTotalGastoMesCredito(novoTotalGasto);
+//            
+//            Fatura fatura = faturaDao.findByCartaoId(cartaoCredito.getId())
+//                    .orElseGet(() -> {
+//                        Fatura novaFatura = new Fatura();
+//                        novaFatura.setCartao(cartaoCredito);
+//                        novaFatura.setDataVencimento(LocalDateTime.now().plusDays(10));
+//                        novaFatura.setValorTotal(BigDecimal.ZERO);
+//                        return novaFatura;
+//                    });
 //
-//	    if (contaOrigem.getTransferencias() == null) {
-//	        contaOrigem.setTransferencias(new ArrayList<>());
-//	    }
-//	    contaOrigem.getTransferencias().add(transferencia);
+//            BigDecimal atual = fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO;
+//            fatura.setValorTotal(atual.add(dto.valor())); //precisei tratar antes com zero porque mesmo iniciando na entidade ainda estava dando null (também colquei no banco para não aceitar valor null"
+//            //fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
+//            transferencia.setFatura(fatura);
+//            fatura.adicionarTransfCredito(transferencia);
+//                        
+//            //teste inserindo na lista de transferencias e na lista de credito
+//            contaOrigem.getTransferencias().add(transferencia);
+//            fatura.getTransferenciasCredito().add(transferencia);
+//            
+//            fatura.setCartao(cartaoOrigem); // atribuindo o cartão a fatura
+//            Long faturaId = faturaDao.save(fatura); //salvei a fatura e retornei o id
+//            fatura.setId(faturaId);         
+//            
+//            //ligando a transferencia a fatura antes de salvar
+//            transferencia.setFaturaId(faturaId);
+//            
+//            Long transferenciaId = transferenciaDao.save(transferencia); //salvo a transferencia e pego o id
+//            transferencia.setId(transferenciaId);
+//            transferenciaDao.associarTransferenciaAFatura(faturaId, transferenciaId); //associo a transferencia a fatura na tabela de ligação
+//            cartaoDao.associarFaturaAoCartao(cartaoCredito.getId(), faturaId); //associei a fatura ao cartão
+//            
+//            cartaoCredito.setFaturaId(faturaId); //atualizando o objeto em memoria
+//           
+//            
+//        } else if (cartaoOrigem instanceof CartaoDebito cartaoDebito) {
+//            if (dto.valor().compareTo(cartaoDebito.getLimiteDiarioTransacao()) > 0) {
+//                throw new TransferenciaNaoRealizadaException("Limite diário excedido");
+//            }
+//            if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
+//                throw new TransferenciaNaoRealizadaException("Saldo insuficiente");
+//            }
 //
-//	    transferencia.setIdClienteOrigem(clienteOrigem.getId());
-//	    transferencia.setIdClienteDestino(contaDestino.getCliente().getId());
-//	    transferencia.setIdContaOrigem(contaOrigem.getId());
-//	    transferencia.setIdContaDestino(contaDestino.getId());
-//	    transferencia.setData(LocalDateTime.now());
-//	    transferencia.setCodigoOperacao(gerarNumeros.gerarNumeroGeral());
+//            contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
+//            cartaoDebito.setLimiteDiarioTransacao(cartaoDebito.getLimiteDiarioTransacao().subtract(dto.valor()));
+//            BigDecimal novoTotalGastoMes = cartaoDebito.getTotalGastoMes() != null ?
+//                    cartaoDebito.getTotalGastoMes().add(dto.valor()) : dto.valor();
+//            cartaoDebito.setTotalGastoMes(novoTotalGastoMes);
+//        }
 //
-//	    if (cartaoOrigem instanceof CartaoCredito cartaoCredito) {
-//	       
-//	        if (dto.valor().compareTo(cartaoCredito.getLimiteCreditoPreAprovado()) > 0) {
-//	            throw new TransferenciaNaoRealizadaException("Limite de crédito insuficiente");
-//	        }
+//        contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
+//        TaxaManutencao taxaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
+//        contaDestino.setCategoriaConta(taxaDestino.getCategoria());
+//        contaDestino.setTaxas(List.of(taxaDestino));
+//        
+//        //teste somente na lista de transferencia
+//        contaOrigem.getTransferencias().add(transferencia);
+//       
 //
-//	        BigDecimal novoLimite = cartaoCredito.getLimiteCreditoPreAprovado().subtract(dto.valor());
-//	        BigDecimal novoTotalGasto = cartaoCredito.getTotalGastoMesCredito() != null ?
-//	            cartaoCredito.getTotalGastoMesCredito().add(dto.valor()) : dto.valor();
-//	        cartaoCredito.setLimiteCreditoPreAprovado(novoLimite);
-//	        cartaoCredito.setTotalGastoMesCredito(novoTotalGasto);
-//	        logger.info("Antes de atualizar limites cartão crédito: cartaoId={}, novoLimite={}, novoTotalGasto={}",
-//	            cartaoCredito.getId(), novoLimite, novoTotalGasto);
-//	        cartaoDao.atualizarLimitesCartaoCredito(cartaoCredito.getId(), novoLimite, novoTotalGasto);
+//        Long transferenciaId = transferenciaDao.save(transferencia);
+//        transferencia.setId(transferenciaId);
+//        contaDao.update(contaOrigem);
+//        contaDao.update(contaDestino);
+//        cartaoDao.update(cartaoOrigem);
 //
-//	        Fatura fatura = cartaoDao.findFaturaByCartaoId(cartaoCredito.getId())
-//	                .orElseGet(() -> {
-//	                    Fatura novaFatura = new Fatura();
-//	                    novaFatura.setCartao(cartaoCredito);
-//	                    novaFatura.setDataVencimento(LocalDateTime.now().plusDays(10));
-//	                    novaFatura.setValorTotal(BigDecimal.ZERO);
-//	                    Long faturaId = faturaDao.save(novaFatura);
-//	                    novaFatura.setId(faturaId);
-//	                    logger.info("Criando nova fatura: faturaId={}, cartaoId={}", faturaId, cartaoCredito.getId());
-//	                    cartaoDao.associarFaturaAoCartao(cartaoCredito.getId(), faturaId);
-//	                    return novaFatura;
-//	                });
-//
-//	        logger.info("Verificando associação de fatura para cartaoId={}", cartaoCredito.getId());
-//	        cartaoDao.verificarEAssociarFatura(cartaoCredito.getId(), fatura.getId());
-//
-//	        logger.info("Atualizando valor total da fatura: faturaId={}, valor={}", fatura.getId(), dto.valor());
-//	        faturaDao.atualizarTotalFatura(fatura.getId(), dto.valor());
-//
-//	        transferencia.setFatura(fatura);
-//	        fatura.adicionarTransfCredito(transferencia);
-//
-//	    } else if (cartaoOrigem instanceof CartaoDebito cartaoDebito) {
-//	        if (dto.valor().compareTo(cartaoDebito.getLimiteDiarioTransacao()) > 0) {
-//	            throw new TransferenciaNaoRealizadaException("Limite diário excedido");
-//	        }
-//	        if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
-//	            throw new TransferenciaNaoRealizadaException("Saldo insuficiente");
-//	        }
-//
-//	        contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
-//	        cartaoDebito.setLimiteDiarioTransacao(
-//	            cartaoDebito.getLimiteDiarioTransacao().subtract(dto.valor()));
-//	        BigDecimal novoTotalGastoMes = cartaoDebito.getTotalGastoMes() != null ?
-//	            cartaoDebito.getTotalGastoMes().add(dto.valor()) : dto.valor();
-//	        cartaoDebito.setTotalGastoMes(novoTotalGastoMes);
-//	        logger.info("Atualizando cartão débito: cartaoId={}, total_gasto_mes={}",
-//	            cartaoDebito.getId(), novoTotalGastoMes);
-//	        
-//	        transferencia.setTipoTransferencia(TipoTransferencia.CARTAO_DEBITO);
-//	    }
-//
-//	    logger.info("Salvando transferência: contaOrigemId={}, contaDestinoId={}, valor={}",
-//	        transferencia.getIdContaOrigem(), transferencia.getIdContaDestino(), transferencia.getValor());
-//	    Long transferenciaId = transferenciaDao.save(transferencia);
-//	    transferencia.setId(transferenciaId);
-//
-//	    if (transferencia.getFatura() != null) {
-//	    	logger.info("Associando transferência à fatura: faturaId={}, transferenciaId={}",
-//	            transferencia.getFatura().getId(), transferenciaId);
-//	        transferenciaDao.associarTransferenciaAFatura(transferencia.getFatura().getId(), transferenciaId);
-//	    }
-//
-//	    contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
-//
-//	    TaxaManutencao taxaDestino = new TaxaManutencao(
-//	        contaDestino.getSaldoConta(), 
-//	        contaDestino.getTipoConta()
-//	    );
-//	    contaDestino.setCategoriaConta(taxaDestino.getCategoria());
-//	    contaDestino.setTaxas(List.of(taxaDestino));
-//
-//	    logger.info("Persistindo alterações: contaOrigemId={}, contaDestinoId={}, cartaoId={}",
-//	        contaOrigem.getId(), contaDestino.getId(), cartaoOrigem.getId());
-//	    contaDao.update(contaOrigem);
-//	    contaDao.update(contaDestino);
-//	    cartaoDao.update(cartaoOrigem);
-//
-//	    return true;
-//	}
+//        return true;
+//    }
 
 		
 }
