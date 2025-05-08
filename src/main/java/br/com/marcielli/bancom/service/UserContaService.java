@@ -178,7 +178,7 @@ public class UserContaService {
 	}
 	
 	@Transactional
-	public boolean delete(Long idConta, Authentication authentication) {
+	public boolean delete(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
 
 	    String role = authentication.getAuthorities().stream()
 	        .map(GrantedAuthority::getAuthority)
@@ -197,14 +197,23 @@ public class UserContaService {
 	        Long contaUserId = contaExistente.getCliente().getUser().getId().longValue();
 	        User loggedInUser = userDao.findByUsername(username)
 	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
-
-	        if (contaUserId.equals(loggedInUser.getId())) {
+	        logger.info("ADMIN: Conta ID: {}", contaExistente.getId());
+	        if (contaUserId.equals(loggedInUser.getId().longValue())) {
 	            throw new ContaExibirSaldoErroException("Administradores não podem deletar a própria conta. Apenas o superior pode realizar essa ação.");
 	        }
 
-	    } else if ("ROLE_BASIC".equals(role)) {
+	    } else if ("ROLE_BASIC".equals(role)) {	    	
+	    	
+	        User loggedInUser = userDao.findByUsername(username)
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+	        
+	        // o idUsuario do dto pertence ao usuário logado?
+	        if (!dto.idUsuario().equals(loggedInUser.getId().longValue())) {
+	            throw new ContaExibirSaldoErroException("Você só pode deletar suas próprias contas.");
+	        }	        
 	        contaExistente = contaDao.findByIdAndUsername(idConta, username)
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou você não tem permissão para deletá-la."));
+	        logger.info("BASIC: Conta ID: {}", contaExistente.getId());
 	    } else {
 	        throw new ClienteEncontradoException("Role não autorizada para deletar contas.");
 	    }
@@ -220,8 +229,10 @@ public class UserContaService {
 	        throw new ContaExibirSaldoErroException("A conta já está desativada anteriormente.");
 	    }
 
+	    Long contaId = contaExistente.getId();
+	    logger.info("Conta ID: {}", contaId);
 	    contaExistente.setStatus(false);
-	    contaDao.save(contaExistente);
+	    contaDao.desativarConta(contaExistente.getId());
 	    return true;
 	}
 

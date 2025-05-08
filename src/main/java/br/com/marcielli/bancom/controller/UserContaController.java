@@ -62,8 +62,8 @@ public class UserContaController {
 	// ADMIN pode deletar a conta de todos, menos a dele
 	// BASIC só pode deletar a própria conta por id
 	@DeleteMapping("/contas/{id}")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, Authentication authentication) {
-		boolean conta = contaService.delete(id, authentication);
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, Authentication authentication) {
+		boolean conta = contaService.delete(id, dto, authentication);
 
 		if (conta) {
 			return ResponseEntity.status(HttpStatus.OK).body("Conta deletada com sucesso!");

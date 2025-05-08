@@ -33,6 +33,10 @@ public class ContasRowMapper implements RowMapper<Conta> {
 	        String numeroConta = rs.getString("numero_conta");
 	        String pixAleatorio = rs.getString("pix_aleatorio");
 	        boolean status = rs.getBoolean("status");
+	        
+	        User user = new User();
+	        user.setId(rs.getInt("user_id"));  
+	        user.setUsername(rs.getString("username"));  
 
 	        Conta conta;
 	        
@@ -49,11 +53,11 @@ public class ContasRowMapper implements RowMapper<Conta> {
 	            conta = new Conta();
 	        }
 	        
-	        return setCommonFields(conta, id, clienteId, clienteNome, tipoConta, 
+	        return setCommonFields(conta, id, clienteId, clienteNome,user, tipoConta, 
 	                             categoriaConta, saldo, numeroConta, pixAleatorio, status);
 	    }
 
-	    private Conta setCommonFields(Conta conta, Long id, Long clienteId, String clienteNome, 
+	    private Conta setCommonFields(Conta conta, Long id, Long clienteId, String clienteNome, User user,
 	                                TipoConta tipoConta, CategoriaConta categoriaConta, 
 	                                BigDecimal saldo, String numeroConta, 
 	                                String pixAleatorio, boolean status) {
@@ -61,6 +65,7 @@ public class ContasRowMapper implements RowMapper<Conta> {
 	        Cliente cliente = new Cliente();
 	        cliente.setId(clienteId);
 	        cliente.setNome(clienteNome);
+	        cliente.setUser(user); 
 	        conta.setCliente(cliente);
 	        conta.setTipoConta(tipoConta);
 	        conta.setCategoriaConta(categoriaConta);

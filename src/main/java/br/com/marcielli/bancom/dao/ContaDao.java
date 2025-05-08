@@ -121,6 +121,11 @@ public class ContaDao {
 
 	    return cliente; 
 	}
+	
+	public void desativarConta(Long idConta) {
+        String sql = "UPDATE contas SET status = false WHERE id = ?";
+        jdbcTemplate.update(sql, idConta);
+    }
 
 	
 
@@ -223,24 +228,42 @@ public class ContaDao {
 		List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), id, username);
 		return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
 	}
-
+	
 	public Optional<Conta> findById(Long id) {
-		String sql = """
-				    SELECT
-				        c.*,
-				        cl.id AS cliente_id,
-				        cl.nome AS cliente_nome,
-				        u.id AS user_id,
-				        u.username
-				    FROM contas c
-				    JOIN clientes cl ON c.cliente_id = cl.id
-				    JOIN users u ON cl.user_id = u.id
-				    WHERE c.id = ?
-				""";
+	    String sql = """
+	            SELECT
+	                c.*,
+	                cl.id AS cliente_id,
+	                cl.nome AS cliente_nome,
+	                u.id AS user_id,          
+	                u.username                
+	            FROM contas c
+	            JOIN clientes cl ON c.cliente_id = cl.id
+	            JOIN users u ON cl.user_id = u.id  -- Garante o relacionamento
+	            WHERE c.id = ?
+	            """;
 
-		List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), id);
-		return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
+	    List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), id);
+	    return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
 	}
+
+//	public Optional<Conta> findById(Long id) {
+//		String sql = """
+//				    SELECT
+//				        c.*,
+//				        cl.id AS cliente_id,
+//				        cl.nome AS cliente_nome,
+//				        u.id AS user_id,
+//				        u.username
+//				    FROM contas c
+//				    JOIN clientes cl ON c.cliente_id = cl.id
+//				    JOIN users u ON cl.user_id = u.id
+//				    WHERE c.id = ?
+//				""";
+//
+//		List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), id);
+//		return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
+//	}
 
 	public void atualizarPixAleatorio(Long idConta, String novoPix) {
 		String sql = "UPDATE contas SET pix_aleatorio = ? WHERE id = ?";
