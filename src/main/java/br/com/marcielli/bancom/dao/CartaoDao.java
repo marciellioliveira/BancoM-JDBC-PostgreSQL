@@ -150,11 +150,44 @@ public class CartaoDao {
 		String sql = "DELETE FROM cartoes WHERE id = ?";
 		jdbcTemplate.update(sql, id);
 	}
-
+	
 	public List<Cartao> findAll() {
-		String sql = "SELECT * FROM cartoes";
-		return jdbcTemplate.query(sql, new CartaoRowMapper());
+	    String sql = "SELECT " +
+	        "c.id AS id, " +
+	        "c.tipo_conta AS tipo_conta, " +
+	        "c.categoria_conta AS categoria_conta, " +
+	        "c.tipo_cartao AS tipo_cartao, " +
+	        "c.numero_cartao AS numero_cartao, " +
+	        "c.status AS status, " +
+	        "c.senha AS senha, " +
+	        "c.fatura_id AS fatura_id, " +
+	        "c.total_gasto_mes AS total_gasto_mes, " +
+	        "c.limite_credito_pre_aprovado AS limite_credito_pre_aprovado, " +
+	        "c.taxa_utilizacao AS taxa_utilizacao, " +
+	        "c.taxa_seguro_viagem AS taxa_seguro_viagem, " +
+	        "c.total_gasto_mes_credito AS total_gasto_mes_credito, " +
+	        "c.limite_diario_transacao AS limite_diario_transacao, " +
+	        "c.conta_id AS conta_id, " +
+	        "ct.tipo_conta AS conta_tipo_conta, " +
+	        "ct.categoria_conta AS conta_categoria_conta, " +
+	        "ct.status AS conta_status, " +
+	        "ct.saldo_conta AS saldo_conta, " +
+	        "f.id AS fatura_id, " +
+	        "f.cartao_id AS fatura_cartao_id, " +
+	        "f.valor_total AS fatura_valor_total, " +
+	        "f.data_vencimento AS fatura_data_vencimento " +
+	        "FROM cartoes c " +
+	        "LEFT JOIN contas ct ON c.conta_id = ct.id " +
+	        "LEFT JOIN faturas f ON c.fatura_id = f.id";
+
+	    return jdbcTemplate.query(sql, new CartaoRowMapper());
 	}
+
+
+//	public List<Cartao> findAll() {
+//		String sql = "SELECT * FROM cartoes";
+//		return jdbcTemplate.query(sql, new CartaoRowMapper());
+//	}
 
 	public List<Cartao> findByUsername(String username) {
 		String sql = """

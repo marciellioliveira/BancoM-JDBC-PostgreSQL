@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -33,17 +34,14 @@ public class SecurityConfig {
 	
 	private final JwtAuthFilter jwtAuthFilter;
 	
-	private final UserClienteService usuarioService;
-	private final PasswordEncoder passwordEncoder;
-	private final UserSecurityService userSecurityService;
 	private final AccessDeniedHandler accessDeniedHandler;
+	private final AuthenticationEntryPoint authenticationEntryPoint;
 
-	public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserClienteService usuarioService, PasswordEncoder passwordEncoder, UserSecurityService userSecurityService, AccessDeniedHandler accessDeniedHandler) {
+	public SecurityConfig(JwtAuthFilter jwtAuthFilter, PasswordEncoder passwordEncoder, 
+			AccessDeniedHandler accessDeniedHandler, AuthenticationEntryPoint authenticationEntryPoint) {
 		this.jwtAuthFilter = jwtAuthFilter;
-		this.usuarioService = usuarioService;
-		this.passwordEncoder = passwordEncoder;
-		this.userSecurityService = userSecurityService;
-		 this.accessDeniedHandler = accessDeniedHandler;
+        this.accessDeniedHandler = accessDeniedHandler;
+	    this.authenticationEntryPoint = authenticationEntryPoint;
 	}
 	
 	@Bean
@@ -63,14 +61,16 @@ public class SecurityConfig {
             		        "/js/**",
             		        "/images/**",
             		        "/static/**",
-            		        "/webjars/**",
-            		        "/users"  
+            		        "/webjars/**" 
             		    ).permitAll()
             		 // Todas as outras rotas exigem autenticação
                 .anyRequest().authenticated()
                 )                   	
             .exceptionHandling(exceptionHandling -> 
-            exceptionHandling.accessDeniedHandler(accessDeniedHandler)) // Tratamento de erros de acesso negado
+            exceptionHandling
+            	.accessDeniedHandler(accessDeniedHandler) // Tratamento de erros de acesso negado 403
+            	.authenticationEntryPoint(authenticationEntryPoint) // Para 401
+            	)
             .httpBasic(basic -> basic.disable()) 
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

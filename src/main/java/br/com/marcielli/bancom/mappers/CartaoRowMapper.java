@@ -50,30 +50,30 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         cartao.setNumeroCartao(rs.getString("numero_cartao"));
         cartao.setStatus(rs.getBoolean("status"));
         cartao.setSenha(rs.getString("senha"));
-        cartao.setFaturaId(rs.getLong("fatura_cartao_id"));
+        cartao.setFaturaId(rs.getLong("fatura_id"));
         cartao.setTotalGastoMes(rs.getBigDecimal("total_gasto_mes"));
 
-        // Mapear a fatura
-        Long faturaId = rs.getLong("fatura_id");
-        if (!rs.wasNull() && faturaId != 0) {
+        
+        Long faturaId = rs.getObject("fatura_id", Long.class);
+        if (faturaId != null && faturaId != 0) {
             Fatura fatura = new Fatura();
             fatura.setId(faturaId);
-            fatura.setCartaoId(rs.getLong("fatura_id"));
+            fatura.setCartaoId(faturaId);
             fatura.setValorTotal(rs.getBigDecimal("fatura_valor_total"));
-           fatura.setDataVencimento(rs.getObject("fatura_data_vencimento", LocalDateTime.class));
+            fatura.setDataVencimento(rs.getObject("fatura_data_vencimento", LocalDateTime.class));
             cartao.setFatura(fatura);
             logger.debug("[DEBUG] Fatura mapeada para cartão ID: " + cartao.getId() + ", fatura ID: " + faturaId);
         }
 
-        long contaId = rs.getLong("conta_id");
-        if (!rs.wasNull()) {
+        
+        Long contaId = rs.getObject("conta_id", Long.class);
+        if (contaId != null) {
             Conta conta = mapConta(rs, contaId);
             cartao.setConta(conta);
         } else {
             logger.error("Cartão ID={} não tem conta_id associado!", rs.getLong("id"));
             throw new IllegalStateException("Cartão não possui conta vinculada.");
         }
-        
 
         return cartao;
     }
@@ -102,10 +102,10 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
     private Conta mapConta(ResultSet rs, long contaId) throws SQLException {
         Conta conta = new Conta();
         conta.setId(contaId);
-        conta.setTipoConta(parseEnum(TipoConta.class, rs.getString("conta_tipo_conta")));
-        conta.setCategoriaConta(parseEnum(CategoriaConta.class, rs.getString("conta_categoria_conta")));
-        conta.setStatus(rs.getBoolean("conta_status"));
-        
+        conta.setTipoConta(parseEnum(TipoConta.class, rs.getString("tipo_conta")));
+        conta.setCategoriaConta(parseEnum(CategoriaConta.class, rs.getString("categoria_conta")));
+        conta.setStatus(rs.getBoolean("status"));
+      
         conta.setSaldoConta(rs.getBigDecimal("saldo_conta"));
         
         return conta;

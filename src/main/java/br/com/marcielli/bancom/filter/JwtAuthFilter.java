@@ -2,46 +2,40 @@ package br.com.marcielli.bancom.filter;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.crypto.SecretKey;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.marcielli.bancom.service.JwtService;
 import br.com.marcielli.bancom.service.UserClienteService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+
 
 @Component			
 public class JwtAuthFilter extends OncePerRequestFilter {
 	
 	private final JwtService jwtService;
     private final UserClienteService usuarioService;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
 
-    public JwtAuthFilter(JwtService jwtService, UserClienteService usuarioService) {
+    public JwtAuthFilter(JwtService jwtService, UserClienteService usuarioService, AuthenticationEntryPoint authenticationEntryPoint) {
         this.jwtService = jwtService;
         this.usuarioService = usuarioService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
     
     @Override
@@ -50,6 +44,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                    FilterChain filterChain) 
         throws IOException, ServletException {
         
+    	logger.info("Processando requisição para: {}", request.getRequestURI());
+    	
         // Pula filtro para endpoints de login
         if (request.getServletPath().equals("/login") || request.getServletPath().equals("/auth/login")) {
             filterChain.doFilter(request, response);
@@ -82,6 +78,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // Configura no contexto de segurança
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        } catch (AuthenticationException ex) {
+            throw ex; // delega para o AuthenticationEntryPoint automaticamente
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
             return;
