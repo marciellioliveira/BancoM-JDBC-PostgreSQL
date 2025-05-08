@@ -233,9 +233,9 @@ public class UserClienteService implements UserDetailsService {
 	            // carregando as transferências enviadas para cada conta.
 	            clienteCompleto.getContas().forEach(conta -> {
 	                // usando rowmapper existente para carregar as transferências
-	                System.out.println("Conta ID " + conta.getId() + ", clienteNome: " + conta.getClienteNome());
-	                
-	                // Agora, vamos iterar sobre as transferências de cada conta
+	               // System.out.println("Conta ID " + conta.getId() + ", clienteNome: " + conta.getClienteNome());
+	              
+	                // iterando sobre as transferências de cada conta
 	                conta.getTransferencias().forEach(transferencia -> {
 	                    System.out.println("  Transferência Enviada ID: " + transferencia.getId() + ", Valor: " + transferencia.getValor());
 	                });

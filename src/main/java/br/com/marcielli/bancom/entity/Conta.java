@@ -62,7 +62,6 @@ public class Conta implements Serializable {
 
 	private TipoConta tipoConta;
 	
-	//@JsonProperty("clienteNome")
 	private String clienteNome;
 
 	private CategoriaConta categoriaConta;
