@@ -127,6 +127,9 @@ public class UserCartaoController {
 	}
 	
 	
+
+	
+
 	
 	
 	
@@ -134,36 +137,47 @@ public class UserCartaoController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-//	//ADMIN pode fazer pagamento apenas com o cartão dele
-//	//BASIC pode fazer pagamento apenas com o cartão dele
-//	@PostMapping("/cartoes/{idContaReceber}/pagamento")
-//	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber,
-//			@RequestBody UserCartaoPagCartaoDTO dto) {
+//	//ADMIN pode alterar senha dele e de todos
+//	//BASIC só pode alterar dele
+//	@PutMapping("/cartoes/{cartaoId}/senha")
+//	public ResponseEntity<?> alterarSenhaCartao(@PathVariable("cartaoId") Long cartaoId,
+//			@RequestBody UserCartaoAlterarSenhaCartaoDTO dto) {
 //				return null;
 //
-////		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, dto);
+////		Cartao limiteAtualizado = cartaoService.alterarSenhaC(cartaoId, dto);
 ////
-////		if (pagamentoRealizado) {
-////			return new ResponseEntity<>("Pagamento realizado com sucesso.", HttpStatus.OK);
+////		if (limiteAtualizado != null) {
+////			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
+////
+////			response.setId(cartaoId);
+////
+////			if (limiteAtualizado instanceof CartaoCredito cc) {
+////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
+////			}
+////
+////			response.setTipoCartao(limiteAtualizado.getTipoCartao());
+////			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
+////			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
+////			response.setStatus(limiteAtualizado.isStatus());
+////			response.setSenha(limiteAtualizado.getSenha());
+////			response.setTipoConta(limiteAtualizado.getTipoConta());
+////
+////			if (limiteAtualizado instanceof CartaoCredito cc) {
+////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
+////			}
+////
+////			if (limiteAtualizado instanceof CartaoDebito cd) {
+////				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
+////			}
+////
+////			return ResponseEntity.status(HttpStatus.OK).body(response);
 ////		} else {
-////			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+////			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 ////		}
+//
 //	}
+	
+
 
 	//ADMIN pode alterar limite do cartão de credito dele e de todos
 //	//BASIC não pode alterar limite
@@ -205,85 +219,8 @@ public class UserCartaoController {
 //
 //	}
 
-//	//ADMIN pode alterar staus do cartão dele e de todosd 
-//	//BASIC nao pode alterar status
-//	@PutMapping("/cartoes/{cartaoId}/status")
-//	public ResponseEntity<?> alterarStatusCartao(@PathVariable("cartaoId") Long cartaoId,
-//			@RequestBody UserCartaoAlterarStatusCartaoDTO dto) {
-//				return null;
-//
-////		Cartao limiteAtualizado = cartaoService.alterarStatusC(cartaoId, dto);
-////
-////		if (limiteAtualizado != null) {
-////			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-////
-////			response.setId(cartaoId);
-////
-////			if (limiteAtualizado instanceof CartaoCredito cc) {
-////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-////			}
-////
-////			response.setTipoCartao(limiteAtualizado.getTipoCartao());
-////			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
-////			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
-////			response.setStatus(limiteAtualizado.isStatus());
-////			response.setSenha(limiteAtualizado.getSenha());
-////			response.setTipoConta(limiteAtualizado.getTipoConta());
-////
-////			if (limiteAtualizado instanceof CartaoCredito cc) {
-////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-////			}
-////
-////			if (limiteAtualizado instanceof CartaoDebito cd) {
-////				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
-////			}
-////
-////			return ResponseEntity.status(HttpStatus.OK).body(response);
-////		} else {
-////			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
-////		}
-//
-//	}
 
-//	//ADMIN pode alterar senha dele e de todos
-//	//BASIC só pode alterar dele
-//	@PutMapping("/cartoes/{cartaoId}/senha")
-//	public ResponseEntity<?> alterarSenhaCartao(@PathVariable("cartaoId") Long cartaoId,
-//			@RequestBody UserCartaoAlterarSenhaCartaoDTO dto) {
-//				return null;
-//
-////		Cartao limiteAtualizado = cartaoService.alterarSenhaC(cartaoId, dto);
-////
-////		if (limiteAtualizado != null) {
-////			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-////
-////			response.setId(cartaoId);
-////
-////			if (limiteAtualizado instanceof CartaoCredito cc) {
-////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-////			}
-////
-////			response.setTipoCartao(limiteAtualizado.getTipoCartao());
-////			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
-////			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
-////			response.setStatus(limiteAtualizado.isStatus());
-////			response.setSenha(limiteAtualizado.getSenha());
-////			response.setTipoConta(limiteAtualizado.getTipoConta());
-////
-////			if (limiteAtualizado instanceof CartaoCredito cc) {
-////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-////			}
-////
-////			if (limiteAtualizado instanceof CartaoDebito cd) {
-////				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
-////			}
-////
-////			return ResponseEntity.status(HttpStatus.OK).body(response);
-////		} else {
-////			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
-////		}
-//
-//	}
+
 
 //	//ADMIN pode alterar limite dele e de todos
 //	//BASIC não pode alterar limite

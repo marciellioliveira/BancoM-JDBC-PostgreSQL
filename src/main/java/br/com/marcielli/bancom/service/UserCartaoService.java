@@ -168,44 +168,100 @@ public class UserCartaoService {
 		}
 	}
 
+//	@Transactional
+//	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, Authentication authentication)
+//			throws AccessDeniedException {
+//		String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst()
+//				.orElse("");
+//
+//		String username = authentication.getName();
+//
+//		if ("ROLE_ADMIN".equals(role)) {
+//			// Admin pode atualizar qualquer cartão
+//			Cartao cartao = cartaoDao.findById(cartaoId)
+//					.orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado"));
+//
+//			// Atualiza a senha
+//			cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
+//			return cartaoDao.save(cartao);
+//
+//		} else if ("ROLE_BASIC".equals(role)) {
+//			// Basic só pode atualizar o cartão dele
+//			Cartao cartao = cartaoDao.findByIdAndUsername(cartaoId, username)
+//					.orElseThrow(() -> new CartaoNaoEncontradoException(
+//							"Cartão não encontrado ou você não tem permissão para acessá-lo"));
+//
+//			if (cartao.getConta().getCliente().getId() != dto.getIdCliente()) {
+//				throw new ClienteNaoEncontradoException("Você não tem permissão para alterar esse cartão.");
+//			}
+//
+//			if (!cartao.isStatus()) {
+//				throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
+//			}
+//
+//			cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
+//			return cartaoDao.save(cartao);
+//
+//		} else {
+//			logger.error("Você não tem permissão para atualizar a senha desse cartão" + role);
+//			throw new AccessDeniedException("Você não tem permissão para atualizar a senha desse cartão.");
+//		}
+//	}
+	
 	@Transactional
 	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, Authentication authentication)
-			throws AccessDeniedException {
-		String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst()
-				.orElse("");
+	        throws AccessDeniedException {
+	    
+	    String role = authentication.getAuthorities().stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
+	    
+	    String username = authentication.getName();
+	    
+	    if(cartaoDao.findByUsername(username).isEmpty()) {
+	        throw new CartaoNaoEncontradoException("Nenhum cartão encontrado para o usuário: " + username);
+	    }
 
-		String username = authentication.getName();
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // ADMIN pode alterar qualquer cartão
+	        Cartao cartao = cartaoDao.findById(cartaoId)
+	                .orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado"));
+	        
+	        // Verifica se o cartão está ativo
+	        if (!cartao.isStatus()) {
+	            throw new PermissaoNegadaException("Não é possível alterar senha de cartão desativado");
+	        }
+	        
+	        cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
+	        return cartaoDao.save(cartao);
 
-		if ("ROLE_ADMIN".equals(role)) {
-			// Admin pode atualizar qualquer cartão
-			Cartao cartao = cartaoDao.findById(cartaoId)
-					.orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado"));
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        // BASIC só pode alterar o próprio cartão
+	        
+	        Cliente cliente = clienteDao.findById(dto.getIdCliente())
+	                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
+	        
+	        // Verifica se o cartão pertence ao cliente
+	        Cartao cartao = cartaoDao.findByIdAndClienteId(cartaoId, dto.getIdCliente())
+	                .orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado ou não pertence a você"));
+	        
+	        // Verifica se o cliente é o mesmo do usuário logado
+	        if (!cliente.getUser().getUsername().equals(username)) {
+	            throw new AccessDeniedException("Você só pode alterar a senha do seu próprio cartão");
+	        }
+	        
+	        // Verifica se o cartão está ativo
+	        if (!cartao.isStatus()) {
+	            throw new PermissaoNegadaException("Não é possível alterar senha de cartão desativado");
+	        }
+	        
+	        cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
+	        return cartaoDao.save(cartao);
 
-			// Atualiza a senha
-			cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
-			return cartaoDao.save(cartao);
-
-		} else if ("ROLE_BASIC".equals(role)) {
-			// Basic só pode atualizar o cartão dele
-			Cartao cartao = cartaoDao.findByIdAndUsername(cartaoId, username)
-					.orElseThrow(() -> new CartaoNaoEncontradoException(
-							"Cartão não encontrado ou você não tem permissão para acessá-lo"));
-
-			if (cartao.getConta().getCliente().getId() != dto.getIdCliente()) {
-				throw new ClienteNaoEncontradoException("Você não tem permissão para alterar esse cartão.");
-			}
-
-			if (!cartao.isStatus()) {
-				throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
-			}
-
-			cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
-			return cartaoDao.save(cartao);
-
-		} else {
-			logger.error("Você não tem permissão para atualizar a senha desse cartão" + role);
-			throw new AccessDeniedException("Você não tem permissão para atualizar a senha desse cartão.");
-		}
+	    } else {
+	        throw new AccessDeniedException("Você não tem permissão para esta operação");
+	    }
 	}
 
 	
@@ -465,166 +521,24 @@ public class UserCartaoService {
 		return true;
 	}
 
-//	@Transactional
-//    public boolean pagCartao(Long idContaReceber, UserCartaoPagCartaoDTO dto, Authentication authentication) {
-//       
-//		// Validando inputs
-//        if (dto.idCartao() == null) {
-//            throw new IllegalArgumentException("ID do cartão é obrigatório");
-//        }
-//        if (dto.valor() == null || dto.valor().compareTo(BigDecimal.ZERO) <= 0) {
-//            throw new IllegalArgumentException("O valor deve ser maior que zero");
-//        }
-//        if (dto.senha() == null || dto.senha().isEmpty()) {
-//            throw new IllegalArgumentException("Senha do cartão é obrigatória");
-//        }
-//
-//        //Cartão que vai fazer o pagamento
-//        Cartao cartaoOrigem = cartaoDao.findById(dto.idCartao())
-//                .orElseThrow(() -> new IllegalArgumentException("Cartão não encontrado"));
-//       
-//        //Validando a senha do cartão
-//        if (!passwordEncoder.matches(dto.senha(), cartaoOrigem.getSenha())) {
-//            throw new IllegalArgumentException("Senha do cartão incorreta");
-//        }
-//       
-//        //Validando o status do cartão
-//        if (!cartaoOrigem.isStatus()) {
-//            throw new PermissaoNegadaException("Cartão está desativado");
-//        }
-//
-//        //Conta que vai fazer o pagamento
-//        Conta contaOrigem = contaDao.findById(cartaoOrigem.getConta().getId())
-//                .orElseThrow(() -> new IllegalArgumentException("Conta associada ao cartão não encontrada"));
-//        
-//        // Conta que vai receber o valor
-//        Conta contaDestino = contaDao.findById(idContaReceber)
-//                .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
-//
-//        //Validando a conta que vai receber o valor
-//        if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
-//            throw new PermissaoNegadaException("Uma das contas está desativada");
-//        }
-//
-//        //Cliente que vai enviar o valor
-//        Cliente clienteOrigem = clienteDao.findById(contaOrigem.getCliente().getId())
-//                .orElseThrow(() -> new IllegalArgumentException("Cliente da conta de origem não encontrado"));
-//        
-//        // Usuario que está logado - aqui preciso disso porque se for ADMIN preciso autenticar se ele está enviando da conta dele ou da conta de outra pessoa
-//        User usuarioLogado = userDao.findByUsername(authentication.getName())
-//                .orElseThrow(() -> new AcessoNegadoException("Usuário não autenticado"));
-//        
-//        boolean isAdmin = authentication.getAuthorities().stream()        		
-//                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-//        
-//        //se for user basic e ele estiver tentando enviar de outro usuario para outra pessoa, vai barrar
-//        if (!isAdmin && !clienteOrigem.getId().equals(usuarioLogado.getId().longValue())) {
-//            throw new AcessoNegadoException("Você só pode pagar com cartão vinculado à sua própria conta");
-//        }
-//
-//        //transferencia - debito ou credito
-//        //se o cartão de origem for credito(não vai retirar valor do saldo), vai passar como credito e precisa entrar nas duas listas: transferenciasCredito (pq ele não ta tirando do dinheiro dele no
-//        //momento, está pagando no credito e transferenciasEnviadas porque foi um tipo de transferencia enviada
-//        
-//        //se for debito, precisa descontar do valor da conta e somente entrar em transferenciasEnviadas
-//        Transferencia transferencia = new Transferencia(
-//                contaOrigem,
-//                dto.valor(),
-//                contaDestino,
-//                (cartaoOrigem instanceof CartaoCredito) ? TipoTransferencia.CARTAO_CREDITO : TipoTransferencia.CARTAO_DEBITO,
-//                cartaoOrigem.getTipoCartao()
-//        );
-//        transferencia.setIdCartao(cartaoOrigem.getId());
-//        transferencia.setIdClienteOrigem(clienteOrigem.getId());
-//        transferencia.setIdClienteDestino(contaDestino.getCliente().getId());
-//        transferencia.setIdContaOrigem(contaOrigem.getId());
-//        transferencia.setIdContaDestino(contaDestino.getId());
-//        transferencia.setData(LocalDateTime.now());
-//        transferencia.setCodigoOperacao(gerarNumeros.gerarNumeroGeral());
-//
-//        if (contaOrigem.getTransferencias() == null) {
-//            contaOrigem.setTransferencias(new ArrayList<>());
-//        }
-//
-//        //se o cartão de origem for credito(não vai retirar valor do saldo), vai passar como credito e precisa entrar nas duas listas: transferenciasCredito (pq ele não ta tirando do dinheiro dele no
-//        //momento, está pagando no credito e transferenciasEnviadas porque foi um tipo de transferencia enviada
-//        //se for debito, precisa descontar do valor da conta e somente entrar em transferenciasEnviadas
-//        if (cartaoOrigem instanceof CartaoCredito cartaoCredito) {
-//            if (dto.valor().compareTo(cartaoCredito.getLimiteCreditoPreAprovado()) > 0) {
-//                throw new TransferenciaNaoRealizadaException("Limite de crédito insuficiente");
-//            }
-//
-//            BigDecimal novoLimite = cartaoCredito.getLimiteCreditoPreAprovado().subtract(dto.valor());
-//            BigDecimal novoTotalGasto = cartaoCredito.getTotalGastoMesCredito() != null ?
-//                    cartaoCredito.getTotalGastoMesCredito().add(dto.valor()) : dto.valor();
-//            cartaoCredito.setLimiteCreditoPreAprovado(novoLimite);
-//            cartaoCredito.setTotalGastoMesCredito(novoTotalGasto);
-//            
-//            Fatura fatura = faturaDao.findByCartaoId(cartaoCredito.getId())
-//                    .orElseGet(() -> {
-//                        Fatura novaFatura = new Fatura();
-//                        novaFatura.setCartao(cartaoCredito);
-//                        novaFatura.setDataVencimento(LocalDateTime.now().plusDays(10));
-//                        novaFatura.setValorTotal(BigDecimal.ZERO);
-//                        return novaFatura;
-//                    });
-//
-//            BigDecimal atual = fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO;
-//            fatura.setValorTotal(atual.add(dto.valor())); //precisei tratar antes com zero porque mesmo iniciando na entidade ainda estava dando null (também colquei no banco para não aceitar valor null"
-//            //fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
-//            transferencia.setFatura(fatura);
-//            fatura.adicionarTransfCredito(transferencia);
-//                        
-//            //teste inserindo na lista de transferencias e na lista de credito
-//            contaOrigem.getTransferencias().add(transferencia);
-//            fatura.getTransferenciasCredito().add(transferencia);
-//            
-//            fatura.setCartao(cartaoOrigem); // atribuindo o cartão a fatura
-//            Long faturaId = faturaDao.save(fatura); //salvei a fatura e retornei o id
-//            fatura.setId(faturaId);         
-//            
-//            //ligando a transferencia a fatura antes de salvar
-//            transferencia.setFaturaId(faturaId);
-//            
-//            Long transferenciaId = transferenciaDao.save(transferencia); //salvo a transferencia e pego o id
-//            transferencia.setId(transferenciaId);
-//            transferenciaDao.associarTransferenciaAFatura(faturaId, transferenciaId); //associo a transferencia a fatura na tabela de ligação
-//            cartaoDao.associarFaturaAoCartao(cartaoCredito.getId(), faturaId); //associei a fatura ao cartão
-//            
-//            cartaoCredito.setFaturaId(faturaId); //atualizando o objeto em memoria
-//           
-//            
-//        } else if (cartaoOrigem instanceof CartaoDebito cartaoDebito) {
-//            if (dto.valor().compareTo(cartaoDebito.getLimiteDiarioTransacao()) > 0) {
-//                throw new TransferenciaNaoRealizadaException("Limite diário excedido");
-//            }
-//            if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
-//                throw new TransferenciaNaoRealizadaException("Saldo insuficiente");
-//            }
-//
-//            contaOrigem.setSaldoConta(contaOrigem.getSaldoConta().subtract(dto.valor()));
-//            cartaoDebito.setLimiteDiarioTransacao(cartaoDebito.getLimiteDiarioTransacao().subtract(dto.valor()));
-//            BigDecimal novoTotalGastoMes = cartaoDebito.getTotalGastoMes() != null ?
-//                    cartaoDebito.getTotalGastoMes().add(dto.valor()) : dto.valor();
-//            cartaoDebito.setTotalGastoMes(novoTotalGastoMes);
-//        }
-//
-//        contaDestino.setSaldoConta(contaDestino.getSaldoConta().add(dto.valor()));
-//        TaxaManutencao taxaDestino = new TaxaManutencao(contaDestino.getSaldoConta(), contaDestino.getTipoConta());
-//        contaDestino.setCategoriaConta(taxaDestino.getCategoria());
-//        contaDestino.setTaxas(List.of(taxaDestino));
-//        
-//        //teste somente na lista de transferencia
-//        contaOrigem.getTransferencias().add(transferencia);
-//       
-//
-//        Long transferenciaId = transferenciaDao.save(transferencia);
-//        transferencia.setId(transferenciaId);
-//        contaDao.update(contaOrigem);
-//        contaDao.update(contaDestino);
-//        cartaoDao.update(cartaoOrigem);
-//
-//        return true;
-//    }
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

@@ -1,0 +1,236 @@
+2025-05-09 13:04:30 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-05-09 13:04:30 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 9784 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
+2025-05-09 13:04:30 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-05-09 13:04:32 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
+2025-05-09 13:04:32 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-05-09 13:04:32 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-09 13:04:32 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-05-09 13:04:32 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-05-09 13:04:32 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@19f02280
+2025-05-09 13:04:32 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-05-09 13:04:32 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
+2025-05-09 13:04:32 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-05-09 13:04:33 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
+2025-05-09 13:04:33 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.569 seconds (process running for 2.81)
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-09 13:04:46 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 13:04:46 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 2
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 1
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:04:46 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-09 13:05:03 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /cartoes/2
+2025-05-09 13:05:03 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes/2
+2025-05-09 13:05:03 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /cartoes/2
+2025-05-09 13:05:03 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Iniciando busca pelo cartão com ID: 2
+2025-05-09 13:05:03 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Cartão encontrado: CartaoDebito(limiteDiarioTransacao=2000.00, totalGastoMes=0)
+2025-05-09 13:05:18 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 13:05:18 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 2
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 1
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:05:18 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-09 13:10:11 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-05-09 13:10:11 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 9444 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
+2025-05-09 13:10:11 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-05-09 13:10:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
+2025-05-09 13:10:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-05-09 13:10:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-09 13:10:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-05-09 13:10:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-05-09 13:10:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4f081b5d
+2025-05-09 13:10:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-05-09 13:10:13 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
+2025-05-09 13:10:13 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-05-09 13:10:13 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
+2025-05-09 13:10:13 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.689 seconds (process running for 2.928)
+2025-05-09 13:10:21 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-09 13:10:21 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /cartoes/2
+2025-05-09 13:10:21 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes/2
+2025-05-09 13:10:21 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /cartoes/2
+2025-05-09 13:10:21 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Iniciando busca pelo cartão com ID: 2
+2025-05-09 13:10:21 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Cartão encontrado: CartaoDebito(limiteDiarioTransacao=2000.00, totalGastoMes=0)
+2025-05-09 13:10:28 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 13:10:28 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 2
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 1
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:10:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-09 13:10:39 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /cartoes/2/ativar
+2025-05-09 13:10:39 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes/2/ativar
+2025-05-09 13:10:39 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /cartoes/2/ativar
+2025-05-09 13:10:43 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 13:10:43 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 2
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 1
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:10:43 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-09 13:10:59 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /cartoes/2
+2025-05-09 13:10:59 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes/2
+2025-05-09 13:10:59 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /cartoes/2
+2025-05-09 13:10:59 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Iniciando busca pelo cartão com ID: 2
+2025-05-09 13:10:59 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Cartão encontrado: CartaoDebito(limiteDiarioTransacao=2000.00, totalGastoMes=0)
+2025-05-09 13:11:10 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 13:11:10 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 2
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 1
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:11:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2

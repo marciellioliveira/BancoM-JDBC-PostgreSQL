@@ -296,6 +296,24 @@ public class CartaoDao {
 			return cartao;
 		}, contaId);
 	}
+	
+	public Optional<Cartao> findByIdAndClienteId(Long cartaoId, Long clienteId) {
+	    String sql = "SELECT c.*, co.* FROM cartoes c " +
+	                 "JOIN contas co ON c.conta_id = co.id " +
+	                 "WHERE c.id = ? AND co.cliente_id = ?";
+	    
+	    try {
+	        Cartao cartao = jdbcTemplate.queryForObject(
+	            sql, 
+	            new CartaoRowMapper(), 
+	            cartaoId, 
+	            clienteId
+	        );
+	        return Optional.ofNullable(cartao);
+	    } catch (EmptyResultDataAccessException e) {
+	        return Optional.empty();
+	    }
+	}
 
 	public void update(Cartao cartao) {
 		String sql = """
