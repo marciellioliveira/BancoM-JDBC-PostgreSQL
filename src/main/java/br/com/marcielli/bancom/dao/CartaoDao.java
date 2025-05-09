@@ -61,7 +61,14 @@ public class CartaoDao {
 		if (cartao.getSeguros() != null && !cartao.getSeguros().isEmpty()) {
 			insertSeguros(cartaoId, cartao.getSeguros());
 		}
-
+		
+		if (cartao.getConta() != null) {
+	        cartao.setContaId(cartao.getConta().getId());
+	    }
+	    if (cartao.getFatura() != null) {
+	        cartao.setFaturaId(cartao.getFatura().getId());
+	    }
+	    
 		return cartao;
 	}
 
