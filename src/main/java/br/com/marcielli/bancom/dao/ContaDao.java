@@ -122,12 +122,49 @@ public class ContaDao {
 	    return cliente; 
 	}
 	
-	public void desativarConta(Long idConta) {
-        String sql = "UPDATE contas SET status = false WHERE id = ?";
-        jdbcTemplate.update(sql, idConta);
-    }
-
+	public boolean existeConta(Long idConta) {
+	    String sql = "SELECT COUNT(1) FROM contas WHERE id = ?";
+	    Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idConta);
+	    return count != null && count > 0;
+	}
 	
+	public void desativarConta(Long idConta) {
+	    // Conta existe?
+	    String sqlVerificaConta = "SELECT COUNT(1) FROM contas WHERE id = ?";
+	    Integer count = jdbcTemplate.queryForObject(sqlVerificaConta, Integer.class, idConta);
+	    
+	    if (count == null || count == 0) {
+	        throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idConta, 1);
+	    }
+
+	    // Desativando cartões ligados a conta 
+	    String sqlDesativaCartoes = "UPDATE cartoes SET status = false WHERE conta_id = ?";
+	    jdbcTemplate.update(sqlDesativaCartoes, idConta);
+	    
+	    // Desativando a conta
+	    String sqlDesativaConta = "UPDATE contas SET status = false WHERE id = ?";
+	    jdbcTemplate.update(sqlDesativaConta, idConta);
+	}
+	
+//	public void desativarConta(Long idConta) {
+//	    String sql = "UPDATE contas SET status = false WHERE id = ?";
+//	    int rowsAffected = jdbcTemplate.update(sql, idConta);
+//	    
+//	    if (rowsAffected == 0) {
+//	        throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idConta, 1);
+//	    }
+//	}	
+
+	public boolean ativarConta(Long idConta) {
+	    String sql = "UPDATE contas SET status = true WHERE id = ?";
+	    int rowsAffected = jdbcTemplate.update(sql, idConta);
+	    
+	    if (rowsAffected == 0) {
+	        throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idConta, 1);
+	    }
+	    
+	    return true;
+	}
 
 	public List<Conta> findAll() {
 		String sql = """

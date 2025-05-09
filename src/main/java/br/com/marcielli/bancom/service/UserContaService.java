@@ -76,6 +76,7 @@ public class UserContaService {
 	    User loggedInUser = userDao.findByUsername(username)
 	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
 	    
+	    
 	    // Se for BASIC e está tentando criar conta para outro usuário, bloqueia
 	    if ("ROLE_BASIC".equals(role) && !dto.idUsuario().equals(loggedInUser.getId().longValue())) {
 	        throw new ClienteNaoEncontradoException("Usuário BASIC não tem permissão para criar conta para outro usuário.");
@@ -87,6 +88,11 @@ public class UserContaService {
 		if (!cliente.isClienteAtivo()) {
 			throw new ClienteNaoEncontradoException("O cliente está desativado. Não é possível criar uma conta.");
 		}
+		
+		User userAssociado = cliente.getUser(); //Aqui é parar verificar se o usuario associado ao cliente está desativado
+	    if (userAssociado == null || !userAssociado.isUserAtivo()) {
+	        throw new ClienteNaoEncontradoException("O cliente está desativado. Não é possível criar uma conta.");
+	    }
 
 		TaxaManutencao taxa = new TaxaManutencao(dto.saldoConta(), dto.tipoConta());
 		List<TaxaManutencao> taxas = new ArrayList<>();
@@ -125,7 +131,7 @@ public class UserContaService {
 		 // Salva a conta no banco 
 	    Conta contaSalva = contaDao.save(conta);
 	    
-	 // Atualiza a lista em memória do cliente
+	    // Atualiza a lista em memória do cliente
 	    if (cliente.getContas() == null) {
 	        cliente.setContas(new ArrayList<>());
 	    }
@@ -218,7 +224,6 @@ public class UserContaService {
 	        throw new ClienteEncontradoException("Role não autorizada para deletar contas.");
 	    }
 
-	    // REGRAS DE SALDO
 	    if (contaExistente.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
 	        throw new ContaExibirSaldoErroException("A conta possui um saldo de R$ " + contaExistente.getSaldoConta() + ". Faça o saque antes de remover a conta.");
 	    } else if (contaExistente.getSaldoConta().compareTo(BigDecimal.ZERO) < 0) {
@@ -226,13 +231,13 @@ public class UserContaService {
 	    }
 
 	    if (!contaExistente.getStatus()) {
-	        throw new ContaExibirSaldoErroException("A conta já está desativada anteriormente.");
+	        throw new ContaExibirSaldoErroException("A conta já está desativada.");
 	    }
 
 	    Long contaId = contaExistente.getId();
 	    logger.info("Conta ID: {}", contaId);
-	    contaExistente.setStatus(false);
-	    contaDao.desativarConta(contaExistente.getId());
+	   
+	    contaDao.desativarConta(contaId);
 	    return true;
 	}
 
@@ -241,6 +246,10 @@ public class UserContaService {
 	   
 	    Conta conta = contaDao.findById(idConta)
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada"));
+	    
+	    if(conta.getStatus() == false) {
+	    	throw new ClienteNaoEncontradoException("A conta está desativada. Não é possível atualizar.");
+	    }
 	    
 	    //Verifica se é admin
 	    boolean isAdmin = authentication.getAuthorities().stream()
@@ -267,6 +276,27 @@ public class UserContaService {
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada após atualização"));
 	}
 	
+	
+	//Ativar Conta
+	@Transactional
+	public boolean ativarConta(Long idConta, Authentication authentication) throws ClienteEncontradoException {
+		
+	 String role = authentication.getAuthorities().stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
+
+	    if (!"ROLE_ADMIN".equals(role)) {
+	        // Somente admin pode ativar cliente
+	    	throw new ClienteEncontradoException("Somente administradores podem ativar a conta");	        
+	    } 
+	    
+	    if (!contaDao.existeConta(idConta)) {
+	        throw new ContaNaoEncontradaException("Conta não encontrada.");
+	    }
+	    
+	    return contaDao.ativarConta(idConta);
+	}
 
 
 	// Transferências
@@ -288,7 +318,7 @@ public class UserContaService {
         
         Conta contaDestino = contaDao.findById(idContaReceber)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
-
+        
         // Validar status das contas
         if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
             throw new ContaExibirSaldoErroException("Contas devem estar ativas para transferência");
@@ -423,9 +453,10 @@ public class UserContaService {
         // Busca conta destino por chave pix ou id (no projeto anterior era somente id)
 		Conta contaDestino = contaDao.findByChavePix(chaveOuIdDestino);
 
-		if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
-	        throw new ContaExibirSaldoErroException("Contas devem estar ativas");
-	    }
+		// Validar status das contas
+        if (!contaOrigem.getStatus() || !contaDestino.getStatus()) {
+            throw new ContaExibirSaldoErroException("Contas devem estar ativas para transferência");
+        }
 
 	    if (contaOrigem.getSaldoConta().compareTo(dto.valor()) < 0) {
 	        throw new ClienteNaoTemSaldoSuficienteException("Saldo insuficiente");
@@ -510,7 +541,7 @@ public class UserContaService {
 	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta destino não encontrada"));
 
 	    if (!contaDestino.getStatus()) {
-	        throw new ContaExibirSaldoErroException("Conta deve estar ativa");
+	        throw new ContaExibirSaldoErroException("Conta deve estar ativa para realizar depósito");
 	    }
 
 	    // Busca usuário logado
@@ -702,42 +733,5 @@ public class UserContaService {
 	    return true;
 	}
 	
-
-	// Outros métodos
-//	public String gerarNumeroDaConta() {
-//		int[] sequencia = new int[8];
-//		StringBuilder minhaConta = new StringBuilder();
-//
-//		for (int i = 0; i < sequencia.length; i++) {
-//			sequencia[i] = 1 + random.nextInt(8);
-//			minhaConta.append(sequencia[i]);
-//		}
-//
-//		return minhaConta.toString();
-//	}
-//
-//	public String gerarPixAleatorio() {
-//		int[] sequencia = new int[8];
-//		StringBuilder meuPix = new StringBuilder();
-//
-//		for (int i = 0; i < sequencia.length; i++) {
-//			sequencia[i] = 1 + random.nextInt(8);
-//			meuPix.append(sequencia[i]);
-//		}
-//
-//		return meuPix.toString();
-//	}
-//
-//	public String gerarCodigoTransferencia() {
-//		int[] sequencia = new int[8];
-//		StringBuilder codTransferencia = new StringBuilder();
-//
-//		for (int i = 0; i < sequencia.length; i++) {
-//			sequencia[i] = 1 + random.nextInt(8);
-//			codTransferencia.append(sequencia[i]);
-//		}
-//
-//		return codTransferencia.toString();
-//	}
 
 }

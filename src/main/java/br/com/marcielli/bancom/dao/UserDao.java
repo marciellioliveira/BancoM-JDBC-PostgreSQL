@@ -286,34 +286,80 @@ public class UserDao {
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
     
+  
     public boolean desativarCliente(Long clienteId) {
-       
-    	Integer userId = jdbcTemplate.queryForObject(
-    	        "SELECT user_id FROM clientes WHERE id = ?", 
-    	        Integer.class, 
-    	        clienteId
-    	    );
-    	    
-    	    if (userId == null) {
-    	        throw new IllegalArgumentException("Cliente não encontrado com ID: " + clienteId);
-    	    }
+        // Cliente existe?
+        Integer userId = jdbcTemplate.queryForObject(
+            "SELECT user_id FROM clientes WHERE id = ?", 
+            Integer.class, 
+            clienteId
+        );
+        
+        if (userId == null) {
+            throw new IllegalArgumentException("Cliente não encontrado com ID: " + clienteId);
+        }
 
-    	    // atualizando cliente para false
-    	    int clientesAtualizados = jdbcTemplate.update(
-    	        "UPDATE clientes SET cliente_ativo = false WHERE id = ?", 
-    	        clienteId
-    	    );
+        // Desativando os cartões do cliente
+        jdbcTemplate.update(
+            "UPDATE cartoes SET status = false " +
+            "WHERE conta_id IN (SELECT id FROM contas WHERE cliente_id = ?)", 
+            clienteId
+        );
 
-    	    // atualizando user para false
-    	    int usersAtualizados = jdbcTemplate.update(
-    	        "UPDATE users SET user_ativo = false WHERE id = ?", 
-    	        userId
-    	    );
+        // Desativando as contas 
+        jdbcTemplate.update(
+            "UPDATE contas SET status = false WHERE cliente_id = ?", 
+            clienteId
+        );
 
-    	    //se os dois ficaram false, retorna true
-    	    return clientesAtualizados > 0 && usersAtualizados > 0;
+        // Desativando o cliente
+        int clientesAtualizados = jdbcTemplate.update(
+            "UPDATE clientes SET cliente_ativo = false WHERE id = ?", 
+            clienteId
+        );
+
+        // Desativando usuário
+        int usersAtualizados = jdbcTemplate.update(
+            "UPDATE users SET user_ativo = false WHERE id = ?", 
+            userId
+        );
+
+        return clientesAtualizados > 0 && usersAtualizados > 0;
     }
     
+//    public boolean desativarCliente(Long clienteId) {
+//       
+//    	Integer userId = jdbcTemplate.queryForObject(
+//    	        "SELECT user_id FROM clientes WHERE id = ?", 
+//    	        Integer.class, 
+//    	        clienteId
+//    	    );
+//    	    
+//    	    if (userId == null) {
+//    	        throw new IllegalArgumentException("Cliente não encontrado com ID: " + clienteId);
+//    	    }
+//
+//    	    // atualizando cliente para false
+//    	    int clientesAtualizados = jdbcTemplate.update(
+//    	        "UPDATE clientes SET cliente_ativo = false WHERE id = ?", 
+//    	        clienteId
+//    	    );
+//
+//    	    // atualizando user para false
+//    	    int usersAtualizados = jdbcTemplate.update(
+//    	        "UPDATE users SET user_ativo = false WHERE id = ?", 
+//    	        userId
+//    	    );
+//
+//    	    //se os dois ficaram false, retorna true
+//    	    return clientesAtualizados > 0 && usersAtualizados > 0;
+//    }
+    
+    public boolean existeCliente(Long id) {
+        String sql = "SELECT COUNT(1) FROM clientes WHERE id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
+    }
     
     public boolean ativarCliente(Long clienteId) {
         Integer userId = jdbcTemplate.queryForObject(

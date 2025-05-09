@@ -66,7 +66,7 @@ public class UserContaController {
 		boolean conta = contaService.delete(id, dto, authentication);
 
 		if (conta) {
-			return ResponseEntity.status(HttpStatus.OK).body("Conta deletada com sucesso!");
+			return ResponseEntity.status(HttpStatus.OK).body("Conta desativada com sucesso!");
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro. Tente novamente mais tarde.");
 		}
@@ -81,6 +81,19 @@ public class UserContaController {
 		return ResponseEntity.ok(conta); // Retorna a entidade pura
 	}
 
+	//Ativar conta
+	@PutMapping("/contas/{id}/ativar")
+	public ResponseEntity<String> ativarConta(@PathVariable("id") Long id, Authentication authentication) {
+		boolean contaAtivada = contaService.ativarConta(id, authentication);
+		if (contaAtivada) {
+			return ResponseEntity.status(HttpStatus.OK).body("Conta ativada com sucesso!");
+		}
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta não encontrada!");
+	}
+	
+	
+	
 	// Transferências
 
 	// ADMIN pode fazer transferencia da conta dele para outras, e de outros para

@@ -161,9 +161,10 @@ public class ClienteDao {
 				               co.saldo_conta,
 				               co.pix_aleatorio,
 				               co.categoria_conta,
-				co.taxa_manutencao_mensal,
-				co.taxa_acresc_rend,
-				co.taxa_mensal,
+				               co.status AS status_conta,
+							   co.taxa_manutencao_mensal,
+							   co.taxa_acresc_rend,
+							   co.taxa_mensal,
 				               t.id AS transferencia_id,
 				               t.valor,
 				               t.data,
@@ -240,6 +241,7 @@ public class ClienteDao {
 							String tipoContaStr = rs.getString("tipo_conta");
 							co.setPixAleatorio(rs.getString("pix_aleatorio"));
 							String categoriaContaStr1 = rs.getString("categoria_conta");
+							co.setStatus(rs.getBoolean("status_conta"));
 							try {
 								co.setCategoriaConta(
 										categoriaContaStr1 != null ? CategoriaConta.valueOf(categoriaContaStr1) : null);

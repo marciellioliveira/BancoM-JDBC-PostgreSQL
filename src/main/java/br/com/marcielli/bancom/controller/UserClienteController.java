@@ -59,7 +59,8 @@ public class UserClienteController {
 
 	// ADMIN pode ver todos, BASIC só o seu
 	@GetMapping("/users/{id}")
-	public ResponseEntity<Object> getUserById(@PathVariable("id") Long id, Authentication authentication) throws ClienteEncontradoException {
+	public ResponseEntity<Object> getUserById(@PathVariable("id") Long id, Authentication authentication)
+			throws ClienteEncontradoException {
 
 		User requestedUser = clienteService.getUserById(id, authentication);
 
@@ -80,12 +81,11 @@ public class UserClienteController {
 
 		return ResponseEntity.ok(updatedUser);
 	}
-	
-	
 
 	// ADMIN pode deletar todos MENOS ele próprio, BASIC só o seu
 	@DeleteMapping("/users/{id}")
-	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id, Authentication authentication) throws ClienteEncontradoException {
+	public ResponseEntity<String> deleteUser(@PathVariable("id") Long id, Authentication authentication)
+			throws ClienteEncontradoException {
 
 		boolean deleted = clienteService.deleteUser(id, authentication);
 
@@ -96,18 +96,16 @@ public class UserClienteController {
 		}
 
 	}
-	
-	//Por causa das minhas regras de segurança, precisei criar essa rota
+
+	// Por causa das minhas regras de segurança, precisei criar essa rota
 	@PutMapping("/users/{id}/ativar")
-	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, 
-			Authentication authentication) throws ClienteEncontradoException {
+	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, Authentication authentication)
+			throws ClienteEncontradoException {
 
 		boolean clienteAtivado = clienteService.ativarCliente(id, authentication);
 
 		if (clienteAtivado) {
-			//return ResponseEntity.ok(clienteAtivado);
 			return ResponseEntity.status(HttpStatus.OK).body("Usuário ativado com sucesso!");
-			
 		}
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");

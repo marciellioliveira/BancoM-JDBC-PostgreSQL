@@ -71,6 +71,13 @@ public class CartaoDao {
 	    
 		return cartao;
 	}
+	
+	
+	public boolean existeCartao(Long idCartao) {
+	    String sql = "SELECT COUNT(1) FROM cartoes WHERE id = ?";
+	    Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idCartao);
+	    return count != null && count > 0;
+	}
 
 	private void insertFatura(Long cartaoId, Fatura fatura) {
 		String sqlFatura = """
@@ -259,6 +266,18 @@ public class CartaoDao {
 		int rowsAffected = jdbcTemplate.update(sql, id);
 		return rowsAffected > 0;
 	}
+	
+	public boolean ativarCartao(Long idCartao) {
+	    String sql = "UPDATE cartoes SET status = true WHERE id = ?";
+	    int rowsAffected = jdbcTemplate.update(sql, idCartao);
+	    
+	    if (rowsAffected == 0) {
+	        throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idCartao, 1);
+	    }
+	    
+	    return true;
+	}
+
 
 	// Método que busca todos os cartões associados a uma conta
 	public List<Cartao> findByContaId(Long contaId) {

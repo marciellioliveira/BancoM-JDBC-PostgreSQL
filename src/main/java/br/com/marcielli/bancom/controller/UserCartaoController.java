@@ -81,6 +81,17 @@ public class UserCartaoController {
 			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+	
+	//Ativar cartão
+	@PutMapping("/cartoes/{id}/ativar")
+	public ResponseEntity<String> ativarCartao(@PathVariable("id") Long id, Authentication authentication) {
+		boolean cartaoAtivado = cartaoService.ativarCartao(id, authentication);
+		if (cartaoAtivado) {
+			return ResponseEntity.status(HttpStatus.OK).body("Cartão ativado com sucesso!");
+		}
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado!");
+	}
 
 
 	//ADMIN pode deletar dele e de outras pessoas

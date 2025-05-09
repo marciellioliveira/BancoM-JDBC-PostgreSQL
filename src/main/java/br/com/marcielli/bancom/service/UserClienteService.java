@@ -339,23 +339,17 @@ public class UserClienteService implements UserDetailsService {
 	            .findFirst()
 	            .orElse("");
 
-	    String username = authentication.getName();
+	    if (!"ROLE_ADMIN".equals(role)) {
+	        // Somente admin pode ativar cliente
+	    	throw new ClienteEncontradoException("Somente administradores podem ativar o cliente");	        
+	    } 
 	    
-	    User loggedInUser = userDao.findByUsername(username)
-	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
-
-	    if ("ROLE_ADMIN".equals(role)) {
-	        // Admin não pode se ativar 
-	        if (id.equals(loggedInUser.getId().longValue())) {
-	            throw new ClienteEncontradoException("Operação redundante: administrador já está ativo.");
-	        }
-	        return userDao.ativarCliente(id);
-	    } else if ("ROLE_BASIC".equals(role)) {
-	        // Basic não pode ativar outros usuários
-	        throw new ClienteEncontradoException("Usuário BASIC não tem permissão para ativar outros usuários.");
-	    } else {
-	        throw new ClienteEncontradoException("Role não autorizada para ativar usuários.");
-	    }
+	    
+	    if (!userDao.existeCliente(id)) {
+	        throw new ClienteEncontradoException("Cliente não encontrado.");
+	    }	    
+	    
+	    return userDao.ativarCliente(id);
 	}
 
 
