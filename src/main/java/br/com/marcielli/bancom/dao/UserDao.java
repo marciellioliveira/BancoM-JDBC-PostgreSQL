@@ -285,10 +285,38 @@ public class UserDao {
 
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
+    
+    public boolean desativarCliente(Long clienteId) {
+       
+    	Integer userId = jdbcTemplate.queryForObject(
+    	        "SELECT user_id FROM clientes WHERE id = ?", 
+    	        Integer.class, 
+    	        clienteId
+    	    );
+    	    
+    	    if (userId == null) {
+    	        throw new IllegalArgumentException("Cliente não encontrado com ID: " + clienteId);
+    	    }
 
-    public boolean delete(Long id) {
-        String sql = "DELETE FROM users WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, id);
-        return rowsAffected > 0;
+    	    // atualizando cliente para false
+    	    int clientesAtualizados = jdbcTemplate.update(
+    	        "UPDATE clientes SET cliente_ativo = false WHERE id = ?", 
+    	        clienteId
+    	    );
+
+    	    // atualizando user para false
+    	    int usersAtualizados = jdbcTemplate.update(
+    	        "UPDATE users SET user_ativo = false WHERE id = ?", 
+    	        userId
+    	    );
+
+    	    //se os dois ficaram false, retorna true
+    	    return clientesAtualizados > 0 && usersAtualizados > 0;
     }
+
+//    public boolean delete(Long id) {
+//        String sql = "DELETE FROM users WHERE id = ?";
+//        int rowsAffected = jdbcTemplate.update(sql, id);
+//        return rowsAffected > 0;
+//    }
 }

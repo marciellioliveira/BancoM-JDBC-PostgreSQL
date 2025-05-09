@@ -311,7 +311,6 @@ public class UserClienteService implements UserDetailsService {
 
 	    String username = authentication.getName(); // Agora é só o username mesmo
 	    
-	    // Busca o usuário logado pelo username
 	    User loggedInUser = userDao.findByUsername(username)
 	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
 
@@ -320,13 +319,13 @@ public class UserClienteService implements UserDetailsService {
 	        if (id.equals(loggedInUser.getId().longValue())) {
 	            throw new ClienteEncontradoException("Administradores não podem deletar a si mesmos.");
 	        }
-	        return userDao.delete(id);
+	        return userDao.desativarCliente(id);
 	    } else if ("ROLE_BASIC".equals(role)) {
 	        // Basic só pode deletar a si mesmo
 	        if (!id.equals(loggedInUser.getId().longValue())) {
 	            throw new ClienteEncontradoException("Usuário BASIC não tem permissão para deletar outros usuários.");
 	        }
-	        return userDao.delete(id);
+	        return userDao.desativarCliente(id);
 	    } else {
 	        throw new ClienteEncontradoException("Role não autorizada para deletar usuários.");
 	    }

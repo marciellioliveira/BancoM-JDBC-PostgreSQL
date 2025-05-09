@@ -153,10 +153,12 @@ public class CartaoDao {
 		}
 	}
 
-	public void deleteCartao(Long id) {
-		String sql = "DELETE FROM cartoes WHERE id = ?";
-		jdbcTemplate.update(sql, id);
-	}
+//	public void deleteCartao(Long id) {
+//		String sql = "DELETE FROM cartoes WHERE id = ?";
+//		jdbcTemplate.update(sql, id);
+//	}
+	
+	
 	
 	public List<Cartao> findAll() {
 	    String sql = "SELECT " +

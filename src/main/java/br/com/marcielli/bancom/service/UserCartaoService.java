@@ -250,7 +250,7 @@ public class UserCartaoService {
 			throw new IllegalArgumentException("Role não autorizada para deletar cartões: " + role);
 		}
 
-		cartaoDao.deleteCartao(idCartao);
+		cartaoDao.desativarCartao(idCartao);
 		return true;
 	}
 
