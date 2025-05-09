@@ -330,6 +330,33 @@ public class UserClienteService implements UserDetailsService {
 	        throw new ClienteEncontradoException("Role não autorizada para deletar usuários.");
 	    }
 	}
+	
+	
+	@Transactional
+	public boolean ativarCliente(Long id, Authentication authentication) throws ClienteEncontradoException {
+	    String role = authentication.getAuthorities().stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
+
+	    String username = authentication.getName();
+	    
+	    User loggedInUser = userDao.findByUsername(username)
+	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // Admin não pode se ativar 
+	        if (id.equals(loggedInUser.getId().longValue())) {
+	            throw new ClienteEncontradoException("Operação redundante: administrador já está ativo.");
+	        }
+	        return userDao.ativarCliente(id);
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        // Basic não pode ativar outros usuários
+	        throw new ClienteEncontradoException("Usuário BASIC não tem permissão para ativar outros usuários.");
+	    } else {
+	        throw new ClienteEncontradoException("Role não autorizada para ativar usuários.");
+	    }
+	}
 
 
 }

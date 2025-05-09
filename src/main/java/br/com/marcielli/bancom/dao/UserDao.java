@@ -313,6 +313,31 @@ public class UserDao {
     	    //se os dois ficaram false, retorna true
     	    return clientesAtualizados > 0 && usersAtualizados > 0;
     }
+    
+    
+    public boolean ativarCliente(Long clienteId) {
+        Integer userId = jdbcTemplate.queryForObject(
+            "SELECT user_id FROM clientes WHERE id = ?", 
+            Integer.class, 
+            clienteId
+        );
+        
+        if (userId == null) {
+            throw new IllegalArgumentException("Cliente não encontrado com ID: " + clienteId);
+        }
+     
+        int clientesAtualizados = jdbcTemplate.update(
+            "UPDATE clientes SET cliente_ativo = true WHERE id = ?", 
+            clienteId
+        );
+
+        int usersAtualizados = jdbcTemplate.update(
+            "UPDATE users SET user_ativo = true WHERE id = ?", 
+            userId
+        );
+
+        return clientesAtualizados > 0 && usersAtualizados > 0;
+    }
 
 //    public boolean delete(Long id) {
 //        String sql = "DELETE FROM users WHERE id = ?";

@@ -1,266 +1,134 @@
-2025-05-09 08:52:28 [34mINFO [0;39m
+2025-05-09 09:25:37 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
-2025-05-09 08:52:28 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 1020 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
-2025-05-09 08:52:28 [34mINFO [0;39m
+2025-05-09 09:25:37 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 13936 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
+2025-05-09 09:25:37 [34mINFO [0;39m
 				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
-2025-05-09 08:52:29 [34mINFO [0;39m
+2025-05-09 09:25:38 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
-2025-05-09 08:52:29 [34mINFO [0;39m
+2025-05-09 09:25:38 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
-2025-05-09 08:52:29 [34mINFO [0;39m
+2025-05-09 09:25:38 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
-2025-05-09 08:52:29 [34mINFO [0;39m
+2025-05-09 09:25:39 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
-2025-05-09 08:52:29 [34mINFO [0;39m
+2025-05-09 09:25:39 [34mINFO [0;39m
 				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
-2025-05-09 08:52:29 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@29013ef2
-2025-05-09 08:52:29 [34mINFO [0;39m
+2025-05-09 09:25:39 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4f081b5d
+2025-05-09 09:25:39 [34mINFO [0;39m
 				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
-2025-05-09 08:52:30 [34mINFO [0;39m
+2025-05-09 09:25:39 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
-2025-05-09 08:52:30 [39mDEBUG[0;39m
+2025-05-09 09:25:39 [39mDEBUG[0;39m
 				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-05-09 08:52:30 [34mINFO [0;39m
+2025-05-09 09:25:40 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
-2025-05-09 08:52:30 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.651 seconds (process running for 2.891)
-2025-05-09 08:52:32 [34mINFO [0;39m
+2025-05-09 09:25:40 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.618 seconds (process running for 2.859)
+2025-05-09 09:25:44 [34mINFO [0;39m
 				[36m[http-nio-8087-exec-1][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-05-09 08:52:32 [39mDEBUG[0;39m
+2025-05-09 09:25:44 [39mDEBUG[0;39m
 				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
-2025-05-09 08:52:32 [34mINFO [0;39m
+2025-05-09 09:25:44 [34mINFO [0;39m
 				[36m[http-nio-8087-exec-1][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
-2025-05-09 08:52:32 [39mDEBUG[0;39m
+2025-05-09 09:25:44 [39mDEBUG[0;39m
 				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
-2025-05-09 08:52:32 [34mINFO [0;39m
+2025-05-09 09:25:44 [34mINFO [0;39m
 				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 08:52:32 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
-2025-05-09 08:52:32 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
-2025-05-09 08:52:32 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
-2025-05-09 08:52:32 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 08:52:32 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 4
-2025-05-09 08:52:32 [34mINFO [0;39m
+2025-05-09 09:25:44 [34mINFO [0;39m
 				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
-2025-05-09 08:52:32 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
-2025-05-09 08:52:45 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /cartoes/2
-2025-05-09 08:52:45 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes/2
-2025-05-09 08:52:45 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /cartoes/2
-2025-05-09 08:52:45 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Iniciando busca pelo cartão com ID: 2
-2025-05-09 08:52:45 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Cartão encontrado: CartaoDebito(limiteDiarioTransacao=2000.00, totalGastoMes=0)
-2025-05-09 08:52:45 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - cartao: 2, contaId: 1
-2025-05-09 08:52:45 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - Conta completa carregada: ContaPoupanca(taxaAcrescRend=0.01, taxaMensal=0.000829538)
-2025-05-09 08:52:45 [1;31mERROR[0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.b.service.UserClienteService[0;39m - Erro ocorrido: Não é possível excluir este cartão, pois é o único cartão associado à conta.
-2025-05-09 08:52:53 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /cartoes
-2025-05-09 08:52:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes
-2025-05-09 08:52:53 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /cartoes
-2025-05-09 08:52:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - Criando cartão com DTO: CartaoCreateDTO(idCliente=1, idConta=1, tipoCartao=DEBITO, senha=1234)
-2025-05-09 08:52:54 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - cartaoDao  1
-2025-05-09 08:52:58 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /cartoes/2
-2025-05-09 08:52:58 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes/2
-2025-05-09 08:52:58 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /cartoes/2
-2025-05-09 08:52:58 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Iniciando busca pelo cartão com ID: 2
-2025-05-09 08:52:58 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Cartão encontrado: CartaoDebito(limiteDiarioTransacao=2000.00, totalGastoMes=0)
-2025-05-09 08:52:58 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - cartao: 2, contaId: 1
-2025-05-09 08:52:58 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - Conta completa carregada: ContaPoupanca(taxaAcrescRend=0.01, taxaMensal=0.000829538)
-2025-05-09 08:52:58 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - Conta carregada: ContaPoupanca(taxaAcrescRend=0.01, taxaMensal=0.000829538)
-2025-05-09 08:53:02 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
-2025-05-09 08:53:02 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 4
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
-2025-05-09 08:53:02 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
-2025-05-09 08:53:16 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
-2025-05-09 08:53:16 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 4
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
-2025-05-09 08:53:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
-2025-05-09 09:09:44 [34mINFO [0;39m
-				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
-2025-05-09 09:09:44 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 12556 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
-2025-05-09 09:09:44 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
-2025-05-09 09:09:45 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
-2025-05-09 09:09:45 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
-2025-05-09 09:09:45 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
-2025-05-09 09:09:45 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
-2025-05-09 09:09:45 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
-2025-05-09 09:09:45 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@29013ef2
-2025-05-09 09:09:45 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
-2025-05-09 09:09:46 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
-2025-05-09 09:09:46 [39mDEBUG[0;39m
-				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-05-09 09:09:46 [34mINFO [0;39m
-				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
-2025-05-09 09:09:46 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.71 seconds (process running for 2.952)
-2025-05-09 09:09:50 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-05-09 09:09:50 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /auth/login
-2025-05-09 09:09:50 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /auth/login
-2025-05-09 09:09:50 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
-2025-05-09 09:09:50 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /auth/login
-2025-05-09 09:09:50 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-1][0;39m [35mo.s.s.a.d.DaoAuthenticationProvider[0;39m - Authenticated user
-2025-05-09 09:09:53 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
-2025-05-09 09:09:53 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 4
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
-2025-05-09 09:09:53 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
-2025-05-09 09:10:05 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /users/1
-2025-05-09 09:10:05 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/1
-2025-05-09 09:10:05 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /users/1
-2025-05-09 09:10:09 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /auth/login
-2025-05-09 09:10:09 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /auth/login
-2025-05-09 09:10:09 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
-2025-05-09 09:10:09 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /auth/login
-2025-05-09 09:10:09 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mo.s.s.a.d.DaoAuthenticationProvider[0;39m - Authenticated user
-2025-05-09 09:10:12 [39mDEBUG[0;39m
+2025-05-09 09:25:52 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/2
+2025-05-09 09:25:52 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/2
+2025-05-09 09:25:52 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/2
+2025-05-09 09:26:24 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/2/ativar
+2025-05-09 09:26:24 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/2/ativar
+2025-05-09 09:26:24 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/2/ativar
+2025-05-09 09:26:29 [39mDEBUG[0;39m
 				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
-2025-05-09 09:10:12 [34mINFO [0;39m
+2025-05-09 09:26:29 [34mINFO [0;39m
 				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
-2025-05-09 09:10:12 [39mDEBUG[0;39m
+2025-05-09 09:26:29 [39mDEBUG[0;39m
 				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
-2025-05-09 09:10:12 [34mINFO [0;39m
+2025-05-09 09:26:29 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 09:26:29 [34mINFO [0;39m
 				[36m[http-nio-8087-exec-6][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
-2025-05-09 09:10:12 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
-2025-05-09 09:10:16 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /users/1
-2025-05-09 09:10:16 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/1
-2025-05-09 09:10:16 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /users/1
-2025-05-09 09:10:19 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /users/2
-2025-05-09 09:10:19 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/2
-2025-05-09 09:10:19 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /users/2
-2025-05-09 09:10:23 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
-2025-05-09 09:10:23 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-9][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
-2025-05-09 09:10:23 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
-2025-05-09 09:10:23 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-9][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
-2025-05-09 09:10:23 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-9][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-09 09:27:42 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-05-09 09:27:42 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 16896 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
+2025-05-09 09:27:42 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-05-09 09:27:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
+2025-05-09 09:27:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-05-09 09:27:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-09 09:27:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-05-09 09:27:43 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-05-09 09:27:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@19f02280
+2025-05-09 09:27:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-05-09 09:27:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
+2025-05-09 09:27:44 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-05-09 09:27:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
+2025-05-09 09:27:44 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.814 seconds (process running for 3.054)
+2025-05-09 09:27:48 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-09 09:27:48 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 09:27:48 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 09:27:48 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 09:27:48 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 09:27:48 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 09:27:54 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /users/2
+2025-05-09 09:27:54 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/2
+2025-05-09 09:27:54 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /users/2
+2025-05-09 09:27:58 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 09:27:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 09:27:58 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 09:27:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 09:27:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 09:28:03 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/2/ativar
+2025-05-09 09:28:03 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/2/ativar
+2025-05-09 09:28:03 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/2/ativar
+2025-05-09 09:28:07 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 09:28:07 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 09:28:07 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 09:28:07 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 09:28:07 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
