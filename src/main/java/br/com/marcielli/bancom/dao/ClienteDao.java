@@ -187,7 +187,8 @@ public class ClienteDao {
 				               ca.categoria_conta,
 				               ca.limite_credito_pre_aprovado,
 				               ca.status AS status_cartao,
-				               ca.total_gasto_mes_credito
+				               ca.total_gasto_mes_credito,
+				               ca.limite_diario_transacao
 				           FROM clientes c
 				           LEFT JOIN contas co ON co.cliente_id = c.id
 				           LEFT JOIN transferencias t ON t.id_conta_origem = co.id OR t.id_conta_destino = co.id
@@ -340,6 +341,7 @@ public class ClienteDao {
 												categoriaContaStr);
 										cartaoDebito.setCategoriaConta(null);
 									}
+									cartaoDebito.setLimiteDiarioTransacao(rs.getBigDecimal("limite_diario_transacao"));
 									cartaoDebito.setStatus(rs.getBoolean("status_cartao"));
 									cartaoDebito.setTotalGastoMes(rs.getBigDecimal("total_gasto_mes"));
 									cartaoDebito.setSenha(rs.getString("senha"));
@@ -404,12 +406,10 @@ public class ClienteDao {
 					        Long idCartaoTransferencia = rs.getLong("id_cartao");
 					        String tipoTransferenciaStr = rs.getString("tipo_transferencia");
 					        
-					        // Criamos uma cópia final para usar nos lambdas
 					        final Long transferenciaIdFinal = transferenciaId;
 					        
-					        // Verificando quem enviou (mantendo sua lógica original)
 					        if (clienteId.equals(idClienteOrigem)) {
-					            // Verifica se a transferência já existe (usando a cópia final no lambda)
+					           
 					            boolean transferenciaJaExiste = conta.getTransferencias().stream()
 					                .anyMatch(t -> t.getId().equals(transferenciaIdFinal));
 					            
@@ -448,21 +448,18 @@ public class ClienteDao {
 					                    transferencia.setTipoCartao(null);
 					                }
 					                
-					                // Adiciona à lista principal (mantendo seu código original)
 					                conta.getTransferencias().add(transferencia);
 					                logger.debug("Transferência enviada adicionada à conta {}: Transferência ID {}", 
 					                    conta.getId(), transferencia.getId());
 					                
-					                // Mantendo sua lógica original para transferências de crédito
 					                if (idCartaoTransferencia != null && idCartaoTransferencia > 0 && 
 					                    "CARTAO_CREDITO".equals(tipoTransferenciaStr)) {
 					                    
-					                    // Criamos uma cópia final da transferência para usar no lambda
 					                    final Transferencia transferenciaFinal = transferencia;
 					                    
 					                    for (Cartao cartao : conta.getCartoes()) {
 					                        if (cartao.getId().equals(idCartaoTransferencia) && cartao instanceof CartaoCredito) {
-					                            // Verifica se já existe na lista de crédito (usando a cópia final no lambda)
+					                        
 					                            boolean creditoJaExiste = ((CartaoCredito) cartao).getTransferenciasCredito()
 					                                .stream()
 					                                .anyMatch(t -> t.getId().equals(transferenciaIdFinal));

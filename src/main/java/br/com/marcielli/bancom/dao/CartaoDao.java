@@ -423,6 +423,16 @@ public class CartaoDao {
 	        throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Credito.");
 	    }
 	}
+	
+	public void alterarLimiteCartaoDebito(Cartao cartao) {
+	    if (cartao instanceof CartaoDebito cartaoDebito) {
+	        String sql = "UPDATE cartoes SET limite_diario_transacao = ? WHERE id = ?";
+	        jdbcTemplate.update(sql, cartaoDebito.getLimiteDiarioTransacao(), cartaoDebito.getId());
+	        logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoDebito.getId(), cartaoDebito.getLimiteDiarioTransacao());
+	    } else {
+	        throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Débito.");
+	    }
+	}
 
 
 }

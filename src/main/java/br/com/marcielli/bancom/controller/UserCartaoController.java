@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.marcielli.bancom.dto.CartaoCreateDTO;
 import br.com.marcielli.bancom.dto.CartaoUpdateDTO;
 import br.com.marcielli.bancom.dto.security.UserCartaoAlterarLimiteCartaoCreditoDTO;
+import br.com.marcielli.bancom.dto.security.UserCartaoAlterarLimiteCartaoDebitoDTO;
 import br.com.marcielli.bancom.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.service.UserCartaoService;
@@ -141,51 +142,24 @@ public class UserCartaoController {
 	}
 	
 	
-	
-	
-	
-	
+	//ADMIN pode alterar limite dele e de todos
+	//BASIC não pode alterar limite
+	@PutMapping("/cartoes/{cartaoId}/limite-diario")
+	public ResponseEntity<?> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId,@RequestBody UserCartaoAlterarLimiteCartaoDebitoDTO dto, Authentication authentication) {
+		
+		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoDebito(cartaoId, dto, authentication);
 
+		if (limiteAtualizado != null) {
+			return ResponseEntity.status(HttpStatus.OK).body("Limite do cartão de débito alterado com suceso");
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
+		}
 
-	//ADMIN pode alterar limite do cartão de credito dele e de todos
-//	//BASIC não pode alterar limite
-//	@PutMapping("/cartoes/{cartaoId}/limite")
-//	public ResponseEntity<?> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId,
-//			@RequestBody UserCartaoAlterarLimiteCartaoCreditoDTO dto) {
-//				return null;
-//
-////		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, dto);
-////
-////		if (limiteAtualizado != null) {
-////			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-////
-////			response.setId(cartaoId);
-////
-////			if (limiteAtualizado instanceof CartaoCredito cc) {
-////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-////			}
-////
-////			response.setTipoCartao(limiteAtualizado.getTipoCartao());
-////			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
-////			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
-////			response.setStatus(limiteAtualizado.isStatus());
-////			response.setSenha(limiteAtualizado.getSenha());
-////			response.setTipoConta(limiteAtualizado.getTipoConta());
-////
-////			if (limiteAtualizado instanceof CartaoCredito cc) {
-////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-////			}
-////
-////			if (limiteAtualizado instanceof CartaoDebito cd) {
-////				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
-////			}
-////
-////			return ResponseEntity.status(HttpStatus.OK).body(response);
-////		} else {
-////			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
-////		}
-//
-//	}
+	}
+	
+	
+	
+	
 
 
 
