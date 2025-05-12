@@ -1,0 +1,80 @@
+2025-05-09 13:12:58 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 13:12:58 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 2
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 1
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:12:58 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-09 13:13:21 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /contas/2
+2025-05-09 13:13:21 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /contas/2
+2025-05-09 13:13:21 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /contas/2
+2025-05-09 13:13:21 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.b.service.UserClienteService[0;39m - ADMIN: Conta ID: 2
+2025-05-09 13:13:31 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-09 13:13:31 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 2
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 1
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-09 13:13:31 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-09 13:13:50 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /contas/2
+2025-05-09 13:13:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /contas/2
+2025-05-09 13:13:50 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /contas/2
+2025-05-09 13:13:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.b.service.UserClienteService[0;39m - ADMIN: Conta ID: 2
+2025-05-09 14:00:00 [34mINFO [0;39m
+				[36m[scheduling-1][0;39m [35mb.c.m.b.service.ExchangeRateService[0;39m - Cache de taxas limpo em 2025-05-09T14:00:00.016131200
+2025-05-09 14:00:00 [34mINFO [0;39m
+				[36m[scheduling-1][0;39m [35mb.c.m.b.c.TaxaCambioScheduler[0;39m - Taxas atualizadas em: 2025-05-09T14:00:00.017130600
+2025-05-09 20:00:00 [34mINFO [0;39m
+				[36m[scheduling-3][0;39m [35mb.c.m.b.service.ExchangeRateService[0;39m - Cache de taxas limpo em 2025-05-09T20:00:00.014260700
+2025-05-09 20:00:00 [34mINFO [0;39m
+				[36m[scheduling-3][0;39m [35mb.c.m.b.c.TaxaCambioScheduler[0;39m - Taxas atualizadas em: 2025-05-09T20:00:00.015261700

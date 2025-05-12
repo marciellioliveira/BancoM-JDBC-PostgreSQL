@@ -5,6 +5,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,45 +169,6 @@ public class UserCartaoService {
 		}
 	}
 
-//	@Transactional
-//	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, Authentication authentication)
-//			throws AccessDeniedException {
-//		String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst()
-//				.orElse("");
-//
-//		String username = authentication.getName();
-//
-//		if ("ROLE_ADMIN".equals(role)) {
-//			// Admin pode atualizar qualquer cartão
-//			Cartao cartao = cartaoDao.findById(cartaoId)
-//					.orElseThrow(() -> new CartaoNaoEncontradoException("Cartão não encontrado"));
-//
-//			// Atualiza a senha
-//			cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
-//			return cartaoDao.save(cartao);
-//
-//		} else if ("ROLE_BASIC".equals(role)) {
-//			// Basic só pode atualizar o cartão dele
-//			Cartao cartao = cartaoDao.findByIdAndUsername(cartaoId, username)
-//					.orElseThrow(() -> new CartaoNaoEncontradoException(
-//							"Cartão não encontrado ou você não tem permissão para acessá-lo"));
-//
-//			if (cartao.getConta().getCliente().getId() != dto.getIdCliente()) {
-//				throw new ClienteNaoEncontradoException("Você não tem permissão para alterar esse cartão.");
-//			}
-//
-//			if (!cartao.isStatus()) {
-//				throw new PermissaoNegadaException("Não é possível atualizar a senha de um cartão desativado.");
-//			}
-//
-//			cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
-//			return cartaoDao.save(cartao);
-//
-//		} else {
-//			logger.error("Você não tem permissão para atualizar a senha desse cartão" + role);
-//			throw new AccessDeniedException("Você não tem permissão para atualizar a senha desse cartão.");
-//		}
-//	}
 	
 	@Transactional
 	public Cartao updateSenha(Long cartaoId, CartaoUpdateDTO dto, Authentication authentication)
@@ -381,7 +343,7 @@ public class UserCartaoService {
 		// Cartão que vai fazer o pagamento
 		Cartao cartaoOrigem = cartaoDao.findById(dto.idCartao())
 				.orElseThrow(() -> new IllegalArgumentException("Cartão não encontrado"));
-
+		logger.info("Cartão nulo?: {}", cartaoOrigem);
 		// Validando a senha do cartão
 		if (!passwordEncoder.matches(dto.senha(), cartaoOrigem.getSenha())) {
 			throw new IllegalArgumentException("Senha do cartão incorreta");
@@ -405,6 +367,11 @@ public class UserCartaoService {
 			throw new PermissaoNegadaException("Uma das contas está desativada");
 		}
 
+		// Validando que a conta de origem não é a mesma que a conta de destino
+		if (contaOrigem.getId().equals(contaDestino.getId())) {
+		    throw new PermissaoNegadaException("A conta de origem e a conta de destino não podem ser a mesma");
+		}
+		
 		// Cliente que vai enviar o valor
 		Cliente clienteOrigem = clienteDao.findById(contaOrigem.getCliente().getId())
 				.orElseThrow(() -> new IllegalArgumentException("Cliente da conta de origem não encontrado"));
@@ -422,7 +389,7 @@ public class UserCartaoService {
 		if (!isAdmin && !clienteOrigem.getId().equals(usuarioLogado.getId().longValue())) {
 			throw new AcessoNegadoException("Você só pode pagar com cartão vinculado à sua própria conta");
 		}
-
+		Long faturaId = null;
 		// transferencia - debito ou credito
 		// se o cartão de origem for credito(não vai retirar valor do saldo), vai passar
 		// como credito e precisa entrar nas duas listas: transferenciasCredito (pq ele
@@ -459,20 +426,32 @@ public class UserCartaoService {
 					: dto.valor();
 			cartaoCredito.setLimiteCreditoPreAprovado(novoLimite);
 			cartaoCredito.setTotalGastoMesCredito(novoTotalGasto);
-
-			Fatura fatura = faturaDao.findByCartaoId(cartaoCredito.getId()).orElseGet(() -> {
-				Fatura novaFatura = new Fatura();
-				novaFatura.setCartao(cartaoCredito);
-				novaFatura.setDataVencimento(LocalDateTime.now().plusDays(10));
-				novaFatura.setValorTotal(BigDecimal.ZERO);
-				return novaFatura;
-			});
-
-			fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
+			 
+			
+			//Se tiver fatura, salva nela, se não tiver cria uma e salva na nova
+			Optional<Fatura> faturaOptional = faturaDao.findByCartaoId(cartaoCredito.getId());
+			Fatura fatura;
+			if (faturaOptional.isPresent()) { //fatura existe, então atualiza
+			    
+			    fatura = faturaOptional.get();
+			    fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
+			    
+			    faturaId = fatura.getId();
+			    faturaDao.update(fatura);
+			    
+			} else { //não existe fatura, então cria uma nova
+			    
+			    fatura = new Fatura();
+			    fatura.setCartao(cartaoCredito);
+			    fatura.setDataVencimento(LocalDateTime.now().plusDays(10));
+			    fatura.setValorTotal(dto.valor());
+			    
+			    faturaId = faturaDao.save(fatura);
+			    fatura.setId(faturaId);
+			}
+			
 			transferencia.setFatura(fatura);
-
-			Long faturaId = faturaDao.save(fatura);
-			fatura.setId(faturaId);
+			
 
 			Long transferenciaId = transferenciaDao.save(transferencia);
 			transferencia.setId(transferenciaId);

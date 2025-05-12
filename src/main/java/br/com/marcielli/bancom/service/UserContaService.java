@@ -183,43 +183,44 @@ public class UserContaService {
 	    }
 	}
 	
+	
+	
 	@Transactional
 	public boolean delete(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
-
 	    String role = authentication.getAuthorities().stream()
-	        .map(GrantedAuthority::getAuthority)
-	        .findFirst()
-	        .orElse("");
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
 
 	    String username = authentication.getName();
-
 	    Conta contaExistente;
 
 	    if ("ROLE_ADMIN".equals(role)) {
 	        contaExistente = contaDao.findById(idConta)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
+	                .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
 
-	        // Verificar se é a própria conta do admin
-	        Long contaUserId = contaExistente.getCliente().getUser().getId().longValue();
+	        // Verificar se o ADMIN está tentando deletar SUA PRÓPRIA conta
 	        User loggedInUser = userDao.findByUsername(username)
-	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
-	        logger.info("ADMIN: Conta ID: {}", contaExistente.getId());
-	        if (contaUserId.equals(loggedInUser.getId().longValue())) {
-	            throw new ContaExibirSaldoErroException("Administradores não podem deletar a própria conta. Apenas o superior pode realizar essa ação.");
+	                .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+	        
+	        if (contaExistente.getCliente().getUser().getId().equals(loggedInUser.getId())) {
+	            throw new ContaExibirSaldoErroException("Administradores não podem deletar a própria conta.");
 	        }
 
-	    } else if ("ROLE_BASIC".equals(role)) {	    	
-	    	
+	        // ADMIN pode deletar contas de outros usuários
+	        logger.info("ADMIN deletando conta ID: {}", contaExistente.getId());
+
+	    } else if ("ROLE_BASIC".equals(role)) {          
 	        User loggedInUser = userDao.findByUsername(username)
-	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+	                .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
 	        
-	        // o idUsuario do dto pertence ao usuário logado?
+	        // BASIC só pode deletar suas próprias contas
 	        if (!dto.idUsuario().equals(loggedInUser.getId().longValue())) {
 	            throw new ContaExibirSaldoErroException("Você só pode deletar suas próprias contas.");
-	        }	        
+	        }        
 	        contaExistente = contaDao.findByIdAndUsername(idConta, username)
-	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou você não tem permissão para deletá-la."));
-	        logger.info("BASIC: Conta ID: {}", contaExistente.getId());
+	                .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou você não tem permissão para deletá-la."));
+	        logger.info("BASIC deletando conta ID: {}", contaExistente.getId());
 	    } else {
 	        throw new ClienteEncontradoException("Role não autorizada para deletar contas.");
 	    }
@@ -234,12 +235,69 @@ public class UserContaService {
 	        throw new ContaExibirSaldoErroException("A conta já está desativada.");
 	    }
 
-	    Long contaId = contaExistente.getId();
-	    logger.info("Conta ID: {}", contaId);
-	   
-	    contaDao.desativarConta(contaId);
+	    contaDao.desativarConta(contaExistente.getId());
 	    return true;
 	}
+	
+//	@Transactional
+//	public boolean delete(Long idConta, ContaUpdateDTO dto, Authentication authentication) {
+//
+//	    String role = authentication.getAuthorities().stream()
+//	        .map(GrantedAuthority::getAuthority)
+//	        .findFirst()
+//	        .orElse("");
+//
+//	    String username = authentication.getName();
+//
+//	    Conta contaExistente;
+//
+//	    if ("ROLE_ADMIN".equals(role)) {
+//	        contaExistente = contaDao.findById(idConta)
+//	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada."));
+//
+//	        // Verificar se é a própria conta do admin
+//	        Long contaUserId = contaExistente.getCliente().getUser().getId().longValue();
+//	        User loggedInUser = userDao.findByUsername(username)
+//	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+//	        
+//	        logger.info("ADMIN: Conta ID: {}", contaExistente.getId());
+//	        
+//	        if (contaUserId.equals(loggedInUser.getId().longValue())) {
+//	            throw new ContaExibirSaldoErroException("Administradores não podem deletar a própria conta. Apenas o superior pode realizar essa ação.");
+//	        }
+//
+//	    } else if ("ROLE_BASIC".equals(role)) {	    	
+//	    	
+//	        User loggedInUser = userDao.findByUsername(username)
+//	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+//	        
+//	        // o idUsuario do dto pertence ao usuário logado?
+//	        if (!dto.idUsuario().equals(loggedInUser.getId().longValue())) {
+//	            throw new ContaExibirSaldoErroException("Você só pode deletar suas próprias contas.");
+//	        }	        
+//	        contaExistente = contaDao.findByIdAndUsername(idConta, username)
+//	            .orElseThrow(() -> new ContaNaoEncontradaException("Conta não encontrada ou você não tem permissão para deletá-la."));
+//	        logger.info("BASIC: Conta ID: {}", contaExistente.getId());
+//	    } else {
+//	        throw new ClienteEncontradoException("Role não autorizada para deletar contas.");
+//	    }
+//
+//	    if (contaExistente.getSaldoConta().compareTo(BigDecimal.ZERO) > 0) {
+//	        throw new ContaExibirSaldoErroException("A conta possui um saldo de R$ " + contaExistente.getSaldoConta() + ". Faça o saque antes de remover a conta.");
+//	    } else if (contaExistente.getSaldoConta().compareTo(BigDecimal.ZERO) < 0) {
+//	        throw new ContaExibirSaldoErroException("A conta está com saldo negativo. Regularize antes de remover a conta.");
+//	    }
+//
+//	    if (!contaExistente.getStatus()) {
+//	        throw new ContaExibirSaldoErroException("A conta já está desativada.");
+//	    }
+//
+//	    Long contaId = contaExistente.getId();
+//	    logger.info("Conta ID: {}", contaId);
+//	   
+//	    contaDao.desativarConta(contaId);
+//	    return true;
+//	}
 
 	@Transactional
 	public Conta update(Long idConta, ContaUpdateDTO dto, Authentication authentication) {

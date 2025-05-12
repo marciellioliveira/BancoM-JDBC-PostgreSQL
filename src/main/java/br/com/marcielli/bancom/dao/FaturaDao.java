@@ -1,6 +1,8 @@
 package br.com.marcielli.bancom.dao;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import br.com.marcielli.bancom.entity.Fatura;
 
@@ -54,6 +61,11 @@ public class FaturaDao {
 //	    }
 
 	    public Long save(Fatura fatura) {
+	        if (fatura.getCartao().getId() == null) {
+	        	 logger.info("Fatura get cartao id : " + fatura.getCartao().getId());
+	            throw new IllegalArgumentException("O cartão não pode ser nulo ao salvar a fatura.");
+	        }
+
 	        String sql = """
 	            INSERT INTO faturas (cartao_id, data_vencimento, valor_total)
 	            VALUES (?, ?, ?)
@@ -61,9 +73,12 @@ public class FaturaDao {
 	        """;
 
 	        try {
+	            LocalDateTime localDateTime = fatura.getDataVencimento();
+	            Timestamp dataVencimentoSql = Timestamp.valueOf(localDateTime); // Converte LocalDateTime para java.sql.Timestamp
+
 	            Long faturaId = jdbcTemplate.queryForObject(sql, Long.class, 
 	                fatura.getCartao().getId(), 
-	                fatura.getDataVencimento(),
+	                dataVencimentoSql,  // Passa o Timestamp
 	                fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO);
 
 	            logger.info("Fatura salva com ID: " + faturaId);
@@ -79,6 +94,7 @@ public class FaturaDao {
 	            throw e;
 	        }
 	    }
+
 
 	    
 	    public void update(Fatura fatura) {
@@ -110,17 +126,14 @@ public class FaturaDao {
 	            WHERE f.cartao_id = ?
 	            """;
 
-	        List<Fatura> faturas = jdbcTemplate.query(sql, new Object[]{cartaoId}, (rs, rowNum) -> {
+	        List<Fatura> faturas = jdbcTemplate.query(sql, (rs, rowNum) -> {
 	            Fatura fatura = new Fatura();
 	            fatura.setId(rs.getLong("id"));
 	            fatura.setValorTotal(rs.getBigDecimal("valor_total"));
 	            fatura.setDataVencimento(rs.getTimestamp("data_vencimento").toLocalDateTime());
-
-	            // SE QUISER POSSO CARREGAR CARTÃO AQUI TIPO:
-	            // fatura.setCartao(new CartaoCredito()); ou CartaoDebito
-
 	            return fatura;
-	        });
+	        }, cartaoId); 
+
 
 	        if (faturas.isEmpty()) {
 	            return Optional.empty();
