@@ -28,37 +28,7 @@ public class FaturaDao {
 	    public FaturaDao(JdbcTemplate jdbcTemplate) {
 	        this.jdbcTemplate = jdbcTemplate;
 	    }
-	    
 	
-//	    public Long save(Fatura fatura) {
-//	        String sql = """
-//	            INSERT INTO faturas (cartao_id, data_vencimento)
-//	            VALUES (?, ?)
-//	            RETURNING id
-//	        """;
-//
-//	        try {
-//	            Long faturaId = jdbcTemplate.queryForObject(sql, Long.class, 
-//	                fatura.getCartao().getId(), 
-//	                fatura.getDataVencimento());
-//	            logger.error("Erro ao salvar fatura -Fatura ID: " + faturaId);
-//	            logger.error("Erro ao salvar fatura - Cartao ID: " + fatura.getCartao().getId());
-//	            logger.error("Erro ao salvar fatura - Data Vencimento: " + fatura.getDataVencimento());
-//	            if (faturaId == null) {
-//	                throw new IllegalStateException("Falha ao obter ID gerado para fatura");
-//	            }
-//
-//	            logger.info("Fatura salva com ID: " + faturaId);
-//
-//	            // Atualiza o objeto Fatura com o ID (se quiser)
-//	            fatura.setId(faturaId);
-//
-//	            return faturaId;
-//	        } catch (Exception e) {
-//	            logger.error("Erro ao salvar fatura: " + e.getMessage(), e);
-//	            throw e; // Deixa a exceção subir para o Spring fazer rollback
-//	        }
-//	    }
 
 	    public Long save(Fatura fatura) {
 	        if (fatura.getCartao().getId() == null) {
@@ -74,11 +44,11 @@ public class FaturaDao {
 
 	        try {
 	            LocalDateTime localDateTime = fatura.getDataVencimento();
-	            Timestamp dataVencimentoSql = Timestamp.valueOf(localDateTime); // Converte LocalDateTime para java.sql.Timestamp
+	            Timestamp dataVencimentoSql = Timestamp.valueOf(localDateTime); 
 
 	            Long faturaId = jdbcTemplate.queryForObject(sql, Long.class, 
 	                fatura.getCartao().getId(), 
-	                dataVencimentoSql,  // Passa o Timestamp
+	                dataVencimentoSql,  
 	                fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO);
 
 	            logger.info("Fatura salva com ID: " + faturaId);

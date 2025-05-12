@@ -23,6 +23,7 @@ import br.com.marcielli.bancom.dao.TransferenciaDao;
 import br.com.marcielli.bancom.dao.UserDao;
 import br.com.marcielli.bancom.dto.CartaoCreateDTO;
 import br.com.marcielli.bancom.dto.CartaoUpdateDTO;
+import br.com.marcielli.bancom.dto.security.UserCartaoAlterarLimiteCartaoCreditoDTO;
 import br.com.marcielli.bancom.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.CartaoCredito;
@@ -40,6 +41,7 @@ import br.com.marcielli.bancom.exception.AcessoNegadoException;
 import br.com.marcielli.bancom.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.bancom.exception.ContaExisteNoBancoException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 import br.com.marcielli.bancom.exception.PermissaoNegadaException;
 import br.com.marcielli.bancom.exception.TransferenciaNaoRealizadaException;
@@ -499,10 +501,67 @@ public class UserCartaoService {
 
 		return true;
 	}
-
-
 	
 	
+	@Transactional
+	public Cartao alterarLimiteCartaoCredito(Long cartaoId, UserCartaoAlterarLimiteCartaoCreditoDTO dto, Authentication authentication) {
+
+	    String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
+
+	    if (!"ROLE_ADMIN".equals(role)) {
+	        throw new ClienteEncontradoException("Somente administradores podem alterar o limite do cartão.");
+	    }
+
+	 
+	    Cartao cartao = cartaoDao.findById(cartaoId)
+	        .orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+
+	    if (!cartao.isStatus()) {
+	        throw new CartaoNaoEncontradoException("Não é possível alterar limite de cartão desativado.");
+	    }
+
+	    if (dto.novoLimite() == null) {
+	        throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão.");
+	    }
+
+	    if (cartao instanceof CartaoCredito cartaoCredito) {
+	        cartaoCredito.alterarLimiteCreditoPreAprovado(dto.novoLimite());
+	    }
+
+	    cartaoDao.alterarLimiteCartaoCredito(cartao);
+	    return cartao;
+	}
+
+	
+
+
+//	@Transactional
+//	public Cartao alterarLimiteCartaoCredito(Long cartaoId, UserCartaoAlterarLimiteCartaoCreditoDTO dto) {
+//
+//		Cartao cartao = cartaoRepository.findById(cartaoId)
+//				.orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+//
+//		BigDecimal novoLimite = dto.novoLimite();
+//		
+//		if(cartao.isStatus() == false) {
+//			throw new CartaoNaoEncontradoException("Não é possível alterar limite de cartão desativado.");
+//		}
+//
+//		if (dto.novoLimite() == null) {
+//			throw new CartaoNaoEncontradoException("Você precisa digitar um valor para o novo limite do cartão");
+//		}
+//
+//		if (cartao instanceof CartaoCredito cartaoCredito) {
+//			cartaoCredito.alterarLimiteCreditoPreAprovado(novoLimite);
+//
+//		}
+//		cartaoRepository.save(cartao);
+//		return cartao;
+//	}
+//	
 	
 	
 	

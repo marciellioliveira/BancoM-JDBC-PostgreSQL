@@ -413,5 +413,16 @@ public class CartaoDao {
 				""";
 		jdbcTemplate.update(sql, cartaoId, transferencia.getId());
 	}
+	
+	public void alterarLimiteCartaoCredito(Cartao cartao) {
+	    if (cartao instanceof CartaoCredito cartaoCredito) {
+	        String sql = "UPDATE cartoes SET limite_credito_pre_aprovado = ? WHERE id = ?";
+	        jdbcTemplate.update(sql, cartaoCredito.getLimiteCreditoPreAprovado(), cartaoCredito.getId());
+	        logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoCredito.getId(), cartaoCredito.getLimiteCreditoPreAprovado());
+	    } else {
+	        throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Credito.");
+	    }
+	}
+
 
 }
