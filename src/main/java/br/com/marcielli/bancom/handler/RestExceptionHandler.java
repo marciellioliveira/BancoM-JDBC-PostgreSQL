@@ -137,6 +137,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage()));
     }
+    
+    //Fatura
+    // Fatura não encontrada - 404
+    @ExceptionHandler(FaturaNaoEncontradaException.class)
+    private ResponseEntity<RestErrorMessage> faturaHandler(FaturaNaoEncontradaException exception) {        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage()));
+    }
+    
+    // Permissão negada - 403
+    @ExceptionHandler(FaturaNaoTemPermissaoException.class)
+    private ResponseEntity<RestErrorMessage> faturaHandler(FaturaNaoTemPermissaoException exception) {        
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new RestErrorMessage(HttpStatus.FORBIDDEN, exception.getMessage()));
+    }
+    
+    
 
     // Permissão negada - 403
     @ExceptionHandler(PermissaoNegadaException.class)

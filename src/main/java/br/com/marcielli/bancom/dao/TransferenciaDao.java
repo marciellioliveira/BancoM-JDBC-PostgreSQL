@@ -3,6 +3,8 @@ package br.com.marcielli.bancom.dao;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ import br.com.marcielli.bancom.mappers.TransferenciaRowMapper;
 public class TransferenciaDao {
     
     private final JdbcTemplate jdbcTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(TransferenciaDao.class);
 
     public TransferenciaDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,31 +42,10 @@ public class TransferenciaDao {
             transferencia.getCodigoOperacao(),
             transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null,
             transferencia.getIdCartao(),
-            transferencia.getFaturaId());  // Agora passamos o faturaId
+            transferencia.getFatura().getId()); 
     }
 
 
-//    public Long save(Transferencia transferencia) {
-//        String sql = """
-//            INSERT INTO transferencias 
-//            (id_cliente_origem, id_cliente_destino, id_conta_origem,
-//             id_conta_destino, tipo_transferencia, valor, data,
-//             codigo_operacao, tipo_cartao, id_cartao)
-//            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-//            RETURNING id""";
-//        
-//        return jdbcTemplate.queryForObject(sql, Long.class,
-//            transferencia.getIdClienteOrigem(),
-//            transferencia.getIdClienteDestino(),
-//            transferencia.getIdContaOrigem(),
-//            transferencia.getIdContaDestino(),
-//            transferencia.getTipoTransferencia().name(),
-//            transferencia.getValor(),
-//            Timestamp.valueOf(transferencia.getData()),
-//            transferencia.getCodigoOperacao(),
-//            transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null,
-//            transferencia.getIdCartao());
-//    }
     
     public List<Transferencia> findByCartaoId(Long cartaoId) {
         String sql = "SELECT * FROM transferencias WHERE id_cartao = ? " +
@@ -93,4 +75,32 @@ public class TransferenciaDao {
         String sql = "SELECT * FROM transferencias WHERE id_conta_origem = ? ORDER BY data DESC";
         return jdbcTemplate.query(sql, new TransferenciaRowMapper(), contaId);
     }
+
+    public List<Transferencia> findByFaturaId(Long faturaId) {
+        String sql = """
+            SELECT id, valor, data, fatura_id
+            FROM transferencias
+            WHERE fatura_id = ?
+        """;
+
+        return jdbcTemplate.query(sql, new TransferenciaRowMapper(), faturaId);
+    }
+    
+    public List<Transferencia> findCreditoByFaturaIdUsingJoin(Long faturaId) {
+        String sql = """
+            SELECT t.id, t.valor, t.data, t.fatura_id, 
+                   NULL AS id_cliente_origem, NULL AS id_cliente_destino, 
+                   NULL AS id_conta_origem, NULL AS id_conta_destino, 
+                   t.tipo_transferencia, t.codigo_operacao, t.tipo_cartao, t.id_cartao
+            FROM transferencias t
+            INNER JOIN fatura_transferencias ft ON t.id = ft.transferencia_id
+            WHERE ft.fatura_id = ? AND t.tipo_transferencia = 'CARTAO_CREDITO'
+            ORDER BY t.data DESC
+            """;
+        logger.info("Buscando transferências de crédito para fatura ID: {}", faturaId);
+        List<Transferencia> transferencias = jdbcTemplate.query(sql, new TransferenciaRowMapper(), faturaId);
+        logger.info("Transferências de crédito encontradas: {}", transferencias.size());
+        return transferencias;
+    }
+
 }

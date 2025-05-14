@@ -23,7 +23,7 @@ import br.com.marcielli.bancom.entity.Fatura;
 public class FaturaDao {
 	
 	 private final JdbcTemplate jdbcTemplate;
-	 private static final Logger logger = LoggerFactory.getLogger(CartaoDao.class);
+	 private static final Logger logger = LoggerFactory.getLogger(FaturaDao.class);
 
 	    public FaturaDao(JdbcTemplate jdbcTemplate) {
 	        this.jdbcTemplate = jdbcTemplate;

@@ -19,6 +19,7 @@ import br.com.marcielli.bancom.dao.CartaoDao;
 import br.com.marcielli.bancom.dao.ClienteDao;
 import br.com.marcielli.bancom.dao.ContaDao;
 import br.com.marcielli.bancom.dao.FaturaDao;
+import br.com.marcielli.bancom.dao.PagamentoFaturaDao;
 import br.com.marcielli.bancom.dao.TransferenciaDao;
 import br.com.marcielli.bancom.dao.UserDao;
 import br.com.marcielli.bancom.dto.CartaoCreateDTO;
@@ -32,6 +33,7 @@ import br.com.marcielli.bancom.entity.CartaoDebito;
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Fatura;
+import br.com.marcielli.bancom.entity.PagamentoFatura;
 import br.com.marcielli.bancom.entity.TaxaManutencao;
 import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.entity.User;
@@ -42,8 +44,11 @@ import br.com.marcielli.bancom.exception.AcessoNegadoException;
 import br.com.marcielli.bancom.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
+import br.com.marcielli.bancom.exception.ClienteNaoTemSaldoSuficienteException;
 import br.com.marcielli.bancom.exception.ContaExisteNoBancoException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
+import br.com.marcielli.bancom.exception.FaturaNaoEncontradaException;
+import br.com.marcielli.bancom.exception.FaturaNaoTemPermissaoException;
 import br.com.marcielli.bancom.exception.PermissaoNegadaException;
 import br.com.marcielli.bancom.exception.TransferenciaNaoRealizadaException;
 import br.com.marcielli.bancom.utils.GerarNumeros;
@@ -59,12 +64,13 @@ public class UserCartaoService {
 	private final GerarNumeros gerarNumeros;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final FaturaDao faturaDao;
+	private final PagamentoFaturaDao pagFaturaDao;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserCartaoService.class);
 
 	public UserCartaoService(ClienteDao clienteDao, UserDao userDao, TransferenciaDao transferenciaDao,
 			ContaDao contaDao, CartaoDao cartaoDao, GerarNumeros gerarNumeros, BCryptPasswordEncoder passwordEncoder,
-			FaturaDao faturaDao) {
+			FaturaDao faturaDao, PagamentoFaturaDao pagFaturaDao) {
 		this.clienteDao = clienteDao;
 		this.userDao = userDao;
 		this.transferenciaDao = transferenciaDao;
@@ -73,6 +79,7 @@ public class UserCartaoService {
 		this.gerarNumeros = gerarNumeros;
 		this.passwordEncoder = passwordEncoder;
 		this.faturaDao = faturaDao;
+		this.pagFaturaDao = pagFaturaDao;
 	}
 
 	@Transactional
@@ -434,12 +441,14 @@ public class UserCartaoService {
 			//Se tiver fatura, salva nela, se não tiver cria uma e salva na nova
 			Optional<Fatura> faturaOptional = faturaDao.findByCartaoId(cartaoCredito.getId());
 			Fatura fatura;
+			
 			if (faturaOptional.isPresent()) { //fatura existe, então atualiza
 			    
 			    fatura = faturaOptional.get();
 			    fatura.setValorTotal(fatura.getValorTotal().add(dto.valor()));
 			    
 			    faturaId = fatura.getId();
+			    
 			    faturaDao.update(fatura);
 			    
 			} else { //não existe fatura, então cria uma nova
@@ -448,9 +457,17 @@ public class UserCartaoService {
 			    fatura.setCartao(cartaoCredito);
 			    fatura.setDataVencimento(LocalDateTime.now().plusDays(10));
 			    fatura.setValorTotal(dto.valor());
+			    fatura.setStatus(true); //será setado como false quando a fatura for paga
 			    
 			    faturaId = faturaDao.save(fatura);
-			    fatura.setId(faturaId);
+			    logger.info("Antes de faturaId != null: {}", faturaId);
+			    if (faturaId != null) {
+			    	logger.info("Setando fatura id: {}", faturaId);
+			        fatura.setId(faturaId);
+			    } else {
+			    	logger.info("Fatura id não gerado: {}", faturaId);
+			        throw new RuntimeException("Erro ao salvar a fatura. ID não gerado.");
+			    }
 			}
 			
 			transferencia.setFatura(fatura);
@@ -568,8 +585,165 @@ public class UserCartaoService {
 		return cartao;
 	}
 	
+	@Transactional
+	public Fatura verFaturaCartaoCredito(Long cartaoId, Authentication authentication) {
+	    
+	    logger.info("Cartão Id dto {}", cartaoId);
+	    
+	    String role = authentication.getAuthorities().stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
 
+	    User loggedInUser = userDao.findByUsername(authentication.getName())
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+
+	    Cartao cartao = cartaoDao.findById(cartaoId)
+	            .orElseThrow(() -> new ContaExisteNoBancoException("O cartão não existe no banco."));
+
+	    logger.info("cartao.getid: {}", cartao.getId());
+	    
+	    if (!(cartao instanceof CartaoCredito)) {
+	        logger.info("Tentativa de consultar fatura para cartão de débito ID: {}", cartaoId);
+	        throw new IllegalArgumentException("Faturas só estão disponíveis para cartões de crédito.");
+	    }
+
+	    Conta conta = cartao.getConta();
+	    if (conta == null || conta.getCliente() == null) {
+	        logger.error("Cartão ID {} tem conta ou cliente nulo: conta={}, cliente={}", 
+	            cartaoId, conta, conta != null ? conta.getCliente() : null);
+	        throw new FaturaNaoTemPermissaoException("O cartão não está associado a uma conta ou cliente válido.");
+	    }
+
+	    if ("ROLE_BASIC".equals(role)) {
+	        Long idClienteCartao = conta.getCliente().getId();
+	        logger.info("Cliente basic idClienteCartao: {}", idClienteCartao);
+	        logger.info("loggedInUser.getId().longValue(): {}", loggedInUser.getId().longValue());
+	        if (!idClienteCartao.equals(loggedInUser.getId().longValue())) {
+	            throw new FaturaNaoTemPermissaoException("Você não tem permissão para visualizar esta fatura.");
+	        }
+	    }
+
+	    Fatura fatura = cartaoDao.buscarFaturaComTransferenciasPorCartaoId(cartaoId);
+	    if (fatura == null) {
+	        logger.info("Nenhuma fatura encontrada para cartão ID: {}", cartaoId);
+	        throw new FaturaNaoEncontradaException("Nenhuma fatura encontrada para o cartão ID: " + cartaoId);
+	    }
+
+	    return fatura;
+	}
 	
+	
+	
+	@Transactional
+	public boolean pagFaturaCartaoC(Long idCartao, Authentication authentication) {
+	    logger.info("Iniciando pagamento da fatura para cartão ID: {}", idCartao);
+	    
+	    String role = authentication.getAuthorities().stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
+
+	    User loggedInUser = userDao.findByUsername(authentication.getName())
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+
+	    Cartao cartaoOrigem = cartaoDao.findById(idCartao)
+	            .orElseThrow(() -> new CartaoNaoEncontradoException("O cartão não existe no banco."));
+
+	    logger.info("Cartão encontrado ID: {}", cartaoOrigem.getId());
+	    
+	    if (!(cartaoOrigem instanceof CartaoCredito)) {
+	        logger.error("Tentativa de pagar fatura com cartão de débito ID: {}", idCartao);
+	        throw new IllegalArgumentException("Pagamento de fatura só está disponível para cartões de crédito.");
+	    }
+
+	    Conta contaOrigem = cartaoOrigem.getConta();
+	    if (contaOrigem == null || contaOrigem.getCliente() == null) {
+	        logger.error("Cartão ID {} tem conta ou cliente nulo: conta={}, cliente={}", 
+	            idCartao, contaOrigem, contaOrigem != null ? contaOrigem.getCliente() : null);
+	        throw new FaturaNaoTemPermissaoException("O cartão não está associado a uma conta ou cliente válido.");
+	    }
+
+	    if ("ROLE_BASIC".equals(role)) {
+	        Long idClienteCartao = contaOrigem.getCliente().getId();
+	        logger.info("Verificando permissão BASIC - Cliente do cartão: {}, Usuário logado: {}", 
+	            idClienteCartao, loggedInUser.getId());
+	        
+	        if (!idClienteCartao.equals(loggedInUser.getId().longValue())) {
+	            throw new FaturaNaoTemPermissaoException("Você não tem permissão para realizar pagamentos nesta fatura.");
+	        }
+	    }
+
+	    if (!cartaoOrigem.isStatus()) {
+	        throw new CartaoNaoEncontradoException("Não é possível pagar fatura através de um cartão desativado.");
+	    }
+	    
+	    if (!contaOrigem.getStatus()) {
+	        throw new CartaoNaoEncontradoException("Não é possível pagar fatura através de uma conta desativada.");
+	    }
+
+	    CartaoCredito cc = (CartaoCredito) cartaoOrigem;
+	    
+	    if (cc.getTotalGastoMesCredito().compareTo(contaOrigem.getSaldoConta()) > 0) {
+	        throw new ClienteNaoTemSaldoSuficienteException("Você não tem saldo suficiente para realizar o pagamento.");
+	    }
+
+	    Fatura fatura = cartaoDao.buscarFaturaComTransferenciasPorCartaoId(idCartao);
+	    if (fatura == null) {
+	        throw new FaturaNaoEncontradaException("Nenhuma fatura encontrada para pagamento.");
+	    }
+	    logger.info("Saldo da conta {} antes do pagamento", contaOrigem.getSaldoConta());
+	    logger.info("Fatura valor total {} antes do pagamento", fatura.getValorTotal());
+	    contaOrigem.pagarFatura(cc.getTotalGastoMesCredito());
+	    fatura.setStatus(true);
+	   
+	    
+	    //Registro de Pagamento de Fatura para ter um histórico quando precisar.
+	    PagamentoFatura historicoPagamento = new PagamentoFatura(fatura.getId(), cc.getId(),contaOrigem.getId(), cc.getTotalGastoMesCredito());
+	    pagFaturaDao.salvar(historicoPagamento);
+	    
+	    fatura.setValorTotal(BigDecimal.ZERO);  
+	    cc.setTotalGastoMesCredito(BigDecimal.ZERO);
+	    
+	    logger.info("Pagamento da fatura ID {} realizado com sucesso", fatura.getId());
+	    logger.info("Saldo da conta {} depois do pagamento", contaOrigem.getSaldoConta());
+	    logger.info("Fatura valor total {} depois do pagamento", fatura.getValorTotal());
+	    return true;
+	}
+	
+
+//	@Transactional(propagation = Propagation.REQUIRES_NEW)
+//	public boolean pagFaturaCartaoC(Long idCartao) {
+//
+//		Cartao cartaoOrigem = cartaoRepository.findById(idCartao)
+//				.orElseThrow(() -> new CartaoNaoEncontradoException("O cartão origem não existe."));
+//
+//		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId())
+//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
+//		
+//		if(cartaoOrigem.isStatus() == false) {
+//			throw new CartaoNaoEncontradoException("Não é possível pagar fatura através de um cartão desativado.");
+//		}
+//		
+//		if(contaOrigem.getStatus() == false) {
+//			throw new CartaoNaoEncontradoException("Não é possível pagar fatura através de uma conta desativada.");
+//		}
+//
+//		if (cartaoOrigem instanceof CartaoCredito cc) {
+//
+//			if (cc.getTotalGastoMesCredito().compareTo(contaOrigem.getSaldoConta()) > 0) {
+//				throw new CartaoNaoEncontradoException("Você não tem saldo suficiente para realizar o pagamento.");
+//			}
+//
+//			cc.getTotalGastoMesCredito();
+//			contaOrigem.pagarFatura(cc.getTotalGastoMesCredito());
+//			cc.getFatura().setStatus(true);
+//
+//		}
+//
+//		return true;
+//
+//	}
 	
 	
 	

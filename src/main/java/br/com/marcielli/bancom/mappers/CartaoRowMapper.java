@@ -1,8 +1,6 @@
 package br.com.marcielli.bancom.mappers;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
@@ -11,21 +9,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import br.com.marcielli.bancom.dao.TransferenciaDao;
 import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.CartaoCredito;
 import br.com.marcielli.bancom.entity.CartaoDebito;
+import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Fatura;
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
-import br.com.marcielli.bancom.service.UserClienteService;
 
 @Component
 public class CartaoRowMapper implements RowMapper<Cartao> {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);    
+    private static final Logger logger = LoggerFactory.getLogger(CartaoRowMapper.class);    
 
 
 	@Override
@@ -104,9 +101,21 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         conta.setId(contaId);
         conta.setTipoConta(parseEnum(TipoConta.class, rs.getString("tipo_conta")));
         conta.setCategoriaConta(parseEnum(CategoriaConta.class, rs.getString("categoria_conta")));
-        conta.setStatus(rs.getBoolean("status"));
-      
+        conta.setStatus(rs.getBoolean("status"));      
         conta.setSaldoConta(rs.getBigDecimal("saldo_conta"));
+        
+        Cliente cliente = new Cliente();
+        Long clienteId = rs.getLong("cliente_id");
+        cliente.setId(clienteId);
+        cliente.setNome(rs.getString("cliente_nome"));
+        cliente.setCpf(rs.getLong("cliente_cpf"));
+        cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+        //cliente.setUserId(rs.getLong("cliente_user_id"));
+        
+        conta.setCliente(cliente);
+        
+        logger.debug("Mapeando conta ID: {} com cliente ID: {}", contaId, clienteId);
+        logger.debug("Dados do cliente: Nome={}, CPF={}", cliente.getNome(), cliente.getCpf());
         
         return conta;
     }

@@ -22,20 +22,24 @@ import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.enuns.CategoriaConta;
 import br.com.marcielli.bancom.enuns.TipoCartao;
 import br.com.marcielli.bancom.enuns.TipoConta;
+import br.com.marcielli.bancom.exception.CartaoNaoEncontradoException;
 import br.com.marcielli.bancom.mappers.CartaoRowMapper;
+import br.com.marcielli.bancom.mappers.FaturaWithTransferenciasRowMapper;
 
 @Component
 public class CartaoDao {
 
 	private final JdbcTemplate jdbcTemplate;
+	private final FaturaWithTransferenciasRowMapper faturaWithTransferenciaRowMapper;
 	private static final Logger logger = LoggerFactory.getLogger(CartaoDao.class);
 
-	public CartaoDao(JdbcTemplate jdbcTemplate) {
+	public CartaoDao(JdbcTemplate jdbcTemplate, FaturaWithTransferenciasRowMapper faturaWithTransferenciaRowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.faturaWithTransferenciaRowMapper = faturaWithTransferenciaRowMapper;
 	}
 
 	public Cartao saveWithRelations(Cartao cartao) {
-		// Inserir cartão na tabela "cartoes"
+	
 		String sqlCartao = """
 				    INSERT INTO cartoes
 				    (tipo_conta, categoria_conta, tipo_cartao, numero_cartao, status, senha, conta_id,
@@ -52,12 +56,11 @@ public class CartaoDao {
 		logger.info("cartaoDao  {}", cartao.getConta().getId());
 		cartao.setId(cartaoId);
 
-		// Inserir Fatura, se existir
+		
 		if (cartao.getFatura() != null) {
 			insertFatura(cartaoId, cartao.getFatura());
 		}
 
-		// Inserir Seguros, se existirem
 		if (cartao.getSeguros() != null && !cartao.getSeguros().isEmpty()) {
 			insertSeguros(cartaoId, cartao.getSeguros());
 		}
@@ -153,7 +156,7 @@ public class CartaoDao {
 			return Optional.of(cartao);
 		} catch (EmptyResultDataAccessException e) {
 			logger.error("Nenhum cartão encontrado para o ID: {}", id, e);
-			return Optional.empty();
+			throw new CartaoNaoEncontradoException("Cartão não encontrado");
 		} catch (Exception e) {
 			logger.error("Erro inesperado ao buscar o cartão com ID: {}", id, e);
 			throw e;
@@ -433,6 +436,20 @@ public class CartaoDao {
 	        throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Débito.");
 	    }
 	}
+	
+	public Fatura buscarFaturaComTransferenciasPorCartaoId(Long cartaoId) {
+	    String sql = """
+	        SELECT id, cartao_id, valor_total, data_vencimento
+	        FROM faturas
+	        WHERE cartao_id = ?
+	    """;
+
+	    List<Fatura> faturas = jdbcTemplate.query(sql, faturaWithTransferenciaRowMapper, cartaoId);
+	    
+	    return faturas.isEmpty() ? null : faturas.get(0);
+	}
+
+
 
 
 }

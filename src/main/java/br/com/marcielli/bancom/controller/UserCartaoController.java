@@ -20,6 +20,7 @@ import br.com.marcielli.bancom.dto.security.UserCartaoAlterarLimiteCartaoCredito
 import br.com.marcielli.bancom.dto.security.UserCartaoAlterarLimiteCartaoDebitoDTO;
 import br.com.marcielli.bancom.dto.security.UserCartaoPagCartaoDTO;
 import br.com.marcielli.bancom.entity.Cartao;
+import br.com.marcielli.bancom.entity.Fatura;
 import br.com.marcielli.bancom.service.UserCartaoService;
 
 @RestController
@@ -154,63 +155,38 @@ public class UserCartaoController {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
-
 	}
 	
 	
+
+	//ADMIN pode ver de todos e dele
+	//BASIC só pode ver dele
+	@GetMapping("/cartoes/{cartaoId}/fatura")
+	public ResponseEntity<?> getFaturaCartaoDeCredito(@PathVariable("cartaoId") Long cartaoId, Authentication authentication) {		
+
+		Fatura fatura = cartaoService.verFaturaCartaoCredito(cartaoId,authentication);
+
+		if (fatura != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(fatura);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
+		}
+	}
 	
+	//ADMIN pode pagar de todos e dele
+	//BASIC só pode pagar a propria fatura
+	@PostMapping("/cartoes/{idCartao}/fatura/pagamento")
+	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao, Authentication authentication) {
+
+		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao, authentication);
+
+		if (pagamentoFaturaOk) {
+			return new ResponseEntity<>("Fatura paga.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
 	
-
-
-
-
-//	//ADMIN pode alterar limite dele e de todos
-//	//BASIC não pode alterar limite
-//	@PutMapping("/cartoes/{cartaoId}/limite-diario")
-//	public ResponseEntity<?> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId,
-//			@RequestBody UserCartaoAlterarLimiteCartaoDebitoDTO dto) {
-//				return null;
-//
-////		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoDebito(cartaoId, dto);
-////
-////		if (limiteAtualizado != null) {
-////			UserCartaoResponseDTO response = new UserCartaoResponseDTO();
-////
-////			response.setId(cartaoId);
-////
-////			if (limiteAtualizado instanceof CartaoCredito cc) {
-////				response.setLimiteCreditoPreAprovado(cc.getLimiteCreditoPreAprovado());
-////			}
-////
-////			if (limiteAtualizado instanceof CartaoDebito cd) {
-////				response.setLimiteDiarioTransacao(cd.getLimiteDiarioTransacao());
-////			}
-////
-////			response.setTipoCartao(limiteAtualizado.getTipoCartao());
-////			response.setNumeroCartao(limiteAtualizado.getNumeroCartao());
-////			response.setCategoriaConta(limiteAtualizado.getCategoriaConta());
-////			response.setStatus(limiteAtualizado.isStatus());
-////			response.setSenha(limiteAtualizado.getSenha());
-////			response.setTipoConta(limiteAtualizado.getTipoConta());
-////
-////			return ResponseEntity.status(HttpStatus.OK).body(response);
-////		} else {
-////			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
-////		}
-//
-//	}
-
-//	//ADMIN pode ver de todos e dele
-//	//BASIC só pode ver dele
-//	@GetMapping("/cartoes/{cartaoId}/fatura")
-//	public ResponseEntity<?> getFaturaCartaoDeCredito(@PathVariable("cartaoId") Long cartaoId) {
-//		return null;
-//
-////		Fatura fatura = cartaoService.getFaturaCartaoDeCreditoService(cartaoId)
-////				.orElseThrow(() -> new CartaoNaoEncontradoException("Não existe fatura para esse cartão."));
-////
-////		return ResponseEntity.status(HttpStatus.OK).body(fatura);
-//	}
 
 //	//ADMIN só pode pagar a propria fatura
 //	//BASIC só pode pagar a propria fatura
