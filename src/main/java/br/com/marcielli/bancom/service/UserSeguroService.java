@@ -1,7 +1,10 @@
 package br.com.marcielli.bancom.service;
 
 import java.math.BigDecimal;
+import java.nio.file.AccessDeniedException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,7 @@ import br.com.marcielli.bancom.dao.PagamentoFaturaDao;
 import br.com.marcielli.bancom.dao.SeguroDao;
 import br.com.marcielli.bancom.dao.TransferenciaDao;
 import br.com.marcielli.bancom.dao.UserDao;
+import br.com.marcielli.bancom.dto.security.ApoliceResponseDTO;
 import br.com.marcielli.bancom.dto.security.SeguroCreateDTO;
 import br.com.marcielli.bancom.entity.Cartao;
 import br.com.marcielli.bancom.entity.Cliente;
@@ -29,6 +33,7 @@ import br.com.marcielli.bancom.enuns.TipoSeguro;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.exception.ContaNaoEncontradaException;
 import br.com.marcielli.bancom.exception.PermissaoNegadaException;
+import br.com.marcielli.bancom.exception.SeguroNaoEncontradoException;
 import br.com.marcielli.bancom.utils.GerarNumeros;
 
 @Service
@@ -106,7 +111,94 @@ public class UserSeguroService {
 	    return seguroDao.save(seguro);
 	}
 
+	@Transactional
+	public List<Seguro> getSeguros(Authentication authentication) {
+	    String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
 
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // Admin pode ver todos os seguros
+	        return seguroDao.findAll();
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        String username = authentication.getName();
+	        return seguroDao.findByUsername(username);
+	    } else {
+	        throw new RuntimeException("Você não tem permissão para acessar a lista de seguros.");
+	    }
+	}
+	
+	@Transactional
+	public Seguro getSegurosById(Long id, Authentication authentication) throws AccessDeniedException {
+	    String role = authentication.getAuthorities().stream()
+	        .map(GrantedAuthority::getAuthority)
+	        .findFirst()
+	        .orElse("");
+
+	    String username = authentication.getName();
+
+	    if ("ROLE_ADMIN".equals(role)) {
+	        // Admin pode acessar qualquer seguro
+	        return seguroDao.findById(id).orElseThrow(() -> new SeguroNaoEncontradoException("Seguro não encontrado."));
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        
+	        return seguroDao.findByIdAndUsername(id, username).orElseThrow(() -> 
+	            new SeguroNaoEncontradoException("Seguro não encontrado ou você não tem permissão para acessá-lo."));
+	    } else {
+	        throw new AccessDeniedException("Você não tem permissão para acessar esse seguro.");
+	    }
+	}
+
+	@Transactional
+	public ApoliceResponseDTO gerarApoliceEletronica(Long seguroId, Authentication authentication) {
+	    String role = authentication.getAuthorities().stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .findFirst()
+	            .orElse("");
+
+	    String username = authentication.getName();
+
+	    Seguro seguro;
+
+	    if ("ROLE_ADMIN".equals(role)) {
+	        seguro = seguroDao.findById(seguroId)
+	                .orElse(null);
+	    } else if ("ROLE_BASIC".equals(role)) {
+	        seguro = seguroDao.findByIdAndUsername(seguroId, username)
+	                .orElse(null);
+	    } else {
+	        return null; // ou lance uma exceção de acesso, se preferir
+	    }
+
+	    if (seguro == null) {
+	        return null;
+	    }
+
+	    String numeroApolice = "AP-" + LocalDate.now().getYear() + "-" +
+	            UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+
+	    String condicoes = seguro.getTipo() == TipoSeguro.SEGURO_FRAUDE ?
+	            "Acionável em até 48h após transação não reconhecida." :
+	            "Cobre até R$ 10.000 em extravio de bagagem (comunicar em até 24h).";
+
+	    return new ApoliceResponseDTO(
+	            numeroApolice,
+	            LocalDate.now(),
+	            seguro.getCartao().getNumeroCartao(), 
+	            seguro.getCartao().getConta().getCliente().getNome(),
+	            seguro.getValorApolice(),
+	            condicoes,
+	            seguro.getAtivo()
+	    );
+	}
+
+	
+	
+	
+	
+	
+	
 
 
 

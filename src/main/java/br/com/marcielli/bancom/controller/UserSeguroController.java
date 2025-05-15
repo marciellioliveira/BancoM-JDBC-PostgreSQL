@@ -1,5 +1,6 @@
 package br.com.marcielli.bancom.controller;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -22,64 +23,78 @@ import br.com.marcielli.bancom.service.UserSeguroService;
 
 @RestController
 public class UserSeguroController {
-	
+
 	private final UserSeguroService seguroService;
 
 	public UserSeguroController(UserSeguroService seguroService) {
 		this.seguroService = seguroService;
 	}
 
-	//ADMIN pode criar pra ele e pra todos
-	//BASIC só pode criar pra ele
+	// ADMIN pode criar pra ele e pra todos
+	// BASIC só pode criar pra ele
 	@PostMapping("/seguros")
 	public ResponseEntity<Object> createSeguro(@RequestBody SeguroCreateDTO dto, Authentication authentication) {
-		
+
 		Seguro seguroAdicionado = seguroService.save(dto, authentication);
 
-	    if (seguroAdicionado != null) {
-	        return ResponseEntity.status(HttpStatus.CREATED).body(seguroAdicionado);
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Tente novamente mais tarde.");
-	    }
-		
+		if (seguroAdicionado != null) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(seguroAdicionado);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Tente novamente mais tarde.");
+		}
+
 	}
 
-	//ADMIN pode ver o dele e de todos
-	//BASIC só pode ver dele
+	// ADMIN pode ver o dele e de todos
+	// BASIC só pode ver dele
 	@GetMapping("/seguros")
-	public ResponseEntity<List<Seguro>> listSeguros(Authentication authentication) {
-		return null;
-//		var seguros = seguroService.getSeguros();
-//		return ResponseEntity.status(HttpStatus.OK).body(seguros);
+	public ResponseEntity<Object> listSeguros(Authentication authentication) {
+	    List<Seguro> seguros = seguroService.getSeguros(authentication);
+
+	    if (seguros != null && !seguros.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.OK).body(seguros);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum seguro encontrado.");
+	    }
 	}
 
 
-	//ADMIN pode ver de todos
-	//BASIC só pode ver dele
+	// ADMIN pode ver de todos
+	// BASIC só pode ver dele
 	@GetMapping("/seguros/{id}")
-	public ResponseEntity<?> getSegurosById(@PathVariable("id") Long id, Authentication authentication) {
-		return null;
+	public ResponseEntity<Object> getSegurosById(@PathVariable("id") Long id, Authentication authentication) throws AccessDeniedException {
+		
+		Seguro seguro = seguroService.getSegurosById(id, authentication);
 
-//		Seguro seguro = seguroService.getSegurosById(id);
-//
-//		if (seguro != null) {
-//			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
-//			response.setId(id);
-//			response.setTipo(seguro.getTipo());
-//			response.setValorMensal(seguro.getValorMensal());
-//			response.setValorApolice(seguro.getValorApolice());
-//			response.setAtivo(seguro.getAtivo());
-//
-//			return ResponseEntity.status(HttpStatus.OK).body(response);
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-//		}
+		if (seguro != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(seguro);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
+		}
+	}
+	
+	
+	// ADMIN somente pra ele
+	// BASIC somente pra ele
+	@GetMapping("/seguros/{id}/apolice")
+	public ResponseEntity<Object> getApolice(@PathVariable Long id, Authentication authentication) {
+	    
+	    ApoliceResponseDTO apolice = seguroService.gerarApoliceEletronica(id, authentication);
+	    
+	    if (apolice != null) {
+	        return ResponseEntity.status(HttpStatus.OK).body(apolice);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seguro não encontrado!");
+	    }
 	}
 
-	//ADMIN pode atualizar de todos e dele
-	//BASIC só pode atualizar dele
+
+
+	// ADMIN pode atualizar de todos e dele
+	// BASIC só pode atualizar dele
 	@PutMapping("/seguros/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto, Authentication authentication) {
+	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto,
+			Authentication authentication) {
 		return null;
 
 //		Seguro seguroAtualizado = seguroService.update(id, dto);
@@ -98,10 +113,11 @@ public class UserSeguroController {
 
 	}
 
-	//ADMIN pode atualizar dele e de todos
-	//BASIC só pode atualizar dele
+	// ADMIN pode atualizar dele e de todos
+	// BASIC só pode atualizar dele
 	@DeleteMapping("/seguros/{id}")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto, Authentication authentication) {
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto,
+			Authentication authentication) {
 		return null;
 
 //		boolean deletado = seguroService.delete(id, dto);
@@ -113,13 +129,6 @@ public class UserSeguroController {
 //		}
 
 	}
-	
-	//ADMIN  somente pra ele
-	//BASIC somente pra ele
-	@GetMapping("/seguros/{id}/apolice")
-	public ResponseEntity<ApoliceResponseDTO> getApolice(@PathVariable Long id, Authentication authentication) {
-		return null;
-	    //return ResponseEntity.ok(seguroService.gerarApoliceEletronica(id));
-	}
 
+	
 }
