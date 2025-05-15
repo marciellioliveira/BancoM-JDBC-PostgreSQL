@@ -3,6 +3,8 @@ package br.com.marcielli.bancom.dao;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
@@ -15,6 +17,7 @@ import br.com.marcielli.bancom.mappers.SeguroRowMapper;
 public class SeguroDao {
 	
 	private final JdbcTemplate jdbcTemplate;
+	private static final Logger logger = LoggerFactory.getLogger(SeguroDao.class);
 
 	public SeguroDao(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -37,6 +40,32 @@ public class SeguroDao {
         seguro.setId(id);
         return seguro;
     }
+	
+	public Seguro update(Seguro seguro) {
+		
+	    String sql = """
+	        UPDATE seguros
+	        SET tipo = ?, valor_mensal = ?, valor_apolice = ?, ativo = ?, cartao_id = ?
+	        WHERE id = ?
+	    """;
+
+	    int rows = jdbcTemplate.update(
+	        sql,
+	        seguro.getTipo() != null ? seguro.getTipo().name() : null,
+	        seguro.getValorMensal(),
+	        seguro.getValorApolice(),
+	        seguro.getAtivo(),
+	        seguro.getCartao().getId(),
+	        seguro.getId()
+	    );
+
+	    if (rows == 0) {
+	        throw new RuntimeException("Falha ao atualizar seguro com id " + seguro.getId());
+	    }
+
+	    return seguro;
+	}
+
 	
 	public List<Seguro> findAll() {
 	    String sql = """
@@ -115,7 +144,11 @@ public class SeguroDao {
 	    }
 	}
 
-	
+	public void desativarSeguro(Long seguroId) {
+	    String sql = "UPDATE seguros SET ativo = false WHERE id = ?";
+	    jdbcTemplate.update(sql, seguroId);
+	}
+
 
 	
     

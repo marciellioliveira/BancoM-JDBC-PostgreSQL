@@ -93,42 +93,31 @@ public class UserSeguroController {
 	// ADMIN pode atualizar de todos e dele
 	// BASIC só pode atualizar dele
 	@PutMapping("/seguros/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto,
-			Authentication authentication) {
-		return null;
+	public ResponseEntity<Object> atualizar(@PathVariable("id") Long id, @RequestBody SeguroUpdateDTO dto,
+	        Authentication authentication) {
 
-//		Seguro seguroAtualizado = seguroService.update(id, dto);
-//
-//		if (seguroAtualizado != null) {
-//			UserSeguroResponseDTO response = new UserSeguroResponseDTO();
-//			response.setId(seguroAtualizado.getId());
-//			response.setTipo(seguroAtualizado.getTipo());
-//			response.setValorMensal(seguroAtualizado.getValorMensal());
-//			response.setValorApolice(seguroAtualizado.getValorApolice());
-//			response.setAtivo(seguroAtualizado.getAtivo());
-//			return ResponseEntity.status(HttpStatus.OK).body(response);
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-//		}
+	    Seguro seguroAtualizado = seguroService.update(id, dto, authentication);
 
+	    if (seguroAtualizado != null) {
+	        return ResponseEntity.ok(seguroAtualizado);
+	    }
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seguro não encontrado!");
 	}
+
 
 	// ADMIN pode atualizar dele e de todos
 	// BASIC só pode atualizar dele
 	@DeleteMapping("/seguros/{id}")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto,
-			Authentication authentication) {
-		return null;
+	public ResponseEntity<Object> deletar(@PathVariable("id") Long id, Authentication authentication) throws AccessDeniedException {
 
-//		boolean deletado = seguroService.delete(id, dto);
-//
-//		if (deletado) {
-//			return ResponseEntity.ok("Seguro desativado com sucesso!");
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A conta não existe!");
-//		}
+	    boolean deletado = seguroService.delete(id, authentication);
 
+	    if (deletado) {
+	        return ResponseEntity.ok("Seguro desativado com sucesso!");
+	    }
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seguro não encontrado!");
 	}
+
 
 	
 }

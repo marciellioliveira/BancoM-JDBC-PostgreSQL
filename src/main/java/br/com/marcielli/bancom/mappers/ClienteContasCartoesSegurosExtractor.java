@@ -67,10 +67,10 @@ public class ClienteContasCartoesSegurosExtractor implements ResultSetExtractor<
                     if (seguroId != 0) {
                         Seguro seguro = new Seguro();
                         seguro.setId(seguroId);
-                        seguro.setTipo(TipoSeguro.valueOf(rs.getString("tipoSeguro")));
+                        seguro.setTipo(TipoSeguro.valueOf(rs.getString("tipo_seguro")));
                         seguro.setAtivo(rs.getBoolean("seguro_ativo"));
-                        seguro.setValorMensal(rs.getBigDecimal("valorMensal"));
-                        seguro.setValorApolice(rs.getBigDecimal("valorApolice"));
+                        seguro.setValorMensal(rs.getBigDecimal("valor_mensal"));
+                        seguro.setValorApolice(rs.getBigDecimal("valor_apolice"));
                         cartao.getSeguros().add(seguro);
                     }
                 }
