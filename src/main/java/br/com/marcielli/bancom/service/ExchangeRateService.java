@@ -52,7 +52,7 @@ public class ExchangeRateService {
 
 	@Cacheable(value = "taxas", key = "{#moedaOrigem, #moedaDestino}")
 	private BigDecimal getTaxaCambio(String moedaOrigem, String moedaDestino) {
-		logger.info("Buscando taxa FRESCA: {} → {}", moedaOrigem, moedaDestino);
+		logger.info("Buscando taxa nova: {} → {}", moedaOrigem, moedaDestino);
 
 		String url = String.format("https://v6.exchangerate-api.com/v6/%s/pair/%s/%s", apiKey, moedaOrigem,
 				moedaDestino);

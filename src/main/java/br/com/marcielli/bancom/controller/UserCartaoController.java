@@ -28,49 +28,48 @@ public class UserCartaoController {
 
 	private final UserCartaoService cartaoService;
 
-	
 	public UserCartaoController(UserCartaoService cartaoService) {
 		this.cartaoService = cartaoService;
 	}
 
-	//ADMIN pode criar cartao pra ele e pra todos
-	//BASIC só pode criar cartao pra ele mesmo
+	// ADMIN pode criar cartao pra ele e pra todos
+	// BASIC só pode criar cartao pra ele mesmo
 	@PostMapping("/cartoes")
 	public ResponseEntity<Object> criarCartao(@RequestBody CartaoCreateDTO cartao, Authentication authentication) {
-        
-            Cartao cartaoSalvo = cartaoService.salvar(cartao, authentication);
-            
-            if(cartaoSalvo != null) {
-            	return ResponseEntity.status(HttpStatus.CREATED).body(cartaoSalvo);
-            } else {
-            	return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body("Tente novamente mais tarde.");
-            }
-    }
-	
-	//ADMIN pode ver todos os cartões
-	//BASIC pode ver apenas os cartões com o id dele
+
+		Cartao cartaoSalvo = cartaoService.salvar(cartao, authentication);
+
+		if (cartaoSalvo != null) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(cartaoSalvo);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Tente novamente mais tarde.");
+		}
+	}
+
+	// ADMIN pode ver todos os cartões
+	// BASIC pode ver apenas os cartões com o id dele
 	@GetMapping("/cartoes")
 	public ResponseEntity<List<Cartao>> listCartoes(Authentication authentication) {
 		var cartoes = cartaoService.getCartoes(authentication);
 		return ResponseEntity.status(HttpStatus.OK).body(cartoes);
 	}
 
-
-	//ADMIN pode ver todos os cartões por id, dele e de qualquer usuario
-	//BASIC só pode ver o cartão com id dele
+	// ADMIN pode ver todos os cartões por id, dele e de qualquer usuario
+	// BASIC só pode ver o cartão com id dele
 	@GetMapping("/cartoes/{id}")
-	public ResponseEntity<Cartao> getCartoesById(@PathVariable Long id, Authentication authentication) throws AccessDeniedException {
-		
+	public ResponseEntity<Cartao> getCartoesById(@PathVariable Long id, Authentication authentication)
+			throws AccessDeniedException {
+
 		Cartao cartao = cartaoService.getCartoesById(id, authentication);
-		
-	    return ResponseEntity.ok(cartao);
+
+		return ResponseEntity.ok(cartao);
 	}
-	
-	//ADMIN pode atualizar de qualquer cartão
-	//BASIC pode atualizar somente do cartão com o id dele
+
+	// ADMIN pode atualizar de qualquer cartão
+	// BASIC pode atualizar somente do cartão com o id dele
 	@PutMapping("/cartoes/{id}")
-	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto, Authentication authentication) throws AccessDeniedException {
+	public ResponseEntity<?> atualizarSenha(@PathVariable("id") Long id, @RequestBody CartaoUpdateDTO dto,
+			Authentication authentication) throws AccessDeniedException {
 
 		Cartao cartaoAtualizado = cartaoService.updateSenha(id, dto, authentication);
 
@@ -80,8 +79,8 @@ public class UserCartaoController {
 			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
-	//Ativar cartão
+
+	// Ativar cartão
 	@PutMapping("/cartoes/{id}/ativar")
 	public ResponseEntity<String> ativarCartao(@PathVariable("id") Long id, Authentication authentication) {
 		boolean cartaoAtivado = cartaoService.ativarCartao(id, authentication);
@@ -92,13 +91,12 @@ public class UserCartaoController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cartão não encontrado!");
 	}
 
-
-	//ADMIN pode deletar dele e de outras pessoas
-	//BASIC só pode deletar dele
+	// ADMIN pode deletar dele e de outras pessoas
+	// BASIC só pode deletar dele
 	@DeleteMapping("/cartoes/{id}")
 	public ResponseEntity<?> deletar(@PathVariable("id") Long id, Authentication authentication) {
 
-		boolean deletado = cartaoService.delete(id,  authentication);
+		boolean deletado = cartaoService.delete(id, authentication);
 
 		if (deletado) {
 			return ResponseEntity.ok("Cartão deletado com sucesso");
@@ -106,16 +104,15 @@ public class UserCartaoController {
 			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
 
 	// Pagamentos
-	
-	
-	//ADMIN pode fazer pagamento apenas com o cartão dele
-	//BASIC pode fazer pagamento apenas com o cartão dele
+
+	// ADMIN pode fazer pagamento apenas com o cartão dele
+	// BASIC pode fazer pagamento apenas com o cartão dele
 	@PostMapping("/cartoes/{idContaReceber}/pagamento")
-	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber, @RequestBody UserCartaoPagCartaoDTO dto, Authentication authentication) {
-				
+	public ResponseEntity<String> pagamentoCartao(@PathVariable("idContaReceber") Long idContaReceber,
+			@RequestBody UserCartaoPagCartaoDTO dto, Authentication authentication) {
+
 		boolean pagamentoRealizado = cartaoService.pagCartao(idContaReceber, dto, authentication);
 
 		if (pagamentoRealizado) {
@@ -124,30 +121,30 @@ public class UserCartaoController {
 			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
-	
-	//ADMIN pode alterar limite do cartão de credito dele e de todos
-	//BASIC não pode alterar limite
-	@PutMapping("/cartoes/{cartaoId}/limite")
-	public ResponseEntity<String> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId, @RequestBody UserCartaoAlterarLimiteCartaoCreditoDTO dto, Authentication authentication) {			
 
-		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, dto,authentication);
+	// ADMIN pode alterar limite do cartão de credito dele e de todos
+	// BASIC não pode alterar limite
+	@PutMapping("/cartoes/{cartaoId}/limite")
+	public ResponseEntity<String> alterarLimiteCartaoCredito(@PathVariable("cartaoId") Long cartaoId,
+			@RequestBody UserCartaoAlterarLimiteCartaoCreditoDTO dto, Authentication authentication) {
+
+		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoCredito(cartaoId, dto, authentication);
 
 		if (limiteAtualizado != null) {
-			
+
 			return ResponseEntity.status(HttpStatus.OK).body("Limite do cartão de crédito alterado com suceso");
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
 
 	}
-	
-	
-	//ADMIN pode alterar limite dele e de todos
-	//BASIC não pode alterar limite
+
+	// ADMIN pode alterar limite dele e de todos
+	// BASIC não pode alterar limite
 	@PutMapping("/cartoes/{cartaoId}/limite-diario")
-	public ResponseEntity<?> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId,@RequestBody UserCartaoAlterarLimiteCartaoDebitoDTO dto, Authentication authentication) {
-		
+	public ResponseEntity<?> alterarLimiteCartaoDebito(@PathVariable("cartaoId") Long cartaoId,
+			@RequestBody UserCartaoAlterarLimiteCartaoDebitoDTO dto, Authentication authentication) {
+
 		Cartao limiteAtualizado = cartaoService.alterarLimiteCartaoDebito(cartaoId, dto, authentication);
 
 		if (limiteAtualizado != null) {
@@ -156,15 +153,14 @@ public class UserCartaoController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
 	}
-	
-	
 
-	//ADMIN pode ver de todos e dele
-	//BASIC só pode ver dele
+	// ADMIN pode ver de todos e dele
+	// BASIC só pode ver dele
 	@GetMapping("/cartoes/{cartaoId}/fatura")
-	public ResponseEntity<?> getFaturaCartaoDeCredito(@PathVariable("cartaoId") Long cartaoId, Authentication authentication) {		
+	public ResponseEntity<?> getFaturaCartaoDeCredito(@PathVariable("cartaoId") Long cartaoId,
+			Authentication authentication) {
 
-		Fatura fatura = cartaoService.verFaturaCartaoCredito(cartaoId,authentication);
+		Fatura fatura = cartaoService.verFaturaCartaoCredito(cartaoId, authentication);
 
 		if (fatura != null) {
 			return ResponseEntity.status(HttpStatus.OK).body(fatura);
@@ -172,11 +168,12 @@ public class UserCartaoController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O cartão não existe!");
 		}
 	}
-	
-	//ADMIN pode pagar de todos e dele
-	//BASIC só pode pagar a propria fatura
+
+	// ADMIN pode pagar de todos e dele
+	// BASIC só pode pagar a propria fatura
 	@PostMapping("/cartoes/{idCartao}/fatura/pagamento")
-	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao, Authentication authentication) {
+	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao,
+			Authentication authentication) {
 
 		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao, authentication);
 
@@ -186,21 +183,5 @@ public class UserCartaoController {
 			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
 
-//	//ADMIN só pode pagar a propria fatura
-//	//BASIC só pode pagar a propria fatura
-//	@PostMapping("/cartoes/{idCartao}/fatura/pagamento")
-//	public ResponseEntity<String> pagamentoFaturaCartaoCredito(@PathVariable("idCartao") Long idCartao) {
-//		return null;
-//
-////		boolean pagamentoFaturaOk = cartaoService.pagFaturaCartaoC(idCartao);
-////
-////		if (pagamentoFaturaOk) {
-////			return new ResponseEntity<>("Fatura paga.", HttpStatus.OK);
-////		} else {
-////			return new ResponseEntity<>("Dados da transferência são inválidos.", HttpStatus.NOT_ACCEPTABLE);
-////		}
-//	}
-	
 }

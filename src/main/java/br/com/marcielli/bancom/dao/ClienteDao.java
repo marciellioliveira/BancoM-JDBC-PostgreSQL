@@ -15,8 +15,8 @@ import br.com.marcielli.bancom.enuns.TipoConta;
 import br.com.marcielli.bancom.enuns.TipoTransferencia;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.mappers.CartaoRowMapper;
+import br.com.marcielli.bancom.mappers.ClienteContasCartoesSegurosExtractor;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
-import br.com.marcielli.bancom.mappers.ContaWithTransferenciasRowMapper;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
 import br.com.marcielli.bancom.mappers.TransferenciaRowMapper;
 
@@ -28,16 +28,9 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
 import java.sql.Timestamp;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.jdbc.core.RowMapper;
 
 @Component
 public class ClienteDao {
@@ -537,5 +529,27 @@ public class ClienteDao {
 				""";
 		return jdbcTemplate.query(cartaoSql, new CartaoRowMapper(), contaId);
 	}
+	
+	public Cliente findClienteWithDetails(Long clienteId) {
+	    String sql = """
+	        SELECT
+			    c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo,
+	    		co.id AS conta_id, co.pix_aleatorio, co.status AS conta_status, co.saldo_conta, co.tipo_conta, co.numero_conta, co.categoria_conta AS conta_categoria_conta,
+			    ca.id AS cartao_id, ca.status AS cartao_status,
+			    s.id AS seguro_id, s.tipo AS tipo_seguro, s.ativo AS seguro_ativo, s.valor_mensal, s.valor_apolice
+			FROM clientes c
+			LEFT JOIN contas co ON co.cliente_id = c.id
+			LEFT JOIN cartoes ca ON ca.conta_id = co.id
+			LEFT JOIN seguros s ON s.cartao_id = ca.id
+			WHERE c.id = ?
+
+	    """;
+
+	    return jdbcTemplate.query(sql, new ClienteContasCartoesSegurosExtractor(), clienteId);
+	}
+
+
+
+	
 
 }

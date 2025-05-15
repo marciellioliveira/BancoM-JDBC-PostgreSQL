@@ -37,8 +37,8 @@ public class FaturaDao {
 	        }
 
 	        String sql = """
-	            INSERT INTO faturas (cartao_id, data_vencimento, valor_total)
-	            VALUES (?, ?, ?)
+	            INSERT INTO faturas (cartao_id, data_vencimento, valor_total, status)
+	            VALUES (?, ?, ?, ?)
 	            RETURNING id
 	        """;
 
@@ -49,7 +49,9 @@ public class FaturaDao {
 	            Long faturaId = jdbcTemplate.queryForObject(sql, Long.class, 
 	                fatura.getCartao().getId(), 
 	                dataVencimentoSql,  
-	                fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO);
+	                fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO,
+	                fatura.isStatus());
+	            	
 
 	            logger.info("Fatura salva com ID: " + faturaId);
 
@@ -71,12 +73,14 @@ public class FaturaDao {
 	        String sql = """
 	            UPDATE faturas 
 	            SET valor_total = ?,
-	                data_vencimento = ?
+	                data_vencimento = ?,
+	                status = ?
 	            WHERE id = ?
 	            """;
 	        jdbcTemplate.update(sql, 
 	            fatura.getValorTotal(),
 	            fatura.getDataVencimento(),
+	            fatura.isStatus(),
 	            fatura.getId());
 	    }
 	    
@@ -91,7 +95,7 @@ public class FaturaDao {
 
 	    public Optional<Fatura> findByCartaoId(Long cartaoId) {
 	        String sql = """
-	            SELECT f.id, f.cartao_id, f.valor_total, f.data_vencimento
+	            SELECT f.id, f.cartao_id, f.valor_total, f.data_vencimento, f.status
 	            FROM faturas f
 	            WHERE f.cartao_id = ?
 	            """;
@@ -101,6 +105,7 @@ public class FaturaDao {
 	            fatura.setId(rs.getLong("id"));
 	            fatura.setValorTotal(rs.getBigDecimal("valor_total"));
 	            fatura.setDataVencimento(rs.getTimestamp("data_vencimento").toLocalDateTime());
+	            fatura.setStatus(rs.getBoolean("status"));
 	            return fatura;
 	        }, cartaoId); 
 
@@ -111,5 +116,14 @@ public class FaturaDao {
 	            return Optional.of(faturas.get(0));
 	        }
 	    }
+	    
+	    public void removerVinculoFaturaTransferencia(Long faturaId, Long transferenciaId) {
+	        String sql = """
+	            DELETE FROM fatura_transferencias 
+	            WHERE fatura_id = ? AND transferencia_id = ?
+	        """;
+	        jdbcTemplate.update(sql, faturaId, transferenciaId);
+	    }
+
 
 }

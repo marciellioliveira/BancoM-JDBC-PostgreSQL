@@ -31,6 +31,11 @@ public class TransferenciaDao {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             RETURNING id""";
         
+        Long faturaId = null;
+        if(transferencia.getFatura() != null) {
+        	faturaId = transferencia.getFatura().getId();
+        }
+        
         return jdbcTemplate.queryForObject(sql, Long.class,
             transferencia.getIdClienteOrigem(),
             transferencia.getIdClienteDestino(),
@@ -42,7 +47,7 @@ public class TransferenciaDao {
             transferencia.getCodigoOperacao(),
             transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null,
             transferencia.getIdCartao(),
-            transferencia.getFatura().getId()); 
+            faturaId); 
     }
 
 
@@ -59,13 +64,11 @@ public class TransferenciaDao {
         jdbcTemplate.update(sql, faturaId, transferenciaId);
     }
 
-    // Buscar todas as transferências
     public List<Transferencia> findAll() {
         String sql = "SELECT * FROM transferencias";
         return jdbcTemplate.query(sql, new TransferenciaRowMapper());
     }
 
-    // Buscar uma transferência por ID
     public Transferencia findById(Long id) {
         String sql = "SELECT * FROM transferencias WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new TransferenciaRowMapper(), id);
@@ -102,5 +105,39 @@ public class TransferenciaDao {
         logger.info("Transferências de crédito encontradas: {}", transferencias.size());
         return transferencias;
     }
+    
+    public void update(Transferencia transferencia) {
+        String sql = """
+            UPDATE transferencias SET 
+                id_cliente_origem = ?, 
+                id_cliente_destino = ?, 
+                id_conta_origem = ?, 
+                id_conta_destino = ?, 
+                tipo_transferencia = ?, 
+                valor = ?, 
+                data = ?, 
+                codigo_operacao = ?, 
+                tipo_cartao = ?, 
+                id_cartao = ?, 
+                fatura_id = ?
+            WHERE id = ?
+        """;
+
+        jdbcTemplate.update(sql,
+            transferencia.getIdClienteOrigem(),
+            transferencia.getIdClienteDestino(),
+            transferencia.getIdContaOrigem(),
+            transferencia.getIdContaDestino(),
+            transferencia.getTipoTransferencia() != null ? transferencia.getTipoTransferencia().name() : null,
+            transferencia.getValor(),
+            Timestamp.valueOf(transferencia.getData()),
+            transferencia.getCodigoOperacao(),
+            transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null,
+            transferencia.getIdCartao(),
+            transferencia.getFatura() != null ? transferencia.getFatura().getId() : null,
+            transferencia.getId() 
+        );
+    }
+
 
 }

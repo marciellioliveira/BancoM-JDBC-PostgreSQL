@@ -104,13 +104,13 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         conta.setStatus(rs.getBoolean("status"));      
         conta.setSaldoConta(rs.getBigDecimal("saldo_conta"));
         
+        
         Cliente cliente = new Cliente();
         Long clienteId = rs.getLong("cliente_id");
         cliente.setId(clienteId);
         cliente.setNome(rs.getString("cliente_nome"));
         cliente.setCpf(rs.getLong("cliente_cpf"));
         cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
-        //cliente.setUserId(rs.getLong("cliente_user_id"));
         
         conta.setCliente(cliente);
         

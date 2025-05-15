@@ -44,7 +44,7 @@ public class Fatura  implements Serializable {
 	@JsonBackReference
 	private Cartao cartao;
 	
-	public boolean status = false; //Se tiver verdadeiro é porque a fatura foi paga
+	public boolean status; //Se tiver verdadeiro é porque a fatura foi paga
 
 	
 	public void adicionarTransfCredito(Transferencia transferencia) {

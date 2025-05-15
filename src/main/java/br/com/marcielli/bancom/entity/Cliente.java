@@ -26,7 +26,7 @@ public class Cliente implements Serializable {
 	private Long id;
 	private String nome;
 	private Long cpf;
-	private boolean clienteAtivo = true;
+	private boolean clienteAtivo;
 
 	@JsonManagedReference
 	private Endereco endereco;

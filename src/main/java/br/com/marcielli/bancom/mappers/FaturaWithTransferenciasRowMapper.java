@@ -1,5 +1,6 @@
 package br.com.marcielli.bancom.mappers;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -30,7 +31,7 @@ public class FaturaWithTransferenciasRowMapper implements RowMapper<Fatura> {
         fatura.setCartaoId(rs.getLong("cartao_id"));
         fatura.setValorTotal(rs.getBigDecimal("valor_total"));
         fatura.setDataVencimento(rs.getTimestamp("data_vencimento").toLocalDateTime());
-
+        
         Long faturaId = fatura.getId();
         logger.info("Buscando transferências de crédito para fatura ID: {}", faturaId);
 
@@ -38,6 +39,10 @@ public class FaturaWithTransferenciasRowMapper implements RowMapper<Fatura> {
         fatura.setTransferenciasCredito(transferencias);  
 
         logger.info("Transferências de crédito carregadas para fatura ID {}: {}", faturaId, transferencias.size());
+        
+        boolean status = (transferencias == null || transferencias.isEmpty()) &&
+                (fatura.getValorTotal() == null || fatura.getValorTotal().compareTo(BigDecimal.ZERO) <= 0);
+        fatura.setStatus(status);
 
         return fatura;
     }

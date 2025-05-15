@@ -629,7 +629,7 @@ public class UserCartaoService {
 	        logger.info("Nenhuma fatura encontrada para cartão ID: {}", cartaoId);
 	        throw new FaturaNaoEncontradaException("Nenhuma fatura encontrada para o cartão ID: " + cartaoId);
 	    }
-
+	    
 	    return fatura;
 	}
 	
@@ -692,9 +692,31 @@ public class UserCartaoService {
 	    if (fatura == null) {
 	        throw new FaturaNaoEncontradaException("Nenhuma fatura encontrada para pagamento.");
 	    }
+	    
+	    if (fatura.getTransferenciasCredito() == null || fatura.getTransferenciasCredito().isEmpty()) {
+	        logger.warn("Fatura ID {} não possui transferências de crédito vinculadas. Nada a pagar.", fatura.getId());
+	        throw new FaturaNaoEncontradaException("Nenhuma fatura disponível para pagamento.");
+	    }
+	    
 	    logger.info("Saldo da conta {} antes do pagamento", contaOrigem.getSaldoConta());
 	    logger.info("Fatura valor total {} antes do pagamento", fatura.getValorTotal());
 	    contaOrigem.pagarFatura(cc.getTotalGastoMesCredito());
+	    
+	    for(Transferencia transf : fatura.getTransferenciasCredito()) {
+	    	Transferencia transferenciaCompleta = transferenciaDao.findById(transf.getId());
+	    	
+	    	logger.info("Transferencia id: {}", transferenciaCompleta.getId());
+	    	
+	    	
+	    	//uso isso porque tenho uma tabela de associação no rowmapper que precisa remover o vinculo antes
+	    	faturaDao.removerVinculoFaturaTransferencia(fatura.getId(), transferenciaCompleta.getId());	    	
+	    	
+	        transferenciaCompleta.setFaturaId(null); //ao setar como null,eu consigo desvincular as transferencias já pagas no banco
+	    	transferenciaDao.update(transferenciaCompleta);
+	    }
+	    
+	    fatura.getTransferenciasCredito().clear();
+	    
 	    fatura.setStatus(true);
 	   
 	    
@@ -704,55 +726,13 @@ public class UserCartaoService {
 	    
 	    fatura.setValorTotal(BigDecimal.ZERO);  
 	    cc.setTotalGastoMesCredito(BigDecimal.ZERO);
+	  
+	    
+	    faturaDao.update(fatura);
 	    
 	    logger.info("Pagamento da fatura ID {} realizado com sucesso", fatura.getId());
 	    logger.info("Saldo da conta {} depois do pagamento", contaOrigem.getSaldoConta());
 	    logger.info("Fatura valor total {} depois do pagamento", fatura.getValorTotal());
 	    return true;
-	}
-	
-
-//	@Transactional(propagation = Propagation.REQUIRES_NEW)
-//	public boolean pagFaturaCartaoC(Long idCartao) {
-//
-//		Cartao cartaoOrigem = cartaoRepository.findById(idCartao)
-//				.orElseThrow(() -> new CartaoNaoEncontradoException("O cartão origem não existe."));
-//
-//		Conta contaOrigem = contaRepository.findById(cartaoOrigem.getConta().getId())
-//				.orElseThrow(() -> new ContaNaoEncontradaException("A conta origem não existe."));
-//		
-//		if(cartaoOrigem.isStatus() == false) {
-//			throw new CartaoNaoEncontradoException("Não é possível pagar fatura através de um cartão desativado.");
-//		}
-//		
-//		if(contaOrigem.getStatus() == false) {
-//			throw new CartaoNaoEncontradoException("Não é possível pagar fatura através de uma conta desativada.");
-//		}
-//
-//		if (cartaoOrigem instanceof CartaoCredito cc) {
-//
-//			if (cc.getTotalGastoMesCredito().compareTo(contaOrigem.getSaldoConta()) > 0) {
-//				throw new CartaoNaoEncontradoException("Você não tem saldo suficiente para realizar o pagamento.");
-//			}
-//
-//			cc.getTotalGastoMesCredito();
-//			contaOrigem.pagarFatura(cc.getTotalGastoMesCredito());
-//			cc.getFatura().setStatus(true);
-//
-//		}
-//
-//		return true;
-//
-//	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
+	}	
 }

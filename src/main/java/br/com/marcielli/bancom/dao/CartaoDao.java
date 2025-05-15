@@ -168,50 +168,44 @@ public class CartaoDao {
 //		jdbcTemplate.update(sql, id);
 //	}
 	
-	
-	
 	public List<Cartao> findAll() {
-	    String sql = "SELECT " +
-	        "c.id AS id, " +
-	        "c.tipo_conta AS tipo_conta, " +
-	        "c.categoria_conta AS categoria_conta, " +
-	        "c.tipo_cartao AS tipo_cartao, " +
-	        "c.numero_cartao AS numero_cartao, " +
-	        "c.status AS status, " +
-	        "c.senha AS senha, " +
-	        "c.fatura_id AS fatura_id, " +
-	        "c.total_gasto_mes AS total_gasto_mes, " +
-	        "c.limite_credito_pre_aprovado AS limite_credito_pre_aprovado, " +
-	        "c.taxa_utilizacao AS taxa_utilizacao, " +
-	        "c.taxa_seguro_viagem AS taxa_seguro_viagem, " +
-	        "c.total_gasto_mes_credito AS total_gasto_mes_credito, " +
-	        "c.limite_diario_transacao AS limite_diario_transacao, " +
-	        "c.conta_id AS conta_id, " +
-	        "ct.tipo_conta AS conta_tipo_conta, " +
-	        "ct.categoria_conta AS conta_categoria_conta, " +
-	        "ct.status AS conta_status, " +
-	        "ct.saldo_conta AS saldo_conta, " +
-	        "f.id AS fatura_id, " +
-	        "f.cartao_id AS fatura_cartao_id, " +
-	        "f.valor_total AS fatura_valor_total, " +
-	        "f.data_vencimento AS fatura_data_vencimento " +
-	        "FROM cartoes c " +
-	        "LEFT JOIN contas ct ON c.conta_id = ct.id " +
-	        "LEFT JOIN faturas f ON c.fatura_id = f.id";
-
+	    String sql = "SELECT c.id, c.tipo_conta, c.categoria_conta, c.tipo_cartao, c.numero_cartao, c.status, c.senha, " +
+	             "c.limite_credito_pre_aprovado, c.taxa_utilizacao, c.taxa_seguro_viagem, c.total_gasto_mes_credito, " +
+	             "c.limite_diario_transacao, c.total_gasto_mes, c.conta_id AS cartao_conta_id, c.fatura_id AS cartao_fatura_id, " +
+	             "ct.id AS conta_id, ct.cliente_id, ct.tipo_conta AS conta_tipo_conta, ct.categoria_conta AS conta_categoria_conta, " +
+	             "ct.saldo_conta, ct.numero_conta, ct.pix_aleatorio, ct.status AS conta_status, ct.taxa_manutencao_mensal, " +
+	             "ct.taxa_acresc_rend, ct.taxa_mensal, cli.id AS cliente_id, cli.nome AS cliente_nome, cli.cpf AS cliente_cpf, " +
+	             "cli.cliente_ativo AS cliente_ativo, cli.user_id AS cliente_user_id, f.id AS fatura_id, f.cartao_id AS fatura_cartao_id, " +
+	             "f.valor_total AS fatura_valor_total, f.data_vencimento AS fatura_data_vencimento " +
+	             "FROM cartoes c " +
+	             "JOIN contas ct ON c.conta_id = ct.id " +
+	             "JOIN clientes cli ON ct.cliente_id = cli.id " +
+	             "LEFT JOIN faturas f ON c.fatura_id = f.id";
+	    
 	    return jdbcTemplate.query(sql, new CartaoRowMapper());
 	}
 
+	
+	
+//	public List<Cartao> findAll() {
+//		String sql = "SELECT c.id, c.tipo_conta, c.categoria_conta, c.tipo_cartao, c.numero_cartao, c.status, c.senha, " +
+//	             "c.limite_credito_pre_aprovado, c.taxa_utilizacao, c.taxa_seguro_viagem, c.total_gasto_mes_credito, " +
+//	             "c.limite_diario_transacao, c.total_gasto_mes, c.conta_id AS cartao_conta_id, c.fatura_id AS cartao_fatura_id, " +
+//	             "ct.id AS conta_id, ct.cliente_id, ct.tipo_conta AS conta_tipo_conta, ct.categoria_conta AS conta_categoria_conta, " +
+//	             "ct.saldo_conta, ct.numero_conta, ct.pix_aleatorio, ct.status AS conta_status, ct.taxa_manutencao_mensal, " +
+//	             "ct.taxa_acresc_rend, ct.taxa_mensal, cli.id AS cliente_id, cli.nome AS cliente_nome, cli.cpf AS cliente_cpf, " +
+//	             "cli.cliente_ativo AS cliente_ativo, cli.user_id AS cliente_user_id, f.id AS fatura_id, f.cartao_id AS fatura_cartao_id, " +
+//	             "f.valor_total AS fatura_valor_total, f.data_vencimento AS fatura_data_vencimento " +
+//	             "FROM cartoes c " +
+//	             "JOIN contas ct ON c.conta_id = ct.id " +
+//	             "JOIN clientes cli ON ct.cliente_id = cli.id " +
+//	             "LEFT JOIN faturas f ON c.fatura_id = f.id " +
+//	             "WHERE c.id = ?";
 //
-//	public List<Cartao> findByUsername(String username) {
-//		String sql = """
-//				    SELECT c.*
-//				    FROM cartoes c
-//				    INNER JOIN contas ct ON c.conta_id = ct.id
-//				    WHERE ct.username = ?
-//				""";
-//		return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
+//
+//	    return jdbcTemplate.query(sql, new CartaoRowMapper());
 //	}
+
 	
 	public List<Cartao> findByUsername(String username) {
 	    String sql = """
@@ -439,7 +433,7 @@ public class CartaoDao {
 	
 	public Fatura buscarFaturaComTransferenciasPorCartaoId(Long cartaoId) {
 	    String sql = """
-	        SELECT id, cartao_id, valor_total, data_vencimento
+	        SELECT id, cartao_id, valor_total, data_vencimento, status
 	        FROM faturas
 	        WHERE cartao_id = ?
 	    """;
