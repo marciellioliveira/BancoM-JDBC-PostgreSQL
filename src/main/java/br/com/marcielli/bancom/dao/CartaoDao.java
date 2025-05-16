@@ -214,8 +214,11 @@ public class CartaoDao {
 	                ct.id AS conta_id,
 	                ct.saldo_conta,
 	                ct.numero_conta,
-	                ct.status AS conta_status
-	                -- Include other columns your mapper needs
+	                ct.status AS conta_status,
+	                ct.id AS cliente_id,
+	                cl.nome AS cliente_nome,
+	                cl.cpf AS cliente_cpf,
+	                cl.cliente_ativo
 	            FROM cartoes c
 	            INNER JOIN contas ct ON c.conta_id = ct.id
 	            INNER JOIN clientes cl ON ct.cliente_id = cl.id
@@ -236,6 +239,8 @@ public class CartaoDao {
 	                co.status AS conta_status,
 	                cl.id AS cliente_id,
 	                cl.nome AS cliente_nome,
+	                cl.cpf AS cliente_cpf,
+	                cl.cliente_ativo,
 	                u.username
 	            FROM cartoes c
 	            JOIN contas co ON c.conta_id = co.id

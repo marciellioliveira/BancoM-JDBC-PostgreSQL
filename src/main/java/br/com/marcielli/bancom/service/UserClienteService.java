@@ -309,7 +309,7 @@ public class UserClienteService implements UserDetailsService {
 	            .findFirst()
 	            .orElse("");
 
-	    String username = authentication.getName(); // Agora é só o username mesmo
+	    String username = authentication.getName(); 
 	    
 	    User loggedInUser = userDao.findByUsername(username)
 	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));

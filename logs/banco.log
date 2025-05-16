@@ -1,72 +1,452 @@
-2025-05-15 18:02:52 [34mINFO [0;39m
+2025-05-16 09:57:18 [34mINFO [0;39m
 				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
-2025-05-15 18:02:52 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 7904 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
-2025-05-15 18:02:52 [34mINFO [0;39m
+2025-05-16 09:57:18 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 540 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
+2025-05-16 09:57:18 [34mINFO [0;39m
 				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
-2025-05-15 18:02:53 [34mINFO [0;39m
+2025-05-16 09:57:20 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
-2025-05-15 18:02:53 [34mINFO [0;39m
+2025-05-16 09:57:20 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
-2025-05-15 18:02:53 [34mINFO [0;39m
+2025-05-16 09:57:20 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
-2025-05-15 18:02:53 [34mINFO [0;39m
+2025-05-16 09:57:20 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
-2025-05-15 18:02:53 [34mINFO [0;39m
+2025-05-16 09:57:20 [34mINFO [0;39m
 				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
-2025-05-15 18:02:53 [34mINFO [0;39m
-				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@14b528b6
-2025-05-15 18:02:53 [34mINFO [0;39m
+2025-05-16 09:57:20 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@64021427
+2025-05-16 09:57:20 [34mINFO [0;39m
 				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
-2025-05-15 18:02:53 [34mINFO [0;39m
+2025-05-16 09:57:20 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
-2025-05-15 18:02:54 [39mDEBUG[0;39m
+2025-05-16 09:57:20 [39mDEBUG[0;39m
 				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-05-15 18:02:54 [34mINFO [0;39m
+2025-05-16 09:57:21 [34mINFO [0;39m
 				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
-2025-05-15 18:02:54 [34mINFO [0;39m
-				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.605 seconds (process running for 2.835)
-2025-05-15 18:03:03 [34mINFO [0;39m
+2025-05-16 09:57:21 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.68 seconds (process running for 2.922)
+2025-05-16 09:57:24 [34mINFO [0;39m
 				[36m[http-nio-8087-exec-2][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-05-15 18:03:03 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /seguros
-2025-05-15 18:03:03 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-2][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /seguros
-2025-05-15 18:03:03 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /seguros
-2025-05-15 18:03:06 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /seguros/1
-2025-05-15 18:03:06 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /seguros/1
-2025-05-15 18:03:06 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /seguros/1
-2025-05-15 18:03:10 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /seguros/1/apolice
-2025-05-15 18:03:10 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /seguros/1/apolice
-2025-05-15 18:03:10 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /seguros/1/apolice
-2025-05-15 18:03:15 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /seguros
-2025-05-15 18:03:15 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /seguros
-2025-05-15 18:03:15 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /seguros
-2025-05-15 18:03:20 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /seguros
-2025-05-15 18:03:20 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /seguros
-2025-05-15 18:03:20 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /seguros
-2025-05-15 18:03:35 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /seguros/1
-2025-05-15 18:03:35 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /seguros/1
-2025-05-15 18:03:35 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /seguros/1
-2025-05-15 18:03:40 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /seguros
-2025-05-15 18:03:40 [34mINFO [0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /seguros
-2025-05-15 18:03:40 [39mDEBUG[0;39m
-				[36m[http-nio-8087-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /seguros
+2025-05-16 09:57:24 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /cartoes/2
+2025-05-16 09:57:24 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes/2
+2025-05-16 09:57:24 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /cartoes/2
+2025-05-16 09:57:30 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /cartoes
+2025-05-16 09:57:30 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes
+2025-05-16 09:57:30 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /cartoes
+2025-05-16 09:57:35 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /cartoes
+2025-05-16 09:57:35 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes
+2025-05-16 09:57:35 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /cartoes
+2025-05-16 09:57:35 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - Criando cartão com DTO: CartaoCreateDTO(idCliente=2, idConta=2, tipoCartao=CREDITO, senha=1234)
+2025-05-16 09:57:35 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - cartaoDao  2
+2025-05-16 09:57:50 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-16 09:57:50 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:57:50 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:27 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /cartoes/1/pagamento
+2025-05-16 09:58:27 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /cartoes/1/pagamento
+2025-05-16 09:58:27 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /cartoes/1/pagamento
+2025-05-16 09:58:27 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Iniciando busca pelo cartão com ID: 3
+2025-05-16 09:58:27 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Cartão encontrado: CartaoCredito(limiteCreditoPreAprovado=5000.00, taxaUtilizacao=null, taxaSeguroViagem=null, totalGastoMesCredito=0)
+2025-05-16 09:58:27 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - Cartão nulo?: CartaoCredito(limiteCreditoPreAprovado=5000.00, taxaUtilizacao=null, taxaSeguroViagem=null, totalGastoMesCredito=0)
+2025-05-16 09:58:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.FaturaDao[0;39m - Fatura salva com ID: 2
+2025-05-16 09:58:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - Antes de faturaId != null: 2
+2025-05-16 09:58:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.b.service.UserCartaoService[0;39m - Setando fatura id: 2
+2025-05-16 09:58:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Executando associarFaturaAoCartao: cartaoId=3, faturaId=2
+2025-05-16 09:58:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Fatura 2 associada ao cartão 3 com sucesso
+2025-05-16 09:58:28 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.com.marcielli.bancom.dao.CartaoDao[0;39m - Atualizando cartão: id=3, total_gasto_mes=30
+2025-05-16 09:58:32 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-16 09:58:32 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 10
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:47 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/2/saldo
+2025-05-16 09:58:47 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-9][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /contas/2/saldo
+2025-05-16 09:58:47 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-9][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/2/saldo
+2025-05-16 09:58:56 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-16 09:58:56 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 10
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:58:56 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-8][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:06 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /contas/2/saldo
+2025-05-16 09:59:06 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-10][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /contas/2/saldo
+2025-05-16 09:59:06 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-10][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /contas/2/saldo
+2025-05-16 09:59:27 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /auth/login
+2025-05-16 09:59:27 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /auth/login
+2025-05-16 09:59:27 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-05-16 09:59:27 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /auth/login
+2025-05-16 09:59:27 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-1][0;39m [35mo.s.s.a.d.DaoAuthenticationProvider[0;39m - Authenticated user
+2025-05-16 09:59:32 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-16 09:59:32 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 4
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 3
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 5
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 8
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 7
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 6
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 9
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 1
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da transferência enviada: Transferência ID: 10
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cartão: Cartão ID: 3
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento do cliente: Cliente ID: 2
+2025-05-16 09:59:32 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.marcielli.bancom.dao.ClienteDao[0;39m - Iniciando processamento da conta: Conta ID: 2

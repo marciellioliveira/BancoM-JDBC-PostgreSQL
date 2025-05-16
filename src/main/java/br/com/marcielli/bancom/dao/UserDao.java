@@ -286,9 +286,8 @@ public class UserDao {
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
     
-  
+    
     public boolean desativarCliente(Long clienteId) {
-        // Cliente existe?
         Integer userId = jdbcTemplate.queryForObject(
             "SELECT user_id FROM clientes WHERE id = ?", 
             Integer.class, 
@@ -298,6 +297,13 @@ public class UserDao {
         if (userId == null) {
             throw new IllegalArgumentException("Cliente não encontrado com ID: " + clienteId);
         }
+
+        // Desativando seguros
+        jdbcTemplate.update(
+            "UPDATE seguros SET ativo = false " +
+            "WHERE cartao_id IN (SELECT id FROM cartoes WHERE conta_id IN (SELECT id FROM contas WHERE cliente_id = ?))", 
+            clienteId
+        );
 
         // Desativando os cartões do cliente
         jdbcTemplate.update(
@@ -326,35 +332,8 @@ public class UserDao {
 
         return clientesAtualizados > 0 && usersAtualizados > 0;
     }
-    
-//    public boolean desativarCliente(Long clienteId) {
-//       
-//    	Integer userId = jdbcTemplate.queryForObject(
-//    	        "SELECT user_id FROM clientes WHERE id = ?", 
-//    	        Integer.class, 
-//    	        clienteId
-//    	    );
-//    	    
-//    	    if (userId == null) {
-//    	        throw new IllegalArgumentException("Cliente não encontrado com ID: " + clienteId);
-//    	    }
-//
-//    	    // atualizando cliente para false
-//    	    int clientesAtualizados = jdbcTemplate.update(
-//    	        "UPDATE clientes SET cliente_ativo = false WHERE id = ?", 
-//    	        clienteId
-//    	    );
-//
-//    	    // atualizando user para false
-//    	    int usersAtualizados = jdbcTemplate.update(
-//    	        "UPDATE users SET user_ativo = false WHERE id = ?", 
-//    	        userId
-//    	    );
-//
-//    	    //se os dois ficaram false, retorna true
-//    	    return clientesAtualizados > 0 && usersAtualizados > 0;
-//    }
-    
+
+        
     public boolean existeCliente(Long id) {
         String sql = "SELECT COUNT(1) FROM clientes WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
