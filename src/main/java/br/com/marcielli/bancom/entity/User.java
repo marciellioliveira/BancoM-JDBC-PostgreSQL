@@ -18,14 +18,14 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class User {
 
 	private Integer id;
 	private String username;
 	private String password;
 	private boolean userAtivo = true;
-	private String role;
-	//private Set<Role> roles;
+	private String role;	
 	private Cliente cliente;
 	
 	public boolean isLoginCorrect(LoginRequestDTO loginRequest, PasswordEncoder passwordEncoder) {

@@ -20,7 +20,7 @@ public class ContaWithTransferenciasRowMapper implements RowMapper<Conta>{
 
 	private final ContasRowMapper contaRowMapper;
     private final ClienteDao clientedao;
-    private static final Logger logger = LoggerFactory.getLogger(Conta.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContaWithTransferenciasRowMapper.class);
 
     public ContaWithTransferenciasRowMapper(ContasRowMapper contaRowMapper, ClienteDao clientedao) {
         this.contaRowMapper = contaRowMapper;

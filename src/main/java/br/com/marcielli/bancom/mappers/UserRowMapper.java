@@ -3,6 +3,9 @@ package br.com.marcielli.bancom.mappers;
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.User;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +15,8 @@ import java.sql.SQLException;
 @Component
 public class UserRowMapper implements RowMapper<User> {
 
+	private static final Logger logger = LoggerFactory.getLogger(ContaWithTransferenciasRowMapper.class);
+	
 	@Override
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = new User();
@@ -19,6 +24,7 @@ public class UserRowMapper implements RowMapper<User> {
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password"));
         user.setUserAtivo(rs.getBoolean("user_ativo"));
+        user.setRole(rs.getString("role_name"));
 
         Cliente cliente = new Cliente();
         long clienteId = rs.getLong("cliente_id");
@@ -26,6 +32,7 @@ public class UserRowMapper implements RowMapper<User> {
         cliente.setNome(rs.getString("nome"));
         
         String cpf = rs.getString("cpf");
+        logger.debug("[DEBUG] Mapeando cpf do cliente: " + cpf);
         Long cpfLong = null;
         
         if (cpf != null && !cpf.trim().isEmpty()) {
@@ -44,7 +51,7 @@ public class UserRowMapper implements RowMapper<User> {
         }
         
   
-        cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+     //   cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
         user.setCliente(cliente);
 
         Endereco endereco = new Endereco();

@@ -26,6 +26,8 @@ public class Cliente implements Serializable {
 	private Long id;
 	private String nome;
 	private Long cpf;
+	
+	@JsonIgnore
 	private boolean clienteAtivo;
 
 	@JsonManagedReference
@@ -36,7 +38,11 @@ public class Cliente implements Serializable {
 
 	@JsonIgnore
     private User user;
-	
+//    
+//    public User getUser() {
+//        return user;
+//    }
+//	
 	public List<Conta> getContas() {
         if (contas == null) {
             contas = new ArrayList<>();

@@ -48,7 +48,6 @@ public class UserClienteService implements UserDetailsService {
 	public void initAdminUser() {
 		createRoleIfNotExists("ADMIN", 1L);
 		createRoleIfNotExists("BASIC", 2L);
-
 		Cliente clienteAdmin = new Cliente();
 		clienteAdmin.setClienteAtivo(true);
 		clienteAdmin.setNome("Admin");
