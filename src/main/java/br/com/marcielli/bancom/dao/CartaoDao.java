@@ -39,14 +39,18 @@ public class CartaoDao {
 	}
 
 	public Cartao saveWithRelations(Cartao cartao) {
+		
+		String sqlCartao = "SELECT * FROM public.inserir_cartao_v1(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	
-		String sqlCartao = """
-				    INSERT INTO cartoes
-				    (tipo_conta, categoria_conta, tipo_cartao, numero_cartao, status, senha, conta_id,
-				    limite_credito_pre_aprovado, limite_diario_transacao)
-				    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-				    RETURNING id
-				""";
+//		String sqlCartao = """
+//				    INSERT INTO cartoes
+//				    (tipo_conta, categoria_conta, tipo_cartao, numero_cartao, status, senha, conta_id,
+//				    limite_credito_pre_aprovado, limite_diario_transacao)
+//				    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+//				    RETURNING id
+//				
+		
+		System.err.println(cartao.toString());
 
 		Long cartaoId = jdbcTemplate.queryForObject(sqlCartao, Long.class, cartao.getTipoConta().toString(),
 				cartao.getCategoriaConta().toString(), cartao.getTipoCartao().toString(), cartao.getNumeroCartao(),
@@ -56,7 +60,6 @@ public class CartaoDao {
 		logger.info("cartaoDao  {}", cartao.getConta().getId());
 		cartao.setId(cartaoId);
 
-		
 		if (cartao.getFatura() != null) {
 			insertFatura(cartaoId, cartao.getFatura());
 		}
