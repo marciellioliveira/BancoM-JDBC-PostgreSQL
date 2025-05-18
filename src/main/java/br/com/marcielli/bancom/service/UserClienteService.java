@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import br.com.marcielli.bancom.dao.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +33,8 @@ public class UserClienteService implements UserDetailsService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);
 
 	private final UserDao userDao; // e devolver pro Spring Security pra fazer a autenticação
 	private final ClienteDao clienteDao;
@@ -44,11 +48,23 @@ public class UserClienteService implements UserDetailsService {
 	}
 
 	@PostConstruct
-	@Transactional
+	@Transactional	
 	public void initAdminUser() {
 		createRoleIfNotExists("ADMIN", 1L);
 		createRoleIfNotExists("BASIC", 2L);
 		Cliente clienteAdmin = new Cliente();
+		clienteAdmin.setCpf(12345678909L);
+		
+		Endereco adminEndereco = new Endereco();
+		adminEndereco.setCep("01001000");
+		adminEndereco.setCidade("São Paulo");
+		adminEndereco.setEstado("SP");
+		adminEndereco.setRua("Praça da Sé");
+		adminEndereco.setNumero("100");
+		adminEndereco.setBairro("Sé");
+		adminEndereco.setComplemento("Próximo à estação Sé do metrô");
+		
+		clienteAdmin.setEndereco(adminEndereco);
 		clienteAdmin.setClienteAtivo(true);
 		clienteAdmin.setNome("Admin");
 
@@ -69,9 +85,20 @@ public class UserClienteService implements UserDetailsService {
 			user.setRole(roleAdmin.getName()); // Definir role como String ("ADMIN")
 			user.setCliente(clienteAdmin);
 			clienteAdmin.setUser(user);
+			
+			try {
+			    userDao.save(user);
+			    logger.info("Usuário admin criado com sucesso!");
+			    System.err.println("Usuário admin criado com sucesso!");
+			} catch (Exception e) {
+				logger.info("Erro ao salvar admin:  {}", e.getMessage());
+			    System.err.println("Erro ao salvar admin: " + e.getMessage());
+			    e.printStackTrace();
+			}
 
-			userDao.save(user); // UserDao já insere em user_roles
-			System.err.println("Usuário admin criado com sucesso!");
+
+//			userDao.save(user); // UserDao já insere em user_roles
+//			System.err.println("Usuário admin criado com sucesso!");
 		});
 	}
 
@@ -102,7 +129,7 @@ public class UserClienteService implements UserDetailsService {
 	    return org.springframework.security.core.userdetails.User.builder()
 	        .username(user.getUsername())
 	        .password(user.getPassword())
-	        .roles(role.replace("ROLE_", "")) // Certifique-se que retorna "ADMIN" para o admin
+	        .roles(role.replace("ROLE_", ""))
 	        .build();
 	}
 	

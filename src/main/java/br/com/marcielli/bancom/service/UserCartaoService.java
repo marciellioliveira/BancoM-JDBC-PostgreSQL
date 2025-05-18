@@ -120,6 +120,7 @@ public class UserCartaoService {
 		}
 
 		String numCartao = gerarNumeros.gerarNumeroGeral();
+		
 		Cartao cartao = (dto.getTipoCartao() == TipoCartao.CREDITO) ? new CartaoCredito() : new CartaoDebito();
 
 		String sufixo = (dto.getTipoCartao() == TipoCartao.CREDITO) ? "-CC" : "-CD";

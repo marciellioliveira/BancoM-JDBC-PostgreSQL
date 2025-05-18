@@ -23,13 +23,18 @@ public class Cliente implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	@JsonIgnore
 	private Long id;
+	@JsonIgnore
 	private String nome;
+	
+	@JsonIgnore
 	private Long cpf;
 	
 	@JsonIgnore
 	private boolean clienteAtivo;
 
+	@JsonIgnore
 	@JsonManagedReference
 	private Endereco endereco;
 

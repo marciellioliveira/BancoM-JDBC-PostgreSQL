@@ -29,7 +29,7 @@
 - <b>RestExceptionHandler</b> com anotação como <b>@ControllerAdvice</b> para excessões personalizadas;
 - <b>Biblioteca SLF4J</b> (Simple Logging Facade for Java) - Logs.
 
-## ℹ️ Observações:
+# ℹ️ Observações:
 - O projeto original foi desenvolvido com Hibernate, JPA e banco H2 em memória. Você pode acessá-lo [clicando aqui](https://github.com/marciellioliveira/BancoM);
 - Este repositório é um clone adaptado, com a migração de JPA/H2 para JDBC/PostgreSQL.
 
