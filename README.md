@@ -18,10 +18,9 @@
 ## 🚀 Tecnologias Utilizadas
 - <b>Java 21</b> – Linguagem principal;
 - <b>Spring Boot</b> – Framework backend;
-- <b>Spring Data JPA</b> - Persistencia de Dados;
 - <b>Spring Security + JWT</b> - Segurança do Projeto com token JWT;
-- <b>Hibernate</b> - Framework de mapeamento objeto-relacional (ORM) para Java simplificando a persistência de dados no banco;
-- <b>H2 Database</b> - Base de Dados em Memória;
+- <b>JDBC</b> - API para conexão e execução de operações no banco de dados via Java;
+- <b>PostgreSQL com pgAdmin</b> - Banco de dados utilizado, com uso de **Functions** e **Stored Procedures** para encapsular regras de negócio e lógica de banco;
 - <b>Maven</b> – Gerenciador de dependências e build;
 - <b>Lombok</b> – Geração automática de getters, setters, constructors, etc;
 - <b>Postman</b> - Testes das Rotas da API;
@@ -30,6 +29,9 @@
 - <b>RestExceptionHandler</b> com anotação como <b>@ControllerAdvice</b> para excessões personalizadas;
 - <b>Biblioteca SLF4J</b> (Simple Logging Facade for Java) - Logs.
 
+## ℹ️ Observações:
+- O projeto original foi desenvolvido com Hibernate, JPA e banco H2 em memória. Você pode acessá-lo [clicando aqui](https://github.com/marciellioliveira/BancoM);
+- Este repositório é um clone adaptado, com a migração de JPA/H2 para JDBC/PostgreSQL.
 
 ## 💱 Suporte a Múltiplas Moedas (Multiwallet)
 - Com a <b>integração da API de câmbio em tempo real</b>, como a  ExchangeRate-API foi possível simplificar a conversão do saldo do usuário em tempo real e em diversas moedas como (BRL, USD, EUR).
@@ -43,21 +45,25 @@
 - <b>Removendo JPA e H2 e migrando para PostgreSQL e JDBC.</b>
   
 ## 🔗 Endpoints da API (usados no Postman)
+- Para o DELETE de Cliente, Conta, Cartão e Seguros: Utilizei a metodologia Soft Delete. A intenção é deixar apenas como cliente/conta/cartão/seguro desativado para segurança do cliente durante um ano. Mailchimp, Google e Facebook fazem isso. 
+- Implementei a funcionalidade de @EnableScheduling/@EnableAsync e CRON para API deletar de fato um cliente e todas suas contas, cartões e seguros após 1 ano de desativado.
+
 ### 🧑‍💼 Clientes
-- POST /users (Cadastrar novos clientes);
-- POST /login (Login no sistema);
-- POST /logout (Sair do sistema);
-- GET /users (Mostrar todos os clientes - Apenas ADMIN);
+- POST /auth/users (Cadastrar novos clientes);
+- POST /auth/login (Login no sistema);
+- GET /users (Mostrar todos os clientes);
 - GET /users/id (Mostrar cliente por id);
 - PUT /users/id (Atualizar cliente por id);
-- DELETE /users/id (Deletar cliente por id - Apenas ADMIN).
+- DELETE /users/id (Desativar cliente por id);
+- PUT /users/id/ativar (Ativar cliente por id).
   
 ### 💼 Contas
-- GET /contas (Mostrar todas as contas - Apenas ADMIN);
+- GET /contas (Mostrar todas as contas);
 - GET /contas/id (Mostrar conta por id);
 - POST /contas (Criar contas - Corrente ou Poupança);
-- DELETE /contas/id (Deletar conta por id - Apenas ADMIN);
+- DELETE /contas/id (Desativar conta por id);
 - PUT /contas/id (Atualizar conta por id);
+- put /contas/id/ativar (Ativar conta por id);
 - POST /contas/id/transferencia (Transferência TED);
 - POST /contas/id/pix (Transferência PIX);
 - POST /contas/id/deposito (Depósito);
@@ -67,11 +73,12 @@
 - GET /contas/id/saldo (Ver saldo da conta em BRL, USD, EUR).
 
 ### 💳 Cartões
-- GET /cartoes (Mostrar todos os cartões - Apenas ADMIN);
+- GET /cartoes (Mostrar todos os cartões);
 - GET /cartoes/id (Mostrar cartão por id);
 - POST /cartoes (Criar cartão Débito/Crédito);
 - PUT /cartoes/id (Atualizar cartão);
-- DELETE /cartoes/id (Deletar cartão);
+- DELETE /cartoes/id (Desativar cartão);
+- PUT /cartoes/id/ativar (Ativar cartão);
 - POST /cartoes/id/pagamento (Pagamento com cartão);
 - PUT /cartoes/id/status (Alterar status do cartão);
 - PUT /cartoes/id/senha (Alterar senha do cartão);
@@ -81,19 +88,14 @@
 - POST /cartoes/id/fatura/pagamento (Pagar fatura).
 
 ### 🧰 Seguros
-- GET /seguros (Mostrar todos os seguros - Apenas ADMIN);
+- GET /seguros (Mostrar todos os seguros);
 - GET /seguros/id (Mostrar seguro por id);
 - POST /seguros (Contratar seguro);
 - PUT /seguros/id (Atualizar seguro);
-- DELETE /seguros/id (Deletar seguro - Apenas ADMIN).
-
-### 📂 Rota de Teste para agendador de Aplicação de Taxas
-- PUT /api/teste-agendador.
+- DELETE /seguros/id (Desativar seguro).
   
 ## 📈 Futuras Implementações
 - Interface Web (Frontend);
-- Para o DELETE de Cliente, Conta, Cartão e Seguros: Utilizei a metodologia Soft Delete. A intenção é deixar apenas como cliente/conta/cartão/seguro desativado para segurança do cliente. Mailchimp, Google e Facebook fazem isso. Nesse caso vou implementar a funcionalidade de @EnableScheduling/@EnableAsync e CRON para API deletar de fato um cliente/conta/cartão/seguro após 1 ano de desativado.
-
 
 ## ▶️ Como Executar
 ### 🔍 Clone o repositório (Utilize a Branch newBank)
