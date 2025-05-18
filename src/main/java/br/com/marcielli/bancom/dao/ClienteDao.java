@@ -55,6 +55,23 @@ public class ClienteDao {
 		this.contasRowMapper = contasRowMapper;
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
+	
+	public void save(Cliente cliente) {
+		if (cliente.getCpf() != null && cpfExists(cliente.getCpf())) {
+			throw new ClienteEncontradoException("Já existe um cliente com esse CPF: " + cliente.getCpf());
+		}
+
+		String sql = "INSERT INTO clientes (nome, cpf, cliente_ativo, user_id) VALUES (?, ?, ?, ?)";
+		try {
+			jdbcTemplate.update(sql, cliente.getNome(), cliente.getCpf(), cliente.isClienteAtivo(),
+					cliente.getUser().getId());
+		} catch (DuplicateKeyException e) {
+			throw new ClienteEncontradoException(
+					"Já existe um cliente com esse CPF: " + cliente.getCpf() + " - Exception:" + e);
+		} catch (DataAccessException e) {
+			throw new ClienteEncontradoException("Erro ao salvar cliente no banco de dados - Exception:" + e);
+		}
+	}
 
 	public Optional<Cliente> findByCpf(Long cpf) {
 		String sql = "SELECT c.id AS cliente_id, c.nome AS cliente_nome, c.cpf AS cliente_cpf, c.cliente_ativo, c.user_id, "
@@ -76,22 +93,7 @@ public class ClienteDao {
 		return jdbcTemplate.query(sql, new ClienteRowMapper(), "%" + nome + "%");
 	}
 
-	public void save(Cliente cliente) {
-		if (cliente.getCpf() != null && cpfExists(cliente.getCpf())) {
-			throw new ClienteEncontradoException("Já existe um cliente com esse CPF: " + cliente.getCpf());
-		}
-
-		String sql = "INSERT INTO clientes (nome, cpf, cliente_ativo, user_id) VALUES (?, ?, ?, ?)";
-		try {
-			jdbcTemplate.update(sql, cliente.getNome(), cliente.getCpf(), cliente.isClienteAtivo(),
-					cliente.getUser().getId());
-		} catch (DuplicateKeyException e) {
-			throw new ClienteEncontradoException(
-					"Já existe um cliente com esse CPF: " + cliente.getCpf() + " - Exception:" + e);
-		} catch (DataAccessException e) {
-			throw new ClienteEncontradoException("Erro ao salvar cliente no banco de dados - Exception:" + e);
-		}
-	}
+	
 
 	public Optional<Cliente> findById(Long id) {
 		String sql = "SELECT " + "c.id AS cliente_id, " + "c.nome AS cliente_nome, " + "c.cpf AS cliente_cpf, "

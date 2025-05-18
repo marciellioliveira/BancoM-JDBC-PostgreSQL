@@ -9,16 +9,29 @@ import br.com.marcielli.bancom.mappers.ClienteRowMapper;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
 import br.com.marcielli.bancom.mappers.UserRowMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class UserDao {
 
+	private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
+	//Exemplo: logger.info("Fatura {} associada ao cartão {} com sucesso", faturaId, cartaoId);
+	
     private final JdbcTemplate jdbcTemplate;
     private final RoleDao roleDao;
 
@@ -26,67 +39,177 @@ public class UserDao {
         this.jdbcTemplate = jdbcTemplate;
         this.roleDao = roleDao;
     }
-
+    
+    
     public User save(User user) {
-        // Insere usuário
-        String sqlUser = "INSERT INTO users (username, password, user_ativo) VALUES (?, ?, ?) RETURNING id";
-        Long userId = jdbcTemplate.queryForObject(
-            sqlUser,
-            Long.class,
-            user.getUsername(),
-            user.getPassword(),
-            user.isUserAtivo()
-        );
-        user.setId(Math.toIntExact(userId));
+	
+    	logger.info("Criando uma classe anônima para implementar o CallableStatementCreator() - Vai montar o comando SQL do { call criar_usuario_completo...");
+    	
+    	//Criando uma classe anônima para implementar o CallableStatementCreator()
+    	//Vai montar o comando SQL do { call criar_usuario_completo...
+        CallableStatementCreator creator = new CallableStatementCreator() {
+        	
+            @Override
+            public CallableStatement createCallableStatement(Connection connection) throws SQLException {
+            	
+            	logger.info("Monta o CallableStatement com os parâmetros que defini dentro da procedure no banco");
+            	//Monta o CallableStatement com os parâmetros que defini dentro da procedure no banco
+            	CallableStatement cs = connection.prepareCall("CALL criar_usuario_completo_v1(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                
+                //Abaixo faz igual no anterior, quando não tinha function e procedure
+                //Define user, cliente, endereço...
+                cs.setString(1, user.getUsername()); 
+                cs.setString(2, user.getPassword()); 
+                cs.setBoolean(3, user.isUserAtivo()); 
+                
+               // logger.info("User Role: {}", user.getRole());
+                logger.info("Define user: {}", cs);
 
-        // Insere role
-        Role role = roleDao.findByName(user.getRole());
-        if (role == null) {
-            throw new RuntimeException("Role não encontrada: " + user.getRole());
-        }
+                Cliente cliente = user.getCliente();
+                cs.setString(4, cliente.getNome());
+                cs.setLong(5, cliente.getCpf());
+                cs.setBoolean(6, cliente.isClienteAtivo());
+                
+                logger.info("Define cliente: {}", cs);
+
+                Endereco endereco = cliente.getEndereco();           
+                cs.setString(7, endereco.getRua());
+                cs.setString(8, endereco.getNumero());
+                cs.setString(9, endereco.getBairro());
+                cs.setString(10, endereco.getCidade());
+                cs.setString(11, endereco.getEstado());
+                cs.setString(12, endereco.getComplemento());
+                cs.setString(13, endereco.getCep());
+                
+                logger.info("Define endereço: {}", cs);
+           
+                //É o cursor de saída, que na verdade é o ResultSet já com User inserido nele
+                //Fiz as functions separadas e uma procedure para chamar as functions e 
+                //a procedure chama uma function final que retorna um SELECT do user completo.                    
+                logger.info("Registrando REF_CURSOR no índice 14");
+                cs.registerOutParameter(14, Types.REF_CURSOR); // PostgreSQL
+                logger.info("REF_CURSOR registrado com sucesso no índice 14");
+                
+                logger.info("Retorna o cliente completo: {}", cs);
+                return cs;
+            }
+        };
         
-        jdbcTemplate.update(
-            "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
-            userId,
-            role.getId()
-        );
+        //A função recebe um CallableStatement e define o que será feito após a execução da procedure
+        //que já ta executando. Ela devolve um objeto user.
+        CallableStatementCallback<User> callback = new CallableStatementCallback<User>() {
+        	
+            @Override
+            public User doInCallableStatement(CallableStatement cs) throws SQLException {
+            	
+            	//Executa a procedure: criar_usuario_completo.
+                cs.execute();
+                
+                logger.info("Executa a procedure criar_usuario_completo: {}", cs);
+                
+                
+                
+                //Pega o cursor de saída da procedure e retorna um ResultSet
+                //ou seja, esse cursor/ponteiro é convertido para um ResultSet
+                //porque o ResultSet é uma estrutura que permite percorrer dados
+                try (ResultSet rs = (ResultSet) cs.getObject(14)) {
+                	               	
+                	//Verificando se o ResultSet tem pelo menos uma linha para percorrer
+                    if (rs.next()) {
+                    	logger.info("Dados encontrados no ResultSet na primeira linha");
+                    	
+                    	//Cria uma instancia do meu ClienteRowMapper, meio que
+                    	//convertendo o ResultSet em um Objeto Java
+                    	//populando os dados de User, Cliente, Endereço...
+                        ClienteRowMapper rowMapper = new ClienteRowMapper();
+                        
+                        //Transforma em um Ojeto
+                        Cliente cliente = rowMapper.mapRow(rs, 0);
+                        logger.info("Cliente rowMapper: {}", cliente);
+                        //Pega um User e associa ao cliente
+                        User result = cliente.getUser();
+                        //Retorna o user completo
+                        logger.info("Retorna usuário completo: {}", result);
+                        return result;
+                    } else {
+                    	logger.warn("ResultSet está vazio. Nenhum usuário retornado pela procedure.");
+                        throw new RuntimeException("Usuário não retornado pela procedure");
+                    }
+                    
+                } catch (SQLException e) {
+                    logger.error("Erro ao obter ou percorrer o ResultSet no índice 13", e);
+                    throw e;
+                }
+            }
+        };
 
-        // Insere cliente
-        Cliente cliente = user.getCliente();
-        String sqlCliente = """
-            INSERT INTO clientes (nome, cpf, cliente_ativo, user_id)
-            VALUES (?, ?, ?, ?)
-            RETURNING id
-        """;
-        Long clienteId = jdbcTemplate.queryForObject(
-            sqlCliente,
-            Long.class,
-            cliente.getNome(),
-            cliente.getCpf(),
-            cliente.isClienteAtivo(),
-            userId
-        );
-        cliente.setId(clienteId);
-
-        // Insere endereço (se existir)
-        Endereco endereco = cliente.getEndereco();
-        if (endereco != null) {
-            jdbcTemplate.update(
-                "INSERT INTO enderecos (rua, numero, bairro, cidade, estado, complemento, cep, cliente_id) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                endereco.getRua(),
-                endereco.getNumero(),
-                endereco.getBairro(),
-                endereco.getCidade(),
-                endereco.getEstado(),
-                endereco.getComplemento(),
-                endereco.getCep(),
-                clienteId
-            );
-        }
-
-        return user;
+        return jdbcTemplate.execute(creator, callback);
     }
+
+
+
+
+
+//    public User save(User user) {
+//        // Insere usuário
+//        String sqlUser = "INSERT INTO users (username, password, user_ativo) VALUES (?, ?, ?) RETURNING id";
+//        Long userId = jdbcTemplate.queryForObject(
+//            sqlUser,
+//            Long.class,
+//            user.getUsername(),
+//            user.getPassword(),
+//            user.isUserAtivo()
+//        );
+//        user.setId(Math.toIntExact(userId));
+//
+//        // Insere role
+//        Role role = roleDao.findByName(user.getRole());
+//        if (role == null) {
+//            throw new RuntimeException("Role não encontrada: " + user.getRole());
+//        }
+//        
+//        jdbcTemplate.update(
+//            "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
+//            userId,
+//            role.getId()
+//        );
+//
+//        // Insere cliente
+//        Cliente cliente = user.getCliente();
+//        String sqlCliente = """
+//            INSERT INTO clientes (nome, cpf, cliente_ativo, user_id)
+//            VALUES (?, ?, ?, ?)
+//            RETURNING id
+//        """;
+//        Long clienteId = jdbcTemplate.queryForObject(
+//            sqlCliente,
+//            Long.class,
+//            cliente.getNome(),
+//            cliente.getCpf(),
+//            cliente.isClienteAtivo(),
+//            userId
+//        );
+//        cliente.setId(clienteId);
+//
+//        // Insere endereço (se existir)
+//        Endereco endereco = cliente.getEndereco();
+//        if (endereco != null) {
+//            jdbcTemplate.update(
+//                "INSERT INTO enderecos (rua, numero, bairro, cidade, estado, complemento, cep, cliente_id) " +
+//                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+//                endereco.getRua(),
+//                endereco.getNumero(),
+//                endereco.getBairro(),
+//                endereco.getCidade(),
+//                endereco.getEstado(),
+//                endereco.getComplemento(),
+//                endereco.getCep(),
+//                clienteId
+//            );
+//        }
+//
+//        return user;
+//    }
     
     public User update(User user) {
         // Atualiza o usuário

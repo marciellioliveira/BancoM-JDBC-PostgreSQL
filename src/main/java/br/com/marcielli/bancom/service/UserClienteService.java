@@ -9,6 +9,7 @@ import br.com.marcielli.bancom.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -142,10 +143,15 @@ public class UserClienteService implements UserDetailsService {
 	@Transactional
 	public User save(UserCreateDTO dto) {
 		
-		Optional<User> userCpf = userDao.findByCpf(dto.cpf());
+		Optional<User> cpfExiste = userDao.findByCpf(Long.parseLong(dto.cpf()));
+		Optional<User> usernameExiste = userDao.findByUsername(dto.username());
 		
-		if(userCpf.isPresent()) {
+		if(cpfExiste.isPresent()) {
 			 throw new ClienteEncontradoException("Já existe uma conta com o CPF no sistema");
+		}
+		
+		if (usernameExiste.isPresent()) {
+		    throw new ClienteEncontradoException("Username já existe. Escolha outro.");
 		}
 		
 		User user = new User();
@@ -156,7 +162,7 @@ public class UserClienteService implements UserDetailsService {
 
 		Cliente cliente = new Cliente();
 		cliente.setNome(dto.nome());
-		cliente.setCpf(dto.cpf());
+		cliente.setCpf(Long.parseLong(dto.cpf()));
 		cliente.setClienteAtivo(true);
 		cliente.setUser(user);
 		user.setCliente(cliente);
@@ -172,10 +178,25 @@ public class UserClienteService implements UserDetailsService {
 		cliente.setEndereco(endereco);
 
 		try {
+			
 			return userDao.save(user);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			
+		} catch (DataIntegrityViolationException e) {
+			String message = e.getMessage();
+			
+			// Se ainda assim der erro de duplicidade, trata com uma exceção customizada mais clara
+	        if (message != null && message.contains("users_username_key")) {
+	        	logger.error("Username '{}' já existe.", dto.username());
+	            throw new ClienteEncontradoException("Username já existe. Escolha outro.");
+	        }
+	        if (message != null && message.contains("clientes_cpf_key")) {
+	        	logger.error("Cpf '{}' já existe.", dto.cpf());
+	            throw new ClienteEncontradoException("CPF já está cadastrado no sistema.");
+	        }
+			
+	        logger.error("Outro erro: ", e);
+	        
+			throw e; // Outros erros são lançados normalmente
 		}
 	}
 
@@ -305,7 +326,7 @@ public class UserClienteService implements UserDetailsService {
 
 		Cliente cliente = user.getCliente();
 		cliente.setNome(dto.nome());
-		cliente.setCpf(dto.cpf());
+		cliente.setCpf(Long.parseLong(dto.cpf()));
 
 		Endereco endereco = cliente.getEndereco();
 		if (endereco == null) {

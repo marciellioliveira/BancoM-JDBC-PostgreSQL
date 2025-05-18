@@ -38,7 +38,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
     
-  
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<RestErrorMessage> handleAllExceptions(Exception ex) {
+        logger.error("Erro inesperado: ", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body(new RestErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado no servidor"));
+    }
+
 
 	
 	

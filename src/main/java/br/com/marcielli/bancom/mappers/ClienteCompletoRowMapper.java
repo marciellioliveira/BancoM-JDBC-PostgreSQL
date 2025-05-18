@@ -301,21 +301,6 @@ public class ClienteCompletoRowMapper implements ResultSetExtractor<Void> {
 	    }
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public Cliente getCliente() {
         return clienteFinal;
     }

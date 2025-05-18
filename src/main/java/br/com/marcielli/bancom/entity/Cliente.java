@@ -17,7 +17,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "endereco")
 @EqualsAndHashCode
 public class Cliente implements Serializable {
 	
