@@ -147,69 +147,6 @@ public class UserDao {
     }
 
 
-
-
-
-//    public User save(User user) {
-//        // Insere usuário
-//        String sqlUser = "INSERT INTO users (username, password, user_ativo) VALUES (?, ?, ?) RETURNING id";
-//        Long userId = jdbcTemplate.queryForObject(
-//            sqlUser,
-//            Long.class,
-//            user.getUsername(),
-//            user.getPassword(),
-//            user.isUserAtivo()
-//        );
-//        user.setId(Math.toIntExact(userId));
-//
-//        // Insere role
-//        Role role = roleDao.findByName(user.getRole());
-//        if (role == null) {
-//            throw new RuntimeException("Role não encontrada: " + user.getRole());
-//        }
-//        
-//        jdbcTemplate.update(
-//            "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)",
-//            userId,
-//            role.getId()
-//        );
-//
-//        // Insere cliente
-//        Cliente cliente = user.getCliente();
-//        String sqlCliente = """
-//            INSERT INTO clientes (nome, cpf, cliente_ativo, user_id)
-//            VALUES (?, ?, ?, ?)
-//            RETURNING id
-//        """;
-//        Long clienteId = jdbcTemplate.queryForObject(
-//            sqlCliente,
-//            Long.class,
-//            cliente.getNome(),
-//            cliente.getCpf(),
-//            cliente.isClienteAtivo(),
-//            userId
-//        );
-//        cliente.setId(clienteId);
-//
-//        // Insere endereço (se existir)
-//        Endereco endereco = cliente.getEndereco();
-//        if (endereco != null) {
-//            jdbcTemplate.update(
-//                "INSERT INTO enderecos (rua, numero, bairro, cidade, estado, complemento, cep, cliente_id) " +
-//                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-//                endereco.getRua(),
-//                endereco.getNumero(),
-//                endereco.getBairro(),
-//                endereco.getCidade(),
-//                endereco.getEstado(),
-//                endereco.getComplemento(),
-//                endereco.getCep(),
-//                clienteId
-//            );
-//        }
-//
-//        return user;
-//    }
     
     public User update(User user) {
         // Atualiza o usuário
