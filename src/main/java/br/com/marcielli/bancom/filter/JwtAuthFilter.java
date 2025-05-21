@@ -66,7 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // Recupera informações do token
             String username = claims.getSubject();
             String role = claims.get("role", String.class);
-
+            logger.info("Role no JWT Auth Filter: {}", role);
             // Cria objeto de autenticação
             UsernamePasswordAuthenticationToken authentication = 
                 new UsernamePasswordAuthenticationToken(

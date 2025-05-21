@@ -26,10 +26,11 @@ public class RoleDao {
         return roles.getFirst(); // Retorna a primeira
     }
 
-    public void save(Role role) {
-    	String sql = "SELECT insert_role_if_not_exists_v1(?, ?)";
-    	jdbcTemplate.queryForObject(sql, Void.class, role.getId(), role.getName());
+    public Integer save(Role role) {
+        String sql = "SELECT vincular_role_v1(?, ?)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, new Object[] {role.getId().intValue(), role.getName()});
     }
+
 
 
 }

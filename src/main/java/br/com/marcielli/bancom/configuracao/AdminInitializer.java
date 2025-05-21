@@ -36,30 +36,18 @@ public class AdminInitializer implements ApplicationListener<ApplicationReadyEve
 	@Transactional
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 
-	    createRoleIfNotExists("ADMIN", 1L);
-	    createRoleIfNotExists("BASIC", 2L);
-
 	    Optional<User> userAdminOpt = userDao.findByUsername("admin");
-
-	    Role roleAdmin = roleDao.findByName("ADMIN");
-	    if (roleAdmin == null) {
-	        throw new RuntimeException("Role ADMIN não encontrada");
-	    }
-
-	    if (userAdminOpt.isPresent()) {
-	        User userAdmin = userAdminOpt.get();
-	        logger.warn("Usuário admin já existe.");
-
-	        if (userAdmin.getRole() == null || !userAdmin.getRole().equals(roleAdmin.getName())) {
-	            userAdmin.setRole(roleAdmin.getName());
-	            logger.info("Role ADMIN atualizada para o usuário admin existente.");
-	        }
-
-	    } else {
-
-	        User userAdmin = new User();
+	    //usuário existe?
+	    
+	    if(userAdminOpt.isEmpty()) { //criar um usuário
+	    	System.err.println("Criando um usuário admin!");
+	    	
+	    	User userAdmin = new User();
+	    	System.err.println("Criando user admin vazio: "+userAdmin);
 	        Cliente clienteAdmin = new Cliente();
+	        System.err.println("Criando cliente admin vazio: "+clienteAdmin);
 	        Endereco adminEndereco = new Endereco();
+	        System.err.println("Criando endereço admin vazio: "+adminEndereco);
 
 	        adminEndereco.setCep("01001000");
 	        adminEndereco.setCidade("São Paulo");
@@ -68,40 +56,47 @@ public class AdminInitializer implements ApplicationListener<ApplicationReadyEve
 	        adminEndereco.setNumero("100");
 	        adminEndereco.setBairro("Sé");
 	        adminEndereco.setComplemento("Próximo à estação Sé do metrô");
+	        
+	        System.err.println("Preenchendo endereço: "+adminEndereco);
 
 	        clienteAdmin.setCpf(12345678909L);
 	        clienteAdmin.setEndereco(adminEndereco);
 	        clienteAdmin.setClienteAtivo(true);
 	        clienteAdmin.setNome("Admin");
+	        
+	        System.err.println("Preenchendo cliente: "+clienteAdmin);
 
 	        userAdmin.setUsername("admin");
 	        userAdmin.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta11"));
 	        userAdmin.setUserAtivo(true);
-	        userAdmin.setRole(roleAdmin.getName());
+	        userAdmin.setRole("ADMIN");
+	        
+	        System.err.println("Preenchendo user: "+userAdmin);
 
 	        clienteAdmin.setEndereco(adminEndereco);
 	        userAdmin.setCliente(clienteAdmin);
 	        clienteAdmin.setUser(userAdmin);
-
+	        
+	        System.err.println("User admin completo: "+userAdmin);
+	        System.err.println("Cliente admin completo: "+clienteAdmin);
+	        System.err.println("Endereço admin completo: "+adminEndereco);
+	        
 	        try {
+	        	System.err.println("\n\nUser admin completo: "+userAdmin);
+	        	System.err.println("\n\nUser cliente admin completo: "+userAdmin.getCliente());
+	        	System.err.println("\n\nUser cliente endereço admin completo: "+userAdmin.getCliente().getEndereco());
+	        	
 	            userDao.save(userAdmin);
+	            
 	            logger.info("Usuário admin criado com sucesso!");
 	        } catch (Exception e) {
 	            logger.error("Erro ao salvar admin: {}", e.getMessage(), e);
 	        }
+	    	
+	    	
+	    } else {
+	    	System.err.println("Não precisa fazer nada se o admin já existe no banco");
 	    }
+	    
 	}
-
-
-
-	
-	private void createRoleIfNotExists(String name, Long id) {
-        Role existingRole = roleDao.findByName(name);
-        if (existingRole == null) {
-            Role role = new Role();
-            role.setId(id);
-            role.setName(name);
-            roleDao.save(role);
-        }
-    }
 }

@@ -53,17 +53,18 @@ public class UserClienteService implements UserDetailsService { //implements Use
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 	    User user = userDao.findByUsername(username)
-	        .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário não encontrado"));
 
+	    System.err.println("Encontrou user: "+user);
 	    String role = user.getRole();
 
 	    if (role == null || role.isEmpty()) {
 	        System.out.println("Usuário '" + username + "' não tem role associada!");
-	        throw new UsernameNotFoundException("Usuário não possui role associada");
+	        throw new ClienteNaoEncontradoException("Usuário não possui role associada");
 	    }
 
 	    System.err.println("ROLE ESTRANHA: " + role);
-	    // Garante que o prefixo ROLE_ exista
+
 	    String roleName = role.startsWith("ROLE_") ? role : "ROLE_" + role;
 
 	    GrantedAuthority authority = new SimpleGrantedAuthority(roleName);

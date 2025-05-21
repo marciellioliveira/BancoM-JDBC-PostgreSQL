@@ -55,7 +55,7 @@ public class UserDao {
             	
             	logger.info("Monta o CallableStatement com os parâmetros que defini dentro da procedure no banco");
             	//Monta o CallableStatement com os parâmetros que defini dentro da procedure no banco
-            	CallableStatement cs = connection.prepareCall("CALL criar_usuario_completo_v1(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            	CallableStatement cs = connection.prepareCall("CALL criar_usuario_completo_v2(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                                 
                 //Abaixo faz igual no anterior, quando não tinha function e procedure
                 //Define user, cliente, endereço...
@@ -92,15 +92,15 @@ public class UserDao {
                 cs.setString(11, endereco.getEstado());
                 cs.setString(12, endereco.getComplemento());
                 cs.setString(13, endereco.getCep());
-                
+                cs.setString(14, user.getRole());
                 logger.info("Define endereço: {}", cs);
            
                 //É o cursor de saída, que na verdade é o ResultSet já com User inserido nele
                 //Fiz as functions separadas e uma procedure para chamar as functions e 
                 //a procedure chama uma function final que retorna um SELECT do user completo.                    
-                logger.info("Registrando REF_CURSOR no índice 14");
-                cs.registerOutParameter(14, Types.REF_CURSOR); // PostgreSQL
-                logger.info("REF_CURSOR registrado com sucesso no índice 14");
+                logger.info("Registrando REF_CURSOR no índice 15");
+                cs.registerOutParameter(15, Types.REF_CURSOR); // PostgreSQL
+                logger.info("REF_CURSOR registrado com sucesso no índice 15");
                 
                 logger.info("Retorna o cliente completo: {}", cs);
                 return cs;
@@ -124,7 +124,7 @@ public class UserDao {
                 //Pega o cursor de saída da procedure e retorna um ResultSet
                 //ou seja, esse cursor/ponteiro é convertido para um ResultSet
                 //porque o ResultSet é uma estrutura que permite percorrer dados
-                try (ResultSet rs = (ResultSet) cs.getObject(14)) {
+                try (ResultSet rs = (ResultSet) cs.getObject(15)) {
                 	               	
                 	//Verificando se o ResultSet tem pelo menos uma linha para percorrer
                     if (rs.next()) {
@@ -320,22 +320,13 @@ public class UserDao {
 //    }
     
     public Optional<User> findByUsername(String username) {
-        String sql = """
-            SELECT u.id AS user_id, u.username, u.password, u.user_ativo, 
-                   c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo,
-                   r.name AS role_name
-            FROM users u
-            LEFT JOIN user_roles ur ON u.id = ur.user_id
-            LEFT JOIN roles r ON r.id = ur.role_id
-            LEFT JOIN clientes c ON c.user_id = u.id
-            WHERE u.username = ?
-        """;
+        String sql = "SELECT * FROM get_usuario_completo_by_username_v1(?)";
 
-        logger.info("Buscando usuário pelo username: {}", username);
+        logger.info("Chamando função get_usuario_completo_by_username_v1 com username: {}", username);
 
         try {
             User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-                logger.debug("Mapeando resultado da query para User...");
+                logger.debug("Mapeando resultado da função para User...");
 
                 User u = new User();
                 u.setId(rs.getInt("user_id"));
@@ -344,21 +335,14 @@ public class UserDao {
                 u.setUserAtivo(rs.getBoolean("user_ativo"));
 
                 String roleName = rs.getString("role_name");
-                if (roleName == null) {
-                    logger.warn("Usuário '{}' não tem role associada.", username);
-                    u.setRole("ROLE_NENHUMA"); // ou null, conforme seu modelo
-                } else {
-                    u.setRole(roleName);
-                }
+                u.setRole(roleName != null ? roleName : "ROLE_NENHUMA");
 
-                Cliente cliente = new Cliente();
+                // Cliente
+                Cliente cliente = null;
                 long clienteId = rs.getLong("cliente_id");
-                if (rs.wasNull()) {
-                    logger.warn("Usuário '{}' não tem cliente associado.", username);
-                    cliente = null;
-                } else {
+                if (!rs.wasNull()) {
+                    cliente = new Cliente();
                     cliente.setId(clienteId);
-                    
                     String cpfStr = rs.getString("cpf");
                     if (cpfStr != null) {
                         try {
@@ -368,27 +352,115 @@ public class UserDao {
                             cliente.setCpf(0L);
                         }
                     }
-                    
                     cliente.setNome(rs.getString("nome"));
                     cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+
+                    // Endereço
+                    Endereco endereco = null;
+                    long enderecoId = rs.getLong("endereco_id");
+                    if (!rs.wasNull()) {
+                        endereco = new Endereco();
+                        endereco.setId(enderecoId);
+                        endereco.setRua(rs.getString("rua"));
+                        endereco.setNumero(rs.getString("numero"));
+                        endereco.setBairro(rs.getString("bairro"));
+                        endereco.setCidade(rs.getString("cidade"));
+                        endereco.setEstado(rs.getString("estado"));
+                        endereco.setComplemento(rs.getString("complemento"));
+                        endereco.setCep(rs.getString("cep"));
+                    }
+                    cliente.setEndereco(endereco);
                 }
+
                 u.setCliente(cliente);
 
-                logger.debug("User mapeado: {}", u.getUsername());
+                logger.debug("User mapeado com sucesso: {}", u.getUsername());
                 return u;
             }, username);
 
-            logger.info("Usuário encontrado: {}", user.getUsername());
+            logger.info("Usuário encontrado via função: {}", user.getUsername());
             return Optional.ofNullable(user);
 
         } catch (EmptyResultDataAccessException e) {
             logger.info("Nenhum usuário encontrado para username: {}", username);
             return Optional.empty();
         } catch (Exception e) {
-            logger.error("Erro ao buscar usuário por username: {}", username, e);
+            logger.error("Erro ao buscar usuário por username via função: {}", username, e);
             return Optional.empty();
         }
     }
+
+    
+//    public Optional<User> findByUsername(String username) {
+//        String sql = """
+//            SELECT u.id AS user_id, u.username, u.password, u.user_ativo, 
+//                   c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo,
+//                   r.name AS role_name
+//            FROM users u
+//            LEFT JOIN user_roles ur ON u.id = ur.user_id
+//            LEFT JOIN roles r ON r.id = ur.role_id
+//            LEFT JOIN clientes c ON c.user_id = u.id
+//            WHERE u.username = ?
+//        """;
+//
+//        logger.info("Buscando usuário pelo username: {}", username);
+//
+//        try {
+//            User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+//                logger.debug("Mapeando resultado da query para User...");
+//
+//                User u = new User();
+//                u.setId(rs.getInt("user_id"));
+//                u.setUsername(rs.getString("username"));
+//                u.setPassword(rs.getString("password"));
+//                u.setUserAtivo(rs.getBoolean("user_ativo"));
+//
+//                String roleName = rs.getString("role_name");
+//                if (roleName == null) {
+//                    logger.warn("Usuário '{}' não tem role associada.", username);
+//                    u.setRole("ROLE_NENHUMA"); // ou null, conforme seu modelo
+//                } else {
+//                    u.setRole(roleName);
+//                }
+//
+//                Cliente cliente = new Cliente();
+//                long clienteId = rs.getLong("cliente_id");
+//                if (rs.wasNull()) {
+//                    logger.warn("Usuário '{}' não tem cliente associado.", username);
+//                    cliente = null;
+//                } else {
+//                    cliente.setId(clienteId);
+//                    
+//                    String cpfStr = rs.getString("cpf");
+//                    if (cpfStr != null) {
+//                        try {
+//                            cliente.setCpf(Long.parseLong(cpfStr.replaceAll("\\D", "")));
+//                        } catch (NumberFormatException e) {
+//                            logger.error("Erro ao converter CPF '{}' para Long", cpfStr, e);
+//                            cliente.setCpf(0L);
+//                        }
+//                    }
+//                    
+//                    cliente.setNome(rs.getString("nome"));
+//                    cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+//                }
+//                u.setCliente(cliente);
+//
+//                logger.debug("User mapeado: {}", u.getUsername());
+//                return u;
+//            }, username);
+//
+//            logger.info("Usuário encontrado: {}", user.getUsername());
+//            return Optional.ofNullable(user);
+//
+//        } catch (EmptyResultDataAccessException e) {
+//            logger.info("Nenhum usuário encontrado para username: {}", username);
+//            return Optional.empty();
+//        } catch (Exception e) {
+//            logger.error("Erro ao buscar usuário por username: {}", username, e);
+//            return Optional.empty();
+//        }
+//    }
     
 
 
