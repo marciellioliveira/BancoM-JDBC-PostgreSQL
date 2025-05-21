@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,7 +31,7 @@ import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import jakarta.annotation.PostConstruct;
 
 @Service
-public class UserClienteService implements UserDetailsService {
+public class UserClienteService implements UserDetailsService { //implements UserDetailsService 
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -48,90 +49,38 @@ public class UserClienteService implements UserDetailsService {
 		this.clienteDao = clienteDao;
 	}
 
-//	@PostConstruct
-//	@Transactional	
-//	public void initAdminUser() {
-//		createRoleIfNotExists("ADMIN", 1L);
-//		createRoleIfNotExists("BASIC", 2L);
-//		Cliente clienteAdmin = new Cliente();
-//		clienteAdmin.setCpf(12345678909L);
-//		
-//		Endereco adminEndereco = new Endereco();
-//		adminEndereco.setCep("01001000");
-//		adminEndereco.setCidade("São Paulo");
-//		adminEndereco.setEstado("SP");
-//		adminEndereco.setRua("Praça da Sé");
-//		adminEndereco.setNumero("100");
-//		adminEndereco.setBairro("Sé");
-//		adminEndereco.setComplemento("Próximo à estação Sé do metrô");
-//		
-//		clienteAdmin.setEndereco(adminEndereco);
-//		clienteAdmin.setClienteAtivo(true);
-//		clienteAdmin.setNome("Admin");
-//
-//		Role roleAdmin = roleDao.findByName(Role.Values.ADMIN.name());
-//		if (roleAdmin == null) {
-//			throw new RuntimeException("Role ADMIN não encontrada");
-//		}
-//
-//		var userAdmin = userDao.findByUsername("admin");
-//
-//		userAdmin.ifPresentOrElse(user -> {
-//			System.err.println("Admin já existe.");
-//		}, () -> {
-//			var user = new User();
-//			user.setUsername("admin");
-//			user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta11"));
-//			user.setUserAtivo(true);
-//			user.setRole(roleAdmin.getName()); // Definir role como String ("ADMIN")
-//			user.setCliente(clienteAdmin);
-//			clienteAdmin.setUser(user);
-//			
-//			try {
-//			    userDao.save(user);
-//			    logger.info("Usuário admin criado com sucesso!");
-//			    System.err.println("Usuário admin criado com sucesso!");
-//			} catch (Exception e) {
-//				logger.info("Erro ao salvar admin:  {}", e.getMessage());
-//			    System.err.println("Erro ao salvar admin: " + e.getMessage());
-//			    e.printStackTrace();
-//			}
-//
-//		});
-//	}
-//
-//	private void createRoleIfNotExists(String name, Long id) {
-//		Role existingRole = roleDao.findByName(name);
-//		if (existingRole == null) {
-//			Role role = new Role();
-//			role.setId(id);
-//			role.setName(name);
-//			roleDao.save(role);
-//		}
-//	}
-//	
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-	    System.out.println("===== Tentando autenticar: " + username + " =====");
-	    
 	    User user = userDao.findByUsername(username)
 	        .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-	    
-	    String role = user.getRole().startsWith("ROLE_") 
-	            ? user.getRole() 
-	            : "ROLE_" + user.getRole();
-	    
-	    System.out.println("Usuário encontrado: " + user.getUsername());
-	    System.out.println("Role do usuário: " + user.getRole());
-	    
-	    return org.springframework.security.core.userdetails.User.builder()
-	        .username(user.getUsername())
-	        .password(user.getPassword())
-	        .roles(role.replace("ROLE_", ""))
-	        .build();
-	}
-	
 
+	    String role = user.getRole();
+
+	    if (role == null || role.isEmpty()) {
+	        System.out.println("Usuário '" + username + "' não tem role associada!");
+	        throw new UsernameNotFoundException("Usuário não possui role associada");
+	    }
+
+	    System.err.println("ROLE ESTRANHA: " + role);
+	    // Garante que o prefixo ROLE_ exista
+	    String roleName = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+
+	    GrantedAuthority authority = new SimpleGrantedAuthority(roleName);
+
+	    System.out.println("Usuário encontrado: " + user.getUsername());
+	    System.out.println("Role do usuário: " + roleName);
+
+	    return new org.springframework.security.core.userdetails.User(
+	        user.getUsername(),
+	        user.getPassword(),
+	        List.of(authority)
+	    );
+	}
+
+
+
+	
 	@Transactional
 	public User findByUsername(String username) {
 		return userDao.findByUsername(username).orElse(null);
@@ -150,8 +99,6 @@ public class UserClienteService implements UserDetailsService {
 		if (usernameExiste.isPresent()) {
 		    throw new ClienteEncontradoException("Username já existe. Escolha outro.");
 		}
-		
-		
 		
 		User user = new User();
 		user.setUsername(dto.username());
@@ -173,6 +120,10 @@ public class UserClienteService implements UserDetailsService {
 		endereco.setEstado(dto.estado());
 		endereco.setComplemento(dto.complemento());
 		endereco.setCep(dto.cep());
+		
+		//chamar um método no dao para cadastrar o endereço e devolver o endereço
+		//ai sim salvar o endereço em cliente
+		
 		cliente.setEndereco(endereco);
 
 		try {

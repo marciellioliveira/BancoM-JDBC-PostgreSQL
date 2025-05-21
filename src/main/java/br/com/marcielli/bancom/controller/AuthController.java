@@ -55,9 +55,16 @@ public class AuthController {
 	        //  Obtém os detalhes
 	        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 	        String role = authentication.getAuthorities().stream()
-	            .findFirst()
-	            .map(GrantedAuthority::getAuthority)
-	            .orElse("ROLE_USER");
+	        	    .findFirst()
+	        	    .map(GrantedAuthority::getAuthority)
+	        	    .map(r -> r.startsWith("ROLE_") ? r.substring(5) : r)
+	        	    .orElse("USER");
+
+	       System.err.println("Role AuthController: "+role);
+//	        String role = authentication.getAuthorities().stream()
+//	            .findFirst()
+//	            .map(GrantedAuthority::getAuthority)
+//	            .orElse("ROLE_USER");
 
 	        System.out.println("Login bem-sucedido para: " + userDetails.getUsername() + " | Role: " + role);
 

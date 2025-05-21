@@ -39,7 +39,6 @@ public class ClienteRowMapper implements RowMapper<Cliente> {
         // Endereco
         Endereco endereco = new Endereco();
         endereco.setId(rs.getLong("endereco_id"));
-        logger.warn("Endereco ID: {}",cliente.getEndereco().getId());
         endereco.setCep(rs.getString("cep"));
         endereco.setCidade(rs.getString("cidade"));
         endereco.setEstado(rs.getString("estado"));

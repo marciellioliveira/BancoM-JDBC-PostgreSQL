@@ -32,65 +32,6 @@ public class AdminInitializer implements ApplicationListener<ApplicationReadyEve
 		this.passwordEncoder = passwordEncoder;
 	}
 
-//	@Override
-//	@Transactional
-//	public void onApplicationEvent(ApplicationReadyEvent event) {
-//
-//	    createRoleIfNotExists("ADMIN", 1L);
-//	    createRoleIfNotExists("BASIC", 2L);
-//
-//	    Cliente clienteAdmin = new Cliente();
-//	    clienteAdmin.setCpf(12345678909L);
-//
-//	    Endereco adminEndereco = new Endereco();
-//	    adminEndereco.setCep("01001000");
-//	    adminEndereco.setCidade("São Paulo");
-//	    adminEndereco.setEstado("SP");
-//	    adminEndereco.setRua("Praça da Sé");
-//	    adminEndereco.setNumero("100");
-//	    adminEndereco.setBairro("Sé");
-//	    adminEndereco.setComplemento("Próximo à estação Sé do metrô");
-//	    logger.warn("Endereço: {}",adminEndereco);
-//	    clienteAdmin.setEndereco(adminEndereco);
-//	    clienteAdmin.setClienteAtivo(true);
-//	    clienteAdmin.setNome("Admin");
-//
-//	    Role roleAdmin = roleDao.findByName("ADMIN");
-//	    logger.warn("1 roleAdmin: {}", roleAdmin);
-//	    if (roleAdmin == null) {
-//	        throw new RuntimeException("Role ADMIN não encontrada");
-//	    }
-//
-//	    var userAdmin = userDao.findByUsername("admin");
-//
-//	    userAdmin.ifPresentOrElse(user -> {
-//	        logger.warn("Usuário admin já existe.");
-//
-//	        // Atualiza a role caso não esteja correta
-//	        if (user.getRole() == null || !user.getRole().equals("ADMIN")) {
-//	            user.setRole("ADMIN");
-//	            userDao.save(user);
-//	            logger.info("Role ADMIN atualizada para o usuário admin existente.");
-//	        }
-//
-//	    }, () -> {
-//	        var user = new User();
-//	        user.setUsername("admin");
-//	        user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta11"));
-//	        user.setUserAtivo(true);
-//	        user.setRole("ADMIN");
-//	        user.setCliente(clienteAdmin);
-//	        clienteAdmin.setUser(user);
-//
-//	        try {
-//	            userDao.save(user);
-//	            logger.info("Usuário admin criado com sucesso!");
-//	        } catch (Exception e) {
-//	            logger.error("Erro ao salvar admin: {}", e.getMessage(), e);
-//	        }
-//	    });
-//	}
-
 	@Override
 	@Transactional
 	public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -109,27 +50,17 @@ public class AdminInitializer implements ApplicationListener<ApplicationReadyEve
 	        User userAdmin = userAdminOpt.get();
 	        logger.warn("Usuário admin já existe.");
 
-	        // Atualiza a role se necessário
 	        if (userAdmin.getRole() == null || !userAdmin.getRole().equals(roleAdmin.getName())) {
 	            userAdmin.setRole(roleAdmin.getName());
-	           // userDao.save(userAdmin);
-	            //Criar uma função para atualizar somente a role
 	            logger.info("Role ADMIN atualizada para o usuário admin existente.");
 	        }
 
-
 	    } else {
-	    	
-	    	 User userAdmin = new User();
-	    	 Cliente clienteAdmin = new Cliente();
-	    	 Endereco adminEndereco = new Endereco();    
-	    	 
-	    	 logger.info("Criou user vazio = {}", userAdmin);
-	    	 logger.info("Criou cliente vazio = {}", clienteAdmin);
-	    	 logger.info("Criou endereço vazio = {}", adminEndereco);
-	    	 
-	    	 // Criação de endereço e cliente
-	        
+
+	        User userAdmin = new User();
+	        Cliente clienteAdmin = new Cliente();
+	        Endereco adminEndereco = new Endereco();
+
 	        adminEndereco.setCep("01001000");
 	        adminEndereco.setCidade("São Paulo");
 	        adminEndereco.setEstado("SP");
@@ -137,48 +68,30 @@ public class AdminInitializer implements ApplicationListener<ApplicationReadyEve
 	        adminEndereco.setNumero("100");
 	        adminEndereco.setBairro("Sé");
 	        adminEndereco.setComplemento("Próximo à estação Sé do metrô");
-	        
-	        logger.info("Criou endereço com campos = {}", adminEndereco);
 
-	        
 	        clienteAdmin.setCpf(12345678909L);
 	        clienteAdmin.setEndereco(adminEndereco);
 	        clienteAdmin.setClienteAtivo(true);
 	        clienteAdmin.setNome("Admin");
 
-	        logger.info("Criou cliente com campos = {}", clienteAdmin);
-	       
 	        userAdmin.setUsername("admin");
 	        userAdmin.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta11"));
 	        userAdmin.setUserAtivo(true);
-	        userAdmin.setRole(roleAdmin.getName()); 
-	       // userAdmin.setCliente(clienteAdmin);
-	       // clienteAdmin.setUser(userAdmin);
-	        
-	        logger.info("Criou user com campos = {}", userAdmin);
-	        
-	         clienteAdmin.setEndereco(adminEndereco);
-	    	 userAdmin.setCliente(clienteAdmin);
-	    	 clienteAdmin.setUser(userAdmin);
-	    	 
-	    	 logger.info("Setou endereço no cliente = {}", clienteAdmin.getEndereco());
-	    	 logger.info("Setou cliente no user = {}", userAdmin.getCliente());
-	    	 logger.info("Setou user no cliente = {}", clienteAdmin.getUser());
-	    	 
-	        try {
-//	        	logger.info("Antes do save: endereço no cliente = {}", clienteAdmin.getEndereco());
-//	        	logger.info("Antes do save: endereço no user.cliente = {}", userAdmin.getCliente().getEndereco());
+	        userAdmin.setRole(roleAdmin.getName());
 
+	        clienteAdmin.setEndereco(adminEndereco);
+	        userAdmin.setCliente(clienteAdmin);
+	        clienteAdmin.setUser(userAdmin);
+
+	        try {
 	            userDao.save(userAdmin);
 	            logger.info("Usuário admin criado com sucesso!");
 	        } catch (Exception e) {
-	        	 logger.info("Exception e: Setou endereço no cliente = {}", clienteAdmin.getEndereco());
-		    	 logger.info("Exception e: Setou cliente no user = {}", userAdmin.getCliente());
-		    	 logger.info("Exception e: Setou user no cliente = {}", clienteAdmin.getUser());
 	            logger.error("Erro ao salvar admin: {}", e.getMessage(), e);
 	        }
 	    }
 	}
+
 
 
 	

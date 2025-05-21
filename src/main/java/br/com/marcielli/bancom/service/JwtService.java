@@ -85,13 +85,13 @@ public class JwtService {
                 .compact();
     }
     
-    private String extractRole(UserDetails userDetails) {
-        return userDetails.getAuthorities().stream()
-            .findFirst()
-            .map(GrantedAuthority::getAuthority)
-            .map(role -> role.replace("ROLE_", ""))
-            .orElse("USER");
-    }
+//    private String extractRole(UserDetails userDetails) {
+//        return userDetails.getAuthorities().stream()
+//            .findFirst()
+//            .map(GrantedAuthority::getAuthority)
+//            .map(role -> role.replace("ROLE_", ""))
+//            .orElse("USER");
+//    }
 
 
     public <T> T extrairClaim(String token, Function<Claims, T> claimsResolver) {
