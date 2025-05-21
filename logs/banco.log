@@ -1,0 +1,56 @@
+2025-05-21 10:21:12 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-05-21 10:21:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 16992 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
+2025-05-21 10:21:12 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-05-21 10:21:14 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
+2025-05-21 10:21:14 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-05-21 10:21:14 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-21 10:21:14 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-05-21 10:21:14 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-05-21 10:21:14 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@209f3887
+2025-05-21 10:21:14 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-05-21 10:21:14 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
+2025-05-21 10:21:14 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-05-21 10:21:15 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
+2025-05-21 10:21:15 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.791 seconds (process running for 3.045)
+2025-05-21 10:21:15 [34mINFO [0;39m
+				[36m[main][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Buscando usuário pelo username: admin
+2025-05-21 10:21:15 [31mWARN [0;39m
+				[36m[main][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Usuário 'admin' não tem role associada.
+2025-05-21 10:21:15 [34mINFO [0;39m
+				[36m[main][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Usuário encontrado: admin
+2025-05-21 10:21:15 [31mWARN [0;39m
+				[36m[main][0;39m [35mb.c.m.b.c.AdminInitializer[0;39m - Usuário admin já existe.
+2025-05-21 10:21:15 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.b.c.AdminInitializer[0;39m - Role ADMIN atualizada para o usuário admin existente.
+2025-05-21 10:21:20 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-21 10:21:20 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing POST /auth/login
+2025-05-21 10:21:20 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /auth/login
+2025-05-21 10:21:20 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.s.w.a.AnonymousAuthenticationFilter[0;39m - Set SecurityContextHolder to anonymous SecurityContext
+2025-05-21 10:21:20 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured POST /auth/login
+2025-05-21 10:21:20 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Buscando usuário pelo username: admin
+2025-05-21 10:21:20 [31mWARN [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Usuário 'admin' não tem role associada.
+2025-05-21 10:21:20 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Usuário encontrado: admin
+2025-05-21 10:21:20 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.s.a.d.DaoAuthenticationProvider[0;39m - Authenticated user

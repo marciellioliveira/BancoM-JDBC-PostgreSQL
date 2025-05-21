@@ -5,6 +5,7 @@ import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
+import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
 import br.com.marcielli.bancom.mappers.UserRowMapper;
@@ -70,9 +71,20 @@ public class UserDao {
                 cs.setLong(5, cliente.getCpf());
                 cs.setBoolean(6, cliente.isClienteAtivo());
                 
+                logger.info("Cliente Endereço: {}", cliente.getEndereco());
                 logger.info("Define cliente: {}", cs);
+                
+                logger.info("User recebido no save(): {}", user);
+                logger.info("Cliente recebido no user: {}", user.getCliente());
+                logger.info("Endereço recebido no cliente: {}", user.getCliente().getEndereco());
 
-                Endereco endereco = cliente.getEndereco();           
+
+                Endereco endereco = cliente.getEndereco();    
+                if (endereco == null) {
+                    logger.error("Endereço é null! O cliente dentro do usuário é: {}", cliente);
+                    throw new ClienteNaoEncontradoException("Endereço está null na hora de salvar o usuário");
+                }
+
                 cs.setString(7, endereco.getRua());
                 cs.setString(8, endereco.getNumero());
                 cs.setString(9, endereco.getBairro());
@@ -145,46 +157,167 @@ public class UserDao {
 
         return jdbcTemplate.execute(creator, callback);
     }
+    
+    public User update(User user) {
+        logger.info("Iniciando método update(User user)");
+
+        if (user == null || user.getCliente() == null || user.getCliente().getEndereco() == null) {
+            logger.error("Usuário, Cliente ou Endereço estão nulos. Interrompendo execução.");
+            throw new IllegalArgumentException("Usuário, Cliente ou Endereço não podem ser nulos");
+        }
+
+        CallableStatementCreator creator = connection -> {
+            logger.info("Montando CallableStatement para procedure: atualizar_usuario_completo_v1");
+
+            CallableStatement cs = connection.prepareCall("CALL atualizar_usuario_completo_v1(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+            cs.setInt(1, user.getId()); 
+            cs.setString(2, user.getUsername());
+            cs.setBoolean(3, user.isUserAtivo());
+            logger.debug("Parâmetros do usuário definidos");
+
+            Cliente cliente = user.getCliente();
+            cs.setLong(4, cliente.getId());
+            cs.setString(5, cliente.getNome());
+            cs.setBoolean(6, cliente.isClienteAtivo());
+            logger.debug("Parâmetros do cliente definidos");
+
+            Endereco endereco = cliente.getEndereco();
+            cs.setString(7, endereco.getRua());
+            cs.setString(8, endereco.getNumero());
+            cs.setString(9, endereco.getBairro());
+            cs.setString(10, endereco.getCidade());
+            cs.setString(11, endereco.getEstado());
+            cs.setString(12, endereco.getComplemento());
+            cs.setString(13, endereco.getCep());
+            logger.debug("Parâmetros do endereço definidos");
+
+            cs.registerOutParameter(14, Types.REF_CURSOR);
+            logger.debug("REF_CURSOR registrado com sucesso");
+
+            return cs;
+        };
+
+        CallableStatementCallback<User> callback = cs -> {
+            logger.info("Executando procedure atualizar_usuario_completo_v1");
+            cs.execute();
+
+            try (ResultSet rs = (ResultSet) cs.getObject(14)) {
+                if (rs != null && rs.next()) {
+                    logger.info("Dados encontrados no ResultSet");
+
+                    ClienteRowMapper rowMapper = new ClienteRowMapper();
+                    Cliente clienteAtualizado = rowMapper.mapRow(rs, 0);
+                    User userAtualizado = clienteAtualizado.getUser();
+
+                    logger.info("Usuário atualizado retornado com sucesso: {}", userAtualizado);
+                    return userAtualizado;
+                } else {
+                    logger.warn("Nenhum dado retornado no ResultSet");
+                    throw new RuntimeException("Usuário não retornado pela procedure");
+                }
+            } catch (SQLException e) {
+                logger.error("Erro ao processar ResultSet", e);
+                throw e;
+            }
+        };
+
+        try {
+            return jdbcTemplate.execute(creator, callback);
+        } catch (Exception e) {
+            logger.error("Erro ao executar update no banco de dados", e);
+            throw new RuntimeException("Erro ao atualizar usuário no banco de dados", e);
+        }
+    }
+
+
+
 
 
     
-    public User update(User user) {
-        // Atualiza o usuário
-        String sqlUser = "UPDATE users SET username = ?, user_ativo = ? WHERE id = ?";
-        jdbcTemplate.update(
-            sqlUser,
-            user.getUsername(),
-            user.isUserAtivo(),
-            user.getId()
-        );
-
-        // Atualiza os dados do cliente
-        Cliente cliente = user.getCliente();
-        String sqlCliente = "UPDATE clientes SET nome = ?, cliente_ativo = ? WHERE id = ?";
-        jdbcTemplate.update(
-            sqlCliente,
-            cliente.getNome(),
-            cliente.isClienteAtivo(),
-            cliente.getId()
-        );
-
-        // Atualiza o endereço do cliente
-        Endereco endereco = cliente.getEndereco();
-        String sqlEndereco = "UPDATE enderecos SET rua = ?, numero = ?, bairro = ?, cidade = ?, estado = ?, complemento = ?, cep = ? WHERE cliente_id = ?";
-        jdbcTemplate.update(
-            sqlEndereco,
-            endereco.getRua(),
-            endereco.getNumero(),
-            endereco.getBairro(),
-            endereco.getCidade(),
-            endereco.getEstado(),
-            endereco.getComplemento(),
-            endereco.getCep(),
-            cliente.getId()
-        );
-
-        return user;
-    }
+//    public User update(User user) {
+//        // Atualiza o usuário
+//        String sqlUser = "UPDATE users SET username = ?, user_ativo = ? WHERE id = ?";
+//        jdbcTemplate.update(
+//            sqlUser,
+//            user.getUsername(),
+//            user.isUserAtivo(),
+//            user.getId()
+//        );
+//
+//        // Atualiza os dados do cliente
+//        Cliente cliente = user.getCliente();
+//        String sqlCliente = "UPDATE clientes SET nome = ?, cliente_ativo = ? WHERE id = ?";
+//        jdbcTemplate.update(
+//            sqlCliente,
+//            cliente.getNome(),
+//            cliente.isClienteAtivo(),
+//            cliente.getId()
+//        );
+//
+//        // Atualiza o endereço do cliente
+//        Endereco endereco = cliente.getEndereco();
+//        String sqlEndereco = "UPDATE enderecos SET rua = ?, numero = ?, bairro = ?, cidade = ?, estado = ?, complemento = ?, cep = ? WHERE cliente_id = ?";
+//        jdbcTemplate.update(
+//            sqlEndereco,
+//            endereco.getRua(),
+//            endereco.getNumero(),
+//            endereco.getBairro(),
+//            endereco.getCidade(),
+//            endereco.getEstado(),
+//            endereco.getComplemento(),
+//            endereco.getCep(),
+//            cliente.getId()
+//        );
+//
+//        return user;
+//    }
+    
+//    public Optional<User> findByUsername(String username) {
+//        String sql = """
+//            SELECT u.id AS user_id, u.username, u.password, u.user_ativo, 
+//                   c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo,
+//                   r.name AS role_name
+//            FROM users u
+//            JOIN user_roles ur ON u.id = ur.user_id
+//            JOIN roles r ON r.id = ur.role_id
+//            JOIN clientes c ON c.user_id = u.id
+//            WHERE u.username = ?""";
+//
+//        try {
+//            User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+//                User u = new User();
+//                u.setId(rs.getInt("user_id"));
+//                u.setUsername(rs.getString("username"));
+//                u.setPassword(rs.getString("password"));
+//                u.setUserAtivo(rs.getBoolean("user_ativo"));
+//                u.setRole(rs.getString("role_name"));
+//                
+//                Cliente cliente = new Cliente();
+//                cliente.setId(rs.getLong("cliente_id")); // Usando getLong diretamente
+//                
+//                // Conversão segura de String para Long no CPF
+//                String cpfStr = rs.getString("cpf");
+//                if (cpfStr != null) {
+//                    try {
+//                        cliente.setCpf(Long.parseLong(cpfStr.replaceAll("\\D", "")));
+//                    } catch (NumberFormatException e) {
+//                        cliente.setCpf(0L); // Ou outro valor padrão
+//                    }
+//                }
+//                
+//                cliente.setNome(rs.getString("nome"));
+//                cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+//                u.setCliente(cliente);
+//                
+//                return u;
+//            }, username);
+//            
+//            return Optional.ofNullable(user);
+//        } catch (EmptyResultDataAccessException e) {
+//            return Optional.empty();
+//        }
+//    }
     
     public Optional<User> findByUsername(String username) {
         String sql = """
@@ -192,42 +325,67 @@ public class UserDao {
                    c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo,
                    r.name AS role_name
             FROM users u
-            JOIN user_roles ur ON u.id = ur.user_id
-            JOIN roles r ON r.id = ur.role_id
-            JOIN clientes c ON c.user_id = u.id
-            WHERE u.username = ?""";
+            LEFT JOIN user_roles ur ON u.id = ur.user_id
+            LEFT JOIN roles r ON r.id = ur.role_id
+            LEFT JOIN clientes c ON c.user_id = u.id
+            WHERE u.username = ?
+        """;
+
+        logger.info("Buscando usuário pelo username: {}", username);
 
         try {
             User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                logger.debug("Mapeando resultado da query para User...");
+
                 User u = new User();
                 u.setId(rs.getInt("user_id"));
                 u.setUsername(rs.getString("username"));
                 u.setPassword(rs.getString("password"));
                 u.setUserAtivo(rs.getBoolean("user_ativo"));
-                u.setRole(rs.getString("role_name"));
-                
-                Cliente cliente = new Cliente();
-                cliente.setId(rs.getLong("cliente_id")); // Usando getLong diretamente
-                
-                // Conversão segura de String para Long no CPF
-                String cpfStr = rs.getString("cpf");
-                if (cpfStr != null) {
-                    try {
-                        cliente.setCpf(Long.parseLong(cpfStr.replaceAll("\\D", "")));
-                    } catch (NumberFormatException e) {
-                        cliente.setCpf(0L); // Ou outro valor padrão
-                    }
+
+                String roleName = rs.getString("role_name");
+                if (roleName == null) {
+                    logger.warn("Usuário '{}' não tem role associada.", username);
+                    u.setRole("ROLE_NENHUMA"); // ou null, conforme seu modelo
+                } else {
+                    u.setRole(roleName);
                 }
-                
-                cliente.setNome(rs.getString("nome"));
-                cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+
+                Cliente cliente = new Cliente();
+                long clienteId = rs.getLong("cliente_id");
+                if (rs.wasNull()) {
+                    logger.warn("Usuário '{}' não tem cliente associado.", username);
+                    cliente = null;
+                } else {
+                    cliente.setId(clienteId);
+                    
+                    String cpfStr = rs.getString("cpf");
+                    if (cpfStr != null) {
+                        try {
+                            cliente.setCpf(Long.parseLong(cpfStr.replaceAll("\\D", "")));
+                        } catch (NumberFormatException e) {
+                            logger.error("Erro ao converter CPF '{}' para Long", cpfStr, e);
+                            cliente.setCpf(0L);
+                        }
+                    }
+                    
+                    cliente.setNome(rs.getString("nome"));
+                    cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
+                }
                 u.setCliente(cliente);
-                
+
+                logger.debug("User mapeado: {}", u.getUsername());
                 return u;
             }, username);
-            
+
+            logger.info("Usuário encontrado: {}", user.getUsername());
             return Optional.ofNullable(user);
+
         } catch (EmptyResultDataAccessException e) {
+            logger.info("Nenhum usuário encontrado para username: {}", username);
+            return Optional.empty();
+        } catch (Exception e) {
+            logger.error("Erro ao buscar usuário por username: {}", username, e);
             return Optional.empty();
         }
     }

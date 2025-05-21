@@ -48,71 +48,68 @@ public class UserClienteService implements UserDetailsService {
 		this.clienteDao = clienteDao;
 	}
 
-	@PostConstruct
-	@Transactional	
-	public void initAdminUser() {
-		createRoleIfNotExists("ADMIN", 1L);
-		createRoleIfNotExists("BASIC", 2L);
-		Cliente clienteAdmin = new Cliente();
-		clienteAdmin.setCpf(12345678909L);
-		
-		Endereco adminEndereco = new Endereco();
-		adminEndereco.setCep("01001000");
-		adminEndereco.setCidade("São Paulo");
-		adminEndereco.setEstado("SP");
-		adminEndereco.setRua("Praça da Sé");
-		adminEndereco.setNumero("100");
-		adminEndereco.setBairro("Sé");
-		adminEndereco.setComplemento("Próximo à estação Sé do metrô");
-		
-		clienteAdmin.setEndereco(adminEndereco);
-		clienteAdmin.setClienteAtivo(true);
-		clienteAdmin.setNome("Admin");
-
-		Role roleAdmin = roleDao.findByName(Role.Values.ADMIN.name());
-		if (roleAdmin == null) {
-			throw new RuntimeException("Role ADMIN não encontrada");
-		}
-
-		var userAdmin = userDao.findByUsername("admin");
-
-		userAdmin.ifPresentOrElse(user -> {
-			System.err.println("Admin já existe.");
-		}, () -> {
-			var user = new User();
-			user.setUsername("admin");
-			user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta11"));
-			user.setUserAtivo(true);
-			user.setRole(roleAdmin.getName()); // Definir role como String ("ADMIN")
-			user.setCliente(clienteAdmin);
-			clienteAdmin.setUser(user);
-			
-			try {
-			    userDao.save(user);
-			    logger.info("Usuário admin criado com sucesso!");
-			    System.err.println("Usuário admin criado com sucesso!");
-			} catch (Exception e) {
-				logger.info("Erro ao salvar admin:  {}", e.getMessage());
-			    System.err.println("Erro ao salvar admin: " + e.getMessage());
-			    e.printStackTrace();
-			}
-
-
-//			userDao.save(user); // UserDao já insere em user_roles
-//			System.err.println("Usuário admin criado com sucesso!");
-		});
-	}
-
-	private void createRoleIfNotExists(String name, Long id) {
-		Role existingRole = roleDao.findByName(name);
-		if (existingRole == null) {
-			Role role = new Role();
-			role.setId(id);
-			role.setName(name);
-			roleDao.save(role);
-		}
-	}
-	
+//	@PostConstruct
+//	@Transactional	
+//	public void initAdminUser() {
+//		createRoleIfNotExists("ADMIN", 1L);
+//		createRoleIfNotExists("BASIC", 2L);
+//		Cliente clienteAdmin = new Cliente();
+//		clienteAdmin.setCpf(12345678909L);
+//		
+//		Endereco adminEndereco = new Endereco();
+//		adminEndereco.setCep("01001000");
+//		adminEndereco.setCidade("São Paulo");
+//		adminEndereco.setEstado("SP");
+//		adminEndereco.setRua("Praça da Sé");
+//		adminEndereco.setNumero("100");
+//		adminEndereco.setBairro("Sé");
+//		adminEndereco.setComplemento("Próximo à estação Sé do metrô");
+//		
+//		clienteAdmin.setEndereco(adminEndereco);
+//		clienteAdmin.setClienteAtivo(true);
+//		clienteAdmin.setNome("Admin");
+//
+//		Role roleAdmin = roleDao.findByName(Role.Values.ADMIN.name());
+//		if (roleAdmin == null) {
+//			throw new RuntimeException("Role ADMIN não encontrada");
+//		}
+//
+//		var userAdmin = userDao.findByUsername("admin");
+//
+//		userAdmin.ifPresentOrElse(user -> {
+//			System.err.println("Admin já existe.");
+//		}, () -> {
+//			var user = new User();
+//			user.setUsername("admin");
+//			user.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta11"));
+//			user.setUserAtivo(true);
+//			user.setRole(roleAdmin.getName()); // Definir role como String ("ADMIN")
+//			user.setCliente(clienteAdmin);
+//			clienteAdmin.setUser(user);
+//			
+//			try {
+//			    userDao.save(user);
+//			    logger.info("Usuário admin criado com sucesso!");
+//			    System.err.println("Usuário admin criado com sucesso!");
+//			} catch (Exception e) {
+//				logger.info("Erro ao salvar admin:  {}", e.getMessage());
+//			    System.err.println("Erro ao salvar admin: " + e.getMessage());
+//			    e.printStackTrace();
+//			}
+//
+//		});
+//	}
+//
+//	private void createRoleIfNotExists(String name, Long id) {
+//		Role existingRole = roleDao.findByName(name);
+//		if (existingRole == null) {
+//			Role role = new Role();
+//			role.setId(id);
+//			role.setName(name);
+//			roleDao.save(role);
+//		}
+//	}
+//	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 	    System.out.println("===== Tentando autenticar: " + username + " =====");
@@ -154,12 +151,13 @@ public class UserClienteService implements UserDetailsService {
 		    throw new ClienteEncontradoException("Username já existe. Escolha outro.");
 		}
 		
+		
+		
 		User user = new User();
 		user.setUsername(dto.username());
 		user.setPassword(passwordEncoder.encode(dto.password()));
 		user.setUserAtivo(true);
 		user.setRole("BASIC");
-
 		Cliente cliente = new Cliente();
 		cliente.setNome(dto.nome());
 		cliente.setCpf(Long.parseLong(dto.cpf()));
@@ -320,9 +318,7 @@ public class UserClienteService implements UserDetailsService {
 		User userExistente = findByUsername(dto.username());
 		if (userExistente != null && !userExistente.getId().equals(user.getId())) {
 		    throw new ClienteNaoEncontradoException("Este nome de usuário já está em uso.");
-		}
-
-		
+		}	
 
 		Cliente cliente = user.getCliente();
 		cliente.setNome(dto.nome());
@@ -339,13 +335,24 @@ public class UserClienteService implements UserDetailsService {
 		endereco.setCidade(dto.cidade());
 		endereco.setEstado(dto.estado());
 		endereco.setComplemento(dto.complemento());
-		endereco.setCep(dto.cep());
+		endereco.setCep(dto.cep());		
 
 		try {
 			return userDao.update(user);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} catch (DataIntegrityViolationException e) {
+			String message = e.getMessage();
+//			if (message != null && message.contains("users_username_key")) {
+//	        	logger.error("Username '{}' já existe.", dto.username());
+//	            throw new ClienteEncontradoException("Username já existe. Escolha outro.");
+//	        }
+	        if (message != null && message.contains("clientes_cpf_key")) {
+	        	logger.error("Cpf '{}' já existe.", dto.cpf());
+	            throw new ClienteEncontradoException("CPF já está cadastrado no sistema.");
+	        }
+	        
+	        logger.error("Outro erro: ", e);
+	        
+			throw e; // Outros erros são lançados normalmente
 		}
 	}
 

@@ -76,7 +76,6 @@ public class AuthController {
 	                .status(HttpStatus.UNAUTHORIZED)
 	                .body("Usuário não encontrado.");
 
-//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    }
 	}
 

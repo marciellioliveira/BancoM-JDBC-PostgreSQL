@@ -25,16 +25,16 @@ public class Cliente implements Serializable {
 	
 	@JsonIgnore
 	private Long id;
-	@JsonIgnore
+	//@JsonIgnore
 	private String nome;
 	
-	@JsonIgnore
+	//@JsonIgnore
 	private Long cpf;
 	
 	@JsonIgnore
 	private boolean clienteAtivo;
 
-	@JsonIgnore
+	//@JsonIgnore
 	@JsonManagedReference
 	private Endereco endereco;
 
