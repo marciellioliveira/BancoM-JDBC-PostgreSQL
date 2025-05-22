@@ -355,36 +355,6 @@ public class UserClienteService implements UserDetailsService { //implements Use
 	}
 
 
-
-//	@Transactional
-//	public boolean deleteUser(Long id, Authentication authentication) throws ClienteEncontradoException {
-//	    String role = authentication.getAuthorities().stream()
-//	            .map(GrantedAuthority::getAuthority)
-//	            .findFirst()
-//	            .orElse("");
-//
-//	    String username = authentication.getName(); 
-//	    
-//	    User loggedInUser = userDao.findByUsername(username)
-//	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
-//
-//	    if ("ROLE_ADMIN".equals(role)) {
-//	        // Admin não pode se deletar
-//	        if (id.equals(loggedInUser.getId().longValue())) {
-//	            throw new ClienteEncontradoException("Administradores não podem deletar a si mesmos.");
-//	        }
-//	        return userDao.desativarCliente(id);
-//	    } else if ("ROLE_BASIC".equals(role)) {
-//	        // Basic só pode deletar a si mesmo
-//	        if (!id.equals(loggedInUser.getId().longValue())) {
-//	            throw new ClienteEncontradoException("Usuário BASIC não tem permissão para deletar outros usuários.");
-//	        }
-//	        return userDao.desativarCliente(id);
-//	    } else {
-//	        throw new ClienteEncontradoException("Role não autorizada para deletar usuários.");
-//	    }
-//	}
-	
 	
 	@Transactional
 	public boolean ativarCliente(Long id, Authentication authentication) throws ClienteEncontradoException {
@@ -396,8 +366,7 @@ public class UserClienteService implements UserDetailsService { //implements Use
 	    if (!"ROLE_ADMIN".equals(role)) {
 	        // Somente admin pode ativar cliente
 	    	throw new ClienteEncontradoException("Somente administradores podem ativar o cliente");	        
-	    } 
-	    
+	    } 	    
 	    
 	    if (!userDao.existeCliente(id)) {
 	        throw new ClienteEncontradoException("Cliente não encontrado.");
