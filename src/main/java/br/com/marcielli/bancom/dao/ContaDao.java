@@ -165,11 +165,6 @@ public class ContaDao {
 		return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
 	}
 
-//	public void atualizarPixAleatorio(Long idConta, String novoPix) {
-//		String sql = "UPDATE contas SET pix_aleatorio = ? WHERE id = ?";
-//		jdbcTemplate.update(sql, novoPix, idConta);
-//	}
-	
 	public boolean atualizarPixAleatorio(Long idConta, String novoPix) {
 	    String sql = "SELECT atualizar_pix_aleatorio_v1(?, ?)";
 	    Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, idConta, novoPix);
@@ -194,6 +189,10 @@ public class ContaDao {
 
 		jdbcTemplate.update(sql, params);
 	}
+	
+	
+
+
 
 	public BigDecimal getTaxaCambio(String moedaOrigem, String moedaDestino) {
 		String sql = """

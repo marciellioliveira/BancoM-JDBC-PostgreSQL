@@ -22,20 +22,42 @@ public class TransferenciaDao {
         this.jdbcTemplate = jdbcTemplate;
     }
     
+//    public Long save(Transferencia transferencia) {
+//        String sql = """
+//            INSERT INTO transferencias 
+//            (id_cliente_origem, id_cliente_destino, id_conta_origem,
+//             id_conta_destino, tipo_transferencia, valor, data,
+//             codigo_operacao, tipo_cartao, id_cartao, fatura_id)
+//            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//            RETURNING id""";
+//        
+//        Long faturaId = null;
+//        if(transferencia.getFatura() != null) {
+//        	faturaId = transferencia.getFatura().getId();
+//        }
+//        
+//        return jdbcTemplate.queryForObject(sql, Long.class,
+//            transferencia.getIdClienteOrigem(),
+//            transferencia.getIdClienteDestino(),
+//            transferencia.getIdContaOrigem(),
+//            transferencia.getIdContaDestino(),
+//            transferencia.getTipoTransferencia().name(),
+//            transferencia.getValor(),
+//            Timestamp.valueOf(transferencia.getData()),
+//            transferencia.getCodigoOperacao(),
+//            transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null,
+//            transferencia.getIdCartao(),
+//            faturaId); 
+//    }
+
     public Long save(Transferencia transferencia) {
-        String sql = """
-            INSERT INTO transferencias 
-            (id_cliente_origem, id_cliente_destino, id_conta_origem,
-             id_conta_destino, tipo_transferencia, valor, data,
-             codigo_operacao, tipo_cartao, id_cartao, fatura_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            RETURNING id""";
-        
+        String sql = "SELECT salvar_transferencia_v1(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         Long faturaId = null;
-        if(transferencia.getFatura() != null) {
-        	faturaId = transferencia.getFatura().getId();
+        if (transferencia.getFatura() != null) {
+            faturaId = transferencia.getFatura().getId();
         }
-        
+
         return jdbcTemplate.queryForObject(sql, Long.class,
             transferencia.getIdClienteOrigem(),
             transferencia.getIdClienteDestino(),
@@ -47,7 +69,8 @@ public class TransferenciaDao {
             transferencia.getCodigoOperacao(),
             transferencia.getTipoCartao() != null ? transferencia.getTipoCartao().name() : null,
             transferencia.getIdCartao(),
-            faturaId); 
+            faturaId
+        );
     }
 
 
