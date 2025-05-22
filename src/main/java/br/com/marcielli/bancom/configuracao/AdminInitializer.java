@@ -10,24 +10,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.marcielli.bancom.dao.RoleDao;
 import br.com.marcielli.bancom.dao.UserDao;
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Endereco;
-import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
 
 @Component
-public class AdminInitializer implements ApplicationListener<ApplicationReadyEvent> {
-	
-    private RoleDao roleDao;
+public class AdminInitializer implements ApplicationListener<ApplicationReadyEvent> {	
+   
     private UserDao userDao;
     private PasswordEncoder passwordEncoder;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminInitializer.class);    
 
-	public AdminInitializer(RoleDao roleDao, UserDao userDao, PasswordEncoder passwordEncoder) {
-		this.roleDao = roleDao;
+	public AdminInitializer( UserDao userDao, PasswordEncoder passwordEncoder) {		
 		this.userDao = userDao;
 		this.passwordEncoder = passwordEncoder;
 	}
@@ -40,13 +36,19 @@ public class AdminInitializer implements ApplicationListener<ApplicationReadyEve
 	    //usuário existe?
 	    
 	    if(userAdminOpt.isEmpty()) { //criar um usuário
-	    	System.err.println("Criando um usuário admin!");
+	    	
+	    	logger.error("Criando um usuário admin!");
 	    	
 	    	User userAdmin = new User();
-	    	System.err.println("Criando user admin vazio: "+userAdmin);
+	    	
+	    	logger.error("Criando user admin vazio: '{}'.", userAdmin);
+	    	
 	        Cliente clienteAdmin = new Cliente();
-	        System.err.println("Criando cliente admin vazio: "+clienteAdmin);
+	        
+	        logger.error("Criando cliente admin vazio: '{}'.", clienteAdmin);
+	        
 	        Endereco adminEndereco = new Endereco();
+	        
 	        System.err.println("Criando endereço admin vazio: "+adminEndereco);
 
 	        adminEndereco.setCep("01001000");
@@ -57,34 +59,31 @@ public class AdminInitializer implements ApplicationListener<ApplicationReadyEve
 	        adminEndereco.setBairro("Sé");
 	        adminEndereco.setComplemento("Próximo à estação Sé do metrô");
 	        
-	        System.err.println("Preenchendo endereço: "+adminEndereco);
+	        logger.error("Preenchendo endereço:'{}'.", adminEndereco);
 
 	        clienteAdmin.setCpf(12345678909L);
 	        clienteAdmin.setEndereco(adminEndereco);
 	        clienteAdmin.setClienteAtivo(true);
 	        clienteAdmin.setNome("Admin");
 	        
-	        System.err.println("Preenchendo cliente: "+clienteAdmin);
+	        logger.error("Preenchendo cliente:'{}'.", clienteAdmin);
 
 	        userAdmin.setUsername("admin");
 	        userAdmin.setPassword(passwordEncoder.encode("minhasenhasuperhipermegapowersecreta11"));
 	        userAdmin.setUserAtivo(true);
 	        userAdmin.setRole("ADMIN");
 	        
-	        System.err.println("Preenchendo user: "+userAdmin);
+	        logger.error("Preenchendo user:'{}'.", userAdmin);
 
 	        clienteAdmin.setEndereco(adminEndereco);
 	        userAdmin.setCliente(clienteAdmin);
 	        clienteAdmin.setUser(userAdmin);
 	        
-	        System.err.println("User admin completo: "+userAdmin);
-	        System.err.println("Cliente admin completo: "+clienteAdmin);
-	        System.err.println("Endereço admin completo: "+adminEndereco);
+	        logger.error("User admin completo:'{}'.", userAdmin);
+	        logger.error("Cliente admin completo:'{}'.", clienteAdmin);
+	        logger.error("Endereço admin completo:'{}'.", adminEndereco);
 	        
-	        try {
-	        	System.err.println("\n\nUser admin completo: "+userAdmin);
-	        	System.err.println("\n\nUser cliente admin completo: "+userAdmin.getCliente());
-	        	System.err.println("\n\nUser cliente endereço admin completo: "+userAdmin.getCliente().getEndereco());
+	        try {	        	
 	        	
 	            userDao.save(userAdmin);
 	            
@@ -95,7 +94,7 @@ public class AdminInitializer implements ApplicationListener<ApplicationReadyEve
 	    	
 	    	
 	    } else {
-	    	System.err.println("Não precisa fazer nada se o admin já existe no banco");
+	    	logger.info("Admin já existe. Não é necessário cadastrar novamente!");
 	    }
 	    
 	}

@@ -1,12 +1,9 @@
 package br.com.marcielli.bancom.mappers;
 
-import br.com.marcielli.bancom.configuracao.AdminInitializer;
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Endereco;
 import br.com.marcielli.bancom.entity.User;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +12,6 @@ import java.sql.SQLException;
 
 @Component
 public class ClienteRowMapper implements RowMapper<Cliente> {
-
-	private static final Logger logger = LoggerFactory.getLogger(ClienteRowMapper.class);    
 	
     @Override
     public Cliente mapRow(ResultSet rs, int rowNum) throws SQLException {

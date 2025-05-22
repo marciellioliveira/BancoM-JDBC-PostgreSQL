@@ -121,10 +121,7 @@ public class UserClienteService implements UserDetailsService { //implements Use
 		endereco.setEstado(dto.estado());
 		endereco.setComplemento(dto.complemento());
 		endereco.setCep(dto.cep());
-		
-		//chamar um método no dao para cadastrar o endereço e devolver o endereço
-		//ai sim salvar o endereço em cliente
-		
+				
 		cliente.setEndereco(endereco);
 
 		try {
@@ -243,71 +240,91 @@ public class UserClienteService implements UserDetailsService { //implements Use
 
 	    return users;
 	}
-
+	
 	@Transactional
-	public User update(Long id, UserCreateDTO dto, Authentication authentication ) throws ClienteEncontradoException {	
-		
-		String role = authentication.getAuthorities().stream()
+	public User update(Long id, UserCreateDTO dto, Authentication authentication) throws ClienteEncontradoException {
+
+	    String role = authentication.getAuthorities().stream()
 	            .map(GrantedAuthority::getAuthority)
 	            .findFirst()
 	            .orElse("");
-		
-		String username = authentication.getName(); // Agora é só o username mesmo
-		
-		 // Busca o usuário logado pelo username
+
+	    String username = authentication.getName(); // username do usuário logado
+
+	    // Busca o usuário logado pelo username
 	    User loggedInUser = userDao.findByUsername(username)
-	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
-		
-		// Se for BASIC e está tentando atualizar outro usuário, bloqueia
+	            .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+
+	    // Se for BASIC e está tentando atualizar outro usuário, bloqueia
 	    if ("ROLE_BASIC".equals(role) && !id.equals(loggedInUser.getId().longValue())) {
 	        throw new ClienteEncontradoException("Usuário BASIC não tem permissão para atualizar outros usuários.");
 	    }
-				
-		User user = userDao.findById(id).orElseThrow(() ->
-	    new ClienteNaoEncontradoException("Usuário não encontrado para atualização")
-		);
-		
-		User userExistente = findByUsername(dto.username());
-		if (userExistente != null && !userExistente.getId().equals(user.getId())) {
-		    throw new ClienteNaoEncontradoException("Este nome de usuário já está em uso.");
-		}	
 
-		Cliente cliente = user.getCliente();
-		cliente.setNome(dto.nome());
-		cliente.setCpf(Long.parseLong(dto.cpf()));
+	    User user = userDao.findById(id).orElseThrow(() ->
+	            new ClienteNaoEncontradoException("Usuário não encontrado para atualização")
+	    );
 
-		Endereco endereco = cliente.getEndereco();
-		if (endereco == null) {
-			endereco = new Endereco();
-			cliente.setEndereco(endereco);
-		}
-		endereco.setRua(dto.rua());
-		endereco.setNumero(dto.numero());
-		endereco.setBairro(dto.bairro());
-		endereco.setCidade(dto.cidade());
-		endereco.setEstado(dto.estado());
-		endereco.setComplemento(dto.complemento());
-		endereco.setCep(dto.cep());		
+	    User userExistente = findByUsername(dto.username());
 
-		try {
-			return userDao.update(user);
-		} catch (DataIntegrityViolationException e) {
-			String message = e.getMessage();
-//			if (message != null && message.contains("users_username_key")) {
-//	        	logger.error("Username '{}' já existe.", dto.username());
-//	            throw new ClienteEncontradoException("Username já existe. Escolha outro.");
-//	        }
-	        if (message != null && message.contains("clientes_cpf_key")) {
-	        	logger.error("Cpf '{}' já existe.", dto.cpf());
+	    // Valida username
+	    user.setUsername(dto.username());
+	    if (userExistente != null && !userExistente.getId().equals(user.getId())) {
+	        throw new ClienteNaoEncontradoException("Este nome de usuário já está em uso.");
+	    }
+
+	    // Valida CPF se diferente do atual
+	    Long novoCpf = Long.parseLong(dto.cpf());
+	    Cliente cliente = user.getCliente();
+	    Long cpfAtual = cliente.getCpf();
+
+	    if (!novoCpf.equals(cpfAtual)) {
+	        Optional<User> userComCpf = userDao.findByCpf(novoCpf);
+	        if (userComCpf.isPresent() && !userComCpf.get().getId().equals(user.getId())) {
 	            throw new ClienteEncontradoException("CPF já está cadastrado no sistema.");
 	        }
-	        
-	        logger.error("Outro erro: ", e);
-	        
-			throw e; // Outros erros são lançados normalmente
-		}
-	}
+	    }
 
+	    // Atualiza CPF e outros dados do cliente
+	    cliente.setNome(dto.nome());
+	    cliente.setCpf(novoCpf);
+
+	    // Atualiza senha, se enviada
+	    if (dto.password() != null && !dto.password().isEmpty()) {
+	        String encodedPassword = passwordEncoder.encode(dto.password());
+	        user.setPassword(encodedPassword);
+	    }
+
+	    // Atualiza endereço
+	    Endereco endereco = cliente.getEndereco();
+	    if (endereco == null) {
+	        endereco = new Endereco();
+	        cliente.setEndereco(endereco);
+	    }
+	    endereco.setRua(dto.rua());
+	    endereco.setNumero(dto.numero());
+	    endereco.setBairro(dto.bairro());
+	    endereco.setCidade(dto.cidade());
+	    endereco.setEstado(dto.estado());
+	    endereco.setComplemento(dto.complemento());
+	    endereco.setCep(dto.cep());
+
+	    try {
+	        return userDao.update(user);
+	    } catch (DataIntegrityViolationException e) {
+	        String message = e.getMessage();
+
+	        if (message != null && message.contains("clientes_cpf_key")) {
+	            logger.error("Cpf '{}' já existe.", dto.cpf());
+	            throw new ClienteEncontradoException("CPF já está cadastrado no sistema.");
+	        }
+
+	        logger.error("Outro erro: ", e);
+
+	        throw e; // Outros erros são lançados normalmente
+	    }
+	}
+	
+	
 	@Transactional
 	public boolean deleteUser(Long id, Authentication authentication) throws ClienteEncontradoException {
 	    String role = authentication.getAuthorities().stream()
@@ -336,6 +353,37 @@ public class UserClienteService implements UserDetailsService { //implements Use
 	        throw new ClienteEncontradoException("Role não autorizada para deletar usuários.");
 	    }
 	}
+
+
+
+//	@Transactional
+//	public boolean deleteUser(Long id, Authentication authentication) throws ClienteEncontradoException {
+//	    String role = authentication.getAuthorities().stream()
+//	            .map(GrantedAuthority::getAuthority)
+//	            .findFirst()
+//	            .orElse("");
+//
+//	    String username = authentication.getName(); 
+//	    
+//	    User loggedInUser = userDao.findByUsername(username)
+//	        .orElseThrow(() -> new ClienteNaoEncontradoException("Usuário logado não encontrado."));
+//
+//	    if ("ROLE_ADMIN".equals(role)) {
+//	        // Admin não pode se deletar
+//	        if (id.equals(loggedInUser.getId().longValue())) {
+//	            throw new ClienteEncontradoException("Administradores não podem deletar a si mesmos.");
+//	        }
+//	        return userDao.desativarCliente(id);
+//	    } else if ("ROLE_BASIC".equals(role)) {
+//	        // Basic só pode deletar a si mesmo
+//	        if (!id.equals(loggedInUser.getId().longValue())) {
+//	            throw new ClienteEncontradoException("Usuário BASIC não tem permissão para deletar outros usuários.");
+//	        }
+//	        return userDao.desativarCliente(id);
+//	    } else {
+//	        throw new ClienteEncontradoException("Role não autorizada para deletar usuários.");
+//	    }
+//	}
 	
 	
 	@Transactional

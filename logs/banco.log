@@ -1,0 +1,100 @@
+2025-05-22 13:12:05 [34mINFO [0;39m
+				[36m[background-preinit][0;39m [35mo.h.validator.internal.util.Version[0;39m - HV000001: Hibernate Validator 8.0.2.Final
+2025-05-22 13:12:05 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Starting BancoMApplication using Java 21.0.6 with PID 18256 (C:\Users\Marcielli\eclipse-workspace\bancom\target\classes started by Marcielli in C:\Users\Marcielli\eclipse-workspace\bancom)
+2025-05-22 13:12:05 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - No active profile set, falling back to 1 default profile: "default"
+2025-05-22 13:12:07 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Initializing ProtocolHandler ["http-nio-8087"]
+2025-05-22 13:12:07 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardService[0;39m - Starting service [Tomcat]
+2025-05-22 13:12:07 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.catalina.core.StandardEngine[0;39m - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-22 13:12:07 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring embedded WebApplicationContext
+2025-05-22 13:12:07 [1;31mERROR[0;39m
+				[36m[main][0;39m [35mb.c.m.b.c.AdminInitializer[0;39m - Tamanho da chave:'352 bits'.
+2025-05-22 13:12:07 [1;31mERROR[0;39m
+				[36m[main][0;39m [35mb.c.m.b.c.AdminInitializer[0;39m - ========= CHAVE JWT CARREGADA =========
+2025-05-22 13:12:07 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Starting...
+2025-05-22 13:12:07 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.pool.HikariPool[0;39m - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4f081b5d
+2025-05-22 13:12:07 [34mINFO [0;39m
+				[36m[main][0;39m [35mcom.zaxxer.hikari.HikariDataSource[0;39m - HikariPool-1 - Start completed.
+2025-05-22 13:12:07 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer[0;39m - Global AuthenticationManager configured with UserDetailsService bean with name userClienteService
+2025-05-22 13:12:08 [39mDEBUG[0;39m
+				[36m[main][0;39m [35mo.s.s.web.DefaultSecurityFilterChain[0;39m - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-05-22 13:12:08 [34mINFO [0;39m
+				[36m[main][0;39m [35mo.a.coyote.http11.Http11NioProtocol[0;39m - Starting ProtocolHandler ["http-nio-8087"]
+2025-05-22 13:12:08 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.bancom.BancoMApplication[0;39m - Started BancoMApplication in 2.892 seconds (process running for 3.142)
+2025-05-22 13:12:08 [34mINFO [0;39m
+				[36m[main][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Chamando função get_usuario_completo_by_username_v1 com username: admin
+2025-05-22 13:12:08 [34mINFO [0;39m
+				[36m[main][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Usuário encontrado via função: admin
+2025-05-22 13:12:08 [34mINFO [0;39m
+				[36m[main][0;39m [35mb.c.m.b.c.AdminInitializer[0;39m - Admin já existe. Não é necessário cadastrar novamente!
+2025-05-22 13:12:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-22 13:12:10 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-22 13:12:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-22 13:12:10 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Role no JWT Auth Filter: ADMIN
+2025-05-22 13:12:10 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-2][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-22 13:12:13 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users/2
+2025-05-22 13:12:13 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/2
+2025-05-22 13:12:13 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Role no JWT Auth Filter: ADMIN
+2025-05-22 13:12:13 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users/2
+2025-05-22 13:12:13 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Chamando função get_usuario_completo_by_username_v1 com username: admin
+2025-05-22 13:12:13 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-3][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Usuário encontrado via função: admin
+2025-05-22 13:12:20 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing PUT /users/2/ativar
+2025-05-22 13:12:20 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/2/ativar
+2025-05-22 13:12:20 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Role no JWT Auth Filter: ADMIN
+2025-05-22 13:12:20 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-4][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured PUT /users/2/ativar
+2025-05-22 13:12:24 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-22 13:12:24 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-22 13:12:24 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Role no JWT Auth Filter: ADMIN
+2025-05-22 13:12:24 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-5][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users
+2025-05-22 13:12:30 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing DELETE /users/2
+2025-05-22 13:12:30 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users/2
+2025-05-22 13:12:30 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Role no JWT Auth Filter: ADMIN
+2025-05-22 13:12:30 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured DELETE /users/2
+2025-05-22 13:12:30 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Chamando função get_usuario_completo_by_username_v1 com username: admin
+2025-05-22 13:12:30 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Usuário encontrado via função: admin
+2025-05-22 13:12:30 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Iniciando desativação do cliente via procedure
+2025-05-22 13:12:30 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-6][0;39m [35mbr.com.marcielli.bancom.dao.UserDao[0;39m - Procedure desativar_cliente_procedure executada com sucesso
+2025-05-22 13:12:34 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Securing GET /users
+2025-05-22 13:12:34 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Processando requisição para: /users
+2025-05-22 13:12:34 [34mINFO [0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mb.c.m.bancom.filter.JwtAuthFilter[0;39m - Role no JWT Auth Filter: ADMIN
+2025-05-22 13:12:34 [39mDEBUG[0;39m
+				[36m[http-nio-8087-exec-7][0;39m [35mo.s.security.web.FilterChainProxy[0;39m - Secured GET /users

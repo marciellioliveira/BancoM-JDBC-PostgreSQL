@@ -7,13 +7,14 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import jakarta.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import br.com.marcielli.bancom.configuracao.AdminInitializer;
+
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
@@ -22,6 +23,8 @@ import io.jsonwebtoken.io.Decoders;
 
 @Service
 public class JwtService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AdminInitializer.class);  
 	
 	@Value("${jwt.secret}")
     private String secretKeyString;
@@ -41,25 +44,19 @@ public class JwtService {
     
     @PostConstruct
     public void init() {
-        System.out.println("Secret key sendo usada: " + secretKeyString);
-        System.out.println("Tamanho da chave: " + secretKeyString.getBytes(StandardCharsets.UTF_8).length * 8 + " bits");
-        
-        
-        System.out.println("========= CHAVE JWT CARREGADA =========");
-        System.out.println("Chave: " + secretKeyString);
-        System.out.println("Tamanho: " + Decoders.BASE64.decode(secretKeyString).length * 8 + " bits");
-        System.out.println("Hash da chave: " + Arrays.hashCode(Decoders.BASE64.decode(secretKeyString)));
+        logger.error("Tamanho da chave:'{}'.", secretKeyString.getBytes(StandardCharsets.UTF_8).length * 8 + " bits");
+        logger.error("========= CHAVE JWT CARREGADA =========");
     }
     
     public void debugToken(String token) {
         try {
-            System.out.println("--- DEBUG TOKEN ---");
+        	logger.error("--- DEBUG TOKEN ---");
             String[] parts = token.split("\\.");
-            System.out.println("Header: " + new String(Base64.getUrlDecoder().decode(parts[0])));
-            System.out.println("Payload: " + new String(Base64.getUrlDecoder().decode(parts[1])));
-            System.out.println("Signature: " + parts[2]);
+            logger.error("Header:'{}'.", new String(Base64.getUrlDecoder().decode(parts[0])));
+            logger.error("Payload:'{}'.", new String(Base64.getUrlDecoder().decode(parts[1])));
+            logger.error("Signature:'{}'.",parts[2]);
         } catch (Exception e) {
-            System.out.println("Erro ao decodificar token: " + e.getMessage());
+        	logger.error("Erro ao decodificar token:'{}'.",e.getMessage());
         }
     }
  
@@ -85,15 +82,6 @@ public class JwtService {
                 .compact();
     }
     
-//    private String extractRole(UserDetails userDetails) {
-//        return userDetails.getAuthorities().stream()
-//            .findFirst()
-//            .map(GrantedAuthority::getAuthority)
-//            .map(role -> role.replace("ROLE_", ""))
-//            .orElse("USER");
-//    }
-
-
     public <T> T extrairClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = validateToken(token);
         return claimsResolver.apply(claims);

@@ -3,7 +3,6 @@ package br.com.marcielli.bancom.dao;
 import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.Endereco;
-import br.com.marcielli.bancom.entity.Role;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.exception.ClienteNaoEncontradoException;
 import br.com.marcielli.bancom.mappers.ClienteRowMapper;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
@@ -34,11 +32,9 @@ public class UserDao {
 	//Exemplo: logger.info("Fatura {} associada ao cartão {} com sucesso", faturaId, cartaoId);
 	
     private final JdbcTemplate jdbcTemplate;
-    private final RoleDao roleDao;
 
-    public UserDao(JdbcTemplate jdbcTemplate, RoleDao roleDao) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.roleDao = roleDao;
+    public UserDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;        
     }
     
     
@@ -149,7 +145,7 @@ public class UserDao {
                     }
                     
                 } catch (SQLException e) {
-                    logger.error("Erro ao obter ou percorrer o ResultSet no índice 13", e);
+                    logger.error("Erro ao obter ou percorrer o ResultSet no índice 15", e);
                     throw e;
                 }
             }
@@ -229,95 +225,6 @@ public class UserDao {
             throw new RuntimeException("Erro ao atualizar usuário no banco de dados", e);
         }
     }
-
-
-
-
-
-    
-//    public User update(User user) {
-//        // Atualiza o usuário
-//        String sqlUser = "UPDATE users SET username = ?, user_ativo = ? WHERE id = ?";
-//        jdbcTemplate.update(
-//            sqlUser,
-//            user.getUsername(),
-//            user.isUserAtivo(),
-//            user.getId()
-//        );
-//
-//        // Atualiza os dados do cliente
-//        Cliente cliente = user.getCliente();
-//        String sqlCliente = "UPDATE clientes SET nome = ?, cliente_ativo = ? WHERE id = ?";
-//        jdbcTemplate.update(
-//            sqlCliente,
-//            cliente.getNome(),
-//            cliente.isClienteAtivo(),
-//            cliente.getId()
-//        );
-//
-//        // Atualiza o endereço do cliente
-//        Endereco endereco = cliente.getEndereco();
-//        String sqlEndereco = "UPDATE enderecos SET rua = ?, numero = ?, bairro = ?, cidade = ?, estado = ?, complemento = ?, cep = ? WHERE cliente_id = ?";
-//        jdbcTemplate.update(
-//            sqlEndereco,
-//            endereco.getRua(),
-//            endereco.getNumero(),
-//            endereco.getBairro(),
-//            endereco.getCidade(),
-//            endereco.getEstado(),
-//            endereco.getComplemento(),
-//            endereco.getCep(),
-//            cliente.getId()
-//        );
-//
-//        return user;
-//    }
-    
-//    public Optional<User> findByUsername(String username) {
-//        String sql = """
-//            SELECT u.id AS user_id, u.username, u.password, u.user_ativo, 
-//                   c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo,
-//                   r.name AS role_name
-//            FROM users u
-//            JOIN user_roles ur ON u.id = ur.user_id
-//            JOIN roles r ON r.id = ur.role_id
-//            JOIN clientes c ON c.user_id = u.id
-//            WHERE u.username = ?""";
-//
-//        try {
-//            User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-//                User u = new User();
-//                u.setId(rs.getInt("user_id"));
-//                u.setUsername(rs.getString("username"));
-//                u.setPassword(rs.getString("password"));
-//                u.setUserAtivo(rs.getBoolean("user_ativo"));
-//                u.setRole(rs.getString("role_name"));
-//                
-//                Cliente cliente = new Cliente();
-//                cliente.setId(rs.getLong("cliente_id")); // Usando getLong diretamente
-//                
-//                // Conversão segura de String para Long no CPF
-//                String cpfStr = rs.getString("cpf");
-//                if (cpfStr != null) {
-//                    try {
-//                        cliente.setCpf(Long.parseLong(cpfStr.replaceAll("\\D", "")));
-//                    } catch (NumberFormatException e) {
-//                        cliente.setCpf(0L); // Ou outro valor padrão
-//                    }
-//                }
-//                
-//                cliente.setNome(rs.getString("nome"));
-//                cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
-//                u.setCliente(cliente);
-//                
-//                return u;
-//            }, username);
-//            
-//            return Optional.ofNullable(user);
-//        } catch (EmptyResultDataAccessException e) {
-//            return Optional.empty();
-//        }
-//    }
     
     public Optional<User> findByUsername(String username) {
         String sql = "SELECT * FROM get_usuario_completo_by_username_v1(?)";
@@ -391,77 +298,6 @@ public class UserDao {
     }
 
     
-//    public Optional<User> findByUsername(String username) {
-//        String sql = """
-//            SELECT u.id AS user_id, u.username, u.password, u.user_ativo, 
-//                   c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo,
-//                   r.name AS role_name
-//            FROM users u
-//            LEFT JOIN user_roles ur ON u.id = ur.user_id
-//            LEFT JOIN roles r ON r.id = ur.role_id
-//            LEFT JOIN clientes c ON c.user_id = u.id
-//            WHERE u.username = ?
-//        """;
-//
-//        logger.info("Buscando usuário pelo username: {}", username);
-//
-//        try {
-//            User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-//                logger.debug("Mapeando resultado da query para User...");
-//
-//                User u = new User();
-//                u.setId(rs.getInt("user_id"));
-//                u.setUsername(rs.getString("username"));
-//                u.setPassword(rs.getString("password"));
-//                u.setUserAtivo(rs.getBoolean("user_ativo"));
-//
-//                String roleName = rs.getString("role_name");
-//                if (roleName == null) {
-//                    logger.warn("Usuário '{}' não tem role associada.", username);
-//                    u.setRole("ROLE_NENHUMA"); // ou null, conforme seu modelo
-//                } else {
-//                    u.setRole(roleName);
-//                }
-//
-//                Cliente cliente = new Cliente();
-//                long clienteId = rs.getLong("cliente_id");
-//                if (rs.wasNull()) {
-//                    logger.warn("Usuário '{}' não tem cliente associado.", username);
-//                    cliente = null;
-//                } else {
-//                    cliente.setId(clienteId);
-//                    
-//                    String cpfStr = rs.getString("cpf");
-//                    if (cpfStr != null) {
-//                        try {
-//                            cliente.setCpf(Long.parseLong(cpfStr.replaceAll("\\D", "")));
-//                        } catch (NumberFormatException e) {
-//                            logger.error("Erro ao converter CPF '{}' para Long", cpfStr, e);
-//                            cliente.setCpf(0L);
-//                        }
-//                    }
-//                    
-//                    cliente.setNome(rs.getString("nome"));
-//                    cliente.setClienteAtivo(rs.getBoolean("cliente_ativo"));
-//                }
-//                u.setCliente(cliente);
-//
-//                logger.debug("User mapeado: {}", u.getUsername());
-//                return u;
-//            }, username);
-//
-//            logger.info("Usuário encontrado: {}", user.getUsername());
-//            return Optional.ofNullable(user);
-//
-//        } catch (EmptyResultDataAccessException e) {
-//            logger.info("Nenhum usuário encontrado para username: {}", username);
-//            return Optional.empty();
-//        } catch (Exception e) {
-//            logger.error("Erro ao buscar usuário por username: {}", username, e);
-//            return Optional.empty();
-//        }
-//    }
-    
 
 
     public List<User> findAll() {
@@ -493,23 +329,31 @@ public class UserDao {
 
         return jdbcTemplate.query(sql, new UserRowMapper());
     }
-
+    
     public Optional<User> findById(Long id) {
-        String sql = "SELECT u.id AS user_id, u.username, u.password, u.user_ativo, " +
-            "c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
-            "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep, " +
-            "r.name AS role_name " +
-            "FROM users u " +
-            "JOIN clientes c ON c.user_id = u.id " +
-            "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
-            "LEFT JOIN user_roles ur ON ur.user_id = u.id " +
-            "LEFT JOIN roles r ON r.id = ur.role_id " +
-            "WHERE u.id = ?";
-
-        List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), id);
-
+        String sql = "SELECT * FROM find_user_by_id_v1(?)";
+        List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), id.intValue());
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
+
+   
+
+//    public Optional<User> findById(Long id) {
+//        String sql = "SELECT u.id AS user_id, u.username, u.password, u.user_ativo, " +
+//            "c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
+//            "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep, " +
+//            "r.name AS role_name " +
+//            "FROM users u " +
+//            "JOIN clientes c ON c.user_id = u.id " +
+//            "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
+//            "LEFT JOIN user_roles ur ON ur.user_id = u.id " +
+//            "LEFT JOIN roles r ON r.id = ur.role_id " +
+//            "WHERE u.id = ?";
+//
+//        List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), id);
+//
+//        return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
+//    }
     
     public Cliente findByIdWithContas(Long clienteId) {
         // Busca o cliente com seus dados (user e endereço)
@@ -560,68 +404,37 @@ public class UserDao {
         if (cpf == null) {
             return Optional.empty();
         }
-        String sql = "SELECT u.id AS user_id, u.username, u.password, u.user_ativo, " +
-            "c.id AS cliente_id, c.nome, c.cpf, c.cliente_ativo, " +
-            "e.id AS endereco_id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.complemento, e.cep, " +
-            "r.name AS role_name " +
-            "FROM users u " +
-            "JOIN clientes c ON c.user_id = u.id " +
-            "LEFT JOIN enderecos e ON e.cliente_id = c.id " +
-            "LEFT JOIN user_roles ur ON ur.user_id = u.id " +
-            "LEFT JOIN roles r ON r.id = ur.role_id " +
-            "WHERE c.cpf = ?";
+        String sql = "SELECT * FROM find_user_by_cpf_v1(?)";
 
         List<User> users = jdbcTemplate.query(sql, new UserRowMapper(), cpf);
 
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
     
-    
     public boolean desativarCliente(Long clienteId) {
-        Integer userId = jdbcTemplate.queryForObject(
-            "SELECT user_id FROM clientes WHERE id = ?", 
-            Integer.class, 
-            clienteId
-        );
-        
-        if (userId == null) {
-            throw new IllegalArgumentException("Cliente não encontrado com ID: " + clienteId);
+        logger.info("Iniciando desativação do cliente via procedure");
+
+        CallableStatementCreator creator = connection -> {
+            logger.debug("Preparando CallableStatement para desativar_cliente_procedure");
+            CallableStatement cs = connection.prepareCall("CALL desativar_cliente_procedure(?)");
+            cs.setLong(1, clienteId);
+            return cs;
+        };
+
+        CallableStatementCallback<Boolean> callback = cs -> {
+            cs.execute();
+            logger.info("Procedure desativar_cliente_procedure executada com sucesso");
+            return true; 
+        };
+
+        try {
+            return jdbcTemplate.execute(creator, callback);
+        } catch (Exception e) {
+            logger.error("Erro ao executar procedure desativar_cliente_procedure", e);
+            return false; 
         }
-
-        // Desativando seguros
-        jdbcTemplate.update(
-            "UPDATE seguros SET ativo = false " +
-            "WHERE cartao_id IN (SELECT id FROM cartoes WHERE conta_id IN (SELECT id FROM contas WHERE cliente_id = ?))", 
-            clienteId
-        );
-
-        // Desativando os cartões do cliente
-        jdbcTemplate.update(
-            "UPDATE cartoes SET status = false " +
-            "WHERE conta_id IN (SELECT id FROM contas WHERE cliente_id = ?)", 
-            clienteId
-        );
-
-        // Desativando as contas 
-        jdbcTemplate.update(
-            "UPDATE contas SET status = false WHERE cliente_id = ?", 
-            clienteId
-        );
-
-        // Desativando o cliente
-        int clientesAtualizados = jdbcTemplate.update(
-            "UPDATE clientes SET cliente_ativo = false WHERE id = ?", 
-            clienteId
-        );
-
-        // Desativando usuário
-        int usersAtualizados = jdbcTemplate.update(
-            "UPDATE users SET user_ativo = false WHERE id = ?", 
-            userId
-        );
-
-        return clientesAtualizados > 0 && usersAtualizados > 0;
     }
+
 
         
     public boolean existeCliente(Long id) {
