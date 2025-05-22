@@ -1,8 +1,6 @@
 package br.com.marcielli.bancom.entity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

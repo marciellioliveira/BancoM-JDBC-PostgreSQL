@@ -2,7 +2,6 @@ package br.com.marcielli.bancom.controller;
 
 import java.util.List;
 
-import br.com.marcielli.bancom.dao.UserDao;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +16,14 @@ import br.com.marcielli.bancom.dto.security.UserCreateDTO;
 import br.com.marcielli.bancom.entity.User;
 import br.com.marcielli.bancom.exception.ClienteEncontradoException;
 import br.com.marcielli.bancom.service.UserClienteService;
-import br.com.marcielli.bancom.service.UserSecurityService;
 
 @RestController
 public class UserClienteController {
 
-	private final UserDao userDao;
 	private final UserClienteService clienteService;
-	private final UserSecurityService userSecurityService;
 
-	public UserClienteController(UserClienteService clienteService, UserDao userDao,
-			UserSecurityService userSecurityService) {
+	public UserClienteController(UserClienteService clienteService) {
 		this.clienteService = clienteService;
-		this.userDao = userDao;
-		this.userSecurityService = userSecurityService;
 	}
 
 	// ADMIN e BASIC e qualquer outra pessoa
@@ -90,7 +83,7 @@ public class UserClienteController {
 		boolean deleted = clienteService.deleteUser(id, authentication);
 
 		if (deleted) {
-			return ResponseEntity.ok("Usuário deletado com sucesso.");
+			return ResponseEntity.ok("Usuário desativado com sucesso.");
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
 		}
