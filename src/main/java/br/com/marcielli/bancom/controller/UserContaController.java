@@ -12,7 +12,6 @@ import br.com.marcielli.bancom.dto.security.ContaCreateDTO;
 import br.com.marcielli.bancom.dto.security.ContaUpdateDTO;
 import br.com.marcielli.bancom.dto.security.UserContaDepositoDTO;
 import br.com.marcielli.bancom.dto.security.UserContaPixDTO;
-import br.com.marcielli.bancom.dto.security.UserContaResponseDTO;
 import br.com.marcielli.bancom.dto.security.UserContaSaqueDTO;
 import br.com.marcielli.bancom.dto.security.UserContaTedDTO;
 import br.com.marcielli.bancom.entity.Conta;
@@ -32,6 +31,8 @@ public class UserContaController {
 	// BASIC só pode criar conta pra ele mesmo
 	@PostMapping("/contas")
 	public ResponseEntity<String> createConta(@RequestBody ContaCreateDTO dto, Authentication authentication) {
+		
+		
 		Conta contaAdicionada = contaService.save(dto, authentication);
 
 		if (contaAdicionada != null) {
@@ -62,7 +63,8 @@ public class UserContaController {
 	// ADMIN pode deletar a conta de todos, menos a dele
 	// BASIC só pode deletar a própria conta por id
 	@DeleteMapping("/contas/{id}")
-	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto, Authentication authentication) {
+	public ResponseEntity<?> deletar(@PathVariable("id") Long id, @RequestBody ContaUpdateDTO dto,
+			Authentication authentication) {
 		boolean conta = contaService.delete(id, dto, authentication);
 
 		if (conta) {
@@ -81,7 +83,7 @@ public class UserContaController {
 		return ResponseEntity.ok(conta); // Retorna a entidade pura
 	}
 
-	//Ativar conta
+	// Ativar conta
 	@PutMapping("/contas/{id}/ativar")
 	public ResponseEntity<String> ativarConta(@PathVariable("id") Long id, Authentication authentication) {
 		boolean contaAtivada = contaService.ativarConta(id, authentication);
@@ -91,9 +93,7 @@ public class UserContaController {
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Conta não encontrada!");
 	}
-	
-	
-	
+
 	// Transferências
 
 	// ADMIN pode fazer transferencia da conta dele para outras, e de outros para
@@ -163,7 +163,8 @@ public class UserContaController {
 
 	// ROTAS MANUAIS
 	@PutMapping("/contas/{idConta}/manutencao") // SOMENTE ADMIN/BANCO
-	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta, Authentication authentication) {
+	public ResponseEntity<String> manutencaoTaxaContaCorrente(@PathVariable("idConta") Long idConta,
+			Authentication authentication) {
 
 		boolean sucesso = contaService.manutencaoTaxaCC(idConta, authentication);
 
@@ -173,11 +174,12 @@ public class UserContaController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao aplicar a taxa de manutenção");
 		}
 	}
-	
+
 	// ROTAS MANUAIS
 	@PutMapping("/contas/{idConta}/rendimentos") // SOMENTE ADMIN/BANCO
-	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta, Authentication authentication) {
-		
+	public ResponseEntity<String> rendimentoTaxaContaPoupanca(@PathVariable("idConta") Long idConta,
+			Authentication authentication) {
+
 		boolean sucesso = contaService.rendimentoTaxaCP(idConta, authentication);
 		if (sucesso) {
 

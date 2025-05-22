@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import br.com.marcielli.bancom.configuracao.AdminInitializer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -24,7 +23,7 @@ import io.jsonwebtoken.io.Decoders;
 @Service
 public class JwtService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AdminInitializer.class);  
+	private static final Logger logger = LoggerFactory.getLogger(JwtService.class);  
 	
 	@Value("${jwt.secret}")
     private String secretKeyString;

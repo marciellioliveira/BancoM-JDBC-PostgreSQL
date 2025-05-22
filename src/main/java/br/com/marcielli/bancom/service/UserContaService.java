@@ -44,7 +44,7 @@ public class UserContaService {
 	private final TransferenciaDao transferenciaDao;
 	private final GerarNumeros gerarNumero;
 	
-	private Random random = new Random();
+	//private Random random = new Random();
 
 	private static final Logger logger = LoggerFactory.getLogger(UserClienteService.class);	
 
@@ -231,8 +231,8 @@ public class UserContaService {
 	        throw new ContaExibirSaldoErroException("A conta já está desativada.");
 	    }
 
-	    contaDao.desativarConta(contaExistente.getId());
-	    return true;
+	    return contaDao.desativarConta(contaExistente.getId());
+	     
 	}
 	
 	@Transactional

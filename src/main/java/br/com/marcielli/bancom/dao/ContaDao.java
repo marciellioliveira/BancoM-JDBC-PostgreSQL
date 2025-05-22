@@ -12,11 +12,11 @@ import br.com.marcielli.bancom.mappers.ContaPoupancaRowMapper;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
 import br.com.marcielli.bancom.mappers.TaxaCambioRowMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -28,228 +28,154 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.jdbc.core.CallableStatementCreator;
+import org.springframework.jdbc.core.CallableStatementCallback;
+
 @Component
 public class ContaDao {
 
 	private final JdbcTemplate jdbcTemplate;
+	private static final Logger logger = LoggerFactory.getLogger(ContaDao.class);
 
 	public ContaDao(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
+
 	public Conta save(Conta conta) {
-	    // Se o cliente não está associado ou não tem ID, salvar o cliente primeiro
-	    if (conta.getCliente() == null || conta.getCliente().getId() == null) {
-	        if (conta.getCliente() == null) {
-	            throw new IllegalArgumentException("Cliente não pode ser nulo.");
-	        }
-	        conta.setCliente(saveCliente(conta.getCliente()));  // Salva o cliente se necessário
-	    }
+		logger.info("Iniciando inserção da conta via função insert_conta_completa");
 
-	    KeyHolder keyHolder = new GeneratedKeyHolder();
+		if (conta.getCliente() == null || conta.getCliente().getId() == null) {
+			logger.error("Cliente não pode ser nulo ou sem ID.");
+			throw new IllegalArgumentException("Cliente não pode ser nulo ou sem ID.");
+		}
 
-	    // SQL para inserir a conta
-	    String sql = """
-	                INSERT INTO contas (
-	                    cliente_id, tipo_conta, categoria_conta, saldo_conta,
-	                    numero_conta, pix_aleatorio, status,
-	                    taxa_manutencao_mensal, taxa_acresc_rend, taxa_mensal
-	                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-	            """;
+		CallableStatementCreator creator = new CallableStatementCreator() {
+			@Override
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				logger.debug("Montando CallableStatement para função insert_conta_completa");
+				CallableStatement cs = con
+						.prepareCall("{ ? = call insert_conta_completa(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
 
-	    // Inserção da conta na tabela "contas"
-	    jdbcTemplate.update(connection -> {
-	        PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+				cs.registerOutParameter(1, Types.BIGINT);
 
-	        ps.setLong(1, conta.getCliente().getId()); // Associando o cliente à conta
-	        ps.setString(2, conta.getTipoConta().name());
-	        ps.setString(3, conta.getCategoriaConta().name());
-	        ps.setBigDecimal(4, conta.getSaldoConta());
-	        ps.setString(5, conta.getNumeroConta());
-	        ps.setString(6, conta.getPixAleatorio());
-	        ps.setBoolean(7, conta.getStatus());
+				cs.setLong(2, conta.getCliente().getId());
+				cs.setString(3, conta.getTipoConta().name());
+				cs.setString(4, conta.getCategoriaConta().name());
+				cs.setBigDecimal(5, conta.getSaldoConta());
+				cs.setString(6, conta.getNumeroConta());
+				cs.setString(7, conta.getPixAleatorio());
+				cs.setBoolean(8, conta.getStatus());
 
-	        switch (conta) {
-	            case ContaCorrente cc -> {
-	                ps.setBigDecimal(8, cc.getTaxaManutencaoMensal());
-	                ps.setNull(9, Types.NUMERIC);
-	                ps.setNull(10, Types.NUMERIC);
-	            }
-	            case ContaPoupanca cp -> {
-	                ps.setNull(8, Types.NUMERIC);
-	                ps.setBigDecimal(9, cp.getTaxaAcrescRend());
-	                ps.setBigDecimal(10, cp.getTaxaMensal());
-	            }
-	            default -> {
-	                ps.setNull(8, Types.NUMERIC);
-	                ps.setNull(9, Types.NUMERIC);
-	                ps.setNull(10, Types.NUMERIC);
-	            }
-	        }
+				switch (conta) {
+				case ContaCorrente cc -> {
+					cs.setBigDecimal(9, cc.getTaxaManutencaoMensal());
+					cs.setNull(10, Types.NUMERIC);
+					cs.setNull(11, Types.NUMERIC);
+				}
+				case ContaPoupanca cp -> {
+					cs.setNull(9, Types.NUMERIC);
+					cs.setBigDecimal(10, cp.getTaxaAcrescRend());
+					cs.setBigDecimal(11, cp.getTaxaMensal());
+				}
+				default -> {
+					cs.setNull(9, Types.NUMERIC);
+					cs.setNull(10, Types.NUMERIC);
+					cs.setNull(11, Types.NUMERIC);
+				}
+				}
 
-	        return ps;
-	    }, keyHolder);
+				return cs;
+			}
+		};
 
-	    // Recupera o ID gerado para a conta inserida
-	    Map<String, Object> keys = keyHolder.getKeys();
-	    if (keys != null && !keys.isEmpty()) {
-	        Number generatedId = (Number) keys.get("id");
-	        if (generatedId != null) {
-	            conta.setId(generatedId.longValue());
-	        }
-	    }
+		CallableStatementCallback<Conta> callback = new CallableStatementCallback<>() {
+			@Override
+			public Conta doInCallableStatement(CallableStatement cs) throws SQLException {
+				logger.info("Executando função insert_conta_completa");
+				cs.execute();
+				long generatedId = cs.getLong(1);
+				conta.setId(generatedId);
+				logger.info("Conta inserida com ID: {}", generatedId);
+				return conta;
+			}
+		};
 
-	    return conta; // Retorna a conta com o ID atribuído
+		try {
+			return jdbcTemplate.execute(creator, callback);
+		} catch (Exception e) {
+			logger.error("Erro ao executar a função insert_conta_completa", e);
+			throw new RuntimeException("Erro ao inserir conta via procedure", e);
+		}
 	}
 
-
-
-	
 	public Cliente saveCliente(Cliente cliente) {
-	    // Inserindo o cliente na tabela.
-	    String sql = """
-	                INSERT INTO clientes (nome, user_id) 
-	                VALUES (?, ?)
-	            """;
-	    
-	    jdbcTemplate.update(sql, cliente.getNome(), cliente.getId());
-	    
-	    String sqlSelect = "SELECT LAST_INSERT_ID()";
-	    Long clienteId = jdbcTemplate.queryForObject(sqlSelect, Long.class);
-	    
-	    cliente.setId(clienteId);
+		// Inserindo o cliente na tabela.
+		String sql = """
+				    INSERT INTO clientes (nome, user_id)
+				    VALUES (?, ?)
+				""";
 
-	    return cliente; 
+		jdbcTemplate.update(sql, cliente.getNome(), cliente.getId());
+
+		String sqlSelect = "SELECT LAST_INSERT_ID()";
+		Long clienteId = jdbcTemplate.queryForObject(sqlSelect, Long.class);
+
+		cliente.setId(clienteId);
+
+		return cliente;
 	}
-	
+
 	public boolean existeConta(Long idConta) {
-	    String sql = "SELECT COUNT(1) FROM contas WHERE id = ?";
-	    Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idConta);
-	    return count != null && count > 0;
+		String sql = "SELECT COUNT(1) FROM contas WHERE id = ?";
+		Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idConta);
+		return count != null && count > 0;
 	}
-	
-	public void desativarConta(Long idConta) {
-	    // Conta existe?
-	    String sqlVerificaConta = "SELECT COUNT(1) FROM contas WHERE id = ?";
-	    Integer count = jdbcTemplate.queryForObject(sqlVerificaConta, Integer.class, idConta);
-	    
-	    if (count == null || count == 0) {
-	        throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idConta, 1);
-	    }
 
-	    // Desativando cartões ligados a conta 
-	    String sqlDesativaCartoes = "UPDATE cartoes SET status = false WHERE conta_id = ?";
-	    jdbcTemplate.update(sqlDesativaCartoes, idConta);
-	    
-	    // Desativando a conta
-	    String sqlDesativaConta = "UPDATE contas SET status = false WHERE id = ?";
-	    jdbcTemplate.update(sqlDesativaConta, idConta);
+	public boolean desativarConta(Long idConta) {
+		String sql = "SELECT desativar_conta_v1(?)";
+		Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, idConta);
+		return Boolean.TRUE.equals(result);
 	}
-	
-//	public void desativarConta(Long idConta) {
-//	    String sql = "UPDATE contas SET status = false WHERE id = ?";
-//	    int rowsAffected = jdbcTemplate.update(sql, idConta);
-//	    
-//	    if (rowsAffected == 0) {
-//	        throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idConta, 1);
-//	    }
-//	}	
 
 	public boolean ativarConta(Long idConta) {
-	    String sql = "UPDATE contas SET status = true WHERE id = ?";
-	    int rowsAffected = jdbcTemplate.update(sql, idConta);
-	    
-	    if (rowsAffected == 0) {
-	        throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idConta, 1);
-	    }
-	    
-	    return true;
+		String sql = "SELECT ativar_conta_v1(?)";
+		Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, idConta);
+		return Boolean.TRUE.equals(result);
 	}
 
 	public List<Conta> findAll() {
-		String sql = """
-				    SELECT
-				        c.*,
-				        cl.id AS cliente_id,
-				        cl.nome AS cliente_nome
-				    FROM contas c
-				    JOIN clientes cl ON c.cliente_id = cl.id
-				""";
+		String sql = "SELECT * FROM public.find_all_contas_v1()";
 		return jdbcTemplate.query(sql, new ContasRowMapper());
 	}
 
 	public List<Conta> findByUsername(String username) {
-		String sql = """
-				    SELECT
-				        c.*,
-				        cl.id AS cliente_id,
-				        cl.nome AS cliente_nome
-				    FROM contas c
-				    JOIN clientes cl ON c.cliente_id = cl.id
-				    JOIN users u ON cl.user_id = u.id
-				    WHERE u.username = ?
-				""";
+		String sql = "SELECT * FROM public.find_contas_by_username_v1(?)";
 		return jdbcTemplate.query(sql, new ContasRowMapper(), username);
 	}
 
 	public Optional<Conta> findByIdAndUsername(Long id, String username) {
-		String sql = """
-				    SELECT
-				        c.*,
-				        cl.id AS cliente_id,
-				        cl.nome AS cliente_nome,
-				        u.id AS user_id,
-				        u.username
-				    FROM contas c
-				    JOIN clientes cl ON c.cliente_id = cl.id
-				    JOIN users u ON cl.user_id = u.id
-				    WHERE c.id = ? AND u.username = ?
-				""";
-
+		String sql = "SELECT * FROM find_conta_by_id_and_username_v1(?, ?)";
 		List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), id, username);
 		return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
 	}
-	
+
 	public Optional<Conta> findById(Long id) {
-	    String sql = """
-	            SELECT
-	                c.*,
-	                cl.id AS cliente_id,
-	                cl.nome AS cliente_nome,
-	                u.id AS user_id,          
-	                u.username                
-	            FROM contas c
-	            JOIN clientes cl ON c.cliente_id = cl.id
-	            JOIN users u ON cl.user_id = u.id  -- Garante o relacionamento
-	            WHERE c.id = ?
-	            """;
-
-	    List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), id);
-	    return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
+		String sql = "SELECT * FROM find_conta_by_id_v1(?)";
+		List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), id);
+		return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
 	}
 
-//	public Optional<Conta> findById(Long id) {
-//		String sql = """
-//				    SELECT
-//				        c.*,
-//				        cl.id AS cliente_id,
-//				        cl.nome AS cliente_nome,
-//				        u.id AS user_id,
-//				        u.username
-//				    FROM contas c
-//				    JOIN clientes cl ON c.cliente_id = cl.id
-//				    JOIN users u ON cl.user_id = u.id
-//				    WHERE c.id = ?
-//				""";
-//
-//		List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), id);
-//		return contas.isEmpty() ? Optional.empty() : Optional.of(contas.get(0));
+//	public void atualizarPixAleatorio(Long idConta, String novoPix) {
+//		String sql = "UPDATE contas SET pix_aleatorio = ? WHERE id = ?";
+//		jdbcTemplate.update(sql, novoPix, idConta);
 //	}
-
-	public void atualizarPixAleatorio(Long idConta, String novoPix) {
-		String sql = "UPDATE contas SET pix_aleatorio = ? WHERE id = ?";
-		jdbcTemplate.update(sql, novoPix, idConta);
+	
+	public boolean atualizarPixAleatorio(Long idConta, String novoPix) {
+	    String sql = "SELECT atualizar_pix_aleatorio_v1(?, ?)";
+	    Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, idConta, novoPix);
+	    return Boolean.TRUE.equals(result);
 	}
+
 
 	public void updateSaldo(Conta conta) {
 		String sql = "UPDATE contas SET saldo_conta = ?, categoria_conta = ?, "
@@ -390,8 +316,9 @@ public class ContaDao {
 		}
 	}
 
-	//Deixei o em lote por ser melhor por desempenho. O outro conta por conta pode travar se tiver muitas contas.
-	public void aplicarRendimentoEmLotes(int batchSize) { //batchSize = qnt de contas a ser processada por vez
+	// Deixei o em lote por ser melhor por desempenho. O outro conta por conta pode
+	// travar se tiver muitas contas.
+	public void aplicarRendimentoEmLotes(int batchSize) { // batchSize = qnt de contas a ser processada por vez
 		String selectSql = """
 				    SELECT id FROM contas
 				    WHERE tipo_conta = 'POUPANCA'
@@ -407,8 +334,8 @@ public class ContaDao {
 				            SELECT categoria FROM (
 				                VALUES
 				                (10000, 'PREMIUM'),
-				                (5000, 'SUPER'),  
-				                (0, 'COMUM') 
+				                (5000, 'SUPER'),
+				                (0, 'COMUM')
 				            ) AS limites(valor, categoria)
 				            WHERE saldo_conta >= limites.valor
 				            ORDER BY limites.valor DESC
@@ -431,127 +358,75 @@ public class ContaDao {
 			}
 		});
 	}
-	
-	public void aplicarTaxaManutencaoEmLotes(int batchSize) { //batchSize = qnt de contas a ser processada por vez
-	    String selectSql = "SELECT id FROM contas WHERE tipo_conta = 'CORRENTE' AND status = true AND taxa_manutencao_mensal IS NOT NULL LIMIT ?";
-	    List<Long> ids = jdbcTemplate.queryForList(selectSql, Long.class, batchSize);
 
-	    String updateSql = """
-	        UPDATE contas 
-	        SET saldo_conta = saldo_conta - taxa_manutencao_mensal,
-	            categoria_conta = CASE
-	                WHEN (saldo_conta - taxa_manutencao_mensal) >= 10000 THEN 'PREMIUM'
-	                WHEN (saldo_conta - taxa_manutencao_mensal) >= 5000 THEN 'SUPER'
-	                ELSE 'COMUM'
-	            END
-	        WHERE id = ?
-	    """;
+	public void aplicarTaxaManutencaoEmLotes(int batchSize) { // batchSize = qnt de contas a ser processada por vez
+		String selectSql = "SELECT id FROM contas WHERE tipo_conta = 'CORRENTE' AND status = true AND taxa_manutencao_mensal IS NOT NULL LIMIT ?";
+		List<Long> ids = jdbcTemplate.queryForList(selectSql, Long.class, batchSize);
 
-	    jdbcTemplate.batchUpdate(updateSql, new BatchPreparedStatementSetter() {
-	        @Override
-	        public void setValues(PreparedStatement ps, int i) throws SQLException {
-	            ps.setLong(1, ids.get(i));
-	        }
-	        
-	        @Override
-	        public int getBatchSize() {
-	            return ids.size();
-	        }
-	    });
+		String updateSql = """
+				    UPDATE contas
+				    SET saldo_conta = saldo_conta - taxa_manutencao_mensal,
+				        categoria_conta = CASE
+				            WHEN (saldo_conta - taxa_manutencao_mensal) >= 10000 THEN 'PREMIUM'
+				            WHEN (saldo_conta - taxa_manutencao_mensal) >= 5000 THEN 'SUPER'
+				            ELSE 'COMUM'
+				        END
+				    WHERE id = ?
+				""";
+
+		jdbcTemplate.batchUpdate(updateSql, new BatchPreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				ps.setLong(1, ids.get(i));
+			}
+
+			@Override
+			public int getBatchSize() {
+				return ids.size();
+			}
+		});
 	}
-	
-	
-	
+
 	public void update(Conta conta) {
-	    String sql = """
-	                UPDATE contas SET
-	                    saldo_conta = ?, 
-	                    categoria_conta = ?, 
-	                    taxa_manutencao_mensal = ?, 
-	                    taxa_acresc_rend = ?, 
-	                    taxa_mensal = ?
-	                WHERE id = ?
-	            """;
+		String sql = """
+				    UPDATE contas SET
+				        saldo_conta = ?,
+				        categoria_conta = ?,
+				        taxa_manutencao_mensal = ?,
+				        taxa_acresc_rend = ?,
+				        taxa_mensal = ?
+				    WHERE id = ?
+				""";
 
-	    Object[] params;
+		Object[] params;
 
-	    if (conta instanceof ContaCorrente cc) {
-	        params = new Object[] {
-	            conta.getSaldoConta(),
-	            conta.getCategoriaConta().name(),
-	            cc.getTaxaManutencaoMensal(),
-	            null, 
-	            null,
-	            conta.getId()
-	        };
-	    } else if (conta instanceof ContaPoupanca cp) {
-	        params = new Object[] {
-	            conta.getSaldoConta(),
-	            conta.getCategoriaConta().name(),
-	            null,
-	            cp.getTaxaAcrescRend(),
-	            cp.getTaxaMensal(),
-	            conta.getId()
-	        };
-	    } else {
-	        params = new Object[] {
-	            conta.getSaldoConta(),
-	            conta.getCategoriaConta().name(),
-	            null,
-	            null,
-	            null,
-	            conta.getId()
-	        };
-	    }
+		if (conta instanceof ContaCorrente cc) {
+			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(),
+					cc.getTaxaManutencaoMensal(), null, null, conta.getId() };
+		} else if (conta instanceof ContaPoupanca cp) {
+			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(), null,
+					cp.getTaxaAcrescRend(), cp.getTaxaMensal(), conta.getId() };
+		} else {
+			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(), null, null, null,
+					conta.getId() };
+		}
 
-	    jdbcTemplate.update(sql, params);
+		jdbcTemplate.update(sql, params);
 	}
 
-	
-	
 	public void atualizarTransferenciasEnviadas(Long contaId, Transferencia transferencia) {
-	    Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
-	    if (conta.getTransferencias() == null) {
-	        conta.setTransferencias(new ArrayList<>());
-	    }
-	    conta.getTransferencias().add(transferencia);
-	    update(conta);
+		Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+		if (conta.getTransferencias() == null) {
+			conta.setTransferencias(new ArrayList<>());
+		}
+		conta.getTransferencias().add(transferencia);
+		update(conta);
 	}
-	
+
 	public void atualizarSaldo(Long contaId, BigDecimal novoSaldo) {
-	    Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
-	    conta.setSaldoConta(novoSaldo);
-	    update(conta);
+		Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+		conta.setSaldoConta(novoSaldo);
+		update(conta);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }
