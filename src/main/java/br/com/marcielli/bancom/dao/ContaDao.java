@@ -317,56 +317,89 @@ public class ContaDao {
 		
 	}
 
+//	public Optional<ContaCorrente> findContaCorrenteById(Long id) {
+//		String sql = """
+//				    SELECT
+//				        c.*,
+//				        cl.id AS cliente_id,
+//				        cl.nome AS cliente_nome
+//				    FROM contas c
+//				    JOIN clientes cl ON c.cliente_id = cl.id
+//				    WHERE c.id = ? AND c.tipo_conta = 'CORRENTE'
+//				""";
+//
+//		try {
+//			ContaCorrente cc = jdbcTemplate.queryForObject(sql, new ContaCorrenteRowMapper(), id);
+//			return Optional.ofNullable(cc);
+//		} catch (EmptyResultDataAccessException e) {
+//			return Optional.empty();
+//		}
+//	}
+	
 	public Optional<ContaCorrente> findContaCorrenteById(Long id) {
-		String sql = """
-				    SELECT
-				        c.*,
-				        cl.id AS cliente_id,
-				        cl.nome AS cliente_nome
-				    FROM contas c
-				    JOIN clientes cl ON c.cliente_id = cl.id
-				    WHERE c.id = ? AND c.tipo_conta = 'CORRENTE'
-				""";
+	    String sql = "SELECT * FROM buscar_conta_corrente_por_id_v1(?)";
 
-		try {
-			ContaCorrente cc = jdbcTemplate.queryForObject(sql, new ContaCorrenteRowMapper(), id);
-			return Optional.ofNullable(cc);
-		} catch (EmptyResultDataAccessException e) {
-			return Optional.empty();
-		}
+	    List<ContaCorrente> contas = jdbcTemplate.query(sql, new ContaCorrenteRowMapper(), id);
+	    if (contas.isEmpty()) {
+	        return Optional.empty();
+	    }
+	    return Optional.of(contas.get(0));
 	}
 
-	public void updateContaCorrente(ContaCorrente cc) {
-		String sql = """
-				    UPDATE contas SET
-				        saldo_conta = ?,
-				        categoria_conta = ?,
-				        taxa_manutencao_mensal = ?
-				    WHERE id = ? AND tipo_conta = 'CORRENTE'
-				""";
+	public boolean updateContaCorrente(ContaCorrente cc) {
+	    String sql = "SELECT atualizar_conta_corrente_v1(?, ?, ?, ?)";
 
-		jdbcTemplate.update(sql, cc.getSaldoConta(), cc.getCategoriaConta().name(), cc.getTaxaManutencaoMensal(),
-				cc.getId());
+	    return jdbcTemplate.queryForObject(sql, Boolean.class,
+	            cc.getId(),
+	            cc.getSaldoConta(),
+	            cc.getCategoriaConta().name(),
+	            cc.getTaxaManutencaoMensal());
 	}
 
+
+//	public void updateContaCorrente(ContaCorrente cc) {
+//		String sql = """
+//				    UPDATE contas SET
+//				        saldo_conta = ?,
+//				        categoria_conta = ?,
+//				        taxa_manutencao_mensal = ?
+//				    WHERE id = ? AND tipo_conta = 'CORRENTE'
+//				""";
+//
+//		jdbcTemplate.update(sql, cc.getSaldoConta(), cc.getCategoriaConta().name(), cc.getTaxaManutencaoMensal(),
+//				cc.getId());
+//	}
+
+//	public Optional<ContaPoupanca> findContaPoupancaById(Long id) {
+//		String sql = """
+//				    SELECT
+//				        c.*,
+//				        cl.id AS cliente_id,
+//				        cl.nome AS cliente_nome
+//				    FROM contas c
+//				    JOIN clientes cl ON c.cliente_id = cl.id
+//				    WHERE c.id = ? AND c.tipo_conta = 'POUPANCA'
+//				""";
+//
+//		try {
+//			ContaPoupanca cp = jdbcTemplate.queryForObject(sql, new ContaPoupancaRowMapper(), id);
+//			return Optional.ofNullable(cp);
+//		} catch (EmptyResultDataAccessException e) {
+//			return Optional.empty();
+//		}
+//	}
+	
 	public Optional<ContaPoupanca> findContaPoupancaById(Long id) {
-		String sql = """
-				    SELECT
-				        c.*,
-				        cl.id AS cliente_id,
-				        cl.nome AS cliente_nome
-				    FROM contas c
-				    JOIN clientes cl ON c.cliente_id = cl.id
-				    WHERE c.id = ? AND c.tipo_conta = 'POUPANCA'
-				""";
+	    String sql = "SELECT * FROM buscar_conta_poupanca_por_id_v1(?)";
 
-		try {
-			ContaPoupanca cp = jdbcTemplate.queryForObject(sql, new ContaPoupancaRowMapper(), id);
-			return Optional.ofNullable(cp);
-		} catch (EmptyResultDataAccessException e) {
-			return Optional.empty();
-		}
+	    List<ContaPoupanca> contas = jdbcTemplate.query(sql, new ContaPoupancaRowMapper(), id);
+
+	    if (contas.isEmpty()) {
+	        return Optional.empty();
+	    }
+	    return Optional.of(contas.get(0));
 	}
+
 
 	// Deixei o em lote por ser melhor por desempenho. O outro conta por conta pode
 	// travar se tiver muitas contas.

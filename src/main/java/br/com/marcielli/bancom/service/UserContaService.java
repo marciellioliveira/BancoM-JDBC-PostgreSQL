@@ -687,9 +687,9 @@ public class UserContaService {
 	    BigDecimal novoSaldo = cc.getSaldoConta().subtract(cc.getTaxaManutencaoMensal());
 	    cc.setSaldoConta(novoSaldo);
 	    cc.setCategoriaConta(new TaxaManutencao(novoSaldo, cc.getTipoConta()).getCategoria());
-	    contaDao.updateContaCorrente(cc);
-	    
-	    return true;
+	    return contaDao.updateContaCorrente(cc);
+//	    
+//	    return true;
 	}
 	
 	@Transactional
@@ -724,9 +724,9 @@ public class UserContaService {
 	    TaxaManutencao novaTaxa = new TaxaManutencao(novoSaldo, cp.getTipoConta());
 	    cp.setCategoriaConta(novaTaxa.getCategoria());
 	    
-	    contaDao.updateSaldo(cp);
+	    return contaDao.updateSaldo(cp);
 	    
-	    return true;
+	    //return true;
 	}
 	
 
