@@ -287,21 +287,34 @@ public class ContaDao {
 		return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, contaId, username));
 	}
 
+//	public Conta findByChavePix(String chave) {
+//		String sql = """
+//				    SELECT c.*, cl.id AS cliente_id, cl.nome AS cliente_nome,
+//				           u.id AS user_id, u.username
+//				    FROM contas c
+//				    JOIN clientes cl ON c.cliente_id = cl.id
+//				    JOIN users u ON cl.user_id = u.id
+//				    WHERE c.pix_aleatorio = ?
+//				""";
+//
+//		List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), chave);
+//		if (!contas.isEmpty()) {
+//			return contas.get(0);
+//		}
+//		throw new ChavePixNaoEncontradaException("Chave PIX não encontrada: " + chave);
+//	}
+	
 	public Conta findByChavePix(String chave) {
-		String sql = """
-				    SELECT c.*, cl.id AS cliente_id, cl.nome AS cliente_nome,
-				           u.id AS user_id, u.username
-				    FROM contas c
-				    JOIN clientes cl ON c.cliente_id = cl.id
-				    JOIN users u ON cl.user_id = u.id
-				    WHERE c.pix_aleatorio = ?
-				""";
-
-		List<Conta> contas = jdbcTemplate.query(sql, new ContasRowMapper(), chave);
-		if (!contas.isEmpty()) {
-			return contas.get(0);
-		}
-		throw new ChavePixNaoEncontradaException("Chave PIX não encontrada: " + chave);
+		
+		String sql = "SELECT * FROM buscar_conta_por_chave_pix_v1(?)";
+		
+		Conta conta = jdbcTemplate.query(sql, new ContasRowMapper(), chave)
+				.stream()
+				.findFirst()
+				.orElseThrow(() -> new ChavePixNaoEncontradaException("Chave PIX não encontrada: " + chave));
+		
+		return conta;
+		
 	}
 
 	public Optional<ContaCorrente> findContaCorrenteById(Long id) {

@@ -417,7 +417,7 @@ public class UserContaService {
 
 	    //Validação de acesso
 	    if (!isAdmin) {
-	        if (conta.getCliente() == null || !conta.getCliente().getId().equals(usuarioLogado.getId())) {
+	        if (conta.getCliente() == null || !conta.getCliente().getId().equals(usuarioLogado.getId().longValue())) {
 	            throw new AcessoNegadoException("Você só pode visualizar o saldo da sua própria conta");
 	        }
 	    }
