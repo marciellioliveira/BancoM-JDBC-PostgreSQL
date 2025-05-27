@@ -166,33 +166,73 @@ public class ContaDao {
 	}
 
 	public boolean atualizarPixAleatorio(Long idConta, String novoPix) {
-	    String sql = "SELECT atualizar_pix_aleatorio_v1(?, ?)";
-	    Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, idConta, novoPix);
-	    return Boolean.TRUE.equals(result);
+		String sql = "SELECT atualizar_pix_aleatorio_v1(?, ?)";
+		Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, idConta, novoPix);
+		return Boolean.TRUE.equals(result);
 	}
 
-
-	public void updateSaldo(Conta conta) {
-		String sql = "UPDATE contas SET saldo_conta = ?, categoria_conta = ?, "
-				+ "taxa_manutencao_mensal = ?, taxa_acresc_rend = ?, taxa_mensal = ? " + "WHERE id = ?";
-
+//	public void updateSaldo(Conta conta) {
+//		String sql = "UPDATE contas SET saldo_conta = ?, categoria_conta = ?, "
+//				+ "taxa_manutencao_mensal = ?, taxa_acresc_rend = ?, taxa_mensal = ? " + "WHERE id = ?";
+//
+//		Object[] params;
+//
+//		if (conta instanceof ContaCorrente cc) {
+//			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(),
+//					cc.getTaxaManutencaoMensal(), null, null, conta.getId() };
+//		} else {
+//			ContaPoupanca cp = (ContaPoupanca) conta;
+//			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(), null,
+//					cp.getTaxaAcrescRend(), cp.getTaxaMensal(), conta.getId() };
+//		}
+//
+//		jdbcTemplate.update(sql, params);
+//	}
+	
+	public boolean updateSaldo(Conta conta) {
+		
+		String sql = "SELECT atualizar_saldo_conta_v1(?, ?, ?, ?, ?, ?)";
+		
 		Object[] params;
-
-		if (conta instanceof ContaCorrente cc) {
-			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(),
-					cc.getTaxaManutencaoMensal(), null, null, conta.getId() };
+		
+		if(conta instanceof ContaCorrente cc) {
+			
+			params = new Object[] {
+				conta.getId(), //p_id
+				conta.getSaldoConta(), //p_saldo_conta
+				conta.getCategoriaConta().name(), //p_categoria_conta
+				cc.getTaxaManutencaoMensal(), //p_taxa_manutencao_mensal
+				null, //p_taxa_acresc_rend - Não tem em Conta Corrente
+				null //p_taxa_mensal - Não tem em Conta Corrente
+			};
+			
 		} else {
+			
 			ContaPoupanca cp = (ContaPoupanca) conta;
-			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(), null,
-					cp.getTaxaAcrescRend(), cp.getTaxaMensal(), conta.getId() };
+			
+			params = new Object[] {
+					conta.getId(),
+					conta.getSaldoConta(),
+					conta.getCategoriaConta().name(),
+					null, //p_taxa_manutencao_mensal - Não tem em Conta Poupança
+					cp.getTaxaAcrescRend(),
+					cp.getTaxaMensal()
+			};			
 		}
+		
+		Boolean resultado = jdbcTemplate.query(sql, ps -> {
+	        for (int i = 0; i < params.length; i++) {
+	            ps.setObject(i + 1, params[i]);
+	        }
+	    }, rs -> {
+	        if (rs.next()) {
+	            return rs.getBoolean(1);
+	        }
+	        return false;
+	    });
 
-		jdbcTemplate.update(sql, params);
+	    return resultado != null ? resultado : false;		
 	}
-	
-	
-
-
 
 	public BigDecimal getTaxaCambio(String moedaOrigem, String moedaDestino) {
 		String sql = """

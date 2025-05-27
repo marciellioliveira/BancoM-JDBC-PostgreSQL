@@ -22,13 +22,10 @@ public class CartaoCredito extends Cartao {
 	private BigDecimal totalGastoMesCredito = BigDecimal.ZERO;
 
 	public void atualizarTotalGastoMes(BigDecimal valor) {
-
 		this.totalGastoMesCredito = totalGastoMesCredito.add(valor);
-
 	}
 
 	public void atualizarLimiteCreditoPreAprovado(BigDecimal valor) {
-
 		this.limiteCreditoPreAprovado = limiteCreditoPreAprovado.subtract(valor);
 	}
 

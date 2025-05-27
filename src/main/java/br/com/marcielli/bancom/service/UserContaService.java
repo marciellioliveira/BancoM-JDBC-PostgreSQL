@@ -159,6 +159,7 @@ public class UserContaService {
 
 	@Transactional
 	public Conta getContasById(Long id, Authentication authentication) {
+		
 	    String role = authentication.getAuthorities().stream()
 	        .map(GrantedAuthority::getAuthority)
 	        .findFirst()
@@ -177,6 +178,7 @@ public class UserContaService {
 	    } else {
 	        throw new RuntimeException("Você não tem permissão para acessar essa conta.");
 	    }
+	    
 	}
 	
 	
