@@ -1,31 +1,20 @@
 package br.com.marcielli.bancom.dao;
 
-import br.com.marcielli.bancom.entity.Cliente;
 import br.com.marcielli.bancom.entity.Conta;
 import br.com.marcielli.bancom.entity.ContaCorrente;
 import br.com.marcielli.bancom.entity.ContaPoupanca;
-import br.com.marcielli.bancom.entity.Transferencia;
 import br.com.marcielli.bancom.exception.ChavePixNaoEncontradaException;
-import br.com.marcielli.bancom.exception.TaxaDeCambioException;
 import br.com.marcielli.bancom.mappers.ContaCorrenteRowMapper;
 import br.com.marcielli.bancom.mappers.ContaPoupancaRowMapper;
 import br.com.marcielli.bancom.mappers.ContasRowMapper;
-import br.com.marcielli.bancom.mappers.TaxaCambioRowMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -192,59 +181,6 @@ public class ContaDao {
 		return resultado != null ? resultado : false;
 	}
 
-//	public BigDecimal getTaxaCambio(String moedaOrigem, String moedaDestino) {
-//		String sql = """
-//				    SELECT taxa FROM taxas_cambio
-//				    WHERE moeda_origem = ? AND moeda_destino = ?
-//				    ORDER BY data_atualizacao DESC
-//				    LIMIT 1
-//				""";
-//
-//		try {
-//			return jdbcTemplate.queryForObject(sql, new TaxaCambioRowMapper(), moedaOrigem, moedaDestino);
-//		} catch (EmptyResultDataAccessException e) {
-//			throw new TaxaDeCambioException("Taxa de câmbio não encontrada para: " + moedaOrigem + "->" + moedaDestino);
-//		}
-//	}
-
-//	public Map<String, BigDecimal> getMultiplasTaxasCambio(String moedaOrigem, List<String> moedasDestino) {
-//		String sql = """
-//				    SELECT moeda_destino, taxa FROM (
-//				        SELECT moeda_destino, taxa,
-//				               ROW_NUMBER() OVER (PARTITION BY moeda_destino ORDER BY data_atualizacao DESC) as rn
-//				        FROM taxas_cambio
-//				        WHERE moeda_origem = ? AND moeda_destino IN (%s)
-//				    ) t WHERE rn = 1
-//				""";
-//
-//		String inClause = String.join(",", Collections.nCopies(moedasDestino.size(), "?"));
-//		sql = String.format(sql, inClause);
-//
-//		List<Object> params = new ArrayList<Object>();
-//		params.add(moedaOrigem);
-//		params.addAll(moedasDestino);
-//
-//		return jdbcTemplate.query(sql, rs -> {
-//			Map<String, BigDecimal> result = new LinkedHashMap<>();
-//			while (rs.next()) {
-//				result.put(rs.getString("moeda_destino"), rs.getBigDecimal("taxa"));
-//			}
-//			return result;
-//		}, params.toArray());
-//	}
-
-//	public boolean existsByIdAndUsername(Long contaId, String username) {
-//		String sql = """
-//				    SELECT COUNT(c.id) > 0
-//				    FROM contas c
-//				    JOIN clientes cl ON c.cliente_id = cl.id
-//				    JOIN users u ON cl.user_id = u.id
-//				    WHERE c.id = ? AND u.username = ?
-//				""";
-//
-//		return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, contaId, username));
-//	}
-
 	public Conta findByChavePix(String chave) {
 
 		String sql = "SELECT * FROM buscar_conta_por_chave_pix_v1(?)";
@@ -324,19 +260,19 @@ public class ContaDao {
 		jdbcTemplate.update(sql, params);
 	}
 
-	public void atualizarTransferenciasEnviadas(Long contaId, Transferencia transferencia) {
-		Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
-		if (conta.getTransferencias() == null) {
-			conta.setTransferencias(new ArrayList<>());
-		}
-		conta.getTransferencias().add(transferencia);
-		update(conta);
-	}
+//	public void atualizarTransferenciasEnviadas(Long contaId, Transferencia transferencia) {
+//		Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+//		if (conta.getTransferencias() == null) {
+//			conta.setTransferencias(new ArrayList<>());
+//		}
+//		conta.getTransferencias().add(transferencia);
+//		update(conta);
+//	}
 
-	public void atualizarSaldo(Long contaId, BigDecimal novoSaldo) {
-		Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
-		conta.setSaldoConta(novoSaldo);
-		update(conta);
-	}
+//	public void atualizarSaldo(Long contaId, BigDecimal novoSaldo) {
+//		Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
+//		conta.setSaldoConta(novoSaldo);
+//		update(conta);
+//	}
 
 }

@@ -39,18 +39,8 @@ public class CartaoDao {
 	}
 
 	public Cartao saveWithRelations(Cartao cartao) {
-		
+
 		String sqlCartao = "SELECT * FROM public.inserir_cartao_v1(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	
-//		String sqlCartao = """
-//				    INSERT INTO cartoes
-//				    (tipo_conta, categoria_conta, tipo_cartao, numero_cartao, status, senha, conta_id,
-//				    limite_credito_pre_aprovado, limite_diario_transacao)
-//				    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-//				    RETURNING id
-//				
-		
-		System.err.println(cartao.toString());
 
 		Long cartaoId = jdbcTemplate.queryForObject(sqlCartao, Long.class, cartao.getTipoConta().toString(),
 				cartao.getCategoriaConta().toString(), cartao.getTipoCartao().toString(), cartao.getNumeroCartao(),
@@ -67,22 +57,21 @@ public class CartaoDao {
 		if (cartao.getSeguros() != null && !cartao.getSeguros().isEmpty()) {
 			insertSeguros(cartaoId, cartao.getSeguros());
 		}
-		
+
 		if (cartao.getConta() != null) {
-	        cartao.setContaId(cartao.getConta().getId());
-	    }
-	    if (cartao.getFatura() != null) {
-	        cartao.setFaturaId(cartao.getFatura().getId());
-	    }
-	    
+			cartao.setContaId(cartao.getConta().getId());
+		}
+		if (cartao.getFatura() != null) {
+			cartao.setFaturaId(cartao.getFatura().getId());
+		}
+
 		return cartao;
 	}
-	
-	
+
 	public boolean existeCartao(Long idCartao) {
-	    String sql = "SELECT COUNT(1) FROM cartoes WHERE id = ?";
-	    Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idCartao);
-	    return count != null && count > 0;
+		String sql = "SELECT COUNT(1) FROM cartoes WHERE id = ?";
+		Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idCartao);
+		return count != null && count > 0;
 	}
 
 	private void insertFatura(Long cartaoId, Fatura fatura) {
@@ -166,97 +155,58 @@ public class CartaoDao {
 		}
 	}
 
-//	public void deleteCartao(Long id) {
-//		String sql = "DELETE FROM cartoes WHERE id = ?";
-//		jdbcTemplate.update(sql, id);
-//	}
-	
 	public List<Cartao> findAll() {
-	    String sql = "SELECT c.id, c.tipo_conta, c.categoria_conta, c.tipo_cartao, c.numero_cartao, c.status, c.senha, " +
-	             "c.limite_credito_pre_aprovado, c.taxa_utilizacao, c.taxa_seguro_viagem, c.total_gasto_mes_credito, " +
-	             "c.limite_diario_transacao, c.total_gasto_mes, c.conta_id AS cartao_conta_id, c.fatura_id AS cartao_fatura_id, " +
-	             "ct.id AS conta_id, ct.cliente_id, ct.tipo_conta AS conta_tipo_conta, ct.categoria_conta AS conta_categoria_conta, " +
-	             "ct.saldo_conta, ct.numero_conta, ct.pix_aleatorio, ct.status AS conta_status, ct.taxa_manutencao_mensal, " +
-	             "ct.taxa_acresc_rend, ct.taxa_mensal, cli.id AS cliente_id, cli.nome AS cliente_nome, cli.cpf AS cliente_cpf, " +
-	             "cli.cliente_ativo AS cliente_ativo, cli.user_id AS cliente_user_id, f.id AS fatura_id, f.cartao_id AS fatura_cartao_id, " +
-	             "f.valor_total AS fatura_valor_total, f.data_vencimento AS fatura_data_vencimento " +
-	             "FROM cartoes c " +
-	             "JOIN contas ct ON c.conta_id = ct.id " +
-	             "JOIN clientes cli ON ct.cliente_id = cli.id " +
-	             "LEFT JOIN faturas f ON c.fatura_id = f.id";
-	    
-	    return jdbcTemplate.query(sql, new CartaoRowMapper());
+		String sql = "SELECT * FROM public.find_all_cartoes_v1()";
+		return jdbcTemplate.query(sql, new CartaoRowMapper());
 	}
 
-	
-	
-//	public List<Cartao> findAll() {
-//		String sql = "SELECT c.id, c.tipo_conta, c.categoria_conta, c.tipo_cartao, c.numero_cartao, c.status, c.senha, " +
-//	             "c.limite_credito_pre_aprovado, c.taxa_utilizacao, c.taxa_seguro_viagem, c.total_gasto_mes_credito, " +
-//	             "c.limite_diario_transacao, c.total_gasto_mes, c.conta_id AS cartao_conta_id, c.fatura_id AS cartao_fatura_id, " +
-//	             "ct.id AS conta_id, ct.cliente_id, ct.tipo_conta AS conta_tipo_conta, ct.categoria_conta AS conta_categoria_conta, " +
-//	             "ct.saldo_conta, ct.numero_conta, ct.pix_aleatorio, ct.status AS conta_status, ct.taxa_manutencao_mensal, " +
-//	             "ct.taxa_acresc_rend, ct.taxa_mensal, cli.id AS cliente_id, cli.nome AS cliente_nome, cli.cpf AS cliente_cpf, " +
-//	             "cli.cliente_ativo AS cliente_ativo, cli.user_id AS cliente_user_id, f.id AS fatura_id, f.cartao_id AS fatura_cartao_id, " +
-//	             "f.valor_total AS fatura_valor_total, f.data_vencimento AS fatura_data_vencimento " +
-//	             "FROM cartoes c " +
-//	             "JOIN contas ct ON c.conta_id = ct.id " +
-//	             "JOIN clientes cli ON ct.cliente_id = cli.id " +
-//	             "LEFT JOIN faturas f ON c.fatura_id = f.id " +
-//	             "WHERE c.id = ?";
-//
-//
-//	    return jdbcTemplate.query(sql, new CartaoRowMapper());
-//	}
-
-	
 	public List<Cartao> findByUsername(String username) {
-	    String sql = """
-	            SELECT 
-	                c.*,
-	                ct.id AS conta_id,
-	                ct.saldo_conta,
-	                ct.numero_conta,
-	                ct.status AS conta_status,
-	                ct.id AS cliente_id,
-	                cl.nome AS cliente_nome,
-	                cl.cpf AS cliente_cpf,
-	                cl.cliente_ativo
-	            FROM cartoes c
-	            INNER JOIN contas ct ON c.conta_id = ct.id
-	            INNER JOIN clientes cl ON ct.cliente_id = cl.id
-	            INNER JOIN users u ON cl.user_id = u.id
-	            WHERE u.username = ?
-	            """;
-	    return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
+		String sql = """
+				SELECT
+				    c.*,
+				    ct.id AS conta_id,
+				    ct.saldo_conta,
+				    ct.numero_conta,
+				    ct.status AS conta_status,
+				    ct.id AS cliente_id,
+				    cl.nome AS cliente_nome,
+				    cl.cpf AS cliente_cpf,
+				    cl.cliente_ativo
+				FROM cartoes c
+				INNER JOIN contas ct ON c.conta_id = ct.id
+				INNER JOIN clientes cl ON ct.cliente_id = cl.id
+				INNER JOIN users u ON cl.user_id = u.id
+				WHERE u.username = ?
+				""";
+		return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
 	}
 
 	public Optional<Cartao> findByIdAndUsername(Long id, String username) {
-	    String sql = """
-	            SELECT 
-	                c.*,
-	                co.id AS conta_id,
-	                co.cliente_id,
-	                co.saldo_conta,
-	                co.numero_conta,
-	                co.status AS conta_status,
-	                cl.id AS cliente_id,
-	                cl.nome AS cliente_nome,
-	                cl.cpf AS cliente_cpf,
-	                cl.cliente_ativo,
-	                u.username
-	            FROM cartoes c
-	            JOIN contas co ON c.conta_id = co.id
-	            JOIN clientes cl ON co.cliente_id = cl.id
-	            JOIN users u ON cl.user_id = u.id
-	            WHERE c.id = ? AND u.username = ?
-	            """;
-	    try {
-	        Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id, username);
-	        return Optional.ofNullable(cartao);
-	    } catch (EmptyResultDataAccessException e) {
-	        return Optional.empty();
-	    }
+		String sql = """
+				SELECT
+				    c.*,
+				    co.id AS conta_id,
+				    co.cliente_id,
+				    co.saldo_conta,
+				    co.numero_conta,
+				    co.status AS conta_status,
+				    cl.id AS cliente_id,
+				    cl.nome AS cliente_nome,
+				    cl.cpf AS cliente_cpf,
+				    cl.cliente_ativo,
+				    u.username
+				FROM cartoes c
+				JOIN contas co ON c.conta_id = co.id
+				JOIN clientes cl ON co.cliente_id = cl.id
+				JOIN users u ON cl.user_id = u.id
+				WHERE c.id = ? AND u.username = ?
+				""";
+		try {
+			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id, username);
+			return Optional.ofNullable(cartao);
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
 	}
 
 	public Cartao save(Cartao cartao) {
@@ -271,18 +221,17 @@ public class CartaoDao {
 		int rowsAffected = jdbcTemplate.update(sql, id);
 		return rowsAffected > 0;
 	}
-	
-	public boolean ativarCartao(Long idCartao) {
-	    String sql = "UPDATE cartoes SET status = true WHERE id = ?";
-	    int rowsAffected = jdbcTemplate.update(sql, idCartao);
-	    
-	    if (rowsAffected == 0) {
-	        throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idCartao, 1);
-	    }
-	    
-	    return true;
-	}
 
+	public boolean ativarCartao(Long idCartao) {
+		String sql = "UPDATE cartoes SET status = true WHERE id = ?";
+		int rowsAffected = jdbcTemplate.update(sql, idCartao);
+
+		if (rowsAffected == 0) {
+			throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idCartao, 1);
+		}
+
+		return true;
+	}
 
 	// Método que busca todos os cartões associados a uma conta
 	public List<Cartao> findByContaId(Long contaId) {
@@ -301,23 +250,17 @@ public class CartaoDao {
 			return cartao;
 		}, contaId);
 	}
-	
+
 	public Optional<Cartao> findByIdAndClienteId(Long cartaoId, Long clienteId) {
-	    String sql = "SELECT c.*, co.* FROM cartoes c " +
-	                 "JOIN contas co ON c.conta_id = co.id " +
-	                 "WHERE c.id = ? AND co.cliente_id = ?";
-	    
-	    try {
-	        Cartao cartao = jdbcTemplate.queryForObject(
-	            sql, 
-	            new CartaoRowMapper(), 
-	            cartaoId, 
-	            clienteId
-	        );
-	        return Optional.ofNullable(cartao);
-	    } catch (EmptyResultDataAccessException e) {
-	        return Optional.empty();
-	    }
+		String sql = "SELECT c.*, co.* FROM cartoes c " + "JOIN contas co ON c.conta_id = co.id "
+				+ "WHERE c.id = ? AND co.cliente_id = ?";
+
+		try {
+			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), cartaoId, clienteId);
+			return Optional.ofNullable(cartao);
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
 	}
 
 	public void update(Cartao cartao) {
@@ -418,40 +361,39 @@ public class CartaoDao {
 				""";
 		jdbcTemplate.update(sql, cartaoId, transferencia.getId());
 	}
-	
+
 	public void alterarLimiteCartaoCredito(Cartao cartao) {
-	    if (cartao instanceof CartaoCredito cartaoCredito) {
-	        String sql = "UPDATE cartoes SET limite_credito_pre_aprovado = ? WHERE id = ?";
-	        jdbcTemplate.update(sql, cartaoCredito.getLimiteCreditoPreAprovado(), cartaoCredito.getId());
-	        logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoCredito.getId(), cartaoCredito.getLimiteCreditoPreAprovado());
-	    } else {
-	        throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Credito.");
-	    }
+		if (cartao instanceof CartaoCredito cartaoCredito) {
+			String sql = "UPDATE cartoes SET limite_credito_pre_aprovado = ? WHERE id = ?";
+			jdbcTemplate.update(sql, cartaoCredito.getLimiteCreditoPreAprovado(), cartaoCredito.getId());
+			logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoCredito.getId(),
+					cartaoCredito.getLimiteCreditoPreAprovado());
+		} else {
+			throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Credito.");
+		}
 	}
-	
+
 	public void alterarLimiteCartaoDebito(Cartao cartao) {
-	    if (cartao instanceof CartaoDebito cartaoDebito) {
-	        String sql = "UPDATE cartoes SET limite_diario_transacao = ? WHERE id = ?";
-	        jdbcTemplate.update(sql, cartaoDebito.getLimiteDiarioTransacao(), cartaoDebito.getId());
-	        logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoDebito.getId(), cartaoDebito.getLimiteDiarioTransacao());
-	    } else {
-	        throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Débito.");
-	    }
+		if (cartao instanceof CartaoDebito cartaoDebito) {
+			String sql = "UPDATE cartoes SET limite_diario_transacao = ? WHERE id = ?";
+			jdbcTemplate.update(sql, cartaoDebito.getLimiteDiarioTransacao(), cartaoDebito.getId());
+			logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoDebito.getId(),
+					cartaoDebito.getLimiteDiarioTransacao());
+		} else {
+			throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Débito.");
+		}
 	}
-	
+
 	public Fatura buscarFaturaComTransferenciasPorCartaoId(Long cartaoId) {
-	    String sql = """
-	        SELECT id, cartao_id, valor_total, data_vencimento, status
-	        FROM faturas
-	        WHERE cartao_id = ?
-	    """;
+		String sql = """
+				    SELECT id, cartao_id, valor_total, data_vencimento, status
+				    FROM faturas
+				    WHERE cartao_id = ?
+				""";
 
-	    List<Fatura> faturas = jdbcTemplate.query(sql, faturaWithTransferenciaRowMapper, cartaoId);
-	    
-	    return faturas.isEmpty() ? null : faturas.get(0);
+		List<Fatura> faturas = jdbcTemplate.query(sql, faturaWithTransferenciaRowMapper, cartaoId);
+
+		return faturas.isEmpty() ? null : faturas.get(0);
 	}
-
-
-
 
 }

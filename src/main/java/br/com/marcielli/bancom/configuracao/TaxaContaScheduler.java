@@ -27,8 +27,8 @@ public class TaxaContaScheduler {
     }
 
     // Rendimentos - Diário às 23h50
-    //@Scheduled(cron = "0 50 23 * * *", zone = "America/Sao_Paulo")
-     @Scheduled(cron = "*/10 * * * * *", zone = "America/Sao_Paulo")  // se quiser testar a cada 10 segundos
+    @Scheduled(cron = "0 50 23 * * *", zone = "America/Sao_Paulo")
+    // @Scheduled(cron = "*/10 * * * * *", zone = "America/Sao_Paulo")  // se quiser testar a cada 10 segundos
     public void aplicarRendimentosDiarios() {
     	log.info("Aplicando rendimentos diários em lotes de {} contas...", BATCH_SIZE);
         contaDao.aplicarRendimentoEmLotes(BATCH_SIZE);
