@@ -218,25 +218,48 @@ public class CartaoDao {
 		}
 	}
 
+//	public void update(Cartao cartao) {
+//		String sql = """
+//				UPDATE cartoes
+//				SET limite_credito_pre_aprovado = ?, total_gasto_mes_credito = ?,
+//				    limite_diario_transacao = ?, total_gasto_mes = ?
+//				WHERE id = ?
+//				""";
+//		BigDecimal totalGastoMes = cartao instanceof CartaoDebito ? ((CartaoDebito) cartao).getTotalGastoMes()
+//				: (cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getTotalGastoMesCredito() : null);
+//		logger.info("Atualizando cartão: id={}, total_gasto_mes={}", cartao.getId(), totalGastoMes);
+//		int rowsAffected = jdbcTemplate.update(sql,
+//				cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getLimiteCreditoPreAprovado() : null,
+//				cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getTotalGastoMesCredito() : null,
+//				cartao instanceof CartaoDebito ? ((CartaoDebito) cartao).getLimiteDiarioTransacao() : null,
+//				totalGastoMes, cartao.getId());
+//		if (rowsAffected == 0) {
+//			logger.error("Falha ao atualizar cartão {}. Verifique se o cartão existe.", cartao.getId());
+//		}
+//	}
+	
 	public void update(Cartao cartao) {
-		String sql = """
-				UPDATE cartoes
-				SET limite_credito_pre_aprovado = ?, total_gasto_mes_credito = ?,
-				    limite_diario_transacao = ?, total_gasto_mes = ?
-				WHERE id = ?
-				""";
-		BigDecimal totalGastoMes = cartao instanceof CartaoDebito ? ((CartaoDebito) cartao).getTotalGastoMes()
-				: (cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getTotalGastoMesCredito() : null);
-		logger.info("Atualizando cartão: id={}, total_gasto_mes={}", cartao.getId(), totalGastoMes);
-		int rowsAffected = jdbcTemplate.update(sql,
-				cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getLimiteCreditoPreAprovado() : null,
-				cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getTotalGastoMesCredito() : null,
-				cartao instanceof CartaoDebito ? ((CartaoDebito) cartao).getLimiteDiarioTransacao() : null,
-				totalGastoMes, cartao.getId());
-		if (rowsAffected == 0) {
-			logger.error("Falha ao atualizar cartão {}. Verifique se o cartão existe.", cartao.getId());
-		}
+	    String sql = "SELECT public.update_cartao_v1(?, ?, ?, ?, ?)";
+
+	    BigDecimal totalGastoMes = cartao instanceof CartaoDebito
+	        ? ((CartaoDebito) cartao).getTotalGastoMes()
+	        : (cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getTotalGastoMesCredito() : null);
+
+	    Integer rowsAffected = jdbcTemplate.queryForObject(sql, Integer.class,
+	        cartao.getId(),
+	        cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getLimiteCreditoPreAprovado() : null,
+	        cartao instanceof CartaoCredito ? ((CartaoCredito) cartao).getTotalGastoMesCredito() : null,
+	        cartao instanceof CartaoDebito ? ((CartaoDebito) cartao).getLimiteDiarioTransacao() : null,
+	        totalGastoMes
+	    );
+
+	    if (rowsAffected == null || rowsAffected == 0) {
+	        logger.error("Falha ao atualizar cartão {}. Verifique se o cartão existe.", cartao.getId());
+	    } else {
+	        logger.info("Cartão {} atualizado com sucesso", cartao.getId());
+	    }
 	}
+
 
 	public void atualizarLimitesCartaoCredito(Long cartaoId, BigDecimal novoLimite, BigDecimal novoTotalGasto) {
 		String sql = """
@@ -252,16 +275,29 @@ public class CartaoDao {
 		}
 	}
 
+//	public void associarFaturaAoCartao(Long cartaoId, Long faturaId) {
+//		String sql = "UPDATE cartoes SET fatura_id = ? WHERE id = ?";
+//		logger.info("Executando associarFaturaAoCartao: cartaoId={}, faturaId={}", cartaoId, faturaId);
+//		int rowsAffected = jdbcTemplate.update(sql, faturaId, cartaoId);
+//		if (rowsAffected == 0) {
+//			logger.error("Falha ao associar fatura {} ao cartão {}. Verifique se o cartão existe.", faturaId, cartaoId);
+//		} else {
+//			logger.info("Fatura {} associada ao cartão {} com sucesso", faturaId, cartaoId);
+//		}
+//	}
+	
 	public void associarFaturaAoCartao(Long cartaoId, Long faturaId) {
-		String sql = "UPDATE cartoes SET fatura_id = ? WHERE id = ?";
-		logger.info("Executando associarFaturaAoCartao: cartaoId={}, faturaId={}", cartaoId, faturaId);
-		int rowsAffected = jdbcTemplate.update(sql, faturaId, cartaoId);
-		if (rowsAffected == 0) {
-			logger.error("Falha ao associar fatura {} ao cartão {}. Verifique se o cartão existe.", faturaId, cartaoId);
-		} else {
-			logger.info("Fatura {} associada ao cartão {} com sucesso", faturaId, cartaoId);
-		}
+	    String sql = "SELECT public.associar_fatura_cartao_v1(?, ?)";
+
+	    Integer rowsAffected = jdbcTemplate.queryForObject(sql, Integer.class, cartaoId, faturaId);
+
+	    if (rowsAffected == null || rowsAffected == 0) {
+	        logger.error("Falha ao associar fatura {} ao cartão {}. Verifique se o cartão existe.", faturaId, cartaoId);
+	    } else {
+	        logger.info("Fatura {} associada ao cartão {} com sucesso", faturaId, cartaoId);
+	    }
 	}
+
 
 	public Optional<Fatura> findFaturaByCartaoId(Long cartaoId) {
 		String sql = """

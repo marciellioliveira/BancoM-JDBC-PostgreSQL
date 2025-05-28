@@ -44,10 +44,16 @@ public class TransferenciaDao {
 		return jdbcTemplate.query(sql, new TransferenciaRowMapper(), cartaoId);
 	}
 
+//	public void associarTransferenciaAFatura(Long faturaId, Long transferenciaId) {
+//		String sql = "INSERT INTO fatura_transferencias (fatura_id, transferencia_id) VALUES (?, ?)";
+//		jdbcTemplate.update(sql, faturaId, transferenciaId);
+//	}
+	
 	public void associarTransferenciaAFatura(Long faturaId, Long transferenciaId) {
-		String sql = "INSERT INTO fatura_transferencias (fatura_id, transferencia_id) VALUES (?, ?)";
-		jdbcTemplate.update(sql, faturaId, transferenciaId);
+	    String sql = "SELECT public.associar_transferencia_fatura_v1(?, ?)";
+	    jdbcTemplate.update(sql, faturaId, transferenciaId);
 	}
+
 
 	public List<Transferencia> findAll() {
 		String sql = "SELECT * FROM transferencias";

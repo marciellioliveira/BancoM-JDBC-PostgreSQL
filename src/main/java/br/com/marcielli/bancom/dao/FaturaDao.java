@@ -30,28 +30,61 @@ public class FaturaDao {
 	    }
 	
 
+//	    public Long save(Fatura fatura) {
+//	        if (fatura.getCartao().getId() == null) {
+//	        	 logger.info("Fatura get cartao id : " + fatura.getCartao().getId());
+//	            throw new IllegalArgumentException("O cartão não pode ser nulo ao salvar a fatura.");
+//	        }
+//
+//	        String sql = """
+//	            INSERT INTO faturas (cartao_id, data_vencimento, valor_total, status)
+//	            VALUES (?, ?, ?, ?)
+//	            RETURNING id
+//	        """;
+//
+//	        try {
+//	            LocalDateTime localDateTime = fatura.getDataVencimento();
+//	            Timestamp dataVencimentoSql = Timestamp.valueOf(localDateTime); 
+//
+//	            Long faturaId = jdbcTemplate.queryForObject(sql, Long.class, 
+//	                fatura.getCartao().getId(), 
+//	                dataVencimentoSql,  
+//	                fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO,
+//	                fatura.isStatus());
+//	            	
+//
+//	            logger.info("Fatura salva com ID: " + faturaId);
+//
+//	            if (faturaId == null) {
+//	                throw new IllegalStateException("Falha ao obter ID gerado para fatura");
+//	            }
+//
+//	            fatura.setId(faturaId);
+//	            return faturaId;
+//	        } catch (Exception e) {
+//	            logger.error("Erro ao salvar fatura: " + e.getMessage(), e);
+//	            throw e;
+//	        }
+//	    }
+
 	    public Long save(Fatura fatura) {
 	        if (fatura.getCartao().getId() == null) {
-	        	 logger.info("Fatura get cartao id : " + fatura.getCartao().getId());
+	            logger.info("Fatura get cartao id : " + fatura.getCartao().getId());
 	            throw new IllegalArgumentException("O cartão não pode ser nulo ao salvar a fatura.");
 	        }
 
-	        String sql = """
-	            INSERT INTO faturas (cartao_id, data_vencimento, valor_total, status)
-	            VALUES (?, ?, ?, ?)
-	            RETURNING id
-	        """;
+	        String sql = "SELECT public.insert_fatura_v1(?, ?, ?, ?)";
 
 	        try {
 	            LocalDateTime localDateTime = fatura.getDataVencimento();
-	            Timestamp dataVencimentoSql = Timestamp.valueOf(localDateTime); 
+	            Timestamp dataVencimentoSql = Timestamp.valueOf(localDateTime);
 
-	            Long faturaId = jdbcTemplate.queryForObject(sql, Long.class, 
-	                fatura.getCartao().getId(), 
-	                dataVencimentoSql,  
+	            Long faturaId = jdbcTemplate.queryForObject(sql, Long.class,
+	                fatura.getCartao().getId(),
+	                dataVencimentoSql,
 	                fatura.getValorTotal() != null ? fatura.getValorTotal() : BigDecimal.ZERO,
-	                fatura.isStatus());
-	            	
+	                fatura.isStatus()
+	            );
 
 	            logger.info("Fatura salva com ID: " + faturaId);
 
@@ -69,20 +102,32 @@ public class FaturaDao {
 
 
 	    
+//	    public void update(Fatura fatura) {
+//	        String sql = """
+//	            UPDATE faturas 
+//	            SET valor_total = ?,
+//	                data_vencimento = ?,
+//	                status = ?
+//	            WHERE id = ?
+//	            """;
+//	        jdbcTemplate.update(sql, 
+//	            fatura.getValorTotal(),
+//	            fatura.getDataVencimento(),
+//	            fatura.isStatus(),
+//	            fatura.getId());
+//	    }
+	    
 	    public void update(Fatura fatura) {
-	        String sql = """
-	            UPDATE faturas 
-	            SET valor_total = ?,
-	                data_vencimento = ?,
-	                status = ?
-	            WHERE id = ?
-	            """;
-	        jdbcTemplate.update(sql, 
+	        String sql = "SELECT public.update_fatura_v1(?, ?, ?, ?)";
+	        jdbcTemplate.update(sql,
+	            fatura.getId(),
 	            fatura.getValorTotal(),
-	            fatura.getDataVencimento(),
-	            fatura.isStatus(),
-	            fatura.getId());
+	            Timestamp.valueOf(fatura.getDataVencimento()),
+	            fatura.isStatus()
+	        );
 	    }
+
+
 	    
 	    public void atualizarTotalFatura(Long faturaId, BigDecimal valor) {
 	        String sql = """
@@ -93,12 +138,32 @@ public class FaturaDao {
 	        jdbcTemplate.update(sql, valor, faturaId);
 	    }
 
+//	    public Optional<Fatura> findByCartaoId(Long cartaoId) {
+//	        String sql = """
+//	            SELECT f.id, f.cartao_id, f.valor_total, f.data_vencimento, f.status
+//	            FROM faturas f
+//	            WHERE f.cartao_id = ?
+//	            """;
+//
+//	        List<Fatura> faturas = jdbcTemplate.query(sql, (rs, rowNum) -> {
+//	            Fatura fatura = new Fatura();
+//	            fatura.setId(rs.getLong("id"));
+//	            fatura.setValorTotal(rs.getBigDecimal("valor_total"));
+//	            fatura.setDataVencimento(rs.getTimestamp("data_vencimento").toLocalDateTime());
+//	            fatura.setStatus(rs.getBoolean("status"));
+//	            return fatura;
+//	        }, cartaoId); 
+//
+//
+//	        if (faturas.isEmpty()) {
+//	            return Optional.empty();
+//	        } else {
+//	            return Optional.of(faturas.get(0));
+//	        }
+//	    }
+	    
 	    public Optional<Fatura> findByCartaoId(Long cartaoId) {
-	        String sql = """
-	            SELECT f.id, f.cartao_id, f.valor_total, f.data_vencimento, f.status
-	            FROM faturas f
-	            WHERE f.cartao_id = ?
-	            """;
+	        String sql = "SELECT * FROM public.find_fatura_by_cartao_id_v1(?)";
 
 	        List<Fatura> faturas = jdbcTemplate.query(sql, (rs, rowNum) -> {
 	            Fatura fatura = new Fatura();
@@ -107,8 +172,7 @@ public class FaturaDao {
 	            fatura.setDataVencimento(rs.getTimestamp("data_vencimento").toLocalDateTime());
 	            fatura.setStatus(rs.getBoolean("status"));
 	            return fatura;
-	        }, cartaoId); 
-
+	        }, cartaoId);
 
 	        if (faturas.isEmpty()) {
 	            return Optional.empty();
@@ -116,6 +180,7 @@ public class FaturaDao {
 	            return Optional.of(faturas.get(0));
 	        }
 	    }
+
 	    
 	    public void removerVinculoFaturaTransferencia(Long faturaId, Long transferenciaId) {
 	        String sql = """

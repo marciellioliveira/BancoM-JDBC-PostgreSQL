@@ -233,32 +233,76 @@ public class ContaDao {
 	    jdbcTemplate.query(sql, ps -> ps.setInt(1, batchSize), rs -> {});
 	}
 
+//	public void update(Conta conta) {
+//		String sql = """
+//				    UPDATE contas SET
+//				        saldo_conta = ?,
+//				        categoria_conta = ?,
+//				        taxa_manutencao_mensal = ?,
+//				        taxa_acresc_rend = ?,
+//				        taxa_mensal = ?
+//				    WHERE id = ?
+//				""";
+//
+//		Object[] params;
+//
+//		if (conta instanceof ContaCorrente cc) {
+//			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(),
+//					cc.getTaxaManutencaoMensal(), null, null, conta.getId() };
+//		} else if (conta instanceof ContaPoupanca cp) {
+//			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(), null,
+//					cp.getTaxaAcrescRend(), cp.getTaxaMensal(), conta.getId() };
+//		} else {
+//			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(), null, null, null,
+//					conta.getId() };
+//		}
+//
+//		jdbcTemplate.update(sql, params);
+//	}
+	
 	public void update(Conta conta) {
-		String sql = """
-				    UPDATE contas SET
-				        saldo_conta = ?,
-				        categoria_conta = ?,
-				        taxa_manutencao_mensal = ?,
-				        taxa_acresc_rend = ?,
-				        taxa_mensal = ?
-				    WHERE id = ?
-				""";
+	    String sql = "SELECT public.update_conta_v1(?, ?, ?, ?, ?, ?)";
 
-		Object[] params;
+	    Object[] params;
 
-		if (conta instanceof ContaCorrente cc) {
-			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(),
-					cc.getTaxaManutencaoMensal(), null, null, conta.getId() };
-		} else if (conta instanceof ContaPoupanca cp) {
-			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(), null,
-					cp.getTaxaAcrescRend(), cp.getTaxaMensal(), conta.getId() };
-		} else {
-			params = new Object[] { conta.getSaldoConta(), conta.getCategoriaConta().name(), null, null, null,
-					conta.getId() };
-		}
+	    if (conta instanceof ContaCorrente cc) {
+	        params = new Object[] {
+	            conta.getId(),
+	            conta.getSaldoConta(),
+	            conta.getCategoriaConta().name(),
+	            cc.getTaxaManutencaoMensal(),
+	            null,
+	            null
+	        };
+	    } else if (conta instanceof ContaPoupanca cp) {
+	        params = new Object[] {
+	            conta.getId(),
+	            conta.getSaldoConta(),
+	            conta.getCategoriaConta().name(),
+	            null,
+	            cp.getTaxaAcrescRend(),
+	            cp.getTaxaMensal()
+	        };
+	    } else {
+	        params = new Object[] {
+	            conta.getId(),
+	            conta.getSaldoConta(),
+	            conta.getCategoriaConta().name(),
+	            null,
+	            null,
+	            null
+	        };
+	    }
 
-		jdbcTemplate.update(sql, params);
+	    Integer rowsAffected = jdbcTemplate.queryForObject(sql, Integer.class, params);
+
+	    if (rowsAffected == null || rowsAffected == 0) {
+	        logger.error("Falha ao atualizar conta {}. Verifique se a conta existe.", conta.getId());
+	    } else {
+	        logger.info("Conta {} atualizada com sucesso", conta.getId());
+	    }
 	}
+
 
 //	public void atualizarTransferenciasEnviadas(Long contaId, Transferencia transferencia) {
 //		Conta conta = findById(contaId).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
