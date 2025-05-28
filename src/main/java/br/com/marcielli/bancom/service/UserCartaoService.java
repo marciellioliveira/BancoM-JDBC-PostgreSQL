@@ -192,9 +192,9 @@ public class UserCartaoService {
 	    
 	    String username = authentication.getName();
 	    
-	    if(cartaoDao.findByUsername(username).isEmpty()) {
-	        throw new CartaoNaoEncontradoException("Nenhum cartão encontrado para o usuário: " + username);
-	    }
+//	    if(cartaoDao.findByUsername(username).isEmpty()) {
+//	        throw new CartaoNaoEncontradoException("Nenhum cartão encontrado para o usuário: " + username);
+//	    }
 
 	    if ("ROLE_ADMIN".equals(role)) {
 	        // ADMIN pode alterar qualquer cartão

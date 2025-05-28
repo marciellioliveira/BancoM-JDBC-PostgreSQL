@@ -96,64 +96,81 @@ public class CartaoDao {
 		}).collect(Collectors.toList());
 		jdbcTemplate.batchUpdate(sqlSeguro, batchArgs);
 	}
-
+	
 	public Optional<Cartao> findById(Long id) {
-		logger.info("Iniciando busca pelo cartão com ID: {}", id);
-		String sql = """
-					SELECT
-				    c.id,
-				    c.tipo_conta,
-				    c.categoria_conta,
-				    c.tipo_cartao,
-				    c.numero_cartao,
-				    c.status,
-				    c.senha,
-				    c.limite_credito_pre_aprovado,
-				    c.taxa_utilizacao,
-				    c.taxa_seguro_viagem,
-				    c.total_gasto_mes_credito,
-				    c.limite_diario_transacao,
-				    c.total_gasto_mes,
-				    c.conta_id AS cartao_conta_id,
-				    c.fatura_id AS cartao_fatura_id,
-				    ct.id AS conta_id,
-				    ct.cliente_id,
-				    ct.tipo_conta AS conta_tipo_conta,
-				    ct.categoria_conta AS conta_categoria_conta,
-				    ct.saldo_conta,
-				    ct.numero_conta,
-				    ct.pix_aleatorio,
-				    ct.status AS conta_status,
-				    ct.taxa_manutencao_mensal,
-				    ct.taxa_acresc_rend,
-				    ct.taxa_mensal,
-				    cli.id AS cliente_id,
-				    cli.nome AS cliente_nome,
-				    cli.cpf AS cliente_cpf,
-				    cli.cliente_ativo AS cliente_ativo,
-				    cli.user_id AS cliente_user_id,
-				    f.id AS fatura_id,
-				    f.cartao_id AS fatura_cartao_id,
-				    f.valor_total AS fatura_valor_total,
-				    f.data_vencimento AS fatura_data_vencimento
-				FROM cartoes c
-				JOIN contas ct ON c.conta_id = ct.id
-				JOIN clientes cli ON ct.cliente_id = cli.id
-				LEFT JOIN faturas f ON c.fatura_id = f.id
-				WHERE c.id = ?
-						    """;
-		try {
-			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id);
-			logger.info("Cartão encontrado: {}", cartao);
-			return Optional.of(cartao);
-		} catch (EmptyResultDataAccessException e) {
-			logger.error("Nenhum cartão encontrado para o ID: {}", id, e);
-			throw new CartaoNaoEncontradoException("Cartão não encontrado");
-		} catch (Exception e) {
-			logger.error("Erro inesperado ao buscar o cartão com ID: {}", id, e);
-			throw e;
-		}
+	    logger.info("Iniciando busca pelo cartão com ID: {}", id);
+	    String sql = "SELECT * FROM public.find_cartao_by_id_v1(?)";
+	    try {
+	        Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id);
+	        logger.info("Cartão encontrado: {}", cartao);
+	        return Optional.of(cartao);
+	    } catch (EmptyResultDataAccessException e) {
+	        logger.error("Nenhum cartão encontrado para o ID: {}", id, e);
+	        throw new CartaoNaoEncontradoException("Cartão não encontrado");
+	    } catch (Exception e) {
+	        logger.error("Erro inesperado ao buscar o cartão com ID: {}", id, e);
+	        throw e;
+	    }
 	}
+
+
+//	public Optional<Cartao> findById(Long id) {
+//		logger.info("Iniciando busca pelo cartão com ID: {}", id);
+//		String sql = """
+//					SELECT
+//				    c.id,
+//				    c.tipo_conta,
+//				    c.categoria_conta,
+//				    c.tipo_cartao,
+//				    c.numero_cartao,
+//				    c.status,
+//				    c.senha,
+//				    c.limite_credito_pre_aprovado,
+//				    c.taxa_utilizacao,
+//				    c.taxa_seguro_viagem,
+//				    c.total_gasto_mes_credito,
+//				    c.limite_diario_transacao,
+//				    c.total_gasto_mes,
+//				    c.conta_id AS cartao_conta_id,
+//				    c.fatura_id AS cartao_fatura_id,
+//				    ct.id AS conta_id,
+//				    ct.cliente_id,
+//				    ct.tipo_conta AS conta_tipo_conta,
+//				    ct.categoria_conta AS conta_categoria_conta,
+//				    ct.saldo_conta,
+//				    ct.numero_conta,
+//				    ct.pix_aleatorio,
+//				    ct.status AS conta_status,
+//				    ct.taxa_manutencao_mensal,
+//				    ct.taxa_acresc_rend,
+//				    ct.taxa_mensal,
+//				    cli.id AS cliente_id,
+//				    cli.nome AS cliente_nome,
+//				    cli.cpf AS cliente_cpf,
+//				    cli.cliente_ativo AS cliente_ativo,
+//				    cli.user_id AS cliente_user_id,
+//				    f.id AS fatura_id,
+//				    f.cartao_id AS fatura_cartao_id,
+//				    f.valor_total AS fatura_valor_total,
+//				    f.data_vencimento AS fatura_data_vencimento
+//				FROM cartoes c
+//				JOIN contas ct ON c.conta_id = ct.id
+//				JOIN clientes cli ON ct.cliente_id = cli.id
+//				LEFT JOIN faturas f ON c.fatura_id = f.id
+//				WHERE c.id = ?
+//						    """;
+//		try {
+//			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id);
+//			logger.info("Cartão encontrado: {}", cartao);
+//			return Optional.of(cartao);
+//		} catch (EmptyResultDataAccessException e) {
+//			logger.error("Nenhum cartão encontrado para o ID: {}", id, e);
+//			throw new CartaoNaoEncontradoException("Cartão não encontrado");
+//		} catch (Exception e) {
+//			logger.error("Erro inesperado ao buscar o cartão com ID: {}", id, e);
+//			throw e;
+//		}
+//	}
 
 	public List<Cartao> findAll() {
 		String sql = "SELECT * FROM public.find_all_cartoes_v1()";
@@ -165,56 +182,44 @@ public class CartaoDao {
 	    return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
 	}
 
+	public Optional<Cartao> findByIdAndUsername(Long id, String username) {
+	    String sql = "SELECT * FROM public.find_cartao_by_id_and_username_v1(?, ?)";
+	    try {
+	        Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id, username);
+	        return Optional.ofNullable(cartao);
+	    } catch (EmptyResultDataAccessException e) {
+	        return Optional.empty();
+	    }
+	}
 
-	
-//	public List<Cartao> findByUsername(String username) {
+
+//	public Optional<Cartao> findByIdAndUsername(Long id, String username) {
 //		String sql = """
 //				SELECT
 //				    c.*,
-//				    ct.id AS conta_id,
-//				    ct.saldo_conta,
-//				    ct.numero_conta,
-//				    ct.status AS conta_status,
-//				    ct.id AS cliente_id,
+//				    co.id AS conta_id,
+//				    co.cliente_id,
+//				    co.saldo_conta,
+//				    co.numero_conta,
+//				    co.status AS conta_status,
+//				    cl.id AS cliente_id,
 //				    cl.nome AS cliente_nome,
 //				    cl.cpf AS cliente_cpf,
-//				    cl.cliente_ativo
+//				    cl.cliente_ativo,
+//				    u.username
 //				FROM cartoes c
-//				INNER JOIN contas ct ON c.conta_id = ct.id
-//				INNER JOIN clientes cl ON ct.cliente_id = cl.id
-//				INNER JOIN users u ON cl.user_id = u.id
-//				WHERE u.username = ?
+//				JOIN contas co ON c.conta_id = co.id
+//				JOIN clientes cl ON co.cliente_id = cl.id
+//				JOIN users u ON cl.user_id = u.id
+//				WHERE c.id = ? AND u.username = ?
 //				""";
-//		return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
+//		try {
+//			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id, username);
+//			return Optional.ofNullable(cartao);
+//		} catch (EmptyResultDataAccessException e) {
+//			return Optional.empty();
+//		}
 //	}
-
-	public Optional<Cartao> findByIdAndUsername(Long id, String username) {
-		String sql = """
-				SELECT
-				    c.*,
-				    co.id AS conta_id,
-				    co.cliente_id,
-				    co.saldo_conta,
-				    co.numero_conta,
-				    co.status AS conta_status,
-				    cl.id AS cliente_id,
-				    cl.nome AS cliente_nome,
-				    cl.cpf AS cliente_cpf,
-				    cl.cliente_ativo,
-				    u.username
-				FROM cartoes c
-				JOIN contas co ON c.conta_id = co.id
-				JOIN clientes cl ON co.cliente_id = cl.id
-				JOIN users u ON cl.user_id = u.id
-				WHERE c.id = ? AND u.username = ?
-				""";
-		try {
-			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id, username);
-			return Optional.ofNullable(cartao);
-		} catch (EmptyResultDataAccessException e) {
-			return Optional.empty();
-		}
-	}
 
 	public Cartao save(Cartao cartao) {
 		String sql = "UPDATE cartoes SET senha = ? WHERE id = ?";
