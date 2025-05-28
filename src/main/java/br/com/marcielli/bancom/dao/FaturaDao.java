@@ -118,13 +118,13 @@ public class FaturaDao {
 //	    }
 	    
 	    public void update(Fatura fatura) {
-	        String sql = "SELECT public.update_fatura_v1(?, ?, ?, ?)";
-	        jdbcTemplate.update(sql,
-	            fatura.getId(),
-	            fatura.getValorTotal(),
-	            Timestamp.valueOf(fatura.getDataVencimento()),
-	            fatura.isStatus()
-	        );
+	    	String sql = "CALL public.update_fatura_v1(?, ?, ?, ?)";
+	    	jdbcTemplate.update(sql,
+	    	    fatura.getId(),
+	    	    fatura.getValorTotal(),
+	    	    Timestamp.valueOf(fatura.getDataVencimento()),
+	    	    fatura.isStatus()
+	    	);
 	    }
 
 

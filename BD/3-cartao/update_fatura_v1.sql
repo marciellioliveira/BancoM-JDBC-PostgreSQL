@@ -1,10 +1,10 @@
-CREATE OR REPLACE FUNCTION public.update_fatura_v1(
-    p_id BIGINT,
-    p_valor_total NUMERIC,
-    p_data_vencimento TIMESTAMP,
-    p_status BOOLEAN
-)
-RETURNS VOID AS $$
+CREATE OR REPLACE PROCEDURE public.update_fatura_v1(
+    p_id bigint,
+    p_valor_total numeric,
+    p_data_vencimento timestamp without time zone,
+    p_status boolean)
+LANGUAGE plpgsql
+AS $$
 BEGIN
     UPDATE faturas 
     SET valor_total = p_valor_total,
@@ -12,4 +12,4 @@ BEGIN
         status = p_status
     WHERE id = p_id;
 END;
-$$ LANGUAGE plpgsql;
+$$;
