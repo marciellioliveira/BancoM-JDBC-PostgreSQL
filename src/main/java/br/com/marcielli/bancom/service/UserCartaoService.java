@@ -308,7 +308,6 @@ public class UserCartaoService {
 		}
 
 		return cartaoDao.desativarCartao(idCartao);
-		//return true;
 	}
 
 	public Conta verificarContaAssociadaAoCartao(Long idCartao) {
