@@ -122,7 +122,7 @@ public class ClienteDao {
 //		return cliente;
 //	}, id);
 //}
-	
+
 //	public List<Cliente> findByNomeContainingIgnoreCase(String nome) {
 //	String sql = "SELECT id, nome, cpf, cliente_ativo FROM clientes WHERE nome ILIKE ?";
 //	return jdbcTemplate.query(sql, new ClienteRowMapper(), "%" + nome + "%");
@@ -130,17 +130,11 @@ public class ClienteDao {
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
 	public Optional<Cliente> findById(Long id) {
-	    String sql = "SELECT * FROM public.find_cliente_by_id_v1(?)";
-	    List<Cliente> clientes = jdbcTemplate.query(sql, new ClienteRowMapper(), id);
-	    return clientes.isEmpty() ? Optional.empty() : Optional.of(clientes.get(0));
+		String sql = "SELECT * FROM public.find_cliente_by_id_v1(?)";
+		List<Cliente> clientes = jdbcTemplate.query(sql, new ClienteRowMapper(), id);
+		return clientes.isEmpty() ? Optional.empty() : Optional.of(clientes.get(0));
 	}
-
-
-
-
-	
 
 	public Cliente findByIdWithContasAndTransferencias(Long clienteId) {
 		String sql = """

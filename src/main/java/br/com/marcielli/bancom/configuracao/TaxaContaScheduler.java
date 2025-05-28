@@ -20,15 +20,15 @@ public class TaxaContaScheduler {
 
 	// Taxas de manutenção - Dia 1 de cada mês às 2h
     @Scheduled(cron = "0 0 2 1 * *", zone = "America/Sao_Paulo")
-    //@Scheduled(cron = "*/10 * * * * *", zone = "America/Sao_Paulo")  // se quiser testar
+    //@Scheduled(cron = "*/10 * * * * *", zone = "America/Sao_Paulo")  // se quiser testar a cada 10 segundos
     public void aplicarTaxasMensais() {
     	log.info("Aplicando taxas mensais em lotes de {} contas...", BATCH_SIZE);
         contaDao.aplicarTaxaManutencaoEmLotes(BATCH_SIZE);
     }
 
     // Rendimentos - Diário às 23h50
-    @Scheduled(cron = "0 50 23 * * *", zone = "America/Sao_Paulo")
-    // @Scheduled(cron = "*/10 * * * * *", zone = "America/Sao_Paulo")  // se quiser testar
+    //@Scheduled(cron = "0 50 23 * * *", zone = "America/Sao_Paulo")
+     @Scheduled(cron = "*/10 * * * * *", zone = "America/Sao_Paulo")  // se quiser testar a cada 10 segundos
     public void aplicarRendimentosDiarios() {
     	log.info("Aplicando rendimentos diários em lotes de {} contas...", BATCH_SIZE);
         contaDao.aplicarRendimentoEmLotes(BATCH_SIZE);
