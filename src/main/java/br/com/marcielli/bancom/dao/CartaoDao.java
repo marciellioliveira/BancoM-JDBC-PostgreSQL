@@ -161,25 +161,32 @@ public class CartaoDao {
 	}
 
 	public List<Cartao> findByUsername(String username) {
-		String sql = """
-				SELECT
-				    c.*,
-				    ct.id AS conta_id,
-				    ct.saldo_conta,
-				    ct.numero_conta,
-				    ct.status AS conta_status,
-				    ct.id AS cliente_id,
-				    cl.nome AS cliente_nome,
-				    cl.cpf AS cliente_cpf,
-				    cl.cliente_ativo
-				FROM cartoes c
-				INNER JOIN contas ct ON c.conta_id = ct.id
-				INNER JOIN clientes cl ON ct.cliente_id = cl.id
-				INNER JOIN users u ON cl.user_id = u.id
-				WHERE u.username = ?
-				""";
-		return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
+	    String sql = "SELECT * FROM public.find_cartoes_by_username_v1(?)";
+	    return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
 	}
+
+
+	
+//	public List<Cartao> findByUsername(String username) {
+//		String sql = """
+//				SELECT
+//				    c.*,
+//				    ct.id AS conta_id,
+//				    ct.saldo_conta,
+//				    ct.numero_conta,
+//				    ct.status AS conta_status,
+//				    ct.id AS cliente_id,
+//				    cl.nome AS cliente_nome,
+//				    cl.cpf AS cliente_cpf,
+//				    cl.cliente_ativo
+//				FROM cartoes c
+//				INNER JOIN contas ct ON c.conta_id = ct.id
+//				INNER JOIN clientes cl ON ct.cliente_id = cl.id
+//				INNER JOIN users u ON cl.user_id = u.id
+//				WHERE u.username = ?
+//				""";
+//		return jdbcTemplate.query(sql, new CartaoRowMapper(), username);
+//	}
 
 	public Optional<Cartao> findByIdAndUsername(Long id, String username) {
 		String sql = """

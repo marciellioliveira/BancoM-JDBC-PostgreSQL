@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.find_all_cartoes_v1()
+CREATE OR REPLACE FUNCTION public.find_cartoes_by_username_v1(p_username VARCHAR)
 RETURNS TABLE (
     id BIGINT,
     tipo_conta VARCHAR,
@@ -14,23 +14,17 @@ RETURNS TABLE (
     limite_diario_transacao NUMERIC,
     total_gasto_mes NUMERIC,
     conta_id BIGINT,
-    conta_tipo_conta VARCHAR,
-    conta_categoria_conta VARCHAR,
     saldo_conta NUMERIC,
+    numero_conta VARCHAR,
     conta_status BOOLEAN,
     cliente_id BIGINT,
     cliente_nome VARCHAR,
     cliente_cpf BIGINT,
-    cliente_ativo BOOLEAN,
-    fatura_id BIGINT,
-    fatura_valor_total NUMERIC,
-    fatura_data_vencimento TIMESTAMP
-) 
-LANGUAGE plpgsql
-AS $$
+    cliente_ativo BOOLEAN
+) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         c.id,
         c.tipo_conta,
         c.categoria_conta,
@@ -45,20 +39,17 @@ BEGIN
         c.limite_diario_transacao,
         c.total_gasto_mes,
         ct.id,
-        ct.tipo_conta,
-        ct.categoria_conta,
         ct.saldo_conta,
+        ct.numero_conta,
         ct.status,
-        cli.id,
-        cli.nome,
-        cli.cpf,
-        cli.cliente_ativo,
-        f.id,
-        f.valor_total,
-        f.data_vencimento
+        cl.id,
+        cl.nome,
+        cl.cpf,
+        cl.cliente_ativo
     FROM cartoes c
-    JOIN contas ct ON c.conta_id = ct.id
-    JOIN clientes cli ON ct.cliente_id = cli.id
-    LEFT JOIN faturas f ON c.fatura_id = f.id;
+    INNER JOIN contas ct ON c.conta_id = ct.id
+    INNER JOIN clientes cl ON ct.cliente_id = cl.id
+    INNER JOIN users u ON cl.user_id = u.id
+    WHERE u.username = p_username;
 END;
-$$;
+$$ LANGUAGE plpgsql;

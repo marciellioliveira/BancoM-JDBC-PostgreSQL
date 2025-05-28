@@ -41,7 +41,7 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
         }
 
         cartao.setId(rs.getLong("id"));
-        cartao.setTipoConta(parseEnum(TipoConta.class, rs.getString("cartao_tipo_conta")));
+        cartao.setTipoConta(parseEnum(TipoConta.class, rs.getString("tipo_conta")));
         cartao.setCategoriaConta(parseEnum(CategoriaConta.class, rs.getString("categoria_conta")));
         cartao.setTipoCartao(parseEnum(TipoCartao.class, rs.getString("tipo_cartao")));
         cartao.setNumeroCartao(rs.getString("numero_cartao"));
@@ -99,8 +99,8 @@ public class CartaoRowMapper implements RowMapper<Cartao> {
     private Conta mapConta(ResultSet rs, long contaId) throws SQLException {
         Conta conta = new Conta();
         conta.setId(contaId);
-        conta.setTipoConta(parseEnum(TipoConta.class, rs.getString("conta_tipo_conta")));
-        conta.setCategoriaConta(parseEnum(CategoriaConta.class, rs.getString("conta_categoria_conta")));
+        conta.setTipoConta(parseEnum(TipoConta.class, rs.getString("tipo_conta")));
+        conta.setCategoriaConta(parseEnum(CategoriaConta.class, rs.getString("categoria_conta")));
         conta.setStatus(rs.getBoolean("conta_status"));      
         conta.setSaldoConta(rs.getBigDecimal("saldo_conta"));
         
