@@ -38,9 +38,9 @@ public class CartaoDao {
 		this.faturaWithTransferenciaRowMapper = faturaWithTransferenciaRowMapper;
 	}
 
-	public Cartao saveWithRelations(Cartao cartao) {
+	public Cartao saveWithRelations(Cartao cartao) { //professor fez
 
-		String sqlCartao = "SELECT * FROM public.inserir_cartao_v1(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sqlCartao = "SELECT * FROM public.inserir_cartao_com_relacoes_v1(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		Long cartaoId = jdbcTemplate.queryForObject(sqlCartao, Long.class, cartao.getTipoConta().toString(),
 				cartao.getCategoriaConta().toString(), cartao.getTipoCartao().toString(), cartao.getNumeroCartao(),
@@ -68,11 +68,18 @@ public class CartaoDao {
 		return cartao;
 	}
 
+//	public boolean existeCartao(Long idCartao) {
+//		String sql = "SELECT COUNT(1) FROM cartoes WHERE id = ?";
+//		Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idCartao);
+//		return count != null && count > 0;
+//	}
+	
 	public boolean existeCartao(Long idCartao) {
-		String sql = "SELECT COUNT(1) FROM cartoes WHERE id = ?";
-		Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idCartao);
-		return count != null && count > 0;
+	    String sql = "SELECT public.existe_cartao_v1(?)";
+	    Boolean exists = jdbcTemplate.queryForObject(sql, Boolean.class, idCartao);
+	    return exists != null && exists;
 	}
+
 
 	private void insertFatura(Long cartaoId, Fatura fatura) {
 		String sqlFatura = """
@@ -191,59 +198,54 @@ public class CartaoDao {
 	        return Optional.empty();
 	    }
 	}
-
-
-//	public Optional<Cartao> findByIdAndUsername(Long id, String username) {
-//		String sql = """
-//				SELECT
-//				    c.*,
-//				    co.id AS conta_id,
-//				    co.cliente_id,
-//				    co.saldo_conta,
-//				    co.numero_conta,
-//				    co.status AS conta_status,
-//				    cl.id AS cliente_id,
-//				    cl.nome AS cliente_nome,
-//				    cl.cpf AS cliente_cpf,
-//				    cl.cliente_ativo,
-//				    u.username
-//				FROM cartoes c
-//				JOIN contas co ON c.conta_id = co.id
-//				JOIN clientes cl ON co.cliente_id = cl.id
-//				JOIN users u ON cl.user_id = u.id
-//				WHERE c.id = ? AND u.username = ?
-//				""";
-//		try {
-//			Cartao cartao = jdbcTemplate.queryForObject(sql, new CartaoRowMapper(), id, username);
-//			return Optional.ofNullable(cartao);
-//		} catch (EmptyResultDataAccessException e) {
-//			return Optional.empty();
-//		}
-//	}
-
-	public Cartao save(Cartao cartao) {
-		String sql = "UPDATE cartoes SET senha = ? WHERE id = ?";
-		jdbcTemplate.update(sql, cartao.getSenha(), cartao.getId());
-		return cartao;
+	
+	public Cartao alterarSenhaCartao(Cartao cartao) {
+	    String sql = "SELECT public.alterar_senha_cartao_v1(?, ?)";
+	    String result = jdbcTemplate.queryForObject(sql, String.class, cartao.getId(), cartao.getSenha());
+	    if (!"OK".equals(result)) {
+	    	logger.info("Resultado da função alterar_senha_cartao_v1: {}", result);
+	        throw new CartaoNaoEncontradoException("Erro ao alterar senha do cartão no banco!");
+	    }
+	    return cartao;
 	}
+
 
 	// Método para desativar
 	public boolean desativarCartao(Long id) {
-		String sql = "UPDATE cartoes SET status = false WHERE id = ?";
-		int rowsAffected = jdbcTemplate.update(sql, id);
-		return rowsAffected > 0;
+	    String sql = "SELECT public.desativar_cartao_v1(?)";
+	    Integer rowsAffected = jdbcTemplate.queryForObject(sql, Integer.class, id);
+
+	    return rowsAffected != null && rowsAffected > 0;
 	}
 
+//	public boolean desativarCartao(Long id) {
+//		String sql = "UPDATE cartoes SET status = false WHERE id = ?";
+//		int rowsAffected = jdbcTemplate.update(sql, id);
+//		return rowsAffected > 0;
+//	}
+
+//	public boolean ativarCartao(Long idCartao) {
+//		String sql = "UPDATE cartoes SET status = true WHERE id = ?";
+//		int rowsAffected = jdbcTemplate.update(sql, idCartao);
+//
+//		if (rowsAffected == 0) {
+//			throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idCartao, 1);
+//		}
+//
+//		return true;
+//	}
+	
 	public boolean ativarCartao(Long idCartao) {
-		String sql = "UPDATE cartoes SET status = true WHERE id = ?";
-		int rowsAffected = jdbcTemplate.update(sql, idCartao);
+	    String sql = "SELECT public.ativar_cartao_v1(?)";
+	    Integer rowsAffected = jdbcTemplate.queryForObject(sql, Integer.class, idCartao);
 
-		if (rowsAffected == 0) {
-			throw new EmptyResultDataAccessException("Nenhuma conta encontrada com ID: " + idCartao, 1);
-		}
+	    if (rowsAffected == null || rowsAffected == 0) {
+	        throw new EmptyResultDataAccessException("Nenhum cartão encontrado com ID: " + idCartao, 1);
+	    }
 
-		return true;
+	    return true;
 	}
+
 
 	// Método que busca todos os cartões associados a uma conta
 	public List<Cartao> findByContaId(Long contaId) {

@@ -99,7 +99,7 @@ public class UserCartaoController {
 		boolean deletado = cartaoService.delete(id, authentication);
 
 		if (deletado) {
-			return ResponseEntity.ok("Cartão deletado com sucesso");
+			return ResponseEntity.ok("Cartão desativado com sucesso");
 		} else {
 			return new ResponseEntity<String>("Tente novamente mais tarde.", HttpStatus.NOT_ACCEPTABLE);
 		}

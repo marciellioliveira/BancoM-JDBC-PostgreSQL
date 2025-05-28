@@ -1,0 +1,83 @@
+CREATE OR REPLACE FUNCTION public.find_cartao_by_id_v1(p_id BIGINT)
+RETURNS TABLE (
+    id BIGINT,
+    tipo_conta VARCHAR,
+    categoria_conta VARCHAR,
+    tipo_cartao VARCHAR,
+    numero_cartao VARCHAR,
+    status BOOLEAN,
+    senha VARCHAR,
+    limite_credito_pre_aprovado NUMERIC,
+    taxa_utilizacao NUMERIC,
+    taxa_seguro_viagem NUMERIC,
+    total_gasto_mes_credito NUMERIC,
+    limite_diario_transacao NUMERIC,
+    total_gasto_mes NUMERIC,
+    conta_id BIGINT,
+    fatura_id BIGINT,
+    conta_id_ref BIGINT,
+    cliente_id BIGINT,
+    conta_tipo_conta VARCHAR,
+    conta_categoria_conta VARCHAR,
+    saldo_conta NUMERIC,
+    numero_conta VARCHAR,
+    pix_aleatorio VARCHAR,
+    conta_status BOOLEAN,
+    taxa_manutencao_mensal NUMERIC,
+    taxa_acresc_rend NUMERIC,
+    taxa_mensal NUMERIC,
+    cliente_id_ref BIGINT,
+    cliente_nome VARCHAR,
+    cliente_cpf BIGINT,
+    cliente_ativo BOOLEAN,
+    cliente_user_id INTEGER,
+    fatura_id_ref BIGINT,
+    fatura_cartao_id BIGINT,
+    fatura_valor_total NUMERIC,
+    fatura_data_vencimento TIMESTAMP
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        c.id,
+        c.tipo_conta,
+        c.categoria_conta,
+        c.tipo_cartao,
+        c.numero_cartao,
+        c.status,
+        c.senha,
+        c.limite_credito_pre_aprovado,
+        c.taxa_utilizacao,
+        c.taxa_seguro_viagem,
+        c.total_gasto_mes_credito,
+        c.limite_diario_transacao,
+        c.total_gasto_mes,
+        c.conta_id,
+        c.fatura_id,
+        ct.id,
+        ct.cliente_id,
+        ct.tipo_conta,
+        ct.categoria_conta,
+        ct.saldo_conta,
+        ct.numero_conta,
+        ct.pix_aleatorio,
+        ct.status,
+        ct.taxa_manutencao_mensal,
+        ct.taxa_acresc_rend,
+        ct.taxa_mensal,
+        cli.id,
+        cli.nome,
+        cli.cpf,
+        cli.cliente_ativo,
+        cli.user_id,
+        f.id,
+        f.cartao_id,
+        f.valor_total,
+        f.data_vencimento
+    FROM cartoes c
+    JOIN contas ct ON c.conta_id = ct.id
+    JOIN clientes cli ON ct.cliente_id = cli.id
+    LEFT JOIN faturas f ON c.fatura_id = f.id
+    WHERE c.id = p_id;
+END;
+$$ LANGUAGE plpgsql;

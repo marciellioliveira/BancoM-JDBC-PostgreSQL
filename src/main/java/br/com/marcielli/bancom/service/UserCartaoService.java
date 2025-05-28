@@ -207,7 +207,7 @@ public class UserCartaoService {
 	        }
 	        
 	        cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
-	        return cartaoDao.save(cartao);
+	        return cartaoDao.alterarSenhaCartao(cartao);
 
 	    } else if ("ROLE_BASIC".equals(role)) {
 	        // BASIC só pode alterar o próprio cartão
@@ -230,7 +230,7 @@ public class UserCartaoService {
 	        }
 	        
 	        cartao.setSenha(passwordEncoder.encode(dto.getSenha()));
-	        return cartaoDao.save(cartao);
+	        return cartaoDao.alterarSenhaCartao(cartao);
 
 	    } else {
 	        throw new AccessDeniedException("Você não tem permissão para esta operação");
@@ -307,8 +307,8 @@ public class UserCartaoService {
 			throw new IllegalArgumentException("Role não autorizada para deletar cartões: " + role);
 		}
 
-		cartaoDao.desativarCartao(idCartao);
-		return true;
+		return cartaoDao.desativarCartao(idCartao);
+		//return true;
 	}
 
 	public Conta verificarContaAssociadaAoCartao(Long idCartao) {
