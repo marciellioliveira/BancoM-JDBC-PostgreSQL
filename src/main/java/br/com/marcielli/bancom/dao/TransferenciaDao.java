@@ -48,11 +48,21 @@ public class TransferenciaDao {
 //		String sql = "INSERT INTO fatura_transferencias (fatura_id, transferencia_id) VALUES (?, ?)";
 //		jdbcTemplate.update(sql, faturaId, transferenciaId);
 //	}
+//	
+//	public void associarTransferenciaAFatura(Long faturaId, Long transferenciaId) { function
+//	    String sql = "SELECT public.associar_transferencia_fatura_v1(?, ?)";
+//	    jdbcTemplate.update(sql, faturaId, transferenciaId);
+//	}
 	
 	public void associarTransferenciaAFatura(Long faturaId, Long transferenciaId) {
-	    String sql = "SELECT public.associar_transferencia_fatura_v1(?, ?)";
+	    String sql = "CALL public.associar_transferencia_fatura_v1(?, ?)";
 	    jdbcTemplate.update(sql, faturaId, transferenciaId);
 	}
+
+
+
+
+	
 
 
 	public List<Transferencia> findAll() {
@@ -80,22 +90,22 @@ public class TransferenciaDao {
 		return jdbcTemplate.query(sql, new TransferenciaRowMapper(), faturaId);
 	}
 
-	public List<Transferencia> findCreditoByFaturaIdUsingJoin(Long faturaId) {
-		String sql = """
-				SELECT t.id, t.valor, t.data, t.fatura_id,
-				       NULL AS id_cliente_origem, NULL AS id_cliente_destino,
-				       NULL AS id_conta_origem, NULL AS id_conta_destino,
-				       t.tipo_transferencia, t.codigo_operacao, t.tipo_cartao, t.id_cartao
-				FROM transferencias t
-				INNER JOIN fatura_transferencias ft ON t.id = ft.transferencia_id
-				WHERE ft.fatura_id = ? AND t.tipo_transferencia = 'CARTAO_CREDITO'
-				ORDER BY t.data DESC
-				""";
-		logger.info("Buscando transferências de crédito para fatura ID: {}", faturaId);
-		List<Transferencia> transferencias = jdbcTemplate.query(sql, new TransferenciaRowMapper(), faturaId);
-		logger.info("Transferências de crédito encontradas: {}", transferencias.size());
-		return transferencias;
-	}
+//	public List<Transferencia> findCreditoByFaturaIdUsingJoin(Long faturaId) {
+//		String sql = """
+//				SELECT t.id, t.valor, t.data, t.fatura_id,
+//				       NULL AS id_cliente_origem, NULL AS id_cliente_destino,
+//				       NULL AS id_conta_origem, NULL AS id_conta_destino,
+//				       t.tipo_transferencia, t.codigo_operacao, t.tipo_cartao, t.id_cartao
+//				FROM transferencias t
+//				INNER JOIN fatura_transferencias ft ON t.id = ft.transferencia_id
+//				WHERE ft.fatura_id = ? AND t.tipo_transferencia = 'CARTAO_CREDITO'
+//				ORDER BY t.data DESC
+//				""";
+//		logger.info("Buscando transferências de crédito para fatura ID: {}", faturaId);
+//		List<Transferencia> transferencias = jdbcTemplate.query(sql, new TransferenciaRowMapper(), faturaId);
+//		logger.info("Transferências de crédito encontradas: {}", transferencias.size());
+//		return transferencias;
+//	}
 
 	public void update(Transferencia transferencia) {
 		String sql = """

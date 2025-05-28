@@ -353,38 +353,84 @@ public class CartaoDao {
 		jdbcTemplate.update(sql, cartaoId, transferencia.getId());
 	}
 
+//	public void alterarLimiteCartaoCredito(Cartao cartao) {
+//		if (cartao instanceof CartaoCredito cartaoCredito) {
+//			String sql = "UPDATE cartoes SET limite_credito_pre_aprovado = ? WHERE id = ?";
+//			jdbcTemplate.update(sql, cartaoCredito.getLimiteCreditoPreAprovado(), cartaoCredito.getId());
+//			logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoCredito.getId(),
+//					cartaoCredito.getLimiteCreditoPreAprovado());
+//		} else {
+//			throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Credito.");
+//		}
+//	}
+	
 	public void alterarLimiteCartaoCredito(Cartao cartao) {
-		if (cartao instanceof CartaoCredito cartaoCredito) {
-			String sql = "UPDATE cartoes SET limite_credito_pre_aprovado = ? WHERE id = ?";
-			jdbcTemplate.update(sql, cartaoCredito.getLimiteCreditoPreAprovado(), cartaoCredito.getId());
-			logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoCredito.getId(),
-					cartaoCredito.getLimiteCreditoPreAprovado());
-		} else {
-			throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Credito.");
-		}
+	    if (cartao instanceof CartaoCredito cartaoCredito) {
+	        String sql = "SELECT public.alterar_limite_cartao_credito_v1(?, ?)";
+	        Integer rowsAffected = jdbcTemplate.queryForObject(sql, Integer.class,
+	            cartaoCredito.getId(),
+	            cartaoCredito.getLimiteCreditoPreAprovado()
+	        );
+
+	        if (rowsAffected == null || rowsAffected == 0) {
+	            logger.error("Falha ao atualizar limite do cartão de crédito ID {}", cartaoCredito.getId());
+	        } else {
+	            logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoCredito.getId(),
+	                    cartaoCredito.getLimiteCreditoPreAprovado());
+	        }
+	    } else {
+	        throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Credito.");
+	    }
 	}
 
+
+//	public void alterarLimiteCartaoDebito(Cartao cartao) {
+//		if (cartao instanceof CartaoDebito cartaoDebito) {
+//			String sql = "UPDATE cartoes SET limite_diario_transacao = ? WHERE id = ?";
+//			jdbcTemplate.update(sql, cartaoDebito.getLimiteDiarioTransacao(), cartaoDebito.getId());
+//			logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoDebito.getId(),
+//					cartaoDebito.getLimiteDiarioTransacao());
+//		} else {
+//			throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Débito.");
+//		}
+//	}
 	public void alterarLimiteCartaoDebito(Cartao cartao) {
-		if (cartao instanceof CartaoDebito cartaoDebito) {
-			String sql = "UPDATE cartoes SET limite_diario_transacao = ? WHERE id = ?";
-			jdbcTemplate.update(sql, cartaoDebito.getLimiteDiarioTransacao(), cartaoDebito.getId());
-			logger.info("Limite de crédito do cartão com ID {} atualizado para {}", cartaoDebito.getId(),
-					cartaoDebito.getLimiteDiarioTransacao());
-		} else {
-			throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Débito.");
-		}
-	}
+	    if (cartao instanceof CartaoDebito cartaoDebito) {
+	        String sql = "SELECT public.alterar_limite_cartao_debito_v1(?, ?)";
+	        Integer rowsAffected = jdbcTemplate.queryForObject(sql, Integer.class,
+	            cartaoDebito.getId(),
+	            cartaoDebito.getLimiteDiarioTransacao()
+	        );
 
+	        if (rowsAffected == null || rowsAffected == 0) {
+	            logger.error("Falha ao atualizar limite do cartão de débito ID {}", cartaoDebito.getId());
+	        } else {
+	            logger.info("Limite diário de transação do cartão com ID {} atualizado para {}", 
+	                cartaoDebito.getId(),
+	                cartaoDebito.getLimiteDiarioTransacao());
+	        }
+	    } else {
+	        throw new IllegalArgumentException("O cartão informado não é do tipo Cartao de Débito.");
+	    }
+	}
+	
 	public Fatura buscarFaturaComTransferenciasPorCartaoId(Long cartaoId) {
-		String sql = """
-				    SELECT id, cartao_id, valor_total, data_vencimento, status
-				    FROM faturas
-				    WHERE cartao_id = ?
-				""";
-
-		List<Fatura> faturas = jdbcTemplate.query(sql, faturaWithTransferenciaRowMapper, cartaoId);
-
-		return faturas.isEmpty() ? null : faturas.get(0);
+	    String sql = "SELECT * FROM public.buscar_fatura_com_transferencias_por_cartao_id_v1(?)";
+	    List<Fatura> faturas = jdbcTemplate.query(sql, faturaWithTransferenciaRowMapper, cartaoId);
+	    return faturas.isEmpty() ? null : faturas.get(0);
 	}
+
+
+//	public Fatura buscarFaturaComTransferenciasPorCartaoId(Long cartaoId) {
+//		String sql = """
+//				    SELECT id, cartao_id, valor_total, data_vencimento, status
+//				    FROM faturas
+//				    WHERE cartao_id = ?
+//				""";
+//
+//		List<Fatura> faturas = jdbcTemplate.query(sql, faturaWithTransferenciaRowMapper, cartaoId);
+//
+//		return faturas.isEmpty() ? null : faturas.get(0);
+//	}
 
 }
